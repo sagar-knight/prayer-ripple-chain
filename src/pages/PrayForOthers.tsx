@@ -89,10 +89,10 @@ const PrayForOthers = () => {
         <div className="text-center mb-8 animate-gentle-fade">
           <Users className="h-12 w-12 text-primary mx-auto mb-4" />
           <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Pray for Others
+            Pray It Forward
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join our community in lifting up prayer requests from around the world
+            Pass the blessing forward. When someone prays for you, continue the chain by praying for others.
           </p>
         </div>
 
@@ -185,17 +185,37 @@ const PrayForOthers = () => {
           </Card>
         )}
 
-        {/* Encouragement Section */}
-        <Card className="mt-12 bg-primary/5 border-primary/20 animate-gentle-fade">
+        {/* Pray It Forward Info */}
+        <Card className="mt-12 bg-gradient-primary text-primary-foreground animate-gentle-fade">
           <CardContent className="pt-6 text-center">
-            <h3 className="font-playfair text-xl font-semibold text-primary mb-3">
-              The Power of Prayer
+            <h3 className="font-playfair text-xl font-semibold mb-3">
+              How Pray It Forward Works
             </h3>
-            <p className="text-muted-foreground italic mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              <div className="space-y-2">
+                <div className="w-12 h-12 bg-primary-foreground/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-xl font-bold">1</span>
+                </div>
+                <h4 className="font-semibold">Receive Prayer</h4>
+                <p className="text-sm opacity-90">Someone prays for your request</p>
+              </div>
+              <div className="space-y-2">
+                <div className="w-12 h-12 bg-primary-foreground/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-xl font-bold">2</span>
+                </div>
+                <h4 className="font-semibold">Experience Blessing</h4>
+                <p className="text-sm opacity-90">See God's goodness in your life</p>
+              </div>
+              <div className="space-y-2">
+                <div className="w-12 h-12 bg-primary-foreground/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-xl font-bold">3</span>
+                </div>
+                <h4 className="font-semibold">Pray Forward</h4>
+                <p className="text-sm opacity-90">Pass the blessing by praying for others</p>
+              </div>
+            </div>
+            <p className="text-primary-foreground/90 italic mt-6">
               "Therefore I tell you, whatever you ask for in prayer, believe that you have received it, and it will be yours." - Mark 11:24
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Every prayer you offer creates ripples of hope and healing in someone's life. Thank you for being part of this ministry.
             </p>
           </CardContent>
         </Card>

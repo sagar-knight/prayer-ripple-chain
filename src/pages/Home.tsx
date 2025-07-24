@@ -1,10 +1,24 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Users, Church, MessageCircle, Waves, ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Users, Church, MessageCircle, Waves, ArrowRight, BookOpen, Calendar, Target, TrendingUp } from "lucide-react";
 import heroImage from "@/assets/hero-prayer.jpg";
 
 const Home = () => {
+  const [verseOfDay] = useState({
+    verse: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",
+    reference: "Romans 8:28",
+  });
+
+  const [userStats] = useState({
+    prayersOffered: 12,
+    chainCount: 3,
+    rippleReach: 47,
+    streak: 5,
+  });
+
   const features = [
     {
       icon: Heart,
@@ -59,13 +73,13 @@ const Home = () => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center space-y-8 animate-gentle-fade">
             <h1 className="font-playfair text-4xl md:text-6xl font-bold text-foreground leading-tight">
-              Connecting Hearts
-              <span className="block text-primary">Through Prayer</span>
+              Pray It Forward
+              <span className="block text-primary">Creating Ripples of Hope</span>
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Join a community where faith meets compassion. Submit prayer requests, 
-              pray for others, and experience the ripple effect of spiritual connection.
+              When someone prays for you, pass the blessing forward by praying for someone else. 
+              Join a movement where every prayer creates a ripple effect of kindness and faith.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -83,6 +97,67 @@ const Home = () => {
                 </Link>
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Verse of the Day & Dashboard */}
+      <section className="py-16 bg-background/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Verse of the Day */}
+            <Card className="bg-gradient-warm text-accent-foreground animate-gentle-fade">
+              <CardHeader>
+                <CardTitle className="font-playfair text-2xl flex items-center gap-2">
+                  <BookOpen className="h-6 w-6" />
+                  Verse of the Day
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg italic leading-relaxed mb-4">
+                  "{verseOfDay.verse}"
+                </p>
+                <p className="font-semibold text-accent-foreground/90">
+                  - {verseOfDay.reference}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Personal Dashboard Preview */}
+            <Card className="bg-card animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+              <CardHeader>
+                <CardTitle className="font-playfair text-2xl flex items-center gap-2">
+                  <Target className="h-6 w-6 text-primary" />
+                  Your Prayer Impact
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{userStats.prayersOffered}</div>
+                    <div className="text-sm text-muted-foreground">Prayers Offered</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{userStats.chainCount}</div>
+                    <div className="text-sm text-muted-foreground">Chains Started</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{userStats.rippleReach}</div>
+                    <div className="text-sm text-muted-foreground">Lives Touched</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{userStats.streak}</div>
+                    <div className="text-sm text-muted-foreground">Day Streak</div>
+                  </div>
+                </div>
+                <Button asChild variant="outline" className="w-full mt-4">
+                  <Link to="/dashboard">
+                    View Full Dashboard
+                    <TrendingUp className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

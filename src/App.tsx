@@ -7,6 +7,7 @@ import Navigation from "./components/Navigation";
 import Home from "./pages/Home";
 import SubmitPrayer from "./pages/SubmitPrayer";
 import PrayForOthers from "./pages/PrayForOthers";
+import Dashboard from "./pages/Dashboard";
 import Churches from "./pages/Churches";
 import Counsel from "./pages/Counsel";
 import RippleImpact from "./pages/RippleImpact";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/submit-prayer" element={<SubmitPrayer />} />
           <Route path="/pray" element={<PrayForOthers />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/churches" element={<Churches />} />
           <Route path="/counsel" element={<Counsel />} />
           <Route path="/ripple" element={<RippleImpact />} />

@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Clock, User, MapPin } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Heart, Clock, User, MapPin, Send, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface PrayerRequest {
@@ -25,7 +27,17 @@ interface PrayerCardProps {
 const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
   const [isPraying, setIsPraying] = useState(false);
   const [hasPrayed, setHasPrayed] = useState(false);
+  const [showMessageDialog, setShowMessageDialog] = useState(false);
+  const [encouragementMessage, setEncouragementMessage] = useState("");
   const { toast } = useToast();
+
+  const encouragementSuggestions = [
+    "You are loved and not forgotten. God sees your heart and hears your prayers. 🙏",
+    "Praying for strength and peace for you during this time. God is with you. ✨", 
+    "Trusting God with you for His perfect timing and provision. You're in my prayers. 💙",
+    "May you feel God's presence and comfort today. Lifting you up in prayer. 🕊️",
+    "Believing with you for breakthrough and blessing. God's got this! 💪"
+  ];
 
   const handlePrayerOffered = async () => {
     setIsPraying(true);
@@ -37,10 +49,23 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
       onPrayerOffered?.(request.id);
       toast({
         title: "Prayer Offered 🙏",
-        description: "Your prayer has been lifted up. May God bless this request.",
+        description: "Your prayer has been lifted up. Would you like to send encouragement?",
         duration: 4000,
       });
+      setShowMessageDialog(true);
     }, 2000);
+  };
+
+  const handleSendEncouragement = () => {
+    if (encouragementMessage.trim()) {
+      toast({
+        title: "Encouragement Sent 💙",
+        description: "Your message of hope has been delivered.",
+        duration: 3000,
+      });
+      setEncouragementMessage("");
+      setShowMessageDialog(false);
+    }
   };
 
   return (
@@ -92,24 +117,78 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
             <span>{request.prayerCount} prayers offered</span>
           </div>
           
-          <Button
-            variant={hasPrayed ? "secondary" : "peaceful"}
-            size="sm"
-            onClick={handlePrayerOffered}
-            disabled={isPraying || hasPrayed}
-            className="min-w-[100px]"
-          >
-            {isPraying ? (
-              <span className="flex items-center gap-2">
-                <div className="animate-peaceful-glow">🙏</div>
-                Praying...
-              </span>
-            ) : hasPrayed ? (
-              "Prayed 💙"
-            ) : (
-              "Offer Prayer"
+          <div className="flex gap-2">
+            <Button
+              variant={hasPrayed ? "secondary" : "peaceful"}
+              size="sm"
+              onClick={handlePrayerOffered}
+              disabled={isPraying || hasPrayed}
+              className="flex-1"
+            >
+              {isPraying ? (
+                <span className="flex items-center gap-2">
+                  <div className="animate-peaceful-glow">🙏</div>
+                  Praying...
+                </span>
+              ) : hasPrayed ? (
+                "Prayed 💙"
+              ) : (
+                "Offer Prayer"
+              )}
+            </Button>
+            
+            {hasPrayed && (
+              <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="font-playfair">Send Encouragement</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Share a word of encouragement or Bible verse with {request.isAnonymous ? "this person" : "the prayer requester"}.
+                    </p>
+                    
+                    <Textarea
+                      placeholder="Write your encouraging message..."
+                      value={encouragementMessage}
+                      onChange={(e) => setEncouragementMessage(e.target.value)}
+                      className="min-h-[100px]"
+                    />
+                    
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground font-medium">Quick suggestions:</p>
+                      <div className="grid gap-2">
+                        {encouragementSuggestions.slice(0, 3).map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setEncouragementMessage(suggestion)}
+                            className="text-xs text-left p-2 rounded border hover:bg-accent transition-colors"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button onClick={handleSendEncouragement} className="flex-1">
+                        <Send className="h-4 w-4 mr-2" />
+                        Send Message
+                      </Button>
+                      <Button variant="outline" onClick={() => setShowMessageDialog(false)}>
+                        Skip
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             )}
-          </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

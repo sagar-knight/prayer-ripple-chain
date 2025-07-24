@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Heart, Menu, Users, MessageCircle, Waves, HelpCircle, Church } from "lucide-react";
+import { Heart, Menu, Users, MessageCircle, Waves, HelpCircle, Church, BarChart3 } from "lucide-react";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +12,7 @@ const Navigation = () => {
     { href: "/", label: "Home", icon: Heart },
     { href: "/submit-prayer", label: "Submit Prayer", icon: Heart },
     { href: "/pray", label: "Pray for Others", icon: Users },
+    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
     { href: "/churches", label: "Churches", icon: Church },
     { href: "/counsel", label: "Chat/Counsel", icon: MessageCircle },
     { href: "/ripple", label: "Ripple Impact", icon: Waves },
@@ -31,7 +32,7 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-2">
             <Heart className="h-8 w-8 text-primary" />
             <span className="font-playfair text-xl font-semibold text-primary">
-              PrayerConnect
+              Pray It Forward
             </span>
           </Link>
 
