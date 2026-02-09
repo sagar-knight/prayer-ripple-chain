@@ -1,389 +1,317 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Users, Church, MessageCircle, Waves, ArrowRight, BookOpen, Calendar, Target, TrendingUp } from "lucide-react";
+import {
+  Heart,
+  Users,
+  Church,
+  MessageCircle,
+  Waves,
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  Target,
+  TrendingUp,
+  HandHeart,
+  ShoppingBag,
+} from "lucide-react";
 import heroImage from "@/assets/hero-prayer.jpg";
 
 const Home = () => {
   const [verseOfDay] = useState({
-    verse: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",
+    verse:
+      "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",
     reference: "Romans 8:28",
   });
 
   const [userStats] = useState({
-    prayersOffered: 12,
-    chainCount: 3,
-    rippleReach: 47,
+    prayersNeeding: 24,
+    myCommitments: 3,
+    myImpact: 47,
     streak: 5,
   });
 
-  const features = [
-    {
-      icon: Heart,
-      title: "Submit Prayer Requests",
-      description: "Share your prayer needs with our caring community",
-      href: "/submit-prayer",
-      color: "text-red-500"
-    },
-    {
-      icon: Users,
-      title: "Pray for Others",
-      description: "Join others in lifting up prayer requests",
-      href: "/pray",
-      color: "text-blue-500"
-    },
-    {
-      icon: Church,
-      title: "Connect with Churches",
-      description: "Find local church communities and their prayer needs",
-      href: "/churches",
-      color: "text-purple-500"
-    },
-    {
-      icon: MessageCircle,
-      title: "Counseling Support",
-      description: "Access private spiritual guidance and support",
-      href: "/counsel",
-      color: "text-green-500"
-    },
-    {
-      icon: Waves,
-      title: "Ripple Impact",
-      description: "See how your prayers create waves of blessing",
-      href: "/ripple",
-      color: "text-amber-500"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-peaceful">
+    <div className="min-h-screen bg-gradient-peaceful pb-20">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src={heroImage} 
-            alt="Peaceful prayer scene" 
+          <img
+            src={heroImage}
+            alt="Peaceful prayer scene"
             className="w-full h-full object-cover opacity-30"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80" />
         </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-          <div className="text-center space-y-8 animate-gentle-fade">
-            <h1 className="font-playfair text-5xl md:text-7xl font-bold text-foreground leading-tight">
-              🙏 Pray It Forward
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+          <div className="text-center space-y-6 animate-gentle-fade">
+            <h1 className="font-playfair text-4xl md:text-6xl font-bold text-foreground leading-tight">
+              PrayerForward
             </h1>
-            
-            <p className="text-2xl md:text-3xl font-medium text-primary max-w-4xl mx-auto leading-relaxed">
-              One Prayer Can Create a Ripple That Touches the World.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+              One prayer. Passed forward.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-              <Button asChild variant="peaceful" size="lg" className="text-lg px-10 py-6">
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Button
+                asChild
+                variant="peaceful"
+                size="lg"
+                className="text-lg px-8 py-6"
+              >
                 <Link to="/submit-prayer">
-                  📧 Join Waitlist
+                  🙏 Request Prayer
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="warm"
+                size="lg"
+                className="text-lg px-8 py-6"
+              >
+                <Link to="/pray">
+                  🤍 Pray for Others
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button asChild variant="warm" size="lg" className="text-lg px-10 py-6">
-                <Link to="/pray">
-                  Start Praying Now
-                  <Heart className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* What Is Pray It Forward Section */}
-      <section className="py-20 bg-background">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-foreground mb-8">
-            ✨ What Is Pray It Forward?
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-5xl mx-auto leading-relaxed">
-            Pray It Forward is a faith-based prayer app where you can receive prayers, pray for others, and become part of a growing chain of compassion. Inspired by the heart of Pay It Forward, every prayer you offer carries the potential to spark another — creating a spiritual ripple of love, healing, and hope across the globe.
-          </p>
-        </div>
-      </section>
-
-      {/* Who Is It For Section */}
-      <section className="py-20 bg-card/30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-foreground text-center mb-16">
-            👤 Who Is It For?
-          </h2>
-          <p className="text-xl text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
-            Whether you're someone who:
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center p-8 bg-gradient-warm">
-              <CardContent className="pt-6">
-                <Heart className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-4">Needs Prayer</h3>
-                <p className="text-muted-foreground">During a difficult time</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center p-8 bg-gradient-primary text-primary-foreground">
-              <CardContent className="pt-6">
-                <Users className="w-12 h-12 text-primary-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-4">Desires to Pray</h3>
-                <p className="text-primary-foreground/90">And uplift others</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center p-8 bg-gradient-warm">
-              <CardContent className="pt-6">
-                <Church className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-4">Wants Community</h3>
-                <p className="text-muted-foreground">Join your church in collective prayer</p>
-              </CardContent>
-            </Card>
-          </div>
-          <p className="text-2xl font-semibold text-center mt-12 text-primary">
-            This app is for you.
-          </p>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-20 bg-background">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-foreground text-center mb-16">
-            📲 How It Works
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-primary-foreground text-2xl font-bold">
-                1
-              </div>
-              <h3 className="text-xl font-semibold">Create Your Profile</h3>
-              <p className="text-muted-foreground">Choose to receive or offer prayers — or both. Stay anonymous or share your journey.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-primary-foreground text-2xl font-bold">
-                2
-              </div>
-              <h3 className="text-xl font-semibold">Submit or Accept</h3>
-              <p className="text-muted-foreground">Post your prayer needs or browse the Prayer Wall to lift others in prayer.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-primary-foreground text-2xl font-bold">
-                3
-              </div>
-              <h3 className="text-xl font-semibold">Track Your Ripple</h3>
-              <p className="text-muted-foreground">See how your prayers have traveled — through individuals, churches, and across continents.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-primary-foreground text-2xl font-bold">
-                4
-              </div>
-              <h3 className="text-xl font-semibold">Pray It Forward</h3>
-              <p className="text-muted-foreground">When someone prays for you, continue the chain. Let the ripple begin with you.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Verse of the Day & Dashboard */}
-      <section className="py-16 bg-background/50">
+      {/* Dashboard Cards */}
+      <section className="py-12 bg-background/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Verse of the Day */}
-            <Card className="bg-gradient-warm text-accent-foreground animate-gentle-fade">
-              <CardHeader>
-                <CardTitle className="font-playfair text-2xl flex items-center gap-2">
-                  <BookOpen className="h-6 w-6" />
-                  Verse of the Day
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg italic leading-relaxed mb-4">
-                  "{verseOfDay.verse}"
-                </p>
-                <p className="font-semibold text-accent-foreground/90">
-                  - {verseOfDay.reference}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Personal Dashboard Preview */}
-            <Card className="bg-card animate-gentle-fade" style={{ animationDelay: "200ms" }}>
-              <CardHeader>
-                <CardTitle className="font-playfair text-2xl flex items-center gap-2">
-                  <Target className="h-6 w-6 text-primary" />
-                  Your Prayer Impact
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{userStats.prayersOffered}</div>
-                    <div className="text-sm text-muted-foreground">Prayers Offered</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <Card className="bg-gradient-warm text-accent-foreground animate-gentle-fade hover:shadow-peaceful transition-all">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm opacity-90">Prayers Needing Prayer</p>
+                    <p className="text-3xl font-bold">{userStats.prayersNeeding}</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{userStats.chainCount}</div>
-                    <div className="text-sm text-muted-foreground">Chains Started</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{userStats.rippleReach}</div>
-                    <div className="text-sm text-muted-foreground">Lives Touched</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{userStats.streak}</div>
-                    <div className="text-sm text-muted-foreground">Day Streak</div>
-                  </div>
+                  <HandHeart className="h-8 w-8 opacity-80" />
                 </div>
-                <Button asChild variant="outline" className="w-full mt-4">
-                  <Link to="/dashboard">
-                    View Full Dashboard
-                    <TrendingUp className="ml-2 h-4 w-4" />
-                  </Link>
+                <Button asChild variant="outline" size="sm" className="w-full mt-3 bg-background/50">
+                  <Link to="/pray">View All</Link>
                 </Button>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
 
-      {/* Key Features Section */}
-      <section className="py-20 bg-card/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-foreground mb-8">
-              🔥 Key Features
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="group hover:shadow-peaceful transition-all duration-300 border-0 bg-gradient-warm">
-              <CardHeader>
-                <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                  🙌 Prayer Wall
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  Scroll through real-time prayer requests. Accept a prayer tile and mark it once you've prayed. Share a verse or words of comfort.
-                </p>
+            <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade" style={{ animationDelay: "100ms" }}>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm opacity-90">My Commitments</p>
+                    <p className="text-3xl font-bold">{userStats.myCommitments}</p>
+                  </div>
+                  <Calendar className="h-8 w-8 opacity-80" />
+                </div>
+                <Button asChild variant="secondary" size="sm" className="w-full mt-3">
+                  <Link to="/calendar">View Calendar</Link>
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-peaceful transition-all duration-300 border-0 bg-gradient-primary text-primary-foreground">
-              <CardHeader>
-                <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                  🌊 Ripple Reach Tracker
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-primary-foreground/90 leading-relaxed">
-                  Visualize your impact. See how many lives your prayer has touched — directly and through chains you've inspired.
-                </p>
+            <Card className="animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">My Prayer Impact</p>
+                    <p className="text-3xl font-bold text-primary">{userStats.myImpact}</p>
+                    <p className="text-xs text-muted-foreground">lives touched</p>
+                  </div>
+                  <TrendingUp className="h-8 w-8 text-primary/60" />
+                </div>
+                <Button asChild variant="outline" size="sm" className="w-full mt-3">
+                  <Link to="/ripple">View Impact</Link>
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-peaceful transition-all duration-300 border-0 bg-gradient-warm">
-              <CardHeader>
-                <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                  ⛪ Church Collaboration
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  Connect with churches near you. Submit requests to specific churches, or join your church's prayer group.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-peaceful transition-all duration-300 border-0 bg-card/70">
-              <CardHeader>
-                <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                  📖 Prayer Profiles
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  Each user has a prayer-focused profile with Prayer Requests Accepted, Ripple Reach, and spiritual connections.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-peaceful transition-all duration-300 border-0 bg-card/70">
-              <CardHeader>
-                <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                  🔔 Smart Reminders
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  Get gentle daily nudges: "Have you prayed today?", "Someone's waiting for your prayer."
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-peaceful transition-all duration-300 border-0 bg-card/70">
-              <CardHeader>
-                <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                  💬 Counseling & Support
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  Connect with caring counselors via anonymous chat, email, or video — all within the app.
+            <Card className="animate-gentle-fade" style={{ animationDelay: "300ms" }}>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Daily Bible</p>
+                    <p className="text-sm italic text-foreground leading-snug mt-1">
+                      "{verseOfDay.verse.slice(0, 60)}..."
+                    </p>
+                  </div>
+                  <BookOpen className="h-8 w-8 text-primary/60" />
+                </div>
+                <p className="text-xs text-primary font-medium mt-2">
+                  — {verseOfDay.reference}
                 </p>
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
 
-      {/* Join the Movement Section */}
-      <section className="py-20 bg-background">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-foreground mb-8">
-            🌍 Join the Movement
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-12">
-            Let's build a world where every prayer leads to another, and every person feels seen, heard, and loved — one ripple at a time.
-          </p>
-          
-          <div className="bg-gradient-primary rounded-2xl p-12 text-primary-foreground">
-            <h3 className="font-playfair text-3xl md:text-4xl font-bold mb-6">
-              📥 Download Pray It Forward
-            </h3>
-            <p className="text-xl mb-8 text-primary-foreground/90">
-              Coming soon to App Store and Google Play
-            </p>
-            <p className="text-lg mb-8">
-              Subscribe below and be the first to know when we launch!
-            </p>
-            <Button variant="secondary" size="lg" className="text-lg px-12 py-4">
-              📧 Join Waitlist
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary-glow text-primary-foreground">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-8">
-            💖 Your One Prayer Can Change Everything.
-          </h2>
-          <p className="text-xl mb-12 text-primary-foreground/90 max-w-3xl mx-auto leading-relaxed">
-            Join thousands who are already creating ripples of hope, one prayer at a time.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild variant="secondary" size="lg" className="text-lg px-10 py-4">
-              <Link to="/submit-prayer">
-                📧 Join Waitlist
+          {/* Primary CTA */}
+          <div className="text-center">
+            <Button asChild variant="peaceful" size="lg" className="text-lg px-12 py-6 shadow-peaceful">
+              <Link to="/pray">
+                🙏 Pray It Forward
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-10 py-4 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+          </div>
+        </div>
+      </section>
+
+      {/* What Is PrayerForward */}
+      <section className="py-16 bg-background">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-8">
+            ✨ What Is PrayerForward?
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            PrayerForward is a faith-based prayer app where you can receive
+            prayers, pray for others, and become part of a growing chain of
+            compassion. Every prayer you offer carries the potential to spark
+            another — creating a spiritual ripple of love, healing, and hope
+            across the globe.
+          </p>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-16 bg-card/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
+            📲 How It Works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                step: 1,
+                title: "Create Your Profile",
+                desc: "Choose to receive or offer prayers — or both. Stay anonymous or share your journey.",
+              },
+              {
+                step: 2,
+                title: "Submit or Accept",
+                desc: "Post your prayer needs or browse the Prayer Wall to lift others in prayer.",
+              },
+              {
+                step: 3,
+                title: "Track Your Ripple",
+                desc: "See how your prayers have traveled — through individuals, churches, and beyond.",
+              },
+              {
+                step: 4,
+                title: "Pray It Forward",
+                desc: "After praying, pass the blessing on. The ripple begins with you.",
+              },
+            ].map((item) => (
+              <div key={item.step} className="text-center space-y-4">
+                <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center mx-auto text-primary-foreground text-xl font-bold">
+                  {item.step}
+                </div>
+                <h3 className="text-lg font-semibold">{item.title}</h3>
+                <p className="text-muted-foreground text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Key Features */}
+      <section className="py-16 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
+            🔥 Key Features
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                emoji: "🙌",
+                title: "Prayer Wall",
+                desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.",
+                gradient: "bg-gradient-warm",
+              },
+              {
+                emoji: "🌊",
+                title: "Ripple Reach Tracker",
+                desc: "Visualize your impact — see how many lives your prayer has touched.",
+                gradient: "bg-gradient-primary text-primary-foreground",
+              },
+              {
+                emoji: "⛪",
+                title: "Church Collaboration",
+                desc: "Connect with churches, submit requests to them, or join their prayer groups.",
+                gradient: "bg-gradient-warm",
+              },
+              {
+                emoji: "📅",
+                title: "Calendar & Reminders",
+                desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks.",
+                gradient: "",
+              },
+              {
+                emoji: "🔔",
+                title: "Smart Notifications",
+                desc: '"Have you prayed today?", "Someone\'s waiting for your prayer."',
+                gradient: "",
+              },
+              {
+                emoji: "💬",
+                title: "Counseling & Support",
+                desc: "Connect with caring counselors via anonymous chat, email, or video.",
+                gradient: "",
+              },
+            ].map((feature) => (
+              <Card
+                key={feature.title}
+                className={`group hover:shadow-peaceful transition-all duration-300 border-0 ${feature.gradient || "bg-card/70"}`}
+              >
+                <CardHeader>
+                  <CardTitle className="font-playfair text-lg flex items-center gap-2">
+                    {feature.emoji} {feature.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className={`leading-relaxed text-sm ${feature.gradient.includes("primary") ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
+                    {feature.desc}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 bg-gradient-primary text-primary-foreground">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-6">
+            💖 Your One Prayer Can Change Everything.
+          </h2>
+          <p className="text-lg mb-8 text-primary-foreground/90 max-w-3xl mx-auto">
+            Join a movement where every prayer leads to another, and every person
+            feels seen, heard, and loved.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              asChild
+              variant="secondary"
+              size="lg"
+              className="text-lg px-10 py-4"
+            >
+              <Link to="/submit-prayer">
+                🙏 Request Prayer
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="text-lg px-10 py-4 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+            >
               <Link to="/pray">
                 Start Praying Now
                 <Heart className="ml-2 h-5 w-5" />
