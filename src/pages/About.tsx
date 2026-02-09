@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 const About = () => {
   const faqItems = [
     {
-      question: "What is PrayerConnect?",
-      answer: "PrayerConnect is a faith-based platform that connects people through prayer. Whether you need prayer support or want to pray for others, our community provides a safe, secure environment for sharing prayer requests and offering spiritual support."
+      question: "What is PrayerForward?",
+      answer: "PrayerForward is a faith-based prayer app where you can receive prayers, pray for others, and become part of a growing chain of compassion. Every prayer you offer carries the potential to spark another — creating a spiritual ripple of love, healing, and hope. Prayer actions are always free — no ads or product links inside prayer flows."
     },
     {
       question: "Is my privacy protected?",
@@ -31,8 +31,8 @@ const About = () => {
       answer: "We connect you with licensed Christian counselors and pastoral care providers. You can choose from chat, email, phone, or video sessions. All counselors are credentialed professionals who integrate faith with clinical expertise."
     },
     {
-      question: "Is there a cost to use PrayerConnect?",
-      answer: "Basic prayer request submission and praying for others is completely free. Counseling services have fees that vary by provider and session type, with some free options available for those in need."
+      question: "Is there a cost to use PrayerForward?",
+      answer: "Prayer actions are always 100% free — no ads or product links inside prayer flows. Optional resources (journals, devotionals) are available in the Resources tab. Counseling services may have fees."
     },
     {
       question: "How do I get started?",
@@ -70,7 +70,7 @@ const About = () => {
         <div className="text-center mb-12 animate-gentle-fade">
           <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
           <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
-            About PrayerConnect
+            About PrayerForward
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Learn more about our mission to connect hearts through prayer and create ripples of hope around the world
@@ -124,7 +124,7 @@ const About = () => {
         {/* How It Works */}
         <Card className="mb-12 animate-gentle-fade">
           <CardHeader>
-            <CardTitle className="font-playfair text-2xl text-center">How PrayerConnect Works</CardTitle>
+            <CardTitle className="font-playfair text-2xl text-center">How PrayerForward Works</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

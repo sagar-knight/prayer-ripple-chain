@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
+import BottomNav from "./components/BottomNav";
 import Home from "./pages/Home";
 import SubmitPrayer from "./pages/SubmitPrayer";
 import PrayForOthers from "./pages/PrayForOthers";
@@ -12,6 +13,9 @@ import Churches from "./pages/Churches";
 import Counsel from "./pages/Counsel";
 import RippleImpact from "./pages/RippleImpact";
 import About from "./pages/About";
+import PrayerCalendar from "./pages/PrayerCalendar";
+import Resources from "./pages/Resources";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,10 +35,14 @@ const App = () => (
           <Route path="/churches" element={<Churches />} />
           <Route path="/counsel" element={<Counsel />} />
           <Route path="/ripple" element={<RippleImpact />} />
+          <Route path="/calendar" element={<PrayerCalendar />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <BottomNav />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

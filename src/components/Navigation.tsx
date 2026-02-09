@@ -2,7 +2,19 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Heart, Menu, Users, MessageCircle, Waves, HelpCircle, Church, BarChart3 } from "lucide-react";
+import {
+  Heart,
+  Menu,
+  Users,
+  MessageCircle,
+  Waves,
+  HelpCircle,
+  Church,
+  Calendar,
+  BookOpen,
+  User,
+  ShoppingBag,
+} from "lucide-react";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,13 +22,15 @@ const Navigation = () => {
 
   const navItems = [
     { href: "/", label: "Home", icon: Heart },
-    { href: "/submit-prayer", label: "Submit Prayer", icon: Heart },
-    { href: "/pray", label: "Pray for Others", icon: Users },
-    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/pray", label: "Pray", icon: Users },
+    { href: "/submit-prayer", label: "Request", icon: BookOpen },
+    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
-    { href: "/counsel", label: "Chat/Counsel", icon: MessageCircle },
-    { href: "/ripple", label: "Ripple Impact", icon: Waves },
-    { href: "/about", label: "About/FAQ", icon: HelpCircle },
+    { href: "/counsel", label: "Counsel", icon: MessageCircle },
+    { href: "/ripple", label: "Ripple", icon: Waves },
+    { href: "/resources", label: "Resources", icon: ShoppingBag },
+    { href: "/profile", label: "Profile", icon: User },
+    { href: "/about", label: "About", icon: HelpCircle },
   ];
 
   const isActiveRoute = (href: string) => {
@@ -32,13 +46,13 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-2">
             <Heart className="h-8 w-8 text-primary" />
             <span className="font-playfair text-xl font-semibold text-primary">
-              Pray It Forward
+              PrayerForward
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.slice(1).map((item) => {
+          <div className="hidden lg:flex items-center space-x-1">
+            {navItems.slice(1, 8).map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -59,7 +73,7 @@ const Navigation = () => {
 
           {/* Mobile Navigation */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="sm">
                 <Menu className="h-5 w-5" />
               </Button>
