@@ -14,6 +14,8 @@ import {
   BookOpen,
   User,
   ShoppingBag,
+  Store,
+  HandHeart,
 } from "lucide-react";
 
 const Navigation = () => {
@@ -29,6 +31,8 @@ const Navigation = () => {
     { href: "/counsel", label: "Counsel", icon: MessageCircle },
     { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/resources", label: "Resources", icon: ShoppingBag },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/support", label: "Support", icon: HandHeart },
     { href: "/profile", label: "Profile", icon: User },
     { href: "/about", label: "About", icon: HelpCircle },
   ];
@@ -52,7 +56,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navItems.slice(1, 8).map((item) => {
+            {navItems.slice(1, 10).map((item) => {
               const Icon = item.icon;
               return (
                 <Link

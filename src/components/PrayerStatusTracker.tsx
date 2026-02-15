@@ -186,10 +186,17 @@ const PrayerStatusTracker = () => {
               )}
 
               {request.status === "answered" && (
-                <Button variant="warm" size="sm" className="w-full gap-2">
-                  <Heart className="h-4 w-4" />
-                  Share Testimony & Thank Prayer Partners
-                </Button>
+                <div className="space-y-2">
+                  <Button variant="warm" size="sm" className="w-full gap-2">
+                    <Heart className="h-4 w-4" />
+                    Share Testimony & Thank Prayer Partners
+                  </Button>
+                  <Button asChild variant="outline" size="sm" className="w-full gap-2">
+                    <a href="/support">
+                      Support the Mission 🙏
+                    </a>
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>

@@ -17,6 +17,8 @@ import {
   Shield,
   CheckCircle,
   Target,
+  HandHeart,
+  CreditCard,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -287,6 +289,34 @@ const Profile = () => {
                 />
               </div>
             ))}
+          </CardContent>
+        </Card>
+
+        {/* Support the Mission */}
+        <Card className="mb-8 animate-gentle-fade border-primary/20" style={{ animationDelay: "650ms" }}>
+          <CardHeader>
+            <CardTitle className="font-playfair flex items-center gap-2">
+              <HandHeart className="h-5 w-5 text-primary" />
+              Support the Mission
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              PrayerForward is free for everyone. Your optional support helps keep
+              us running.
+            </p>
+            <div className="flex gap-2">
+              <Button asChild variant="peaceful" className="gap-2">
+                <Link to="/support">
+                  <Heart className="h-4 w-4" />
+                  Support PrayerForward
+                </Link>
+              </Button>
+              <Button variant="outline" className="gap-2">
+                <CreditCard className="h-4 w-4" />
+                Manage Support
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
