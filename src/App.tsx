@@ -16,6 +16,8 @@ import About from "./pages/About";
 import PrayerCalendar from "./pages/PrayerCalendar";
 import Resources from "./pages/Resources";
 import Profile from "./pages/Profile";
+import SupportMission from "./pages/SupportMission";
+import Store from "./pages/Store";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +41,8 @@ const App = () => (
           <Route path="/resources" element={<Resources />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />
+          <Route path="/support" element={<SupportMission />} />
+          <Route path="/store" element={<Store />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
