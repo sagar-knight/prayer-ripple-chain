@@ -31,9 +31,9 @@ const Navigation = () => {
     { href: "/organizations", label: "Organizations", icon: Users },
     { href: "/counsel", label: "Counsel", icon: MessageCircle },
     { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/resources", label: "Resources", icon: ShoppingBag },
-    { href: "/store", label: "Store", icon: Store },
     { href: "/support", label: "Support", icon: HandHeart },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/resources", label: "Resources", icon: ShoppingBag },
     { href: "/profile", label: "Profile", icon: User },
     { href: "/about", label: "About", icon: HelpCircle },
   ];
