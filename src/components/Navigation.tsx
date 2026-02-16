@@ -58,7 +58,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navItems.slice(1, 10).map((item) => {
+            {navItems.slice(1, 11).map((item) => {
               const Icon = item.icon;
               return (
                 <Link
