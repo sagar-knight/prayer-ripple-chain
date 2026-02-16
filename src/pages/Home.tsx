@@ -7,7 +7,7 @@ import {
   Heart,
   Users,
   Church,
-  MessageCircle,
+  
   Waves,
   ArrowRight,
   BookOpen,
@@ -261,9 +261,9 @@ const Home = () => {
                 gradient: "",
               },
               {
-                emoji: "💬",
-                title: "Counseling & Support",
-                desc: "Connect with caring counselors via anonymous chat, email, or video.",
+                emoji: "📖",
+                title: "Scripture & Encouragement",
+                desc: "Receive curated Bible verses and reflections matched to your prayer needs.",
                 gradient: "",
               },
             ].map((feature) => (

@@ -35,7 +35,7 @@ const Profile = () => {
     prayerAccepted: true,
     prayerAnswered: true,
     streakReminder: true,
-    resourceSuggestions: false,
+    
   });
 
   const [userProfile] = useState({
@@ -301,11 +301,6 @@ const Profile = () => {
                 key: "streakReminder" as const,
                 label: "Streak Reminder",
                 desc: '"You missed yesterday\'s prayer" alert',
-              },
-              {
-                key: "resourceSuggestions" as const,
-                label: "Resource Suggestions",
-                desc: "Recommended prayer resources and materials",
               },
             ].map((item) => (
               <div
