@@ -1,4 +1,5 @@
 import { useState } from "react";
+import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -336,6 +337,8 @@ const Store = () => {
             <p className="text-muted-foreground">No products found. Try a different search.</p>
           </div>
         )}
+
+        <NewsletterSubscribe />
       </div>
     </div>
   );

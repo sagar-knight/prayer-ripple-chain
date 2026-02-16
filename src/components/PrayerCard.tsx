@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Heart, Clock, User, MapPin, Send, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
+import ScriptureEncouragement from "./ScriptureEncouragement";
 
 interface PrayerRequest {
   id: string;
@@ -120,6 +121,9 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
               From: {request.churchName}
             </div>
           )}
+
+          {/* Scripture for prayer partners */}
+          <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">

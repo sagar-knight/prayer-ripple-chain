@@ -10,11 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Lock, Globe, Send, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PrayerStatusTracker from "@/components/PrayerStatusTracker";
+import ScriptureEncouragement from "@/components/ScriptureEncouragement";
 
 const SubmitPrayer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,16 +77,21 @@ const SubmitPrayer = () => {
           <TabsContent value="submit">
             {/* Confirmation Banner */}
             {showConfirmation && (
-              <Card className="mb-6 bg-primary/10 border-primary/20 animate-gentle-fade">
-                <CardContent className="pt-6 text-center">
-                  <p className="text-lg font-semibold text-primary">
-                    ✅ Your prayer has been shared.
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    People are already being notified to pray for you.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="mb-6 space-y-4 animate-gentle-fade">
+                <Card className="bg-primary/10 border-primary/20">
+                  <CardContent className="pt-6 text-center">
+                    <p className="text-lg font-semibold text-primary">
+                      ✅ Your prayer has been shared.
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      People are already being notified to pray for you.
+                    </p>
+                  </CardContent>
+                </Card>
+                {selectedCategory && (
+                  <ScriptureEncouragement category={selectedCategory} mode="confirmation" />
+                )}
+              </div>
             )}
 
             <Card className="shadow-peaceful">
@@ -115,7 +122,7 @@ const SubmitPrayer = () => {
                     <Label htmlFor="category" className="text-base font-medium">
                       Category *
                     </Label>
-                    <Select name="category" required>
+                    <Select name="category" required onValueChange={setSelectedCategory}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>

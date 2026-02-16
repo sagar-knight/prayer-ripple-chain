@@ -18,6 +18,8 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import heroImage from "@/assets/hero-prayer.jpg";
+import DailyVerseCard from "@/components/DailyVerseCard";
+import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 
 const Home = () => {
   const [verseOfDay] = useState({
@@ -284,6 +286,16 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Daily Scripture */}
+      <section className="py-8 bg-background">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <DailyVerseCard />
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <NewsletterSubscribe />
 
       {/* Final CTA */}
       <section className="py-16 bg-gradient-primary text-primary-foreground">
