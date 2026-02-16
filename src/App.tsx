@@ -10,11 +10,11 @@ import SubmitPrayer from "./pages/SubmitPrayer";
 import PrayForOthers from "./pages/PrayForOthers";
 import Dashboard from "./pages/Dashboard";
 import Churches from "./pages/Churches";
-import Counsel from "./pages/Counsel";
+
 import RippleImpact from "./pages/RippleImpact";
 import About from "./pages/About";
 import PrayerCalendar from "./pages/PrayerCalendar";
-import Resources from "./pages/Resources";
+
 import Profile from "./pages/Profile";
 import SupportMission from "./pages/SupportMission";
 import Store from "./pages/Store";
@@ -39,10 +39,8 @@ const App = () => (
           <Route path="/pray" element={<PrayForOthers />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/churches" element={<Churches />} />
-          <Route path="/counsel" element={<Counsel />} />
           <Route path="/ripple" element={<RippleImpact />} />
           <Route path="/calendar" element={<PrayerCalendar />} />
-          <Route path="/resources" element={<Resources />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />
           <Route path="/support" element={<SupportMission />} />

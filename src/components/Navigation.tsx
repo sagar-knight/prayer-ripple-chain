@@ -6,14 +6,12 @@ import {
   Heart,
   Menu,
   Users,
-  MessageCircle,
   Waves,
   HelpCircle,
   Church,
   Calendar,
   BookOpen,
   User,
-  ShoppingBag,
   Store,
   HandHeart,
 } from "lucide-react";
@@ -29,12 +27,10 @@ const Navigation = () => {
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
     { href: "/organizations", label: "Organizations", icon: Users },
-    { href: "/counsel", label: "Counsel", icon: MessageCircle },
     { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/support", label: "Support", icon: HandHeart },
     { href: "/store", label: "Store", icon: Store },
-    { href: "/resources", label: "Resources", icon: ShoppingBag },
     { href: "/profile", label: "Profile", icon: User },
     { href: "/about", label: "About", icon: HelpCircle },
   ];
@@ -58,7 +54,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navItems.slice(1, 11).map((item) => {
+            {navItems.slice(1, 10).map((item) => {
               const Icon = item.icon;
               return (
                 <Link
