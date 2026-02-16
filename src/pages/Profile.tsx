@@ -19,10 +19,17 @@ import {
   Target,
   HandHeart,
   CreditCard,
+  Globe,
+  Users,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import CountrySelect from "@/components/CountrySelect";
+import { getCountryByCode } from "@/data/countries";
 
 const Profile = () => {
+  const [countryCode, setCountryCode] = useState<string | null>(null);
+  const [showCountryBanner, setShowCountryBanner] = useState(true);
   const [notifications, setNotifications] = useState({
     dailyReminder: true,
     prayerAccepted: true,
@@ -117,6 +124,34 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Country Banner */}
+        {!countryCode && showCountryBanner && (
+          <Card className="mb-8 border-primary/20 animate-gentle-fade">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <Globe className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground mb-1">
+                    Add your country
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Improve prayer matching and reminder times. Optional.
+                  </p>
+                  <CountrySelect value={countryCode} onChange={setCountryCode} />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 shrink-0"
+                  onClick={() => setShowCountryBanner(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -289,6 +324,56 @@ const Profile = () => {
                 />
               </div>
             ))}
+          </CardContent>
+        </Card>
+
+        {/* Country & Timezone Settings */}
+        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "620ms" }}>
+          <CardHeader>
+            <CardTitle className="font-playfair flex items-center gap-2">
+              <Globe className="h-5 w-5 text-primary" />
+              Location & Timezone
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-sm">Country (optional)</Label>
+              <CountrySelect value={countryCode} onChange={setCountryCode} allowClear />
+              {countryCode && (
+                <p className="text-xs text-muted-foreground">
+                  {getCountryByCode(countryCode)?.flag} {getCountryByCode(countryCode)?.name} selected
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm">Timezone</Label>
+              <p className="text-sm text-muted-foreground">
+                Detected: {Intl.DateTimeFormat().resolvedOptions().timeZone}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Join Organization */}
+        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "640ms" }}>
+          <CardHeader>
+            <CardTitle className="font-playfair flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              Organizations
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Join a church, ministry, or group to pray together.
+            </p>
+            <div className="flex gap-2">
+              <Button asChild variant="peaceful" className="gap-2">
+                <Link to="/organizations">
+                  <Users className="h-4 w-4" />
+                  Browse Organizations
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

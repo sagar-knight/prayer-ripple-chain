@@ -28,6 +28,7 @@ const Navigation = () => {
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
+    { href: "/organizations", label: "Organizations", icon: Users },
     { href: "/counsel", label: "Counsel", icon: MessageCircle },
     { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/resources", label: "Resources", icon: ShoppingBag },
