@@ -18,6 +18,9 @@ import Resources from "./pages/Resources";
 import Profile from "./pages/Profile";
 import SupportMission from "./pages/SupportMission";
 import Store from "./pages/Store";
+import Organizations from "./pages/Organizations";
+import CreateOrganization from "./pages/CreateOrganization";
+import OrganizationDetail from "./pages/OrganizationDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +46,9 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/support" element={<SupportMission />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/organizations" element={<Organizations />} />
+          <Route path="/organizations/create" element={<CreateOrganization />} />
+          <Route path="/organizations/:orgId" element={<OrganizationDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
