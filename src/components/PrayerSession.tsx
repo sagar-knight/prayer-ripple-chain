@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Heart, Home, Plus, ArrowLeft } from "lucide-react";
 import PrayerCard from "./PrayerCard";
+import PassItForwardDialog from "./PassItForwardDialog";
 import { PrayerFocusMode } from "./PrayFocusSelector";
 
 interface PrayerRequest {
@@ -37,6 +38,8 @@ const PrayerSession = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [effectiveTarget, setEffectiveTarget] = useState(targetCount);
   const [prayedIds, setPrayedIds] = useState<Set<string>>(new Set());
+  const [showPassForward, setShowPassForward] = useState(false);
+  const [pendingPrayedId, setPendingPrayedId] = useState<string | null>(null);
 
   // Smart distribution: sort by priority based on mode
   const sortedRequests = useMemo(() => {
@@ -69,12 +72,21 @@ const PrayerSession = ({
 
   const handlePrayerOffered = useCallback(
     (requestId: string) => {
-      setPrayedIds((prev) => new Set(prev).add(requestId));
-      setCompletedCount((prev) => prev + 1);
-      setCurrentIndex((prev) => prev + 1);
+      setPendingPrayedId(requestId);
+      setShowPassForward(true);
     },
     []
   );
+
+  const handlePassForwardComplete = useCallback(() => {
+    setShowPassForward(false);
+    if (pendingPrayedId) {
+      setPrayedIds((prev) => new Set(prev).add(pendingPrayedId));
+      setCompletedCount((prev) => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
+      setPendingPrayedId(null);
+    }
+  }, [pendingPrayedId]);
 
   const handlePrayOneMore = () => {
     setEffectiveTarget((prev) => prev + 1);
@@ -154,6 +166,11 @@ const PrayerSession = ({
       <p className="text-center text-xs text-muted-foreground italic">
         Take your time. There is no rush.
       </p>
+      {/* Pass It Forward Dialog (lifted to session level) */}
+      <PassItForwardDialog
+        open={showPassForward}
+        onComplete={handlePassForwardComplete}
+      />
     </div>
   );
 };
