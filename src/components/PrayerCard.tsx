@@ -53,8 +53,11 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
         description: "Now pass the blessing forward!",
         duration: 3000,
       });
-      // Show Pass It Forward dialog (mandatory)
-      setShowPassForward(true);
+      // Only show Pass It Forward dialog if NOT in session mode
+      // (session mode handles the dialog at a higher level)
+      if (!onPrayerOffered) {
+        setShowPassForward(true);
+      }
     }, 2000);
   };
 
