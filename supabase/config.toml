@@ -1,0 +1,4 @@
+project_id = "fyjfxuqwwqjxoxmwuixa"
+
+[functions.bible-ai]
+verify_jwt = false

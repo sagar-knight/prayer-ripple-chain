@@ -114,7 +114,7 @@ const Home = () => {
                   <Calendar className="h-8 w-8 opacity-80" />
                 </div>
                 <Button asChild variant="secondary" size="sm" className="w-full mt-3">
-                  <Link to="/calendar">View Calendar</Link>
+                  <Link to="/commitments">View Commitments</Link>
                 </Button>
               </CardContent>
             </Card>
