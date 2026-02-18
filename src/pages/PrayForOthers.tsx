@@ -17,6 +17,7 @@ import PrayFocusSelector, {
   PrayerFocusMode,
 } from "@/components/PrayFocusSelector";
 import PrayerSession from "@/components/PrayerSession";
+import { ScoredPrayerRequest, isRescueCandidate } from "@/lib/prayerScoring";
 
 type ViewMode = "selector" | "session" | "browse";
 
@@ -34,8 +35,8 @@ const PrayForOthers = () => {
   const [browsePage, setBrowsePage] = useState(1);
   const BROWSE_PAGE_SIZE = 10;
 
-  // Mock prayer requests data
-  const prayerRequests = [
+  // Mock prayer requests data with scoring fields
+  const prayerRequests: ScoredPrayerRequest[] = [
     {
       id: "1",
       title: "Healing for my grandmother",
@@ -47,6 +48,15 @@ const PrayForOthers = () => {
       timeAgo: "2 hours ago",
       churchName: "Grace Community Church",
       prayerCount: 3,
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 2,
+      assignmentStatus: "pending",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Health & Healing"],
+      visibility: "public",
     },
     {
       id: "2",
@@ -57,6 +67,15 @@ const PrayForOthers = () => {
       isAnonymous: true,
       timeAgo: "5 hours ago",
       prayerCount: 1,
+      createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      lastPrayedAt: null,
+      assignedTargetCount: 3,
+      assignedPrayedCount: 0,
+      assignmentStatus: "pending",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Financial Needs"],
+      visibility: "public",
     },
     {
       id: "3",
@@ -68,6 +87,15 @@ const PrayForOthers = () => {
       location: "California, USA",
       timeAgo: "1 day ago",
       prayerCount: 7,
+      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 3,
+      assignmentStatus: "completed",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Family & Relationships"],
+      visibility: "public",
     },
     {
       id: "4",
@@ -79,6 +107,15 @@ const PrayForOthers = () => {
       timeAgo: "2 days ago",
       churchName: "Living Hope Fellowship",
       prayerCount: 47,
+      createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 3,
+      assignmentStatus: "completed",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Thanksgiving & Praise"],
+      visibility: "public",
     },
     {
       id: "5",
@@ -88,7 +125,15 @@ const PrayForOthers = () => {
       category: "Comfort & Peace",
       isAnonymous: true,
       timeAgo: "3 hours ago",
-      prayerCount: 2,
+      prayerCount: 0,
+      createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
+      lastPrayedAt: null,
+      assignedTargetCount: 3,
+      assignedPrayedCount: 0,
+      assignmentStatus: "pending",
+      status: "open",
+      interestCategories: ["Comfort & Peace"],
+      visibility: "public",
     },
     {
       id: "6",
@@ -98,10 +143,22 @@ const PrayForOthers = () => {
       category: "Family & Relationships",
       isAnonymous: false,
       location: "Georgia, USA",
-      timeAgo: "8 hours ago",
-      prayerCount: 5,
+      timeAgo: "4 days ago",
+      prayerCount: 1,
+      createdAt: new Date(Date.now() - 96 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 80 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 1,
+      assignmentStatus: "pending",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Family & Relationships"],
+      visibility: "public",
     },
   ];
+
+  // Count rescue candidates
+  const rescueCount = prayerRequests.filter(isRescueCandidate).length;
 
   const categories = [
     { value: "all", label: "All Categories" },
@@ -172,6 +229,7 @@ const PrayForOthers = () => {
           </Card>
 
           <PrayFocusSelector
+            rescueCount={rescueCount}
             onStartPraying={handleStartPraying}
             onBrowseAdvanced={() => setViewMode("browse")}
           />

@@ -1,28 +1,25 @@
 import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Home, Plus, ArrowLeft } from "lucide-react";
+import { Heart, Home, Plus, ArrowLeft, LifeBuoy } from "lucide-react";
 import PrayerCard from "./PrayerCard";
 import PassItForwardDialog from "./PassItForwardDialog";
 import { PrayerFocusMode } from "./PrayFocusSelector";
-
-interface PrayerRequest {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  isAnonymous: boolean;
-  location?: string;
-  timeAgo: string;
-  churchName?: string;
-  prayerCount: number;
-}
+import {
+  ScoredPrayerRequest,
+  UserPrayerHistoryEntry,
+  selectNextPrayers,
+  isRescueCandidate,
+} from "@/lib/prayerScoring";
 
 interface PrayerSessionProps {
   mode: PrayerFocusMode;
   targetCount: number;
-  requests: PrayerRequest[];
+  requests: ScoredPrayerRequest[];
+  userHistory?: UserPrayerHistoryEntry[];
+  userCountry?: string;
+  userInterests?: string[];
   onComplete: () => void;
   onBack: () => void;
 }
@@ -31,43 +28,40 @@ const PrayerSession = ({
   mode,
   targetCount,
   requests,
+  userHistory = [],
+  userCountry,
+  userInterests,
   onComplete,
   onBack,
 }: PrayerSessionProps) => {
   const [completedCount, setCompletedCount] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [effectiveTarget, setEffectiveTarget] = useState(targetCount);
   const [prayedIds, setPrayedIds] = useState<Set<string>>(new Set());
   const [showPassForward, setShowPassForward] = useState(false);
   const [pendingPrayedId, setPendingPrayedId] = useState<string | null>(null);
 
-  // Smart distribution: sort by priority based on mode
-  const sortedRequests = useMemo(() => {
-    const copy = [...requests];
-    switch (mode) {
-      case "needs_most":
-        return copy.sort((a, b) => a.prayerCount - b.prayerCount);
-      case "recent":
-        return copy; // already sorted by recency in mock data
-      case "surprise":
-        return copy.sort(() => Math.random() - 0.5);
-      case "my_country":
-        // In a real app, filter by user's country; for now show all with location first
-        return copy.sort((a, b) => (b.location ? 1 : 0) - (a.location ? 1 : 0));
-      case "interests":
-        return copy; // would match categories to user interests
-      default:
-        return copy;
-    }
-  }, [requests, mode]);
+  const isRescue = mode === "rescue";
 
-  // Filter out already prayed
-  const availableRequests = sortedRequests.filter(
-    (r) => !prayedIds.has(r.id)
-  );
+  // Build live history combining persisted + session-local
+  const liveHistory = useMemo(() => {
+    const sessionEntries: UserPrayerHistoryEntry[] = Array.from(prayedIds).map((id) => ({
+      prayerId: id,
+      prayedAt: new Date(),
+      modeUsed: mode,
+    }));
+    return [...userHistory, ...sessionEntries];
+  }, [userHistory, prayedIds, mode]);
 
-  const isSessionComplete = completedCount >= effectiveTarget || availableRequests.length === 0;
-  const currentRequest = availableRequests[0];
+  // Use scoring system to get ordered eligible prayers
+  const orderedRequests = useMemo(() => {
+    return selectNextPrayers(requests, liveHistory, mode, requests.length, {
+      userCountry,
+      userInterests,
+    });
+  }, [requests, liveHistory, mode, userCountry, userInterests]);
+
+  const isSessionComplete = completedCount >= effectiveTarget || orderedRequests.length === 0;
+  const currentRequest = orderedRequests[0];
   const progressPercent = effectiveTarget > 0 ? (completedCount / effectiveTarget) * 100 : 0;
 
   const handlePrayerOffered = useCallback(
@@ -83,7 +77,6 @@ const PrayerSession = ({
     if (pendingPrayedId) {
       setPrayedIds((prev) => new Set(prev).add(pendingPrayedId));
       setCompletedCount((prev) => prev + 1);
-      setCurrentIndex((prev) => prev + 1);
       setPendingPrayedId(null);
     }
   }, [pendingPrayedId]);
@@ -92,26 +85,43 @@ const PrayerSession = ({
     setEffectiveTarget((prev) => prev + 1);
   };
 
+  // Completion screen
   if (isSessionComplete) {
     return (
       <div className="max-w-lg mx-auto text-center space-y-6 animate-gentle-fade py-8">
-        <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-          <Heart className="h-10 w-10 text-primary" />
+        <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${
+          isRescue ? "bg-accent/20" : "bg-primary/10"
+        }`}>
+          {isRescue ? (
+            <LifeBuoy className="h-10 w-10 text-accent-foreground" />
+          ) : (
+            <Heart className="h-10 w-10 text-primary" />
+          )}
         </div>
         <h2 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">
           Thank you 🙏
         </h2>
         <p className="text-lg text-muted-foreground">
-          You prayed for{" "}
-          <span className="font-bold text-primary">{completedCount}</span>{" "}
-          {completedCount === 1 ? "person" : "people"} today.
+          {isRescue ? (
+            <>
+              You rescued{" "}
+              <span className="font-bold text-accent-foreground">{completedCount}</span>{" "}
+              {completedCount === 1 ? "prayer" : "prayers"} today.
+            </>
+          ) : (
+            <>
+              You prayed for{" "}
+              <span className="font-bold text-primary">{completedCount}</span>{" "}
+              {completedCount === 1 ? "person" : "people"} today.
+            </>
+          )}
         </p>
         <p className="text-sm text-muted-foreground italic">
           "The prayer of a righteous person is powerful and effective." — James 5:16
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-          {availableRequests.length > 0 && (
+          {orderedRequests.length > 0 && (
             <Button
               variant="outline"
               size="lg"
@@ -119,7 +129,7 @@ const PrayerSession = ({
               onClick={handlePrayOneMore}
             >
               <Plus className="h-4 w-4" />
-              Pray 1 more
+              {isRescue ? "Rescue 1 more" : "Pray 1 more"}
             </Button>
           )}
           <Button
@@ -136,6 +146,8 @@ const PrayerSession = ({
     );
   }
 
+  const currentIsRescueCandidate = currentRequest ? isRescueCandidate(currentRequest) : false;
+
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-gentle-fade">
       {/* Session header */}
@@ -144,13 +156,40 @@ const PrayerSession = ({
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        <div className="text-sm text-muted-foreground">
-          {completedCount} of {effectiveTarget} prayers
+        <div className="flex items-center gap-2">
+          {isRescue && (
+            <Badge variant="secondary" className="gap-1 text-xs">
+              <LifeBuoy className="h-3 w-3" />
+              Rescue
+            </Badge>
+          )}
+          <span className="text-sm text-muted-foreground">
+            {completedCount} of {effectiveTarget} prayers
+          </span>
         </div>
       </div>
 
       {/* Progress bar */}
       <Progress value={progressPercent} className="h-2" />
+
+      {/* Rescue note */}
+      {isRescue && currentIsRescueCandidate && (
+        <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 text-center">
+          <p className="text-xs text-accent-foreground font-medium">
+            🙏 This request has been prayed for very few times or not recently.
+          </p>
+        </div>
+      )}
+
+      {/* Needs-prayer badge for rescue candidates in any mode */}
+      {!isRescue && currentIsRescueCandidate && currentRequest && (
+        <div className="flex justify-center">
+          <Badge variant="secondary" className="gap-1 text-xs">
+            <Heart className="h-3 w-3" />
+            Needs prayer
+          </Badge>
+        </div>
+      )}
 
       {/* Current prayer card */}
       {currentRequest && (
@@ -166,6 +205,7 @@ const PrayerSession = ({
       <p className="text-center text-xs text-muted-foreground italic">
         Take your time. There is no rush.
       </p>
+
       {/* Pass It Forward Dialog (lifted to session level) */}
       <PassItForwardDialog
         open={showPassForward}

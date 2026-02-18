@@ -10,6 +10,7 @@ import {
   Shuffle,
   ArrowRight,
   List,
+  LifeBuoy,
 } from "lucide-react";
 
 export type PrayerFocusMode =
@@ -17,10 +18,12 @@ export type PrayerFocusMode =
   | "my_country"
   | "interests"
   | "recent"
-  | "surprise";
+  | "surprise"
+  | "rescue";
 
 interface PrayFocusSelectorProps {
   userCountry?: string;
+  rescueCount?: number;
   onStartPraying: (mode: PrayerFocusMode, count: number) => void;
   onBrowseAdvanced: () => void;
 }
@@ -65,10 +68,18 @@ const focusOptions: {
   },
 ];
 
+const rescueOption = {
+  id: "rescue" as PrayerFocusMode,
+  icon: LifeBuoy,
+  title: "Rescue Mode",
+  description: "Pray for someone who may have no one yet",
+};
+
 const commitmentCounts = [1, 3, 5];
 
 const PrayFocusSelector = ({
   userCountry,
+  rescueCount = 0,
   onStartPraying,
   onBrowseAdvanced,
 }: PrayFocusSelectorProps) => {
@@ -135,6 +146,50 @@ const PrayFocusSelector = ({
           );
         })}
       </div>
+
+      {/* Rescue Mode Card */}
+      {rescueCount > 0 && (
+        <div className="max-w-lg mx-auto">
+          <button
+            onClick={() => setSelectedFocus("rescue")}
+            className={`w-full flex items-center gap-4 p-5 rounded-xl border text-left transition-all ${
+              selectedFocus === "rescue"
+                ? "border-accent bg-accent/10 shadow-warm"
+                : "border-accent/40 hover:border-accent hover:bg-accent/5"
+            }`}
+          >
+            <div
+              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                selectedFocus === "rescue" ? "bg-accent/30" : "bg-accent/10"
+              }`}
+            >
+              <LifeBuoy
+                className={`h-6 w-6 ${
+                  selectedFocus === "rescue" ? "text-accent-foreground" : "text-muted-foreground"
+                }`}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-sm text-foreground">
+                  {rescueOption.title}
+                </h4>
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                  {rescueCount} waiting
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {rescueOption.description}
+              </p>
+            </div>
+            {selectedFocus === "rescue" && (
+              <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+                <div className="w-2 h-2 rounded-full bg-accent-foreground" />
+              </div>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Commitment Count */}
       <div className="text-center space-y-3 max-w-lg mx-auto">
