@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, BookOpen, Calendar, HandHeart, User } from "lucide-react";
+import { Home, Heart, BookOpen, Calendar, Users, User } from "lucide-react";
 
 const BottomNav = () => {
   const location = useLocation();
@@ -8,8 +8,8 @@ const BottomNav = () => {
     { href: "/", label: "Home", icon: Home },
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
+    { href: "/family", label: "Family", icon: Users },
     { href: "/calendar", label: "Calendar", icon: Calendar },
-    { href: "/support", label: "Support", icon: HandHeart },
     { href: "/profile", label: "Profile", icon: User },
   ];
 
