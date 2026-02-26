@@ -375,7 +375,7 @@ const Profile = () => {
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              Organizations
+              Family
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -386,7 +386,7 @@ const Profile = () => {
               <Button asChild variant="peaceful" className="gap-2">
                 <Link to="/organizations">
                   <Users className="h-4 w-4" />
-                  Browse Organizations
+                  Browse Families
                 </Link>
               </Button>
             </div>

@@ -54,10 +54,10 @@ const OrganizationDetail = () => {
       <div className="min-h-screen bg-gradient-peaceful py-16 pb-24">
         <div className="max-w-lg mx-auto px-4 text-center">
           <h1 className="font-playfair text-2xl font-bold text-foreground mb-4">
-            Organization not found
+            Family not found
           </h1>
           <Button asChild variant="peaceful">
-            <Link to="/organizations">Browse Organizations</Link>
+            <Link to="/organizations">Browse Families</Link>
           </Button>
         </div>
       </div>
@@ -78,7 +78,7 @@ const OrganizationDetail = () => {
         <Button asChild variant="ghost" size="sm" className="mb-6 gap-2">
           <Link to="/organizations">
             <ArrowLeft className="h-4 w-4" />
-            Back to Organizations
+            Back to Families
           </Link>
         </Button>
 
@@ -411,7 +411,7 @@ const OrganizationDetail = () => {
                 <div className="pt-4">
                   <Button variant="peaceful" className="w-full gap-2">
                     <UserPlus className="h-4 w-4" />
-                    Join This Organization
+                    Join This Family
                   </Button>
                 </div>
               </CardContent>
