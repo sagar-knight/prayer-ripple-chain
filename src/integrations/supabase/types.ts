@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      prayer_chain_nodes: {
+        Row: {
+          created_at: string
+          depth_level: number
+          id: string
+          parent_user_id: string | null
+          prayed_at: string
+          prayer_id: string
+          shared_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          depth_level?: number
+          id?: string
+          parent_user_id?: string | null
+          prayed_at?: string
+          prayer_id: string
+          shared_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          depth_level?: number
+          id?: string
+          parent_user_id?: string | null
+          prayed_at?: string
+          prayer_id?: string
+          shared_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       prayer_reminder_daily_logs: {
         Row: {
           completed_at: string | null
@@ -106,6 +139,33 @@ export type Database = {
           display_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_prayer_stats: {
+        Row: {
+          id: string
+          total_chains_started: number
+          total_prayers_offered: number
+          total_prayers_received: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          total_chains_started?: number
+          total_prayers_offered?: number
+          total_prayers_received?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          total_chains_started?: number
+          total_prayers_offered?: number
+          total_prayers_received?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
