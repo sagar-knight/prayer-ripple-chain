@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Waves, Heart, Users, TrendingUp, Award, Share2, ArrowRight } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const RippleImpact = () => {
   const [userStats] = useState({
@@ -94,50 +95,74 @@ const RippleImpact = () => {
     }
   ];
 
+  const metricCards = [
+    {
+      label: "Prayers Offered",
+      value: userStats.prayersOffered,
+      description: "You have faithfully prayed for others.",
+      icon: Heart,
+    },
+    {
+      label: "Prayers Received",
+      value: userStats.prayersReceived,
+      description: "People are standing with you in prayer.",
+      icon: Users,
+    },
+    {
+      label: "Chains Started",
+      value: userStats.chainStarted,
+      description: "Your faith inspired others to pray.",
+      icon: Waves,
+    },
+    {
+      label: "Lives Reached",
+      value: userStats.livesImpacted,
+      description: "Your prayers continue to spread.",
+      icon: TrendingUp,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-8 animate-gentle-fade">
-          <Waves className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
+        {/* Header — calm, reflective */}
+        <div className="text-center mb-10 animate-gentle-fade">
+          <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-5">
+            <Waves className="h-8 w-8 text-primary opacity-80" />
+          </div>
+          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3">
             Ripple Impact
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover how your prayers create waves of blessing that touch lives around the world
+          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Discover how your prayers create waves of blessing that touch lives around the world.
           </p>
+          <Separator className="max-w-24 mx-auto mt-6 bg-primary/20" />
         </div>
 
-        {/* Personal Stats */}
-        <Card className="mb-8 bg-gradient-warm text-accent-foreground animate-gentle-fade">
-          <CardHeader className="text-center">
-            <CardTitle className="font-playfair text-2xl">Your Prayer Impact</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-              <div className="space-y-1">
-                <div className="text-3xl font-bold">{userStats.prayersOffered}</div>
-                <div className="text-sm opacity-90">Prayers Offered</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold">{userStats.prayersReceived}</div>
-                <div className="text-sm opacity-90">Prayers Received</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold">{userStats.rippleReach}</div>
-                <div className="text-sm opacity-90">Lives Touched</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold">{userStats.chainStarted}</div>
-                <div className="text-sm opacity-90">Chains Started</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold">{userStats.livesImpacted}</div>
-                <div className="text-sm opacity-90">Total Impact</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Personal Stats — soft card grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 animate-gentle-fade">
+          {metricCards.map((card, i) => {
+            const Icon = card.icon;
+            return (
+              <Card
+                key={card.label}
+                className="border-primary/10 shadow-sm hover:shadow-md transition-shadow animate-gentle-fade"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <CardContent className="pt-6 text-center space-y-2">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-1">
+                    <Icon className="h-5 w-5 text-primary opacity-80" />
+                  </div>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                    {card.label}
+                  </p>
+                  <p className="text-2xl font-semibold text-foreground">{card.value}</p>
+                  <p className="text-sm text-muted-foreground leading-snug">{card.description}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
 
         {/* Prayer Chains */}
         <div className="mb-12">
@@ -293,6 +318,17 @@ const RippleImpact = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Encouragement Footer */}
+        <div className="text-center mt-12 animate-gentle-fade space-y-2">
+          <Separator className="max-w-24 mx-auto mb-6 bg-primary/20" />
+          <p className="text-sm italic text-muted-foreground max-w-md mx-auto leading-relaxed">
+            "The prayer of a righteous person is powerful and effective." — James 5:16
+          </p>
+          <p className="text-xs text-muted-foreground/70">
+            Your faithfulness creates impact beyond what you can see.
+          </p>
+        </div>
       </div>
     </div>
   );
