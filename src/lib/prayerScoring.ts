@@ -24,8 +24,8 @@ export interface ScoredPrayerRequest {
   status: "open" | "closed";
   country?: string;
   interestCategories?: string[];
-  visibility: "public" | "org-only" | "private";
-  organizationId?: string;
+  visibility: "public" | "family-only" | "org-only" | "private";
+  familyId?: string;
 }
 
 export interface UserPrayerHistoryEntry {
@@ -91,8 +91,8 @@ export function filterEligible(
     if (p.status !== "open") return false;
     if (recentlyPrayedIds.has(p.id)) return false;
     if (p.visibility === "private") return false;
-    if (p.visibility === "org-only" && p.organizationId) {
-      if (!options.userOrgIds?.includes(p.organizationId)) return false;
+    if ((p.visibility === "family-only" || p.visibility === "org-only") && p.familyId) {
+      if (!options.userOrgIds?.includes(p.familyId)) return false;
     }
     return true;
   });

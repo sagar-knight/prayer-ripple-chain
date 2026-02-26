@@ -27,9 +27,9 @@ import {
   UserPlus,
 } from "lucide-react";
 import {
-  sampleOrganizations,
-  sampleOrgRequests,
-  OrgPrayerRequest,
+  sampleFamilies,
+  sampleFamilyRequests,
+  FamilyPrayerRequest,
 } from "@/data/organizations";
 import { getCountryByCode } from "@/data/countries";
 import { useToast } from "@/hooks/use-toast";
@@ -37,7 +37,7 @@ import { useToast } from "@/hooks/use-toast";
 const OrganizationDetail = () => {
   const { orgId } = useParams();
   const { toast } = useToast();
-  const org = sampleOrganizations.find((o) => o.id === orgId);
+  const org = sampleFamilies.find((o) => o.id === orgId);
   const [activeTab, setActiveTab] = useState("requests");
   const [prayedIds, setPrayedIds] = useState<Set<string>>(new Set());
   const [showNewRequest, setShowNewRequest] = useState(false);
@@ -65,7 +65,7 @@ const OrganizationDetail = () => {
   }
 
   const country = getCountryByCode(org.countryCode);
-  const requests = sampleOrgRequests.filter((r) => r.orgId === org.id);
+  const requests = sampleFamilyRequests.filter((r) => r.familyId === org.id);
 
   const handlePray = (reqId: string) => {
     setPrayedIds((prev) => new Set(prev).add(reqId));
@@ -345,7 +345,7 @@ const OrganizationDetail = () => {
 
                 <div className="pt-4 border-t border-border">
                   <p className="text-sm text-muted-foreground mb-3">
-                    Org metrics
+                    Family metrics
                   </p>
                   <div className="grid grid-cols-3 gap-3 text-center">
                     <div>
@@ -428,7 +428,7 @@ const OrgRequestCard = ({
   prayed,
   onPray,
 }: {
-  request: OrgPrayerRequest;
+  request: FamilyPrayerRequest;
   prayed: boolean;
   onPray: () => void;
 }) => (
@@ -457,9 +457,9 @@ const OrgRequestCard = ({
             </span>
             <span className="flex items-center gap-1">
               <Heart className="h-3 w-3" />
-              {request.prayerCountOrg + request.prayerCountGlobal} prayers
+              {request.prayerCountFamily + request.prayerCountGlobal} prayers
               {request.shareToGlobal &&
-                ` (Org: ${request.prayerCountOrg}, Global: ${request.prayerCountGlobal})`}
+                ` (Family: ${request.prayerCountFamily}, Global: ${request.prayerCountGlobal})`}
             </span>
           </div>
         </div>

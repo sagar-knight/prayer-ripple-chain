@@ -18,10 +18,10 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
-import { sampleOrganizations, Organization, OrgType } from "@/data/organizations";
+import { sampleFamilies, Family, FamilyType } from "@/data/organizations";
 import { getCountryByCode } from "@/data/countries";
 
-const orgTypeIcons: Record<OrgType, typeof Church> = {
+const familyTypeIcons: Record<FamilyType, typeof Church> = {
   Church: Church,
   Ministry: BookOpen,
   Nonprofit: Building2,
@@ -35,7 +35,7 @@ const Organizations = () => {
   const [joinCode, setJoinCode] = useState("");
   const [showJoinInput, setShowJoinInput] = useState(false);
 
-  const filtered = sampleOrganizations.filter((org) => {
+  const filtered = sampleFamilies.filter((org) => {
     const matchesSearch =
       org.name.toLowerCase().includes(search.toLowerCase()) ||
       org.description.toLowerCase().includes(search.toLowerCase());
@@ -99,7 +99,7 @@ const Organizations = () => {
                   variant="peaceful"
                   disabled={!joinCode.trim()}
                   onClick={() => {
-                    const found = sampleOrganizations.find(
+                    const found = sampleFamilies.find(
                       (o) => o.inviteCode === joinCode.trim()
                     );
                     if (found) {
@@ -141,7 +141,7 @@ const Organizations = () => {
         {/* Results */}
         <div className="space-y-4">
           {filtered.map((org) => {
-            const TypeIcon = orgTypeIcons[org.type] || Users;
+            const TypeIcon = familyTypeIcons[org.type] || Users;
             const country = getCountryByCode(org.countryCode);
             return (
               <Card
