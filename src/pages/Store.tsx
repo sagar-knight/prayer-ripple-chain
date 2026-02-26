@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { products, type Product } from "@/data/products";
 
-const categories = ["All", "Apparel", "Journals", "Stickers", "Wall Art", "Digital Downloads"] as const;
+const categories = ["All", "Apparel", "Journals", "Wall Art", "Digital Downloads"] as const;
 
 const Store = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");

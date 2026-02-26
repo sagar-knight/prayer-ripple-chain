@@ -54,7 +54,7 @@ const CreateOrganization = () => {
                 <CheckCircle className="h-10 w-10 text-primary" />
               </div>
               <h1 className="font-playfair text-3xl font-bold text-foreground">
-                Organization Created!
+                Family Created!
               </h1>
               <p className="text-muted-foreground leading-relaxed">
                 Share the invite code below with your community so they can join.
@@ -76,7 +76,7 @@ const CreateOrganization = () => {
               </div>
               <div className="flex flex-col gap-3 pt-4">
                 <Button asChild variant="peaceful">
-                  <Link to="/organizations">View Organizations</Link>
+                  <Link to="/organizations">View Families</Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link to="/">Return Home</Link>
@@ -95,7 +95,7 @@ const CreateOrganization = () => {
         <Button asChild variant="ghost" size="sm" className="mb-6 gap-2">
           <Link to="/organizations">
             <ArrowLeft className="h-4 w-4" />
-            Back to Organizations
+            Back to Families
           </Link>
         </Button>
 
@@ -104,7 +104,7 @@ const CreateOrganization = () => {
             <Users className="h-8 w-8 text-primary" />
           </div>
           <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">
-            Create an Organization
+            Create a Family
           </h1>
           <p className="text-muted-foreground">
             Set up a prayer space for your church, ministry, or group.
@@ -114,7 +114,7 @@ const CreateOrganization = () => {
         <Card className="animate-gentle-fade" style={{ animationDelay: "100ms" }}>
           <CardContent className="pt-6 space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name">Organization Name *</Label>
+              <Label htmlFor="name">Family Name *</Label>
               <Input
                 id="name"
                 placeholder="e.g. Grace Community Church"
@@ -215,7 +215,7 @@ const CreateOrganization = () => {
               disabled={!isValid}
               onClick={() => setSubmitted(true)}
             >
-              Create Organization
+              Create Family
             </Button>
           </CardContent>
         </Card>

@@ -51,12 +51,12 @@ const Organizations = () => {
           <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Users className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Organizations
+           <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3">
+            Family
           </h1>
           <p className="text-muted-foreground leading-relaxed max-w-lg mx-auto">
             Join a church, ministry, or group to pray together. Create your own
-            organization to mobilize prayer within your community.
+            family group to mobilize prayer within your community.
           </p>
         </div>
 
@@ -70,7 +70,7 @@ const Organizations = () => {
           >
             <Link to="/organizations/create">
               <Plus className="h-5 w-5" />
-              Create an Organization
+              Create a Family
             </Link>
           </Button>
           <Button
@@ -80,7 +80,7 @@ const Organizations = () => {
             onClick={() => setShowJoinInput(!showJoinInput)}
           >
             <ArrowRight className="h-5 w-5" />
-            Join an Organization
+            Join a Family
           </Button>
         </div>
 
@@ -111,7 +111,7 @@ const Organizations = () => {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Ask your organization leader for the invite code.
+                Ask your family leader for the invite code.
               </p>
             </CardContent>
           </Card>
@@ -122,7 +122,7 @@ const Organizations = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search organizations..."
+              placeholder="Search families..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
@@ -200,7 +200,7 @@ const Organizations = () => {
             <div className="text-center py-12">
               <Globe className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
               <h3 className="font-playfair text-lg font-semibold text-foreground mb-2">
-                No organizations found
+                No families found
               </h3>
               <p className="text-muted-foreground text-sm">
                 Try adjusting your search or country filter.
