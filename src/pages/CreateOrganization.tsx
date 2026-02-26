@@ -15,7 +15,7 @@ import {
 import { ArrowLeft, CheckCircle, Copy, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
-import { orgTypes } from "@/data/organizations";
+import { familyTypes } from "@/data/organizations";
 import { useToast } from "@/hooks/use-toast";
 
 const CreateOrganization = () => {
@@ -133,7 +133,7 @@ const CreateOrganization = () => {
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {orgTypes.map((t) => (
+                  {familyTypes.map((t) => (
                     <SelectItem key={t} value={t}>
                       {t}
                     </SelectItem>
@@ -187,7 +187,7 @@ const CreateOrganization = () => {
               <Label htmlFor="desc">Description / Mission *</Label>
               <Textarea
                 id="desc"
-                placeholder="Describe your organization's mission and prayer focus..."
+                placeholder="Describe your family's mission and prayer focus..."
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })

@@ -1,9 +1,12 @@
-export type OrgType = "Church" | "Ministry" | "Nonprofit" | "Community Group" | "Other";
+export type FamilyType = "Church" | "Ministry" | "Nonprofit" | "Community Group" | "Other";
+export type OrgType = FamilyType; // backward compat alias
 export type OrgStatus = "active" | "pending";
-export type OrgMemberRole = "admin" | "moderator" | "member";
-export type OrgMemberStatus = "active" | "pending";
+export type FamilyMemberRole = "admin" | "moderator" | "member";
+export type OrgMemberRole = FamilyMemberRole;
+export type FamilyMemberStatus = "active" | "pending";
+export type OrgMemberStatus = FamilyMemberStatus;
 
-export interface Organization {
+export interface Family {
   id: string;
   name: string;
   type: OrgType;
@@ -21,18 +24,21 @@ export interface Organization {
   requestCount: number;
 }
 
-export interface OrgMembership {
+export type Organization = Family; // backward compat alias
+
+export interface FamilyMembership {
   id: string;
-  orgId: string;
+  familyId: string;
   userId: string;
-  role: OrgMemberRole;
-  status: OrgMemberStatus;
+  role: FamilyMemberRole;
+  status: FamilyMemberStatus;
   joinedAt: string;
 }
+export type OrgMembership = FamilyMembership;
 
-export interface OrgPrayerRequest {
+export interface FamilyPrayerRequest {
   id: string;
-  orgId: string;
+  familyId: string;
   createdByUserId: string;
   createdByName: string;
   title: string;
@@ -42,14 +48,16 @@ export interface OrgPrayerRequest {
   showCountry: boolean;
   shareToGlobal: boolean;
   status: "open" | "answered";
-  prayerCountOrg: number;
+  prayerCountFamily: number;
   prayerCountGlobal: number;
   createdAt: string;
 }
+export type OrgPrayerRequest = FamilyPrayerRequest;
 
-export const orgTypes: OrgType[] = ["Church", "Ministry", "Nonprofit", "Community Group", "Other"];
+export const familyTypes: FamilyType[] = ["Church", "Ministry", "Nonprofit", "Community Group", "Other"];
+export const orgTypes = familyTypes; // backward compat alias
 
-export const sampleOrganizations: Organization[] = [
+export const sampleFamilies: Family[] = [
   {
     id: "org-1",
     name: "Grace Community Church",
@@ -145,10 +153,12 @@ export const sampleOrganizations: Organization[] = [
   },
 ];
 
-export const sampleOrgRequests: OrgPrayerRequest[] = [
+export const sampleOrganizations = sampleFamilies; // backward compat alias
+
+export const sampleFamilyRequests: FamilyPrayerRequest[] = [
   {
     id: "oreq-1",
-    orgId: "org-1",
+    familyId: "org-1",
     createdByUserId: "u1",
     createdByName: "Sarah M.",
     title: "Healing for Pastor James",
@@ -158,13 +168,13 @@ export const sampleOrgRequests: OrgPrayerRequest[] = [
     showCountry: true,
     shareToGlobal: false,
     status: "open",
-    prayerCountOrg: 18,
+    prayerCountFamily: 18,
     prayerCountGlobal: 0,
     createdAt: "2026-02-14",
   },
   {
     id: "oreq-2",
-    orgId: "org-1",
+    familyId: "org-1",
     createdByUserId: "u2",
     createdByName: "Anonymous",
     title: "Family Restoration",
@@ -174,13 +184,13 @@ export const sampleOrgRequests: OrgPrayerRequest[] = [
     showCountry: false,
     shareToGlobal: true,
     status: "open",
-    prayerCountOrg: 12,
+    prayerCountFamily: 12,
     prayerCountGlobal: 9,
     createdAt: "2026-02-13",
   },
   {
     id: "oreq-3",
-    orgId: "org-1",
+    familyId: "org-1",
     createdByUserId: "u3",
     createdByName: "David K.",
     title: "Mission Trip Provision",
@@ -190,8 +200,9 @@ export const sampleOrgRequests: OrgPrayerRequest[] = [
     showCountry: true,
     shareToGlobal: true,
     status: "open",
-    prayerCountOrg: 24,
+    prayerCountFamily: 24,
     prayerCountGlobal: 15,
     createdAt: "2026-02-10",
   },
 ];
+export const sampleOrgRequests = sampleFamilyRequests; // backward compat alias
