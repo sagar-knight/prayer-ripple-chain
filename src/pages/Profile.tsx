@@ -349,6 +349,27 @@ const Profile = () => {
           </CardContent>
         </Card>
 
+        {/* My Prayer Reminders */}
+        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "630ms" }}>
+          <CardHeader>
+            <CardTitle className="font-playfair flex items-center gap-2">
+              <Bell className="h-5 w-5 text-primary" />
+              Prayer Reminders
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Manage your daily prayer reminders and track consistency.
+            </p>
+            <Button asChild variant="peaceful" className="gap-2">
+              <Link to="/prayer-reminders">
+                <Bell className="h-4 w-4" />
+                My Prayer Reminders
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Join Organization */}
         <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "640ms" }}>
           <CardHeader>

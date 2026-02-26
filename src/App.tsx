@@ -24,6 +24,7 @@ import OrganizationDetail from "./pages/OrganizationDetail";
 import Scripture from "./pages/Scripture";
 import MyCommitments from "./pages/MyCommitments";
 import FamilyRequests from "./pages/FamilyRequests";
+import MyPrayerReminders from "./pages/MyPrayerReminders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const App = () => (
           <Route path="/scripture" element={<Scripture />} />
           <Route path="/commitments" element={<MyCommitments />} />
           <Route path="/family" element={<FamilyRequests />} />
+          <Route path="/prayer-reminders" element={<MyPrayerReminders />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

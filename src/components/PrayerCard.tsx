@@ -8,6 +8,8 @@ import { Heart, Clock, User, MapPin, Send, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
+import PrayerReminderToggle from "./PrayerReminderToggle";
+import { usePrayerReminders } from "@/hooks/usePrayerReminders";
 
 interface PrayerRequest {
   id: string;
@@ -34,6 +36,7 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
   const [passForwardComplete, setPassForwardComplete] = useState(false);
   const [encouragementMessage, setEncouragementMessage] = useState("");
   const { toast } = useToast();
+  const { getReminderForPrayer, toggleReminder, updateReminderTime } = usePrayerReminders();
 
   const encouragementSuggestions = [
     "You are loved and not forgotten. God sees your heart and hears your prayers. 🙏",
@@ -127,6 +130,21 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
 
           {/* Scripture for prayer partners */}
           <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
+
+          {/* Optional Daily Reminder */}
+          {(() => {
+            const reminder = getReminderForPrayer(request.id);
+            return (
+              <PrayerReminderToggle
+                prayerId={request.id}
+                prayerTitle={request.title}
+                enabled={reminder?.enabled ?? false}
+                reminderTime={reminder?.reminder_time_local ?? "08:00"}
+                onToggle={toggleReminder}
+                onTimeChange={reminder ? (time) => updateReminderTime(reminder.id, time) : undefined}
+              />
+            );
+          })()}
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
