@@ -31,7 +31,7 @@ const Navigation = () => {
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
     { href: "/organizations", label: "Family", icon: Users },
-    { href: "/ripple", label: "Ripple", icon: Waves },
+    { href: "/ripple", label: "Journey", icon: Waves },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/support", label: "Support", icon: HandHeart },
     { href: "/store", label: "Store", icon: Store },
