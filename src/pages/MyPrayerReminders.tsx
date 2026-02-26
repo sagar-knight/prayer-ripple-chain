@@ -5,8 +5,12 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Bell, CheckCircle, Clock, Calendar } from "lucide-react";
 import { usePrayerReminders } from "@/hooks/usePrayerReminders";
+import { useReminderNotifications } from "@/hooks/useReminderNotifications";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const MyPrayerReminders = () => {
+  const { user } = useAuth();
   const {
     reminders,
     loading,
@@ -17,6 +21,9 @@ const MyPrayerReminders = () => {
     getStats,
     getLogsForReminder,
   } = usePrayerReminders();
+
+  // Activate in-app reminder notifications
+  useReminderNotifications(reminders, hasPrayedToday, markPrayedToday);
 
   // Build a 7-day view for a reminder
   const getWeekView = (reminderId: string) => {
@@ -35,6 +42,19 @@ const MyPrayerReminders = () => {
   };
 
   const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+        <div className="max-w-3xl mx-auto px-4 text-center space-y-4">
+          <Bell className="h-12 w-12 text-muted-foreground mx-auto opacity-40" />
+          <h2 className="font-playfair text-xl font-semibold">Sign in to manage reminders</h2>
+          <p className="text-sm text-muted-foreground">You need an account to track prayer reminders.</p>
+          <Button asChild variant="peaceful"><Link to="/login">Sign In</Link></Button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

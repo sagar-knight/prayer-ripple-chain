@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-const USER_ID = "local-user"; // Placeholder until auth is added
+import { useAuth } from "@/hooks/useAuth";
 
 export interface PrayerReminder {
   id: string;
@@ -34,16 +33,20 @@ export function usePrayerReminders() {
   const [logs, setLogs] = useState<PrayerReminderDailyLog[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  const userId = user?.id ?? null;
 
   const fetchReminders = useCallback(async () => {
+    if (!userId) { setReminders([]); return; }
     const { data, error } = await supabase
       .from("prayer_reminders")
       .select("*")
-      .eq("user_id", USER_ID)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (!error && data) setReminders(data as PrayerReminder[]);
-  }, []);
+  }, [userId]);
 
   const fetchLogs = useCallback(async (reminderIds: string[]) => {
     if (reminderIds.length === 0) { setLogs([]); return; }
@@ -69,8 +72,8 @@ export function usePrayerReminders() {
   }, [reminders, fetchLogs]);
 
   const enableReminder = async (prayerId: string, prayerTitle: string, time: string = "08:00") => {
+    if (!userId) return;
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // Check if reminder already exists
     const existing = reminders.find((r) => r.prayer_id === prayerId);
     if (existing) {
       const { error } = await supabase
@@ -82,7 +85,7 @@ export function usePrayerReminders() {
     }
 
     const { error } = await supabase.from("prayer_reminders").insert({
-      user_id: USER_ID,
+      user_id: userId,
       prayer_id: prayerId,
       prayer_title: prayerTitle,
       enabled: true,
@@ -126,7 +129,6 @@ export function usePrayerReminders() {
 
   const markPrayedToday = async (reminderId: string) => {
     const today = getTodayLocal();
-    // Upsert the daily log
     const { error } = await supabase
       .from("prayer_reminder_daily_logs")
       .upsert(
