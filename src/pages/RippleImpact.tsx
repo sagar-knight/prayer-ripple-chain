@@ -2,234 +2,297 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Users, Share2, ChevronDown, ChevronUp, Waves } from "lucide-react";
+import { Waves, Heart, Users, TrendingUp, Award, Share2, ArrowRight } from "lucide-react";
 
 const RippleImpact = () => {
   const [userStats] = useState({
     prayersOffered: 47,
     prayersReceived: 12,
-    chainsStarted: 3,
+    rippleReach: 127,
+    chainStarted: 3,
+    livesImpacted: 89
   });
-
-  const [expandedChain, setExpandedChain] = useState<string | null>(null);
 
   const rippleChains = [
     {
       id: "1",
-      title: "Healing Prayer Chain",
-      status: "Active" as const,
-      totalPrayers: 42,
-      uniquePeople: 38,
-      shares: 17,
-      depth: 5,
-      layers: [3, 6, 10, 12, 7],
+      startedBy: "You",
+      date: "2 weeks ago",
+      currentReach: 15,
+      category: "Healing Prayer",
+      status: "Active",
+      lastUpdate: "Sarah prayed for healing and is now cancer-free! She started praying for others.",
+      participants: [
+        { name: "You", action: "Started prayer for healing" },
+        { name: "Michael", action: "Prayed and was healed" },
+        { name: "Sarah", action: "Prayed and received healing" },
+        { name: "David", action: "Now praying for financial breakthrough" },
+        { name: "Maria", action: "Praying for family restoration" }
+      ]
     },
     {
-      id: "2",
-      title: "Family Restoration Chain",
-      status: "Active" as const,
-      totalPrayers: 32,
-      uniquePeople: 28,
-      shares: 11,
-      depth: 4,
-      layers: [4, 8, 10, 6],
-    },
-    {
-      id: "3",
-      title: "Financial Breakthrough Chain",
-      status: "Answered" as const,
-      totalPrayers: 19,
-      uniquePeople: 15,
-      shares: 7,
-      depth: 3,
-      layers: [3, 5, 7],
-    },
+      id: "2", 
+      startedBy: "Grace Community",
+      date: "1 month ago",
+      currentReach: 32,
+      category: "Family Restoration",
+      status: "Growing",
+      lastUpdate: "The prayer chain has reached 3 different churches across 2 states!",
+      participants: [
+        { name: "Grace Community", action: "Started prayer for marriage healing" },
+        { name: "You", action: "Prayed for restoration" },
+        { name: "Living Hope Church", action: "Entire congregation joined" },
+        { name: "St. Mary's Parish", action: "Added to prayer list" },
+        { name: "New Life Assembly", action: "Youth group participating" }
+      ]
+    }
   ];
 
-  const toggleChain = (id: string) => {
-    setExpandedChain(expandedChain === id ? null : id);
+  const globalStats = {
+    totalPrayers: 15247,
+    activeChains: 89,
+    churchesConnected: 156,
+    countriesReached: 23,
+    answeredPrayers: 3842
   };
 
+  const achievements = [
+    { 
+      icon: Heart, 
+      title: "Prayer Warrior", 
+      description: "Offered 25+ prayers",
+      unlocked: true,
+      color: "text-red-500"
+    },
+    { 
+      icon: Users, 
+      title: "Community Builder", 
+      description: "Connected 10+ people through prayer",
+      unlocked: true,
+      color: "text-blue-500"
+    },
+    { 
+      icon: Waves, 
+      title: "Chain Starter", 
+      description: "Started 3 prayer chains",
+      unlocked: true,
+      color: "text-purple-500"
+    },
+    { 
+      icon: TrendingUp, 
+      title: "Impact Multiplier", 
+      description: "Reached 100+ people",
+      unlocked: true,
+      color: "text-green-500"
+    },
+    { 
+      icon: Award, 
+      title: "Faithful Servant", 
+      description: "30-day prayer streak",
+      unlocked: false,
+      color: "text-amber-500"
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-background py-10 pb-24">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-peaceful py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-10 animate-gentle-fade">
-          <Waves className="h-10 w-10 text-primary/60 mx-auto mb-3" />
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Your Prayer Journey
+        <div className="text-center mb-8 animate-gentle-fade">
+          <Waves className="h-12 w-12 text-primary mx-auto mb-4" />
+          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Ripple Impact
           </h1>
-          <p className="text-muted-foreground text-base max-w-lg mx-auto leading-relaxed">
-            Every prayer matters. Even when unseen, God is at work.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Discover how your prayers create waves of blessing that touch lives around the world
           </p>
         </div>
 
-        {/* Section 1: Personal Prayer Summary */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          {/* Card 1: Faithfulness */}
-          <Card className="border-border/50 shadow-sm animate-gentle-fade">
-            <CardContent className="pt-6 pb-5 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
-                <Heart className="h-6 w-6 text-primary/70" />
+        {/* Personal Stats */}
+        <Card className="mb-8 bg-gradient-warm text-accent-foreground animate-gentle-fade">
+          <CardHeader className="text-center">
+            <CardTitle className="font-playfair text-2xl">Your Prayer Impact</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+              <div className="space-y-1">
+                <div className="text-3xl font-bold">{userStats.prayersOffered}</div>
+                <div className="text-sm opacity-90">Prayers Offered</div>
               </div>
-              <h3 className="font-playfair text-lg font-semibold text-foreground mb-1">
-                Your Faithfulness
-              </h3>
-              <p className="text-foreground text-base">
-                You have prayed for others{" "}
-                <span className="font-semibold text-primary">{userStats.prayersOffered}</span>{" "}
-                times.
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Total Prayers Offered</p>
-            </CardContent>
-          </Card>
-
-          {/* Card 2: Support Around You */}
-          <Card className="border-border/50 shadow-sm animate-gentle-fade" style={{ animationDelay: "100ms" }}>
-            <CardContent className="pt-6 pb-5 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
-                <Users className="h-6 w-6 text-primary/70" />
+              <div className="space-y-1">
+                <div className="text-3xl font-bold">{userStats.prayersReceived}</div>
+                <div className="text-sm opacity-90">Prayers Received</div>
               </div>
-              <h3 className="font-playfair text-lg font-semibold text-foreground mb-1">
-                Support Around You
-              </h3>
-              <p className="text-foreground text-base">
-                <span className="font-semibold text-primary">{userStats.prayersReceived}</span>{" "}
-                people have prayed for your requests.
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Total Prayers Received</p>
-            </CardContent>
-          </Card>
-
-          {/* Card 3: Prayer Chains Started */}
-          <Card className="border-border/50 shadow-sm animate-gentle-fade" style={{ animationDelay: "200ms" }}>
-            <CardContent className="pt-6 pb-5 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
-                <Share2 className="h-6 w-6 text-primary/70" />
+              <div className="space-y-1">
+                <div className="text-3xl font-bold">{userStats.rippleReach}</div>
+                <div className="text-sm opacity-90">Lives Touched</div>
               </div>
-              <h3 className="font-playfair text-lg font-semibold text-foreground mb-1">
-                Prayer Chains Started
-              </h3>
-              <p className="text-foreground text-base">
-                You began{" "}
-                <span className="font-semibold text-primary">{userStats.chainsStarted}</span>{" "}
-                prayer chains that encouraged others to pray.
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Chains Initiated</p>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="space-y-1">
+                <div className="text-3xl font-bold">{userStats.chainStarted}</div>
+                <div className="text-sm opacity-90">Chains Started</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-3xl font-bold">{userStats.livesImpacted}</div>
+                <div className="text-sm opacity-90">Total Impact</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Section 2: Ripple Visualization */}
-        <div className="mb-10">
-          <h2 className="font-playfair text-2xl font-semibold text-foreground mb-2">
-            How Your Prayer Spread
+        {/* Prayer Chains */}
+        <div className="mb-12">
+          <h2 className="font-playfair text-2xl font-bold text-foreground mb-6">
+            Your Prayer Chains
           </h2>
-          <p className="text-sm text-muted-foreground mb-6">
-            See how far each prayer chain has traveled through people and communities.
-          </p>
-
-          <div className="space-y-4">
+          
+          <div className="space-y-6">
             {rippleChains.map((chain, index) => (
-              <Card
+              <Card 
                 key={chain.id}
-                className="border-border/50 shadow-sm animate-gentle-fade"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="hover:shadow-peaceful transition-all duration-300 animate-gentle-fade"
+                style={{ animationDelay: `${index * 200}ms` }}
               >
-                <CardHeader className="pb-3">
+                <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="font-playfair text-lg text-foreground">
-                        {chain.title}
+                      <CardTitle className="font-playfair text-xl flex items-center gap-2">
+                        <Waves className="h-5 w-5 text-primary" />
+                        {chain.category} Chain
                       </CardTitle>
-                      <Badge
-                        variant="secondary"
-                        className={`mt-1.5 text-xs ${
-                          chain.status === "Answered"
-                            ? "bg-accent/20 text-accent-foreground"
-                            : "bg-primary/10 text-primary"
-                        }`}
-                      >
+                      <p className="text-muted-foreground">
+                        Started by {chain.startedBy} • {chain.date}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-primary">{chain.currentReach}</div>
+                      <div className="text-sm text-muted-foreground">people reached</div>
+                      <Badge variant="secondary" className="mt-1">
                         {chain.status}
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
-
-                <CardContent className="pt-0 space-y-3">
-                  {/* Chain metrics grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="bg-muted/40 rounded-lg p-3 text-center">
-                      <div className="text-lg font-semibold text-foreground">{chain.totalPrayers}</div>
-                      <div className="text-xs text-muted-foreground">Total Prayers</div>
-                    </div>
-                    <div className="bg-muted/40 rounded-lg p-3 text-center">
-                      <div className="text-lg font-semibold text-foreground">{chain.uniquePeople}</div>
-                      <div className="text-xs text-muted-foreground">Unique People</div>
-                    </div>
-                    <div className="bg-muted/40 rounded-lg p-3 text-center">
-                      <div className="text-lg font-semibold text-foreground">{chain.shares}</div>
-                      <div className="text-xs text-muted-foreground">Shares</div>
-                    </div>
-                    <div className="bg-muted/40 rounded-lg p-3 text-center">
-                      <div className="text-lg font-semibold text-foreground">{chain.depth}</div>
-                      <div className="text-xs text-muted-foreground">Depth Layers</div>
-                    </div>
+                
+                <CardContent className="space-y-4">
+                  <div className="bg-primary/5 p-4 rounded-lg">
+                    <h4 className="font-semibold text-primary mb-2">Latest Update:</h4>
+                    <p className="text-sm text-muted-foreground">{chain.lastUpdate}</p>
                   </div>
-
-                  {/* Expandable Ripple Map */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full text-muted-foreground hover:text-primary"
-                    onClick={() => toggleChain(chain.id)}
-                  >
-                    {expandedChain === chain.id ? (
-                      <>
-                        <ChevronUp className="h-4 w-4 mr-1.5" />
-                        Hide Ripple Map
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4 mr-1.5" />
-                        View Ripple Map
-                      </>
-                    )}
-                  </Button>
-
-                  {expandedChain === chain.id && (
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-1.5 animate-gentle-fade">
-                      <div className="text-sm font-medium text-foreground flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-primary inline-block" />
-                        You
-                      </div>
-                      {chain.layers.map((count, layerIdx) => (
-                        <div
-                          key={layerIdx}
-                          className="text-sm text-muted-foreground"
-                          style={{ paddingLeft: `${(layerIdx + 1) * 20}px` }}
-                        >
-                          ↳ {count} {count === 1 ? "person" : "people"}
+                  
+                  <div>
+                    <h4 className="font-semibold mb-3">Prayer Chain Journey:</h4>
+                    <div className="space-y-2">
+                      {chain.participants.map((participant, idx) => (
+                        <div key={idx} className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+                          <div className="text-sm">
+                            <span className="font-medium">{participant.name}</span>
+                            <span className="text-muted-foreground"> - {participant.action}</span>
+                          </div>
                         </div>
                       ))}
+                      <div className="flex items-center gap-3 text-muted-foreground">
+                        <div className="w-2 h-2 border border-muted-foreground rounded-full mt-2"></div>
+                        <span className="text-sm italic">Chain continues...</span>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                  
+                  <Button variant="outline" className="w-full">
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share This Chain
+                  </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
 
-        {/* Section 3: Encouragement Footer */}
-        <div className="text-center py-8 border-t border-border/50 animate-gentle-fade">
-          <p className="font-playfair text-lg italic text-foreground/80 mb-2">
-            "The prayer of a righteous person is powerful and effective."
-          </p>
-          <p className="text-sm text-muted-foreground mb-4">— James 5:16</p>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Your faithfulness creates impact beyond what you can see.
-          </p>
+        {/* Achievements */}
+        <div className="mb-12">
+          <h2 className="font-playfair text-2xl font-bold text-foreground mb-6">
+            Prayer Achievements
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {achievements.map((achievement, index) => {
+              const Icon = achievement.icon;
+              return (
+                <Card 
+                  key={achievement.title}
+                  className={`group transition-all duration-300 animate-gentle-fade ${
+                    achievement.unlocked 
+                      ? 'hover:shadow-peaceful bg-primary/5 border-primary/20' 
+                      : 'opacity-60 bg-muted/20'
+                  }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <CardContent className="pt-6 text-center">
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full ${
+                      achievement.unlocked ? 'bg-primary/10' : 'bg-muted/30'
+                    } flex items-center justify-center`}>
+                      <Icon className={`h-8 w-8 ${
+                        achievement.unlocked ? achievement.color : 'text-muted-foreground'
+                      } ${achievement.unlocked ? 'group-hover:scale-110' : ''} transition-transform`} />
+                    </div>
+                    <h3 className="font-semibold mb-2">{achievement.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{achievement.description}</p>
+                    {achievement.unlocked ? (
+                      <Badge variant="secondary" className="bg-primary/20 text-primary">
+                        Unlocked ✓
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">
+                        Locked
+                      </Badge>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
+
+        {/* Global Impact */}
+        <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade">
+          <CardHeader className="text-center">
+            <CardTitle className="font-playfair text-2xl">Global Prayer Network</CardTitle>
+            <p className="text-primary-foreground/90">
+              See the worldwide impact of our prayer community
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+              <div className="space-y-1">
+                <div className="text-2xl font-bold">{globalStats.totalPrayers.toLocaleString()}</div>
+                <div className="text-sm opacity-90">Total Prayers</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl font-bold">{globalStats.activeChains}</div>
+                <div className="text-sm opacity-90">Active Chains</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl font-bold">{globalStats.churchesConnected}</div>
+                <div className="text-sm opacity-90">Churches Connected</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl font-bold">{globalStats.countriesReached}</div>
+                <div className="text-sm opacity-90">Countries Reached</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl font-bold">{globalStats.answeredPrayers.toLocaleString()}</div>
+                <div className="text-sm opacity-90">Answered Prayers</div>
+              </div>
+            </div>
+            
+            <div className="text-center mt-6">
+              <Button variant="secondary" size="lg">
+                Start a New Prayer Chain
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
