@@ -14,11 +14,15 @@ import {
   User,
   Store,
   HandHeart,
+  LogIn,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { href: "/", label: "Home", icon: Heart },
@@ -71,6 +75,20 @@ const Navigation = () => {
                 </Link>
               );
             })}
+            {user ? (
+              <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1 text-muted-foreground hover:text-primary">
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors"
+              >
+                <LogIn className="h-4 w-4" />
+                <span>Sign In</span>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Navigation */}
@@ -100,6 +118,24 @@ const Navigation = () => {
                     </Link>
                   );
                 })}
+                {user ? (
+                  <button
+                    onClick={() => { signOut(); setIsOpen(false); }}
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Sign Out</span>
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-primary bg-primary/10"
+                  >
+                    <LogIn className="h-5 w-5" />
+                    <span>Sign In</span>
+                  </Link>
+                )}
               </div>
             </SheetContent>
           </Sheet>
