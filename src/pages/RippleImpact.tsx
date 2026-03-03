@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Waves, Heart, Users, Share2, ArrowRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
+import PrayerChainsDetail from "@/components/PrayerChainsDetail";
 
 const RippleImpact = () => {
   const [userStats] = useState({
@@ -46,19 +48,25 @@ const RippleImpact = () => {
       label: "Prayers Offered",
       value: userStats.prayersOffered,
       description: `You have prayed for others ${userStats.prayersOffered} times.`,
+      secondaryText: "Tap 'View details' to see each request.",
       icon: Heart,
+      detail: "offered" as const,
     },
     {
       label: "Prayers Received",
       value: userStats.prayersReceived,
       description: `${userStats.prayersReceived} prayers have been offered for your requests.`,
+      secondaryText: null,
       icon: Users,
+      detail: null,
     },
     {
       label: "Prayer Chains Started",
       value: userStats.chainStarted,
       description: `You started ${userStats.chainStarted} prayer requests that others continued praying for.`,
+      secondaryText: "Tap 'View chains' to track each request.",
       icon: Waves,
+      detail: "chains" as const,
     },
   ];
 
@@ -101,6 +109,11 @@ const RippleImpact = () => {
                   </p>
                   <p className="text-2xl font-semibold text-foreground">{card.value}</p>
                   <p className="text-sm text-muted-foreground leading-snug">{card.description}</p>
+                  {card.secondaryText && (
+                    <p className="text-[10px] text-muted-foreground/60">{card.secondaryText}</p>
+                  )}
+                  {card.detail === "offered" && <PrayersOfferedDetail />}
+                  {card.detail === "chains" && <PrayerChainsDetail />}
                 </CardContent>
               </Card>
             );
