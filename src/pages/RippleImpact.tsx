@@ -6,6 +6,7 @@ import { Waves, Heart, Users, Share2, ArrowRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerChainsDetail from "@/components/PrayerChainsDetail";
+import PrayersReceivedDetail from "@/components/PrayersReceivedDetail";
 
 const RippleImpact = () => {
   const [userStats] = useState({
@@ -56,9 +57,9 @@ const RippleImpact = () => {
       label: "Prayers Received",
       value: userStats.prayersReceived,
       description: `${userStats.prayersReceived} prayers have been offered for your requests.`,
-      secondaryText: null,
+      secondaryText: "Tap 'View details' to see each request.",
       icon: Users,
-      detail: null,
+      detail: "received" as const,
     },
     {
       label: "Prayer Chains Started",
@@ -113,6 +114,7 @@ const RippleImpact = () => {
                     <p className="text-[10px] text-muted-foreground/60">{card.secondaryText}</p>
                   )}
                   {card.detail === "offered" && <PrayersOfferedDetail />}
+                  {card.detail === "received" && <PrayersReceivedDetail />}
                   {card.detail === "chains" && <PrayerChainsDetail />}
                 </CardContent>
               </Card>
