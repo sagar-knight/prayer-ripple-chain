@@ -14,6 +14,211 @@ export type Database = {
   }
   public: {
     Tables: {
+      family_groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          invite_code: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          invite_code: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          invite_code?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      family_members: {
+        Row: {
+          display_name: string | null
+          family_group_id: string
+          id: string
+          joined_at: string
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          display_name?: string | null
+          family_group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          display_name?: string | null
+          family_group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_members_family_group_id_fkey"
+            columns: ["family_group_id"]
+            isOneToOne: false
+            referencedRelation: "family_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_notes: {
+        Row: {
+          created_at: string
+          created_by: string
+          family_group_id: string
+          id: string
+          note_text: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          family_group_id: string
+          id?: string
+          note_text: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          family_group_id?: string
+          id?: string
+          note_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_notes_family_group_id_fkey"
+            columns: ["family_group_id"]
+            isOneToOne: false
+            referencedRelation: "family_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_prayer_logs: {
+        Row: {
+          id: string
+          prayed_at: string
+          request_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          prayed_at?: string
+          request_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          prayed_at?: string
+          request_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_prayer_logs_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "family_prayer_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_prayer_requests: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          family_group_id: string
+          id: string
+          reminder_enabled: boolean
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          family_group_id: string
+          id?: string
+          reminder_enabled?: boolean
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          family_group_id?: string
+          id?: string
+          reminder_enabled?: boolean
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_prayer_requests_family_group_id_fkey"
+            columns: ["family_group_id"]
+            isOneToOne: false
+            referencedRelation: "family_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_scriptures: {
+        Row: {
+          created_at: string
+          family_group_id: string
+          id: string
+          note: string | null
+          shared_by: string
+          translation: string
+          verse_reference: string
+          verse_text: string
+        }
+        Insert: {
+          created_at?: string
+          family_group_id: string
+          id?: string
+          note?: string | null
+          shared_by: string
+          translation?: string
+          verse_reference: string
+          verse_text: string
+        }
+        Update: {
+          created_at?: string
+          family_group_id?: string
+          id?: string
+          note?: string | null
+          shared_by?: string
+          translation?: string
+          verse_reference?: string
+          verse_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_scriptures_family_group_id_fkey"
+            columns: ["family_group_id"]
+            isOneToOne: false
+            referencedRelation: "family_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prayer_chain_nodes: {
         Row: {
           created_at: string
@@ -174,7 +379,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_family_member: {
+        Args: { _family_group_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
