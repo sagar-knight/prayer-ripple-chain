@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Waves, Heart, Users, Share2, ArrowRight } from "lucide-react";
+import { Waves, Heart, Users, Share2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerChainsDetail from "@/components/PrayerChainsDetail";
@@ -23,7 +23,7 @@ const RippleImpact = () => {
       prayedCount: 42,
       uniquePeople: 15,
       forwardCount: 7,
-      lastUpdate: "Sarah prayed for healing and is now cancer-free! She started praying for others.",
+      lastUpdate: "Prayers continue to be lifted up. Trust in God's timing.",
     },
     {
       id: "2",
@@ -32,7 +32,7 @@ const RippleImpact = () => {
       prayedCount: 68,
       uniquePeople: 32,
       forwardCount: 12,
-      lastUpdate: "The prayer chain has reached 3 different churches across 2 states!",
+      lastUpdate: "This prayer has been passed forward to multiple communities.",
     },
   ];
 
@@ -49,23 +49,23 @@ const RippleImpact = () => {
       label: "Prayers Offered",
       value: userStats.prayersOffered,
       description: `You have prayed for others ${userStats.prayersOffered} times.`,
-      secondaryText: "Tap 'View details' to see each request.",
+      secondaryText: "View the requests you prayed for.",
       icon: Heart,
       detail: "offered" as const,
     },
     {
       label: "Prayers Received",
       value: userStats.prayersReceived,
-      description: `${userStats.prayersReceived} prayers have been offered for your requests.`,
-      secondaryText: "Tap 'View details' to see each request.",
+      description: `Your prayer requests have been prayed for ${userStats.prayersReceived} times.`,
+      secondaryText: "View the requests that received prayer.",
       icon: Users,
       detail: "received" as const,
     },
     {
-      label: "Prayer Chains Started",
+      label: "Prayer Requests You Started",
       value: userStats.chainStarted,
-      description: `You started ${userStats.chainStarted} prayer requests that others continued praying for.`,
-      secondaryText: "Tap 'View chains' to track each request.",
+      description: `You started ${userStats.chainStarted} prayer requests, and others joined you in prayer.`,
+      secondaryText: "View and track each request.",
       icon: Waves,
       detail: "chains" as const,
     },
@@ -86,7 +86,7 @@ const RippleImpact = () => {
             Every prayer matters. Even when unseen, God is at work.
           </p>
           <p className="text-sm text-muted-foreground/80 max-w-lg mx-auto mt-2 leading-relaxed">
-            Discover how your prayers are spreading and how others are standing with you.
+            Here you can see how you are praying for others, how others are praying for you, and how your prayer requests are being passed forward.
           </p>
           <Separator className="max-w-24 mx-auto mt-6 bg-primary/20" />
         </div>
@@ -122,10 +122,10 @@ const RippleImpact = () => {
           })}
         </div>
 
-        {/* Per Prayer Chain Display */}
+        {/* Per Prayer Request Display */}
         <div className="mb-12">
           <h2 className="font-playfair text-2xl font-bold text-foreground mb-6">
-            Your Prayer Chains
+            Your Prayer Requests
           </h2>
 
           <div className="space-y-6">
@@ -148,34 +148,40 @@ const RippleImpact = () => {
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  {/* Chain metrics */}
+                  {/* Prayer Summary */}
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                    Prayer Summary
+                  </p>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-primary/5 rounded-lg p-3 text-center">
                       <p className="text-lg font-semibold text-foreground">{chain.prayedCount}</p>
-                      <p className="text-xs text-muted-foreground">times prayed</p>
+                      <p className="text-xs text-muted-foreground">Prayed {chain.prayedCount} times</p>
                     </div>
                     <div className="bg-primary/5 rounded-lg p-3 text-center">
                       <p className="text-lg font-semibold text-foreground">{chain.uniquePeople}</p>
-                      <p className="text-xs text-muted-foreground">people prayed</p>
+                      <p className="text-xs text-muted-foreground">{chain.uniquePeople} people prayed</p>
                     </div>
                     <div className="bg-primary/5 rounded-lg p-3 text-center">
                       <p className="text-lg font-semibold text-foreground">{chain.forwardCount}</p>
-                      <p className="text-xs text-muted-foreground">times forwarded</p>
+                      <p className="text-xs text-muted-foreground">Passed forward {chain.forwardCount} times</p>
                     </div>
                   </div>
 
                   <p className="text-xs text-muted-foreground/70 italic">
-                    This prayer was shared from one person to another {chain.forwardCount} times.
+                    "Passed forward" means someone shared this prayer with another person.
                   </p>
 
+                  {/* Latest Update */}
                   <div className="bg-primary/5 p-4 rounded-lg">
-                    <h4 className="font-semibold text-primary mb-2">Latest Update:</h4>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                      Latest Update
+                    </p>
                     <p className="text-sm text-muted-foreground">{chain.lastUpdate}</p>
                   </div>
 
                   <Button variant="outline" className="w-full">
                     <Share2 className="h-4 w-4 mr-2" />
-                    Share This Chain
+                    Share This Prayer
                   </Button>
                 </CardContent>
               </Card>
@@ -188,7 +194,7 @@ const RippleImpact = () => {
           <CardHeader className="text-center">
             <CardTitle className="font-playfair text-2xl">Global Prayer Network</CardTitle>
             <p className="text-primary-foreground/90">
-              See the worldwide impact of our prayer community
+              See the worldwide reach of our prayer community
             </p>
           </CardHeader>
           <CardContent>
@@ -199,7 +205,7 @@ const RippleImpact = () => {
               </div>
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.activeChains}</div>
-                <div className="text-sm opacity-90">Active Chains</div>
+                <div className="text-sm opacity-90">Active Requests</div>
               </div>
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.churchesConnected}</div>
@@ -213,13 +219,6 @@ const RippleImpact = () => {
                 <div className="text-2xl font-bold">{globalStats.answeredPrayers.toLocaleString()}</div>
                 <div className="text-sm opacity-90">Answered Prayers</div>
               </div>
-            </div>
-
-            <div className="text-center mt-6">
-              <Button variant="secondary" size="lg">
-                Start a New Prayer Chain
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
             </div>
           </CardContent>
         </Card>

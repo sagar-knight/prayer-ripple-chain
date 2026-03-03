@@ -92,7 +92,7 @@ const PrayerChainsDetail = () => {
           variant="link"
           className="text-xs text-primary/70 hover:text-primary p-0 h-auto mt-1"
         >
-          View chains
+          View and track each request
           <ChevronRight className="h-3 w-3 ml-0.5" />
         </Button>
       </DialogTrigger>
@@ -101,9 +101,9 @@ const PrayerChainsDetail = () => {
           /* Chain List View */
           <>
             <DialogHeader>
-              <DialogTitle className="font-playfair text-xl flex items-center gap-2">
-                <Waves className="h-5 w-5 text-primary opacity-80" />
-                Your Prayer Chains
+                 <DialogTitle className="font-playfair text-xl flex items-center gap-2">
+                 <Waves className="h-5 w-5 text-primary opacity-80" />
+                 Prayer Requests You Started
               </DialogTitle>
             </DialogHeader>
 
