@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, BookOpen, Calendar, Users, User } from "lucide-react";
+import { Home, Heart, BookOpen, Calendar, Users, User, LogIn } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const BottomNav = () => {
   const location = useLocation();
+  const { user } = useAuth();
 
-  const navItems = [
+  const authItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
@@ -12,6 +14,15 @@ const BottomNav = () => {
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/profile", label: "Profile", icon: User },
   ];
+
+  const publicItems = [
+    { href: "/", label: "Home", icon: Home },
+    { href: "/churches", label: "Churches", icon: Users },
+    { href: "/store", label: "Store", icon: BookOpen },
+    { href: "/login", label: "Sign In", icon: LogIn },
+  ];
+
+  const navItems = user ? authItems : publicItems;
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
