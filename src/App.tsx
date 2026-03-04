@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import Navigation from "./components/Navigation";
 import BottomNav from "./components/BottomNav";
+import ProtectedRoute from "./components/ProtectedRoute";
 import HomeRouter from "./pages/HomeRouter";
 import SubmitPrayer from "./pages/SubmitPrayer";
 import PrayForOthers from "./pages/PrayForOthers";
@@ -46,34 +47,37 @@ const App = () => (
         <BrowserRouter>
           <Navigation />
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<HomeRouter />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/submit-prayer" element={<SubmitPrayer />} />
-            <Route path="/pray" element={<PrayForOthers />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/churches" element={<Churches />} />
-            <Route path="/churches/register" element={<RegisterChurch />} />
-            <Route path="/churches/:churchId" element={<ChurchDetail />} />
-            <Route path="/churches/:churchId/wall" element={<ChurchPrayerWall />} />
-            <Route path="/churches/:churchId/submit" element={<ChurchSubmitPrayer />} />
-            <Route path="/churches/:churchId/admin" element={<ChurchAdmin />} />
-            <Route path="/churches/:churchId/prayers" element={<ChurchPrayerWall />} />
-            <Route path="/ripple" element={<RippleImpact />} />
-            <Route path="/calendar" element={<PrayerCalendar />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/support" element={<SupportMission />} />
             <Route path="/store" element={<Store />} />
-            <Route path="/organizations" element={<Organizations />} />
-            <Route path="/organizations/create" element={<CreateOrganization />} />
-            <Route path="/organizations/:orgId" element={<OrganizationDetail />} />
-            <Route path="/scripture" element={<Scripture />} />
-            <Route path="/commitments" element={<MyCommitments />} />
-            <Route path="/family" element={<Organizations />} />
-            <Route path="/prayer-reminders" element={<MyPrayerReminders />} />
+            <Route path="/churches" element={<Churches />} />
+
+            {/* Protected routes */}
+            <Route path="/submit-prayer" element={<ProtectedRoute><SubmitPrayer /></ProtectedRoute>} />
+            <Route path="/pray" element={<ProtectedRoute><PrayForOthers /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/churches/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
+            <Route path="/churches/:churchId" element={<ProtectedRoute><ChurchDetail /></ProtectedRoute>} />
+            <Route path="/churches/:churchId/wall" element={<ProtectedRoute><ChurchPrayerWall /></ProtectedRoute>} />
+            <Route path="/churches/:churchId/submit" element={<ProtectedRoute><ChurchSubmitPrayer /></ProtectedRoute>} />
+            <Route path="/churches/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
+            <Route path="/churches/:churchId/prayers" element={<ProtectedRoute><ChurchPrayerWall /></ProtectedRoute>} />
+            <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
+            <Route path="/calendar" element={<ProtectedRoute><PrayerCalendar /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/organizations" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
+            <Route path="/organizations/create" element={<ProtectedRoute><CreateOrganization /></ProtectedRoute>} />
+            <Route path="/organizations/:orgId" element={<ProtectedRoute><OrganizationDetail /></ProtectedRoute>} />
+            <Route path="/scripture" element={<ProtectedRoute><Scripture /></ProtectedRoute>} />
+            <Route path="/commitments" element={<ProtectedRoute><MyCommitments /></ProtectedRoute>} />
+            <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
+            <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

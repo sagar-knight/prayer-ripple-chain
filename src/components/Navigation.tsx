@@ -24,8 +24,16 @@ const Navigation = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
 
-  const navItems = [
-    { href: "/", label: "Home", icon: Heart },
+  // Items visible to everyone
+  const publicItems = [
+    { href: "/churches", label: "Churches", icon: Church },
+    { href: "/support", label: "Support", icon: HandHeart },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/about", label: "About", icon: HelpCircle },
+  ];
+
+  // Items visible only to logged-in users
+  const authItems = [
     { href: "/pray", label: "Pray", icon: Users },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/calendar", label: "Calendar", icon: Calendar },
@@ -36,12 +44,16 @@ const Navigation = () => {
     { href: "/support", label: "Support", icon: HandHeart },
     { href: "/store", label: "Store", icon: Store },
     { href: "/profile", label: "Profile", icon: User },
-    { href: "/about", label: "About", icon: HelpCircle },
   ];
+
+  const navItems = user ? authItems : publicItems;
+
+  const allMobileItems = user
+    ? [{ href: "/", label: "Home", icon: Heart }, ...authItems]
+    : [{ href: "/", label: "Home", icon: Heart }, ...publicItems];
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
-    // Exact segment match to avoid /churches matching /churches-other etc.
     return location.pathname === href || location.pathname.startsWith(href + "/");
   };
 
@@ -59,11 +71,11 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navItems.slice(1, 10).map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
-                  key={item.href}
+                  key={item.href + item.label}
                   to={item.href}
                   className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActiveRoute(item.href)
@@ -101,11 +113,11 @@ const Navigation = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] sm:w-[320px]">
               <div className="flex flex-col space-y-4 mt-6">
-                {navItems.map((item) => {
+                {allMobileItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <Link
-                      key={item.href}
+                      key={item.href + item.label}
                       to={item.href}
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
