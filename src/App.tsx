@@ -72,7 +72,7 @@ const App = () => (
             <Route path="/organizations/:orgId" element={<OrganizationDetail />} />
             <Route path="/scripture" element={<Scripture />} />
             <Route path="/commitments" element={<MyCommitments />} />
-            <Route path="/family" element={<FamilyRequests />} />
+            <Route path="/family" element={<Organizations />} />
             <Route path="/prayer-reminders" element={<MyPrayerReminders />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
