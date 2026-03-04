@@ -14,6 +14,160 @@ export type Database = {
   }
   public: {
     Tables: {
+      church_memberships: {
+        Row: {
+          church_id: string
+          id: string
+          joined_at: string
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          church_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          church_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "church_memberships_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      church_prayer_requests: {
+        Row: {
+          anonymous: boolean
+          approved_at: string | null
+          approved_by: string | null
+          category: string
+          church_id: string
+          created_at: string
+          description: string
+          id: string
+          rejected_reason: string | null
+          show_country: boolean
+          status: string
+          submitted_by: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          anonymous?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          church_id: string
+          created_at?: string
+          description: string
+          id?: string
+          rejected_reason?: string | null
+          show_country?: boolean
+          status?: string
+          submitted_by: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          anonymous?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          church_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          rejected_reason?: string | null
+          show_country?: boolean
+          status?: string
+          submitted_by?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "church_prayer_requests_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      churches: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_email: string
+          country: string
+          created_at: string
+          created_by: string
+          denomination: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          phone: string | null
+          privacy: string
+          state: string | null
+          status: string
+          updated_at: string
+          verified: boolean
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_email: string
+          country?: string
+          created_at?: string
+          created_by: string
+          denomination?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          phone?: string | null
+          privacy?: string
+          state?: string | null
+          status?: string
+          updated_at?: string
+          verified?: boolean
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_email?: string
+          country?: string
+          created_at?: string
+          created_by?: string
+          denomination?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          phone?: string | null
+          privacy?: string
+          state?: string | null
+          status?: string
+          updated_at?: string
+          verified?: boolean
+          website?: string | null
+        }
+        Relationships: []
+      }
       family_groups: {
         Row: {
           created_at: string
@@ -379,6 +533,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_church_role: {
+        Args: { _church_id: string; _user_id: string }
+        Returns: string
+      }
+      is_church_member: {
+        Args: { _church_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_family_member: {
         Args: { _family_group_id: string; _user_id: string }
         Returns: boolean
