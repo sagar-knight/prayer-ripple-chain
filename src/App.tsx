@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import Navigation from "./components/Navigation";
 import BottomNav from "./components/BottomNav";
-import Home from "./pages/Home";
+import HomeRouter from "./pages/HomeRouter";
 import SubmitPrayer from "./pages/SubmitPrayer";
 import PrayForOthers from "./pages/PrayForOthers";
 import Dashboard from "./pages/Dashboard";
@@ -46,7 +46,7 @@ const App = () => (
         <BrowserRouter>
           <Navigation />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomeRouter />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
