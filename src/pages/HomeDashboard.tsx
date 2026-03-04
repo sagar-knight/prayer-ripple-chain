@@ -3,21 +3,49 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { useState } from "react";
 
 const HomeDashboard = () => {
   const dailyVerse = getDailyVerse();
-  const [reminders] = useLocalStorage<any[]>("prayer_reminders", []);
+  const { user } = useAuth();
   const [prayedToday, setPrayedToday] = useLocalStorage<Record<string, string>>("prayed_today_log", {});
-  const [stats] = useLocalStorage("user_prayer_stats", {
-    prayersOffered: 0,
-    prayersReceived: 0,
-    passedForward: 0,
-  });
 
   const today = new Date().toISOString().split("T")[0];
-  const activeReminders = reminders.filter((r: any) => r.enabled !== false);
+
+  // Fetch prayer stats from DB
+  const { data: stats } = useQuery({
+    queryKey: ["user_prayer_stats", user?.id],
+    queryFn: async () => {
+      if (!user) return { total_prayers_offered: 0, total_prayers_received: 0, total_chains_started: 0 };
+      const { data } = await supabase
+        .from("user_prayer_stats")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      return data || { total_prayers_offered: 0, total_prayers_received: 0, total_chains_started: 0 };
+    },
+    enabled: !!user,
+  });
+
+  // Fetch prayer reminders from DB
+  const { data: reminders } = useQuery({
+    queryKey: ["prayer_reminders_home", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data } = await supabase
+        .from("prayer_reminders")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("enabled", true);
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
+  const activeReminders = reminders || [];
 
   const handlePrayedToday = (reminderId: string) => {
     setPrayedToday({ ...prayedToday, [reminderId]: today });
@@ -84,12 +112,12 @@ const HomeDashboard = () => {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-foreground truncate">
-                        {reminder.title || reminder.prayer_title || "Prayer request"}
+                        {reminder.prayer_title || "Prayer request"}
                       </p>
-                      {reminder.time && (
+                      {reminder.reminder_time_local && (
                         <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                           <Clock className="h-3 w-3" />
-                          {reminder.time || reminder.reminder_time_local}
+                          {reminder.reminder_time_local}
                         </p>
                       )}
                     </div>
@@ -157,15 +185,15 @@ const HomeDashboard = () => {
           <CardContent>
             <div className="grid grid-cols-3 gap-4 text-center mb-4">
               <div>
-                <p className="text-2xl font-bold text-foreground">{stats.prayersOffered}</p>
+                <p className="text-2xl font-bold text-foreground">{stats?.total_prayers_offered ?? 0}</p>
                 <p className="text-xs text-muted-foreground">Prayed</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">{stats.prayersReceived}</p>
+                <p className="text-2xl font-bold text-foreground">{stats?.total_prayers_received ?? 0}</p>
                 <p className="text-xs text-muted-foreground">Received</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">{stats.passedForward}</p>
+                <p className="text-2xl font-bold text-foreground">{stats?.total_chains_started ?? 0}</p>
                 <p className="text-xs text-muted-foreground">Passed forward</p>
               </div>
             </div>

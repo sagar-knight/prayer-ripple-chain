@@ -30,7 +30,7 @@ const Navigation = () => {
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
-    { href: "/organizations", label: "Family", icon: Users },
+    { href: "/family", label: "Family", icon: Users },
     { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/support", label: "Support", icon: HandHeart },
@@ -41,7 +41,8 @@ const Navigation = () => {
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
-    return location.pathname.startsWith(href);
+    // Exact segment match to avoid /churches matching /churches-other etc.
+    return location.pathname === href || location.pathname.startsWith(href + "/");
   };
 
   return (
