@@ -11,6 +11,11 @@ import SubmitPrayer from "./pages/SubmitPrayer";
 import PrayForOthers from "./pages/PrayForOthers";
 import Dashboard from "./pages/Dashboard";
 import Churches from "./pages/Churches";
+import ChurchDetail from "./pages/ChurchDetail";
+import ChurchPrayerWall from "./pages/ChurchPrayerWall";
+import ChurchSubmitPrayer from "./pages/ChurchSubmitPrayer";
+import ChurchAdmin from "./pages/ChurchAdmin";
+import RegisterChurch from "./pages/RegisterChurch";
 import RippleImpact from "./pages/RippleImpact";
 import About from "./pages/About";
 import PrayerCalendar from "./pages/PrayerCalendar";
@@ -50,6 +55,12 @@ const App = () => (
             <Route path="/pray" element={<PrayForOthers />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/churches" element={<Churches />} />
+            <Route path="/churches/register" element={<RegisterChurch />} />
+            <Route path="/churches/:churchId" element={<ChurchDetail />} />
+            <Route path="/churches/:churchId/wall" element={<ChurchPrayerWall />} />
+            <Route path="/churches/:churchId/submit" element={<ChurchSubmitPrayer />} />
+            <Route path="/churches/:churchId/admin" element={<ChurchAdmin />} />
+            <Route path="/churches/:churchId/prayers" element={<ChurchPrayerWall />} />
             <Route path="/ripple" element={<RippleImpact />} />
             <Route path="/calendar" element={<PrayerCalendar />} />
             <Route path="/profile" element={<Profile />} />
