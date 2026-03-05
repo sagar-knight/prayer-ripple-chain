@@ -8,7 +8,7 @@ const corsHeaders = {
 
 // Gelato uses different base URLs for different API services
 const GELATO_BASES: Record<string, string> = {
-  ecommerce: "https://ecommerce.gelatoapis.com/v1",
+  ecommerce: "https://api.gelato.com/v3",
   product: "https://product.gelatoapis.com/v3",
   order: "https://order.gelatoapis.com/v4",
 };
