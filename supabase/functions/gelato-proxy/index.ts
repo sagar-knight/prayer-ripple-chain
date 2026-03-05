@@ -6,7 +6,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const GELATO_BASE = "https://api.gelato.com/v3";
+// Gelato uses different base URLs for different API services
+const GELATO_BASES: Record<string, string> = {
+  ecommerce: "https://ecommerce.gelatoapis.com/v1",
+  product: "https://product.gelatoapis.com/v3",
+  order: "https://order.gelatoapis.com/v4",
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -19,16 +24,19 @@ serve(async (req) => {
       throw new Error("GELATO_API_KEY is not configured");
     }
 
-    const { endpoint, method = "GET", body } = await req.json();
+    const { endpoint, method = "GET", body, service = "ecommerce" } = await req.json();
 
     if (!endpoint) {
       return new Response(
-        JSON.stringify({ error: "Missing 'endpoint' field (e.g. '/products')" }),
+        JSON.stringify({ error: "Missing 'endpoint' field" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const gelatoUrl = `${GELATO_BASE}${endpoint.startsWith("/") ? endpoint : "/" + endpoint}`;
+    const base = GELATO_BASES[service] || GELATO_BASES.ecommerce;
+    const gelatoUrl = `${base}${endpoint.startsWith("/") ? endpoint : "/" + endpoint}`;
+
+    console.log(`Gelato request: ${method} ${gelatoUrl}`);
 
     const gelatoResponse = await fetch(gelatoUrl, {
       method,
@@ -40,6 +48,7 @@ serve(async (req) => {
     });
 
     const data = await gelatoResponse.text();
+    console.log(`Gelato response status: ${gelatoResponse.status}`);
 
     return new Response(data, {
       status: gelatoResponse.status,

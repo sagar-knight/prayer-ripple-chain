@@ -12,20 +12,6 @@ export interface GelatoProduct {
   variants: { label: string; options: string[] }[];
 }
 
-interface RawGelatoProduct {
-  id: string;
-  title?: string;
-  description?: string;
-  previewUrl?: string;
-  productUid?: string;
-  variants?: Array<{
-    id: string;
-    title?: string;
-    options?: Array<{ name: string; values: string[] }>;
-    prices?: Array<{ amount: number; currency: string }>;
-  }>;
-}
-
 export function useGelatoProducts() {
   const [products, setProducts] = useState<GelatoProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,61 +25,67 @@ export function useGelatoProducts() {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: fnError } = await supabase.functions.invoke("gelato-proxy", {
-        body: { endpoint: "/stores", method: "GET" },
+      // Step 1: Get stores from Gelato ecommerce API
+      const { data: storesData, error: storesError } = await supabase.functions.invoke("gelato-proxy", {
+        body: { endpoint: "/stores", method: "GET", service: "ecommerce" },
       });
 
-      if (fnError) throw new Error(fnError.message);
+      if (storesError) throw new Error(storesError.message);
+      console.log("Gelato stores response:", storesData);
 
-      // Gelato's API structure: first get stores, then products from a store
-      // If you have a single store, we get its products
-      let storeId: string | null = null;
-      if (data?.stores?.length > 0) {
-        storeId = data.stores[0].id;
-      } else if (data?.id) {
-        storeId = data.id;
+      // Find first store
+      const stores = storesData?.stores || storesData || [];
+      const storeId = Array.isArray(stores) && stores.length > 0 
+        ? stores[0].id 
+        : storesData?.id;
+
+      if (!storeId) {
+        console.warn("No Gelato store found. Falling back to static products.");
+        setProducts([]);
+        setLoading(false);
+        return;
       }
 
-      let rawProducts: RawGelatoProduct[] = [];
+      // Step 2: Get products from that store
+      const { data: prodData, error: prodError } = await supabase.functions.invoke("gelato-proxy", {
+        body: { 
+          endpoint: `/stores/${storeId}/products`, 
+          method: "GET", 
+          service: "ecommerce" 
+        },
+      });
 
-      if (storeId) {
-        const { data: prodData, error: prodError } = await supabase.functions.invoke("gelato-proxy", {
-          body: { endpoint: `/stores/${storeId}/products`, method: "GET" },
-        });
-        if (prodError) throw new Error(prodError.message);
-        rawProducts = prodData?.products || prodData || [];
-      } else {
-        // Try direct products endpoint
-        const { data: prodData, error: prodError } = await supabase.functions.invoke("gelato-proxy", {
-          body: { endpoint: "/products", method: "GET" },
-        });
-        if (prodError) throw new Error(prodError.message);
-        rawProducts = prodData?.products || prodData || [];
-      }
+      if (prodError) throw new Error(prodError.message);
+      console.log("Gelato products response:", prodData);
+
+      const rawProducts = prodData?.products || prodData || [];
 
       if (!Array.isArray(rawProducts)) {
         console.warn("Unexpected Gelato response:", rawProducts);
-        rawProducts = [];
+        setProducts([]);
+        return;
       }
 
-      const mapped: GelatoProduct[] = rawProducts.map((p) => {
+      const mapped: GelatoProduct[] = rawProducts.map((p: any) => {
         const firstVariant = p.variants?.[0];
-        const price = firstVariant?.prices?.[0]?.amount ?? 0;
-        const currency = firstVariant?.prices?.[0]?.currency ?? "USD";
+        const price = firstVariant?.prices?.[0]?.amount ?? p.price ?? 0;
+        const currency = firstVariant?.prices?.[0]?.currency ?? p.currency ?? "USD";
 
         const variantGroups: { label: string; options: string[] }[] = [];
-        firstVariant?.options?.forEach((opt) => {
-          variantGroups.push({ label: opt.name, options: opt.values });
-        });
+        if (firstVariant?.options) {
+          firstVariant.options.forEach((opt: any) => {
+            variantGroups.push({ label: opt.name, options: opt.values || [] });
+          });
+        }
 
         return {
           id: p.id,
-          name: p.title || "Untitled Product",
+          name: p.title || p.name || "Untitled Product",
           description: p.description || "",
-          previewUrl: p.previewUrl || "",
-          price: price / 100, // Gelato prices are typically in cents
+          previewUrl: p.previewUrl || p.previewImage || "",
+          price: typeof price === "number" && price > 100 ? price / 100 : price,
           currency,
-          category: "Apparel",
+          category: p.category || "Apparel",
           variants: variantGroups,
         };
       });
