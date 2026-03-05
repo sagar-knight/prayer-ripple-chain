@@ -17,8 +17,11 @@ const Store = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
+
+  const categories = ["All", "Apparel", "Wall Art", "Journals"];
 
   useEffect(() => {
     async function fetchProducts() {
@@ -37,9 +40,15 @@ const Store = () => {
   }, []);
 
   const filtered = products.filter((p) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return p.node.title.toLowerCase().includes(s) || p.node.description.toLowerCase().includes(s);
+    const matchesSearch = !search || 
+      p.node.title.toLowerCase().includes(search.toLowerCase()) || 
+      p.node.description.toLowerCase().includes(search.toLowerCase());
+    
+    const matchesCategory = activeCategory === "All" || 
+      p.node.title.toLowerCase().includes(activeCategory.toLowerCase()) ||
+      p.node.description.toLowerCase().includes(activeCategory.toLowerCase());
+    
+    return matchesSearch && matchesCategory;
   });
 
   const handleAddToCart = async (product: ShopifyProduct, e: React.MouseEvent) => {
@@ -78,7 +87,7 @@ const Store = () => {
           <CartDrawer />
         </div>
 
-        {/* Search */}
+        {/* Search & Category Filters */}
         <div className="space-y-4 mb-8">
           <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -88,6 +97,18 @@ const Store = () => {
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
             />
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories.map((cat) => (
+              <Button
+                key={cat}
+                variant={activeCategory === cat ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat}
+              </Button>
+            ))}
           </div>
         </div>
 
