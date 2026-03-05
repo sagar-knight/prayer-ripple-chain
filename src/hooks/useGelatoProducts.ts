@@ -25,7 +25,7 @@ export function useGelatoProducts() {
     setLoading(true);
     setError(null);
     try {
-      // Step 1: Get stores from Gelato ecommerce API
+      // Step 1: Get stores
       const { data: storesData, error: storesError } = await supabase.functions.invoke("gelato-proxy", {
         body: { endpoint: "/stores", method: "GET", service: "ecommerce" },
       });
@@ -33,32 +33,24 @@ export function useGelatoProducts() {
       if (storesError) throw new Error(storesError.message);
       console.log("Gelato stores response:", storesData);
 
-      // Find first store
-      const stores = storesData?.stores || storesData || [];
-      const storeId = Array.isArray(stores) && stores.length > 0 
-        ? stores[0].id 
-        : storesData?.id;
+      const stores = storesData?.stores || [];
+      const storeId = Array.isArray(stores) && stores.length > 0 ? stores[0].id : null;
 
       if (!storeId) {
-        console.warn("No Gelato store found. Falling back to static products.");
+        console.warn("No Gelato store found.");
         setProducts([]);
-        setLoading(false);
         return;
       }
 
       // Step 2: Get products from that store
       const { data: prodData, error: prodError } = await supabase.functions.invoke("gelato-proxy", {
-        body: { 
-          endpoint: `/stores/${storeId}/products`, 
-          method: "GET", 
-          service: "ecommerce" 
-        },
+        body: { endpoint: `/stores/${storeId}/products`, method: "GET", service: "ecommerce" },
       });
 
       if (prodError) throw new Error(prodError.message);
       console.log("Gelato products response:", prodData);
 
-      const rawProducts = prodData?.products || prodData || [];
+      const rawProducts = prodData?.products || [];
 
       if (!Array.isArray(rawProducts)) {
         console.warn("Unexpected Gelato response:", rawProducts);
@@ -67,26 +59,20 @@ export function useGelatoProducts() {
       }
 
       const mapped: GelatoProduct[] = rawProducts.map((p: any) => {
-        const firstVariant = p.variants?.[0];
-        const price = firstVariant?.prices?.[0]?.amount ?? p.price ?? 0;
-        const currency = firstVariant?.prices?.[0]?.currency ?? p.currency ?? "USD";
-
-        const variantGroups: { label: string; options: string[] }[] = [];
-        if (firstVariant?.options) {
-          firstVariant.options.forEach((opt: any) => {
-            variantGroups.push({ label: opt.name, options: opt.values || [] });
-          });
-        }
+        // Map variant titles as options
+        const variantTitles = (p.variants || []).map((v: any) => v.title || v.productUid || "Default");
 
         return {
           id: p.id,
-          name: p.title || p.name || "Untitled Product",
-          description: p.description || "",
-          previewUrl: p.previewUrl || p.previewImage || "",
-          price: typeof price === "number" && price > 100 ? price / 100 : price,
-          currency,
-          category: p.category || "Apparel",
-          variants: variantGroups,
+          name: p.title || "Untitled Product",
+          description: stripHtml(p.description || ""),
+          previewUrl: p.previewUrl || "",
+          price: 0, // Prices come from variant pricing; set later or on detail page
+          currency: "USD",
+          category: p.productType || "Wall Art",
+          variants: variantTitles.length > 0
+            ? [{ label: "Size", options: variantTitles }]
+            : [],
         };
       });
 
@@ -100,4 +86,8 @@ export function useGelatoProducts() {
   };
 
   return { products, loading, error, refetch: fetchProducts };
+}
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").trim();
 }
