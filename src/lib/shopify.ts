@@ -11,6 +11,8 @@ export interface ShopifyProduct {
     title: string;
     description: string;
     handle: string;
+    productType?: string;
+    tags?: string[];
     priceRange: {
       minVariantPrice: {
         amount: string;
@@ -52,8 +54,10 @@ export interface ShopifyProduct {
 export async function storefrontApiRequest(query: string, variables: any = {}) {
   const response = await fetch(SHOPIFY_STOREFRONT_URL, {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache',
       'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
     },
     body: JSON.stringify({ query, variables }),
@@ -88,6 +92,8 @@ export const STOREFRONT_PRODUCTS_QUERY = `
           title
           description
           handle
+          productType
+          tags
           priceRange {
             minVariantPrice {
               amount
@@ -175,6 +181,19 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
+export const STOREFRONT_COLLECTIONS_QUERY = `
+  query GetCollections($first: Int!) {
+    collections(first: $first) {
+      edges {
+        node {
+          title
+          handle
+        }
+      }
+    }
+  }
+`;
+
 export const STOREFRONT_COLLECTION_PRODUCTS_QUERY = `
   query GetCollectionProducts($handle: String!, $first: Int!) {
     collection(handle: $handle) {
@@ -185,6 +204,8 @@ export const STOREFRONT_COLLECTION_PRODUCTS_QUERY = `
             title
             description
             handle
+            productType
+            tags
             priceRange {
               minVariantPrice {
                 amount

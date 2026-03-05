@@ -3,14 +3,27 @@ import { useNavigate } from "react-router-dom";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingBag, ShoppingCart, Search, ArrowRight, Loader2 } from "lucide-react";
+import { ShoppingBag, ShoppingCart, Search, Loader2 } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
-import { storefrontApiRequest, STOREFRONT_PRODUCTS_QUERY, STOREFRONT_COLLECTION_PRODUCTS_QUERY } from "@/lib/shopify";
+import {
+  storefrontApiRequest,
+  STOREFRONT_PRODUCTS_QUERY,
+  STOREFRONT_COLLECTION_PRODUCTS_QUERY,
+  STOREFRONT_COLLECTIONS_QUERY,
+} from "@/lib/shopify";
 import { toast } from "sonner";
+
+const categoryFallbackTerms: Record<string, string[]> = {
+  "Apparel": ["apparel", "shirt", "t-shirt", "tee", "hoodie", "crewneck", "sweatshirt"],
+  "Wall Art": ["wall art", "print", "poster", "canvas", "frame"],
+  "Journals": ["journal", "notebook", "devotional", "planner"],
+};
+
+const normalizeValue = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 const Store = () => {
   const navigate = useNavigate();
@@ -28,27 +41,72 @@ const Store = () => {
     "Journals": "journals",
   };
 
+  const matchesFallbackCategory = (product: ShopifyProduct, category: string) => {
+    const terms = categoryFallbackTerms[category] || [];
+    if (terms.length === 0) return false;
+
+    const haystack = [
+      product.node.title,
+      product.node.description,
+      product.node.productType || "",
+      ...(product.node.tags || []),
+    ].join(" ").toLowerCase();
+
+    return terms.some((term) => haystack.includes(term.toLowerCase()));
+  };
+
+  const resolveCollectionHandle = async (category: string, defaultHandle: string) => {
+    const data = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 50 });
+    const collections = data?.data?.collections?.edges?.map((edge: any) => edge.node) || [];
+
+    const normalizedCategory = normalizeValue(category);
+    const normalizedDefaultHandle = normalizeValue(defaultHandle);
+
+    const match = collections.find((collection: any) => {
+      const normalizedTitle = normalizeValue(collection.title || "");
+      const normalizedHandle = normalizeValue(collection.handle || "");
+      return normalizedHandle === normalizedDefaultHandle || normalizedTitle === normalizedCategory;
+    });
+
+    return match?.handle || defaultHandle;
+  };
+
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       try {
+        const allProductsData = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 250 });
+        const allProducts = allProductsData?.data?.products?.edges || [];
+
         if (activeCategory === "All") {
-          const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 50 });
-          if (data?.data?.products?.edges) {
-            setProducts(data.data.products.edges);
-          } else {
-            setProducts([]);
-          }
-        } else {
-          const handle = categoryCollectionHandles[activeCategory];
-          if (!handle) { setProducts([]); return; }
-          const data = await storefrontApiRequest(STOREFRONT_COLLECTION_PRODUCTS_QUERY, { handle, first: 50 });
-          if (data?.data?.collection?.products?.edges) {
-            setProducts(data.data.collection.products.edges);
-          } else {
-            setProducts([]);
-          }
+          setProducts(allProducts);
+          return;
         }
+
+        const defaultHandle = categoryCollectionHandles[activeCategory];
+        if (!defaultHandle) {
+          setProducts([]);
+          return;
+        }
+
+        const resolvedHandle = await resolveCollectionHandle(activeCategory, defaultHandle);
+        const collectionData = await storefrontApiRequest(STOREFRONT_COLLECTION_PRODUCTS_QUERY, {
+          handle: resolvedHandle,
+          first: 250,
+        });
+
+        const collectionProducts = collectionData?.data?.collection?.products?.edges || [];
+
+        if (collectionProducts.length > 0) {
+          setProducts(collectionProducts);
+          return;
+        }
+
+        const fallbackProducts = allProducts.filter((product: ShopifyProduct) =>
+          matchesFallbackCategory(product, activeCategory)
+        );
+
+        setProducts(fallbackProducts);
       } catch (error) {
         console.error("Failed to fetch products:", error);
         setProducts([]);
@@ -62,7 +120,7 @@ const Store = () => {
   const filtered = products.filter((p) => {
     if (!search) return true;
     const s = search.toLowerCase();
-    return p.node.title.toLowerCase().includes(s) || p.node.description.toLowerCase().includes(s);
+    return p.node.title.toLowerCase().includes(s) || (p.node.description || "").toLowerCase().includes(s);
   });
 
   const handleAddToCart = async (product: ShopifyProduct, e: React.MouseEvent) => {
