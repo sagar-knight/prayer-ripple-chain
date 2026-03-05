@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, ArrowLeft, Loader2 } from "lucide-react";
-import { CartDrawer } from "@/components/CartDrawer";
+import { ShoppingCart, Loader2, Minus, Plus, Truck, RotateCcw, Shield } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
-import { storefrontApiRequest, STOREFRONT_PRODUCT_BY_HANDLE_QUERY, type ShopifyProduct } from "@/lib/shopify";
+import { storefrontApiRequest, STOREFRONT_PRODUCT_BY_HANDLE_QUERY, STOREFRONT_PRODUCTS_QUERY, type ShopifyProduct } from "@/lib/shopify";
 import { toast } from "sonner";
+import StoreLayout from "@/components/store/StoreLayout";
+import { Card } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -15,8 +17,11 @@ const ProductDetail = () => {
   const [product, setProduct] = useState<ShopifyProduct["node"] | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const addItem = useCartStore(state => state.addItem);
-  const isLoading = useCartStore(state => state.isLoading);
+  const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
+  const [recommendations, setRecommendations] = useState<ShopifyProduct[]>([]);
+  const addItem = useCartStore((state) => state.addItem);
+  const isLoading = useCartStore((state) => state.isLoading);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -25,25 +30,35 @@ const ProductDetail = () => {
         if (data?.data?.product) {
           const p = data.data.product;
           setProduct(p);
-          // Set default options
           const defaults: Record<string, string> = {};
           p.options?.forEach((opt: any) => {
             if (opt.values?.[0]) defaults[opt.name] = opt.values[0];
           });
           setSelectedOptions(defaults);
         }
+
+        // Fetch recommendations
+        const allData = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 20 });
+        const all: ShopifyProduct[] = allData?.data?.products?.edges || [];
+        setRecommendations(all.filter((p) => p.node.handle !== handle).slice(0, 4));
       } catch (error) {
         console.error("Failed to fetch product:", error);
       } finally {
         setLoading(false);
       }
     }
-    if (handle) fetchProduct();
+    if (handle) {
+      setLoading(true);
+      setActiveImage(0);
+      setQuantity(1);
+      fetchProduct();
+    }
   }, [handle]);
 
-  const selectedVariant = product?.variants.edges.find(v =>
-    v.node.selectedOptions.every(so => selectedOptions[so.name] === so.value)
-  )?.node || product?.variants.edges[0]?.node;
+  const selectedVariant =
+    product?.variants.edges.find((v) =>
+      v.node.selectedOptions.every((so) => selectedOptions[so.name] === so.value)
+    )?.node || product?.variants.edges[0]?.node;
 
   const handleAddToCart = async () => {
     if (!product || !selectedVariant) return;
@@ -53,93 +68,100 @@ const ProductDetail = () => {
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,
-      quantity: 1,
+      quantity,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: product.title });
+    toast.success("Added to cart", { description: `${product.title} × ${quantity}` });
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-        <div className="max-w-4xl mx-auto px-4">
-          <Skeleton className="h-8 w-32 mb-6" />
-          <div className="grid md:grid-cols-2 gap-8">
+      <StoreLayout>
+        <div className="max-w-6xl mx-auto px-4 py-10">
+          <div className="grid md:grid-cols-2 gap-10">
             <Skeleton className="aspect-square w-full rounded-xl" />
             <div className="space-y-4">
-              <Skeleton className="h-6 w-20" />
               <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-6 w-1/3" />
               <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-12 w-full" />
             </div>
           </div>
         </div>
-      </div>
+      </StoreLayout>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24 flex items-center justify-center">
-        <div className="text-center">
+      <StoreLayout>
+        <div className="max-w-6xl mx-auto px-4 py-16 text-center">
           <p className="text-muted-foreground mb-4">Product not found</p>
           <Button variant="outline" onClick={() => navigate("/store")}>Back to Store</Button>
         </div>
-      </div>
+      </StoreLayout>
     );
   }
 
-  const mainImage = product.images.edges[0]?.node;
+  const images = product.images.edges;
   const price = selectedVariant?.price || product.priceRange.minVariantPrice;
 
   return (
-    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/store")}>
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back to Store
-          </Button>
-          <CartDrawer />
+    <StoreLayout>
+      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-10">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+          <Link to="/store" className="hover:text-primary transition-colors">Store</Link>
+          <span>/</span>
+          <span className="text-foreground">{product.title}</span>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Images */}
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+          {/* Image gallery */}
           <div className="space-y-3">
             <div className="aspect-square rounded-xl overflow-hidden bg-muted">
-              {mainImage ? (
-                <img src={mainImage.url} alt={mainImage.altText || product.title} className="w-full h-full object-cover" />
+              {images[activeImage] ? (
+                <img
+                  src={images[activeImage].node.url}
+                  alt={images[activeImage].node.altText || product.title}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <ShoppingCart className="h-16 w-16 text-muted-foreground" />
                 </div>
               )}
             </div>
-            {product.images.edges.length > 1 && (
+            {images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
-                {product.images.edges.map((img, i) => (
-                  <img
+                {images.map((img, i) => (
+                  <button
                     key={i}
-                    src={img.node.url}
-                    alt={img.node.altText || `${product.title} ${i + 1}`}
-                    className="w-16 h-16 rounded-md object-cover flex-shrink-0 border-2 border-transparent hover:border-primary cursor-pointer"
-                  />
+                    onClick={() => setActiveImage(i)}
+                    className={`w-16 h-16 rounded-md overflow-hidden flex-shrink-0 border-2 transition-colors ${
+                      i === activeImage ? "border-primary" : "border-transparent hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <img src={img.node.url} alt={img.node.altText || `${product.title} ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
                 ))}
               </div>
             )}
           </div>
 
           {/* Details */}
-          <div className="space-y-4">
-            <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">
-              {product.title}
-            </h1>
-            <p className="text-muted-foreground">{product.description}</p>
-            <p className="text-3xl font-bold text-primary">
-              {price.currencyCode} {parseFloat(price.amount).toFixed(2)}
-            </p>
+          <div className="space-y-5">
+            <div>
+              <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">{product.title}</h1>
+              <p className="text-2xl font-semibold text-foreground mt-2">
+                ${parseFloat(price.amount).toFixed(2)} <span className="text-sm font-normal text-muted-foreground">{price.currencyCode}</span>
+              </p>
+            </div>
+
+            <p className="text-muted-foreground leading-relaxed">{product.description}</p>
 
             {/* Options */}
-            {product.options?.filter(o => o.name !== "Title").map((option) => (
+            {product.options?.filter((o) => o.name !== "Title").map((option) => (
               <div key={option.name} className="space-y-2">
                 <p className="text-sm font-medium">{option.name}</p>
                 <div className="flex flex-wrap gap-2">
@@ -148,7 +170,7 @@ const ProductDetail = () => {
                       key={val}
                       variant={selectedOptions[option.name] === val ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setSelectedOptions(prev => ({ ...prev, [option.name]: val }))}
+                      onClick={() => setSelectedOptions((prev) => ({ ...prev, [option.name]: val }))}
                     >
                       {val}
                     </Button>
@@ -161,21 +183,84 @@ const ProductDetail = () => {
               <Badge variant="destructive">Out of Stock</Badge>
             )}
 
+            {/* Quantity */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Quantity</p>
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="w-8 text-center font-medium">{quantity}</span>
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
             <Button
               size="lg"
-              className="w-full gap-2 mt-4"
+              className="w-full gap-2"
               onClick={handleAddToCart}
               disabled={isLoading || !selectedVariant?.availableForSale}
             >
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><ShoppingCart className="h-5 w-5" /> Add to Cart</>}
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              Purchases help support the PrayerForward mission.
-            </p>
+
+            {/* Trust badges */}
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              {[
+                { icon: Truck, label: "Free shipping $75+" },
+                { icon: RotateCcw, label: "30-day returns" },
+                { icon: Shield, label: "Secure checkout" },
+              ].map((badge) => (
+                <div key={badge.label} className="flex flex-col items-center text-center gap-1 py-2">
+                  <badge.icon className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-[10px] text-muted-foreground leading-tight">{badge.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Shipping/Returns links */}
+            <div className="flex gap-4 text-xs">
+              <Link to="/store/shipping" className="text-muted-foreground hover:text-primary underline-offset-2 hover:underline">Shipping Info</Link>
+              <Link to="/store/returns" className="text-muted-foreground hover:text-primary underline-offset-2 hover:underline">Returns & Exchanges</Link>
+            </div>
           </div>
         </div>
+
+        {/* Recommendations */}
+        {recommendations.length > 0 && (
+          <section className="mt-16">
+            <h2 className="font-playfair text-xl font-semibold text-foreground mb-4">You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {recommendations.map((p) => {
+                const img = p.node.images.edges[0]?.node;
+                const pr = p.node.priceRange.minVariantPrice;
+                return (
+                  <Card
+                    key={p.node.id}
+                    className="group overflow-hidden border-0 shadow-none hover:shadow-peaceful transition-all cursor-pointer bg-transparent"
+                    onClick={() => navigate(`/product/${p.node.handle}`)}
+                  >
+                    <div className="aspect-[3/4] overflow-hidden rounded-lg bg-muted">
+                      {img ? (
+                        <img src={img.url} alt={img.altText || p.node.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center"><ShoppingCart className="h-8 w-8 text-muted-foreground" /></div>
+                      )}
+                    </div>
+                    <div className="pt-3">
+                      <h3 className="font-medium text-sm line-clamp-1">{p.node.title}</h3>
+                      <span className="text-sm font-semibold">${parseFloat(pr.amount).toFixed(2)}</span>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
-    </div>
+    </StoreLayout>
   );
 };
 
