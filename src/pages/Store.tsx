@@ -4,18 +4,40 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ShoppingBag,
   ShoppingCart,
   Search,
   ArrowRight,
+  RefreshCw,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { products, type Product } from "@/data/products";
+import { products as fallbackProducts, type Product } from "@/data/products";
+import { useGelatoProducts, type GelatoProduct } from "@/hooks/useGelatoProducts";
 
 const categories = ["All", "Apparel", "Journals", "Wall Art", "Digital Downloads"] as const;
 
+// Unified product type for the store
+type StoreProduct = Product & { gelatoId?: string };
+
 const Store = () => {
+  const { products: gelatoProducts, loading: gelatoLoading, error: gelatoError, refetch } = useGelatoProducts();
+  
+  // Use Gelato products if available, otherwise fall back to static products
+  const products: StoreProduct[] = gelatoProducts.length > 0
+    ? gelatoProducts.map((gp) => ({
+        id: gp.id,
+        gelatoId: gp.id,
+        name: gp.name,
+        description: gp.description,
+        price: gp.price,
+        category: (gp.category as StoreProduct["category"]) || "Apparel",
+        image: gp.previewUrl || "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
+        variants: gp.variants.length > 0 ? gp.variants : undefined,
+      }))
+    : fallbackProducts;
+
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<{ product: Product; qty: number }[]>([]);
@@ -282,6 +304,28 @@ const Store = () => {
             ))}
           </div>
         </div>
+
+        {/* Loading state */}
+        {gelatoLoading && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="overflow-hidden">
+                <Skeleton className="aspect-square w-full" />
+                <CardContent className="p-3 space-y-2">
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {gelatoError && (
+          <div className="text-center py-6 mb-4">
+            <p className="text-sm text-muted-foreground mb-2">Showing offline catalog</p>
+          </div>
+        )}
 
         {/* Products Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
