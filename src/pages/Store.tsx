@@ -1,254 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ShoppingBag,
-  ShoppingCart,
-  Search,
-  ArrowRight,
-  RefreshCw,
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import { products as fallbackProducts, type Product } from "@/data/products";
-import { useGelatoProducts, type GelatoProduct } from "@/hooks/useGelatoProducts";
-
-const categories = ["All", "Apparel", "Journals", "Wall Art", "Digital Downloads"] as const;
-
-// Unified product type for the store
-type StoreProduct = Product & { gelatoId?: string };
+import { ShoppingBag, ShoppingCart, Search, ArrowRight, Loader2 } from "lucide-react";
+import { CartDrawer } from "@/components/CartDrawer";
+import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
+import { storefrontApiRequest, STOREFRONT_PRODUCTS_QUERY } from "@/lib/shopify";
+import { toast } from "sonner";
 
 const Store = () => {
-  const { products: gelatoProducts, loading: gelatoLoading, error: gelatoError, refetch } = useGelatoProducts();
-  
-  // Use Gelato products if available, otherwise fall back to static products
-  const products: StoreProduct[] = gelatoProducts.length > 0
-    ? gelatoProducts.map((gp) => ({
-        id: gp.id,
-        gelatoId: gp.id,
-        name: gp.name,
-        description: gp.description,
-        price: gp.price,
-        category: (gp.category as StoreProduct["category"]) || "Apparel",
-        image: gp.previewUrl || "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
-        variants: gp.variants.length > 0 ? gp.variants : undefined,
-      }))
-    : fallbackProducts;
-
-  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const navigate = useNavigate();
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<{ product: Product; qty: number }[]>([]);
+  const addItem = useCartStore(state => state.addItem);
+  const isLoading = useCartStore(state => state.isLoading);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 50 });
+        if (data?.data?.products?.edges) {
+          setProducts(data.data.products.edges);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   const filtered = products.filter((p) => {
-    const matchCat = activeCategory === "All" || p.category === activeCategory;
-    const matchSearch =
-      !search ||
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchSearch;
+    if (!search) return true;
+    const s = search.toLowerCase();
+    return p.node.title.toLowerCase().includes(s) || p.node.description.toLowerCase().includes(s);
   });
 
-  const cartCount = cart.reduce((sum, c) => sum + c.qty, 0);
-
-  const addToCart = (product: Product) => {
-    setCart((prev) => {
-      const existing = prev.find((c) => c.product.id === product.id);
-      if (existing) {
-        return prev.map((c) =>
-          c.product.id === product.id ? { ...c, qty: c.qty + 1 } : c
-        );
-      }
-      return [...prev, { product, qty: 1 }];
+  const handleAddToCart = async (product: ShopifyProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const variant = product.node.variants.edges[0]?.node;
+    if (!variant) return;
+    await addItem({
+      product,
+      variantId: variant.id,
+      variantTitle: variant.title,
+      price: variant.price,
+      quantity: 1,
+      selectedOptions: variant.selectedOptions || [],
     });
+    toast.success("Added to cart", { description: product.node.title });
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart((prev) => prev.filter((c) => c.product.id !== productId));
-  };
-
-  const updateQty = (productId: string, qty: number) => {
-    if (qty <= 0) return removeFromCart(productId);
-    setCart((prev) =>
-      prev.map((c) => (c.product.id === productId ? { ...c, qty } : c))
-    );
-  };
-
-  const subtotal = cart.reduce((sum, c) => sum + c.product.price * c.qty, 0);
-
-  const [view, setView] = useState<"browse" | "cart" | "detail">("browse");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
-
-  const openDetail = (product: Product) => {
-    setSelectedProduct(product);
-    setSelectedVariants({});
-    if (product.variants) {
-      const defaults: Record<string, string> = {};
-      product.variants.forEach((v) => {
-        defaults[v.label] = v.options[0];
-      });
-      setSelectedVariants(defaults);
-    }
-    setView("detail");
-  };
-
-  // CART VIEW
-  if (view === "cart") {
-    return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-        <div className="max-w-2xl mx-auto px-4">
-          <Button variant="ghost" size="sm" className="mb-6" onClick={() => setView("browse")}>
-            ← Back to Store
-          </Button>
-          <h1 className="font-playfair text-3xl font-bold text-foreground mb-8 flex items-center gap-3">
-            <ShoppingCart className="h-7 w-7 text-primary" />
-            Your Cart
-          </h1>
-
-          {cart.length === 0 ? (
-            <Card className="text-center py-12">
-              <CardContent>
-                <ShoppingBag className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground mb-4">Your cart is empty</p>
-                <Button variant="peaceful" onClick={() => setView("browse")}>
-                  Browse Store
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {cart.map((item) => (
-                <Card key={item.product.id}>
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <img
-                      src={item.product.image}
-                      alt={item.product.name}
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm truncate">{item.product.name}</h3>
-                      <p className="text-sm text-muted-foreground">${item.product.price}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => updateQty(item.product.id, item.qty - 1)}
-                      >
-                        −
-                      </Button>
-                      <span className="text-sm font-medium w-6 text-center">{item.qty}</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => updateQty(item.product.id, item.qty + 1)}
-                      >
-                        +
-                      </Button>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-destructive"
-                      onClick={() => removeFromCart(item.product.id)}
-                    >
-                      Remove
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-semibold">Subtotal</span>
-                    <span className="text-2xl font-bold text-primary">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <Button variant="peaceful" size="lg" className="w-full text-lg py-6" disabled>
-                    Checkout Coming Soon
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center mt-2">
-                    Online checkout will be available soon. Thank you for your patience!
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // DETAIL VIEW
-  if (view === "detail" && selectedProduct) {
-    return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-        <div className="max-w-2xl mx-auto px-4">
-          <Button variant="ghost" size="sm" className="mb-6" onClick={() => setView("browse")}>
-            ← Back to Store
-          </Button>
-          <div className="grid md:grid-cols-2 gap-8">
-            <img
-              src={selectedProduct.image}
-              alt={selectedProduct.name}
-              className="w-full aspect-square rounded-xl object-cover"
-            />
-            <div className="space-y-4">
-              <Badge variant="secondary">{selectedProduct.category}</Badge>
-              <h1 className="font-playfair text-2xl font-bold text-foreground">
-                {selectedProduct.name}
-              </h1>
-              <p className="text-muted-foreground">{selectedProduct.description}</p>
-              <p className="text-3xl font-bold text-primary">${selectedProduct.price}</p>
-
-              {selectedProduct.variants?.map((variant) => (
-                <div key={variant.label} className="space-y-2">
-                  <p className="text-sm font-medium">{variant.label}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {variant.options.map((opt) => (
-                      <Button
-                        key={opt}
-                        variant={selectedVariants[variant.label] === opt ? "peaceful" : "outline"}
-                        size="sm"
-                        onClick={() =>
-                          setSelectedVariants((prev) => ({ ...prev, [variant.label]: opt }))
-                        }
-                      >
-                        {opt}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              <Button
-                variant="peaceful"
-                size="lg"
-                className="w-full gap-2 mt-4"
-                onClick={() => {
-                  addToCart(selectedProduct);
-                  setView("cart");
-                }}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                Add to Cart
-              </Button>
-              <p className="text-xs text-muted-foreground text-center">
-                Purchases help support the PrayerForward mission.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // BROWSE VIEW
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -266,21 +74,11 @@ const Store = () => {
         </div>
 
         {/* Cart button */}
-        {cartCount > 0 && (
-          <div className="fixed bottom-20 right-4 z-40 md:bottom-6">
-            <Button
-              variant="peaceful"
-              size="lg"
-              className="rounded-full shadow-peaceful gap-2"
-              onClick={() => setView("cart")}
-            >
-              <ShoppingCart className="h-5 w-5" />
-              Cart ({cartCount})
-            </Button>
-          </div>
-        )}
+        <div className="fixed bottom-20 right-4 z-40 md:bottom-6">
+          <CartDrawer />
+        </div>
 
-        {/* Search & Filter */}
+        {/* Search */}
         <div className="space-y-4 mb-8">
           <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -291,22 +89,10 @@ const Store = () => {
               className="pl-10"
             />
           </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((cat) => (
-              <Button
-                key={cat}
-                variant={activeCategory === cat ? "peaceful" : "outline"}
-                size="sm"
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat}
-              </Button>
-            ))}
-          </div>
         </div>
 
         {/* Loading state */}
-        {gelatoLoading && (
+        {loading && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             {Array.from({ length: 4 }).map((_, i) => (
               <Card key={i} className="overflow-hidden">
@@ -321,64 +107,66 @@ const Store = () => {
           </div>
         )}
 
-        {gelatoError && (
-          <div className="text-center py-6 mb-4">
-            <p className="text-sm text-muted-foreground mb-2">Showing offline catalog</p>
+        {/* Products Grid */}
+        {!loading && filtered.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {filtered.map((product, i) => {
+              const price = product.node.priceRange.minVariantPrice;
+              const image = product.node.images.edges[0]?.node;
+              return (
+                <Card
+                  key={product.node.id}
+                  className="group overflow-hidden hover:shadow-peaceful transition-all cursor-pointer animate-gentle-fade"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                  onClick={() => navigate(`/product/${product.node.handle}`)}
+                >
+                  <div className="aspect-square overflow-hidden bg-muted">
+                    {image ? (
+                      <img
+                        src={image.url}
+                        alt={image.altText || product.node.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ShoppingBag className="h-12 w-12 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-3 md:p-4 space-y-1.5">
+                    <h3 className="font-semibold text-sm leading-snug line-clamp-2">
+                      {product.node.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {product.node.description}
+                    </p>
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-lg font-bold text-primary">
+                        {price.currencyCode} {parseFloat(price.amount).toFixed(2)}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs gap-1"
+                        disabled={isLoading}
+                        onClick={(e) => handleAddToCart(product, e)}
+                      >
+                        {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <><ShoppingCart className="h-3 w-3" /> Add</>}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {filtered.map((product, i) => (
-            <Card
-              key={product.id}
-              className="group overflow-hidden hover:shadow-peaceful transition-all cursor-pointer animate-gentle-fade"
-              style={{ animationDelay: `${i * 50}ms` }}
-              onClick={() => openDetail(product)}
-            >
-              <div className="aspect-square overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <CardContent className="p-3 md:p-4 space-y-1.5">
-                <Badge variant="secondary" className="text-[10px]">
-                  {product.category}
-                </Badge>
-                <h3 className="font-semibold text-sm leading-snug line-clamp-2">
-                  {product.name}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {product.description}
-                </p>
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-lg font-bold text-primary">
-                    ${product.price}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs gap-1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openDetail(product);
-                    }}
-                  >
-                    View <ArrowRight className="h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-16">
             <ShoppingBag className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground">No products found. Try a different search.</p>
+            <p className="text-muted-foreground">No products found.</p>
+            <p className="text-sm text-muted-foreground mt-2">Products will appear here once they are added to the store.</p>
           </div>
         )}
 

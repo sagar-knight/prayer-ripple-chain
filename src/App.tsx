@@ -35,8 +35,15 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import ProductDetail from "./pages/ProductDetail";
+import { useCartSync } from "./hooks/useCartSync";
 
 const queryClient = new QueryClient();
+
+const AppContent = () => {
+  useCartSync();
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -45,6 +52,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <AppContent />
           <Navigation />
           <Routes>
             {/* Public routes */}
@@ -56,6 +64,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/support" element={<SupportMission />} />
             <Route path="/store" element={<Store />} />
+            <Route path="/product/:handle" element={<ProductDetail />} />
             <Route path="/churches" element={<Churches />} />
 
             {/* Protected routes */}
