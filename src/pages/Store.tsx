@@ -74,9 +74,11 @@ const Store = () => {
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
+      let allProducts: ShopifyProduct[] = [];
+
       try {
         const allProductsData = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 250 });
-        const allProducts = allProductsData?.data?.products?.edges || [];
+        allProducts = allProductsData?.data?.products?.edges || [];
 
         if (activeCategory === "All") {
           setProducts(allProducts);
@@ -109,11 +111,20 @@ const Store = () => {
         setProducts(fallbackProducts);
       } catch (error) {
         console.error("Failed to fetch products:", error);
-        setProducts([]);
+
+        if (allProducts.length > 0) {
+          const fallbackProducts = activeCategory === "All"
+            ? allProducts
+            : allProducts.filter((product: ShopifyProduct) => matchesFallbackCategory(product, activeCategory));
+          setProducts(fallbackProducts);
+        } else {
+          setProducts([]);
+        }
       } finally {
         setLoading(false);
       }
     }
+
     fetchProducts();
   }, [activeCategory]);
 

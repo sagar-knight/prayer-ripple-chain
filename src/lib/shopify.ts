@@ -52,16 +52,30 @@ export interface ShopifyProduct {
 }
 
 export async function storefrontApiRequest(query: string, variables: any = {}) {
-  const response = await fetch(SHOPIFY_STOREFRONT_URL, {
-    method: 'POST',
-    cache: 'no-store',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache',
-      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
-    },
-    body: JSON.stringify({ query, variables }),
-  });
+  const requestBody = JSON.stringify({ query, variables });
+
+  const makeRequest = () =>
+    fetch(SHOPIFY_STOREFRONT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
+      },
+      body: requestBody,
+    });
+
+  let response: Response;
+
+  try {
+    response = await makeRequest();
+  } catch (error) {
+    // Retry once for intermittent network/CORS hiccups
+    if (error instanceof TypeError) {
+      response = await makeRequest();
+    } else {
+      throw error;
+    }
+  }
 
   if (response.status === 402) {
     toast.error("Shopify: Payment required", {
