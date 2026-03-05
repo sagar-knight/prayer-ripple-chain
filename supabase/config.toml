@@ -2,3 +2,6 @@ project_id = "fyjfxuqwwqjxoxmwuixa"
 
 [functions.bible-ai]
 verify_jwt = false
+
+[functions.gelato-proxy]
+verify_jwt = false
