@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingBag, ShoppingCart, Search, Loader2 } from "lucide-react";
+import { ShoppingBag, ShoppingCart, Search, Loader2, ChevronRight } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import {
@@ -22,6 +21,11 @@ const categoryFallbackTerms: Record<string, string[]> = {
   "Journals": ["journal", "notebook", "devotional", "planner"],
 };
 
+const genderTerms: Record<string, string[]> = {
+  "Men": ["men", "mens", "men's", "male", "unisex"],
+  "Women": ["women", "womens", "women's", "female", "ladies"],
+};
+
 const normalizeValue = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
@@ -31,6 +35,7 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeSubCategory, setActiveSubCategory] = useState<string | null>(null);
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
 
@@ -41,8 +46,24 @@ const Store = () => {
     "Journals": "journals",
   };
 
+  const apparelSubCategories = ["Men", "Women"];
+
   const matchesFallbackCategory = (product: ShopifyProduct, category: string) => {
     const terms = categoryFallbackTerms[category] || [];
+    if (terms.length === 0) return false;
+
+    const haystack = [
+      product.node.title,
+      product.node.description,
+      product.node.productType || "",
+      ...(product.node.tags || []),
+    ].join(" ").toLowerCase();
+
+    return terms.some((term) => haystack.includes(term.toLowerCase()));
+  };
+
+  const matchesGender = (product: ShopifyProduct, gender: string) => {
+    const terms = genderTerms[gender] || [];
     if (terms.length === 0) return false;
 
     const haystack = [
@@ -128,11 +149,21 @@ const Store = () => {
     fetchProducts();
   }, [activeCategory]);
 
-  const filtered = products.filter((p) => {
+  // Apply gender sub-filter on top of category products
+  const genderFiltered = activeSubCategory
+    ? products.filter((p) => matchesGender(p, activeSubCategory))
+    : products;
+
+  const filtered = genderFiltered.filter((p) => {
     if (!search) return true;
     const s = search.toLowerCase();
     return p.node.title.toLowerCase().includes(s) || (p.node.description || "").toLowerCase().includes(s);
   });
+
+  const handleCategoryClick = (cat: string) => {
+    setActiveCategory(cat);
+    setActiveSubCategory(null);
+  };
 
   const handleAddToCart = async (product: ShopifyProduct, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -149,18 +180,41 @@ const Store = () => {
     toast.success("Added to cart", { description: product.node.title });
   };
 
+  // Breadcrumb
+  const breadcrumb = ["Store"];
+  if (activeCategory !== "All") breadcrumb.push(activeCategory);
+  if (activeSubCategory) breadcrumb.push(activeSubCategory);
+
   return (
-    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+    <div className="min-h-screen bg-gradient-peaceful py-8 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-10 animate-gentle-fade">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <ShoppingBag className="h-8 w-8 text-primary" />
-            <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground">
-              PrayerForward Store
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-1 text-sm text-muted-foreground mb-6">
+          {breadcrumb.map((crumb, idx) => (
+            <span key={crumb} className="flex items-center gap-1">
+              {idx > 0 && <ChevronRight className="h-3 w-3" />}
+              <button
+                className={`hover:text-primary transition-colors ${idx === breadcrumb.length - 1 ? "text-foreground font-semibold" : ""}`}
+                onClick={() => {
+                  if (idx === 0) { setActiveCategory("All"); setActiveSubCategory(null); }
+                  else if (idx === 1) { setActiveCategory(crumb); setActiveSubCategory(null); }
+                }}
+              >
+                {crumb}
+              </button>
+            </span>
+          ))}
+        </div>
+
+        {/* Title */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <ShoppingBag className="h-7 w-7 text-primary" />
+            <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">
+              {activeSubCategory ? `${activeCategory} — ${activeSubCategory}` : activeCategory === "All" ? "Store" : activeCategory}
             </h1>
           </div>
-          <p className="text-muted-foreground max-w-lg mx-auto">
+          <p className="text-muted-foreground text-sm">
             Wear your faith. Spread prayer. Purchases help support the mission.
           </p>
         </div>
@@ -170,9 +224,46 @@ const Store = () => {
           <CartDrawer />
         </div>
 
-        {/* Search & Category Filters */}
-        <div className="space-y-4 mb-8">
-          <div className="relative max-w-md mx-auto">
+        {/* Category Chips */}
+        <div className="space-y-3 mb-8">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <Button
+                key={cat}
+                variant={activeCategory === cat ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleCategoryClick(cat)}
+              >
+                {cat}
+              </Button>
+            ))}
+          </div>
+
+          {/* Apparel Sub-categories */}
+          {activeCategory === "Apparel" && (
+            <div className="flex flex-wrap gap-2 pl-4 border-l-2 border-primary/20">
+              <Button
+                variant={activeSubCategory === null ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveSubCategory(null)}
+              >
+                All Apparel
+              </Button>
+              {apparelSubCategories.map((sub) => (
+                <Button
+                  key={sub}
+                  variant={activeSubCategory === sub ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveSubCategory(sub)}
+                >
+                  {sub}
+                </Button>
+              ))}
+            </div>
+          )}
+
+          {/* Search */}
+          <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search products..."
@@ -180,18 +271,6 @@ const Store = () => {
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
             />
-          </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((cat) => (
-              <Button
-                key={cat}
-                variant={activeCategory === cat ? "default" : "outline"}
-                size="sm"
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat}
-              </Button>
-            ))}
           </div>
         </div>
 
@@ -273,8 +352,6 @@ const Store = () => {
             <p className="text-sm text-muted-foreground mt-2">Products will appear here once they are added to the store.</p>
           </div>
         )}
-
-        <NewsletterSubscribe />
       </div>
     </div>
   );
