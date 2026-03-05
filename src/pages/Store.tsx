@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingBag, ShoppingCart, Search, ArrowRight, Loader2 } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
-import { storefrontApiRequest, STOREFRONT_PRODUCTS_QUERY } from "@/lib/shopify";
+import { storefrontApiRequest, STOREFRONT_PRODUCTS_QUERY, STOREFRONT_COLLECTION_PRODUCTS_QUERY } from "@/lib/shopify";
 import { toast } from "sonner";
 
 const Store = () => {
@@ -22,33 +22,47 @@ const Store = () => {
   const isLoading = useCartStore(state => state.isLoading);
 
   const categories = ["All", "Apparel", "Wall Art", "Journals"];
+  const categoryCollectionHandles: Record<string, string> = {
+    "Apparel": "apparel",
+    "Wall Art": "wall-art",
+    "Journals": "journals",
+  };
 
   useEffect(() => {
     async function fetchProducts() {
+      setLoading(true);
       try {
-        const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 50 });
-        if (data?.data?.products?.edges) {
-          setProducts(data.data.products.edges);
+        if (activeCategory === "All") {
+          const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 50 });
+          if (data?.data?.products?.edges) {
+            setProducts(data.data.products.edges);
+          } else {
+            setProducts([]);
+          }
+        } else {
+          const handle = categoryCollectionHandles[activeCategory];
+          if (!handle) { setProducts([]); return; }
+          const data = await storefrontApiRequest(STOREFRONT_COLLECTION_PRODUCTS_QUERY, { handle, first: 50 });
+          if (data?.data?.collection?.products?.edges) {
+            setProducts(data.data.collection.products.edges);
+          } else {
+            setProducts([]);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     }
     fetchProducts();
-  }, []);
+  }, [activeCategory]);
 
   const filtered = products.filter((p) => {
-    const matchesSearch = !search || 
-      p.node.title.toLowerCase().includes(search.toLowerCase()) || 
-      p.node.description.toLowerCase().includes(search.toLowerCase());
-    
-    const matchesCategory = activeCategory === "All" || 
-      p.node.title.toLowerCase().includes(activeCategory.toLowerCase()) ||
-      p.node.description.toLowerCase().includes(activeCategory.toLowerCase());
-    
-    return matchesSearch && matchesCategory;
+    if (!search) return true;
+    const s = search.toLowerCase();
+    return p.node.title.toLowerCase().includes(s) || p.node.description.toLowerCase().includes(s);
   });
 
   const handleAddToCart = async (product: ShopifyProduct, e: React.MouseEvent) => {
