@@ -69,7 +69,7 @@ const OrganizationDetail = () => {
 
   const handlePray = (reqId: string) => {
     setPrayedIds((prev) => new Set(prev).add(reqId));
-    toast({ title: "Prayer recorded", description: "Thank you for praying." });
+    toast({ title: "Prayer recorded 🙏", description: "Thank you for praying." });
   };
 
   return (
@@ -245,7 +245,7 @@ const OrganizationDetail = () => {
                     className="w-full"
                     disabled={!newReq.title.trim() || !newReq.description.trim()}
                     onClick={() => {
-                      toast({ title: "Prayer request submitted" });
+                      toast({ title: "Prayer request submitted 🙏" });
                       setShowNewRequest(false);
                       setNewReq({
                         title: "",
@@ -297,7 +297,7 @@ const OrganizationDetail = () => {
               .length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
                 <CheckCircle className="h-8 w-8 mx-auto mb-2 text-primary" />
-                <p>You've prayed for all current requests. Thank you!</p>
+                <p>You've prayed for all current requests. Thank you! 🙏</p>
               </div>
             )}
           </TabsContent>

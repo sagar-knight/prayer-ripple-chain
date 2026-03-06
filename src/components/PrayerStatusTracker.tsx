@@ -161,8 +161,8 @@ const PrayerStatusTracker = () => {
               <div className="bg-primary/5 rounded-lg p-3 text-center">
                 <p className="text-sm text-primary font-medium italic">
                   {request.status === "answered"
-                     ? "God answered your prayer! Share your testimony to encourage others."
-                     : "You are not alone. People are praying for you."}
+                    ? "🎉 God answered your prayer! Share your testimony to encourage others."
+                    : "🙏 You are not alone. People are praying for you."}
                 </p>
               </div>
 
@@ -193,7 +193,7 @@ const PrayerStatusTracker = () => {
                   </Button>
                   <Button asChild variant="outline" size="sm" className="w-full gap-2">
                     <a href="/support">
-                      Support the Mission
+                      Support the Mission 🙏
                     </a>
                   </Button>
                 </div>

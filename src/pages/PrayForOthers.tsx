@@ -28,62 +28,136 @@ const PrayForOthers = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [prayerStats, setPrayerStats] = useState({ offered: 12, streak: 5 });
 
+  // Session state
   const [sessionMode, setSessionMode] = useState<PrayerFocusMode>("needs_most");
   const [sessionTarget, setSessionTarget] = useState(1);
+  // Browse pagination
   const [browsePage, setBrowsePage] = useState(1);
   const BROWSE_PAGE_SIZE = 10;
 
+  // Mock prayer requests data with scoring fields
   const prayerRequests: ScoredPrayerRequest[] = [
     {
-      id: "1", title: "Healing for my grandmother",
-      description: "My grandmother was recently diagnosed with cancer. Please pray for her healing, strength during treatment, and peace for our family during this difficult time.",
-      category: "Health & Healing", isAnonymous: false, location: "Texas, USA", timeAgo: "2 hours ago", churchName: "Grace Community Church",
-      prayerCount: 3, createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), lastPrayedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
-      assignedTargetCount: 3, assignedPrayedCount: 2, assignmentStatus: "pending", status: "open", country: "USA",
-      interestCategories: ["Health & Healing"], visibility: "public",
+      id: "1",
+      title: "Healing for my grandmother",
+      description:
+        "My grandmother was recently diagnosed with cancer. Please pray for her healing, strength during treatment, and peace for our family during this difficult time.",
+      category: "Health & Healing",
+      isAnonymous: false,
+      location: "Texas, USA",
+      timeAgo: "2 hours ago",
+      churchName: "Grace Community Church",
+      prayerCount: 3,
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 2,
+      assignmentStatus: "pending",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Health & Healing"],
+      visibility: "public",
     },
     {
-      id: "2", title: "Guidance in job search",
-      description: "I've been unemployed for 3 months and struggling to find work. Please pray for God's guidance in my job search and provision for my family's needs.",
-      category: "Financial Needs", isAnonymous: true, timeAgo: "5 hours ago",
-      prayerCount: 1, createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000), lastPrayedAt: null,
-      assignedTargetCount: 3, assignedPrayedCount: 0, assignmentStatus: "pending", status: "open", country: "USA",
-      interestCategories: ["Financial Needs"], visibility: "public",
+      id: "2",
+      title: "Guidance in job search",
+      description:
+        "I've been unemployed for 3 months and struggling to find work. Please pray for God's guidance in my job search and provision for my family's needs.",
+      category: "Financial Needs",
+      isAnonymous: true,
+      timeAgo: "5 hours ago",
+      prayerCount: 1,
+      createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      lastPrayedAt: null,
+      assignedTargetCount: 3,
+      assignedPrayedCount: 0,
+      assignmentStatus: "pending",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Financial Needs"],
+      visibility: "public",
     },
     {
-      id: "3", title: "Marriage restoration",
-      description: "My spouse and I are going through a very difficult time. Please pray for healing in our relationship and wisdom as we work through our challenges.",
-      category: "Family & Relationships", isAnonymous: true, location: "California, USA", timeAgo: "1 day ago",
-      prayerCount: 7, createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), lastPrayedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      assignedTargetCount: 3, assignedPrayedCount: 3, assignmentStatus: "completed", status: "open", country: "USA",
-      interestCategories: ["Family & Relationships"], visibility: "public",
+      id: "3",
+      title: "Marriage restoration",
+      description:
+        "My spouse and I are going through a very difficult time. Please pray for healing in our relationship and wisdom as we work through our challenges.",
+      category: "Family & Relationships",
+      isAnonymous: true,
+      location: "California, USA",
+      timeAgo: "1 day ago",
+      prayerCount: 7,
+      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 3,
+      assignmentStatus: "completed",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Family & Relationships"],
+      visibility: "public",
     },
     {
-      id: "4", title: "Thanksgiving for answered prayers",
-      description: "I want to thank everyone who prayed for my surgery recovery. The doctors say everything went perfectly and I'm healing faster than expected. God is good!",
-      category: "Thanksgiving & Praise", isAnonymous: false, timeAgo: "2 days ago", churchName: "Living Hope Fellowship",
-      prayerCount: 47, createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000), lastPrayedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      assignedTargetCount: 3, assignedPrayedCount: 3, assignmentStatus: "completed", status: "open", country: "USA",
-      interestCategories: ["Thanksgiving & Praise"], visibility: "public",
+      id: "4",
+      title: "Thanksgiving for answered prayers",
+      description:
+        "I want to thank everyone who prayed for my surgery recovery. The doctors say everything went perfectly and I'm healing faster than expected. God is good!",
+      category: "Thanksgiving & Praise",
+      isAnonymous: false,
+      timeAgo: "2 days ago",
+      churchName: "Living Hope Fellowship",
+      prayerCount: 47,
+      createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 3,
+      assignmentStatus: "completed",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Thanksgiving & Praise"],
+      visibility: "public",
     },
     {
-      id: "5", title: "Peace during anxiety",
-      description: "I have been dealing with severe anxiety attacks. Please pray for God's peace to fill my heart and mind during these difficult moments.",
-      category: "Comfort & Peace", isAnonymous: true, timeAgo: "3 hours ago",
-      prayerCount: 0, createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000), lastPrayedAt: null,
-      assignedTargetCount: 3, assignedPrayedCount: 0, assignmentStatus: "pending", status: "open",
-      interestCategories: ["Comfort & Peace"], visibility: "public",
+      id: "5",
+      title: "Peace during anxiety",
+      description:
+        "I have been dealing with severe anxiety attacks. Please pray for God's peace to fill my heart and mind during these difficult moments.",
+      category: "Comfort & Peace",
+      isAnonymous: true,
+      timeAgo: "3 hours ago",
+      prayerCount: 0,
+      createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
+      lastPrayedAt: null,
+      assignedTargetCount: 3,
+      assignedPrayedCount: 0,
+      assignmentStatus: "pending",
+      status: "open",
+      interestCategories: ["Comfort & Peace"],
+      visibility: "public",
     },
     {
-      id: "6", title: "Wisdom for parenting",
-      description: "My teenage daughter is struggling with peer pressure. I need wisdom and patience to guide her through this season.",
-      category: "Family & Relationships", isAnonymous: false, location: "Georgia, USA", timeAgo: "4 days ago",
-      prayerCount: 1, createdAt: new Date(Date.now() - 96 * 60 * 60 * 1000), lastPrayedAt: new Date(Date.now() - 80 * 60 * 60 * 1000),
-      assignedTargetCount: 3, assignedPrayedCount: 1, assignmentStatus: "pending", status: "open", country: "USA",
-      interestCategories: ["Family & Relationships"], visibility: "public",
+      id: "6",
+      title: "Wisdom for parenting",
+      description:
+        "My teenage daughter is struggling with peer pressure. I need wisdom and patience to guide her through this season.",
+      category: "Family & Relationships",
+      isAnonymous: false,
+      location: "Georgia, USA",
+      timeAgo: "4 days ago",
+      prayerCount: 1,
+      createdAt: new Date(Date.now() - 96 * 60 * 60 * 1000),
+      lastPrayedAt: new Date(Date.now() - 80 * 60 * 60 * 1000),
+      assignedTargetCount: 3,
+      assignedPrayedCount: 1,
+      assignmentStatus: "pending",
+      status: "open",
+      country: "USA",
+      interestCategories: ["Family & Relationships"],
+      visibility: "public",
     },
   ];
 
+  // Count rescue candidates
   const rescueCount = prayerRequests.filter(isRescueCandidate).length;
 
   const categories = [
@@ -103,10 +177,12 @@ const PrayForOthers = () => {
       request.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory =
       selectedCategory === "all" ||
-      request.category.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "") === selectedCategory;
+      request.category.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "") ===
+        selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
+  // Paginated browse results
   const paginatedRequests = useMemo(() => {
     const start = (browsePage - 1) * BROWSE_PAGE_SIZE;
     return filteredRequests.slice(start, start + BROWSE_PAGE_SIZE);
@@ -115,7 +191,10 @@ const PrayForOthers = () => {
   const totalBrowsePages = Math.ceil(filteredRequests.length / BROWSE_PAGE_SIZE);
 
   const handlePrayerOffered = (requestId: string) => {
-    setPrayerStats((prev) => ({ offered: prev.offered + 1, streak: prev.streak + 1 }));
+    setPrayerStats((prev) => ({
+      offered: prev.offered + 1,
+      streak: prev.streak + 1,
+    }));
   };
 
   const handleStartPraying = (mode: PrayerFocusMode, count: number) => {
@@ -128,20 +207,22 @@ const PrayForOthers = () => {
     navigate("/");
   };
 
+  // ── SELECTOR VIEW ──
   if (viewMode === "selector") {
     return (
-      <div className="min-h-screen bg-background py-12 pb-24">
+      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="mb-8 bg-foreground text-background border-none max-w-lg mx-auto">
+          {/* Prayer Stats (compact) */}
+          <Card className="mb-8 bg-gradient-warm text-accent-foreground animate-gentle-fade max-w-lg mx-auto">
             <CardContent className="pt-4 pb-4">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-semibold">{prayerStats.offered}</div>
-                  <div className="text-xs opacity-80">Prayers Offered</div>
+                  <div className="text-2xl font-bold">{prayerStats.offered}</div>
+                  <div className="text-xs opacity-90">Prayers Offered</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-semibold">{prayerStats.streak}</div>
-                  <div className="text-xs opacity-80">Day Streak</div>
+                  <div className="text-2xl font-bold">{prayerStats.streak}</div>
+                  <div className="text-xs opacity-90">Day Streak</div>
                 </div>
               </div>
             </CardContent>
@@ -157,9 +238,10 @@ const PrayForOthers = () => {
     );
   }
 
+  // ── SESSION VIEW (one-at-a-time) ──
   if (viewMode === "session") {
     return (
-      <div className="min-h-screen bg-background py-12 pb-24">
+      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <PrayerSession
             mode={sessionMode}
@@ -173,18 +255,28 @@ const PrayForOthers = () => {
     );
   }
 
+  // ── BROWSE VIEW (advanced, paginated) ──
   return (
-    <div className="min-h-screen bg-background py-12 pb-24">
+    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="sm" className="gap-1" onClick={() => setViewMode("selector")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1"
+            onClick={() => setViewMode("selector")}
+          >
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>
-          <h1 className="text-2xl font-semibold text-foreground">Browse Prayer Requests</h1>
+          <h1 className="font-playfair text-2xl font-bold text-foreground">
+            Browse Prayer Requests
+          </h1>
         </div>
 
-        <Card className="mb-8 border border-border">
+        {/* Filters */}
+        <Card className="mb-8 animate-gentle-fade">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <Filter className="h-4 w-4" />
@@ -198,17 +290,29 @@ const PrayForOthers = () => {
                 <Input
                   placeholder="Search prayer requests..."
                   value={searchTerm}
-                  onChange={(e) => { setSearchTerm(e.target.value); setBrowsePage(1); }}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setBrowsePage(1);
+                  }}
                   className="pl-10"
                 />
               </div>
-              <Select value={selectedCategory} onValueChange={(val) => { setSelectedCategory(val); setBrowsePage(1); }}>
+
+              <Select
+                value={selectedCategory}
+                onValueChange={(val) => {
+                  setSelectedCategory(val);
+                  setBrowsePage(1);
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>{category.label}</SelectItem>
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -216,30 +320,58 @@ const PrayForOthers = () => {
           </CardContent>
         </Card>
 
+        {/* Results */}
         {paginatedRequests.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedRequests.map((request) => (
-                <div key={request.id}>
-                  <PrayerCard request={request} onPrayerOffered={handlePrayerOffered} />
+              {paginatedRequests.map((request, index) => (
+                <div
+                  key={request.id}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <PrayerCard
+                    request={request}
+                    onPrayerOffered={handlePrayerOffered}
+                  />
                 </div>
               ))}
             </div>
 
+            {/* Pagination */}
             {totalBrowsePages > 1 && (
               <div className="flex justify-center items-center gap-2 mt-8">
-                <Button variant="outline" size="sm" disabled={browsePage <= 1} onClick={() => setBrowsePage((p) => p - 1)}>Previous</Button>
-                <span className="text-sm text-muted-foreground px-3">Page {browsePage} of {totalBrowsePages}</span>
-                <Button variant="outline" size="sm" disabled={browsePage >= totalBrowsePages} onClick={() => setBrowsePage((p) => p + 1)}>Next</Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={browsePage <= 1}
+                  onClick={() => setBrowsePage((p) => p - 1)}
+                >
+                  Previous
+                </Button>
+                <span className="text-sm text-muted-foreground px-3">
+                  Page {browsePage} of {totalBrowsePages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={browsePage >= totalBrowsePages}
+                  onClick={() => setBrowsePage((p) => p + 1)}
+                >
+                  Next
+                </Button>
               </div>
             )}
           </>
         ) : (
-          <Card className="text-center py-12 border border-border">
+          <Card className="text-center py-12 animate-gentle-fade">
             <CardContent>
-              <Heart className="h-14 w-14 text-muted-foreground/30 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">No prayer requests found</h3>
-              <p className="text-muted-foreground text-sm">Try adjusting your search or category filter.</p>
+              <Heart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                No prayer requests found
+              </h3>
+              <p className="text-muted-foreground">
+                Try adjusting your search or category filter.
+              </p>
             </CardContent>
           </Card>
         )}

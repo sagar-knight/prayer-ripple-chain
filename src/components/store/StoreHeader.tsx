@@ -59,10 +59,10 @@ const StoreHeader = () => {
 
   return (
     <>
-      {/* Top utility bar */}
+      {/* Top utility bar — main site links */}
       <div className="bg-foreground text-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-10 text-sm">
-          <nav className="hidden md:flex items-center gap-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs">
+          <nav className="hidden md:flex items-center gap-4">
             {visibleAppLinks.slice(0, 6).map((link) => (
               <Link
                 key={link.href}
@@ -73,13 +73,13 @@ const StoreHeader = () => {
               </Link>
             ))}
           </nav>
-          <Link to="/" className="md:hidden text-background/70 hover:text-background transition-colors flex items-center gap-1.5">
-            <Home className="h-4 w-4" /> PrayerForward App
+          <Link to="/" className="md:hidden text-background/70 hover:text-background transition-colors flex items-center gap-1">
+            <Home className="h-3 w-3" /> PrayerForward App
           </Link>
           <span className="text-background/60 tracking-wide hidden sm:block">
             Every purchase supports the mission · Free shipping $75+
           </span>
-          <span className="text-background/60 tracking-wide sm:hidden text-xs">
+          <span className="text-background/60 tracking-wide sm:hidden text-[10px]">
             Free shipping $75+
           </span>
         </div>
@@ -87,47 +87,49 @@ const StoreHeader = () => {
 
       <header className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-[72px]">
+          <div className="flex items-center justify-between h-14 lg:h-16">
             {/* Mobile menu */}
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] p-0">
                 <div className="p-6 border-b border-border">
-                  <Link to="/store" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
-                    <Heart className="h-7 w-7 text-primary" />
-                    <span className="font-serif text-xl font-semibold text-primary">PrayerForward</span>
+                  <Link to="/store" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
+                    <Heart className="h-6 w-6 text-primary" />
+                    <span className="font-playfair text-lg font-semibold text-primary">PrayerForward</span>
                   </Link>
                 </div>
 
+                {/* Store nav */}
                 <nav className="p-4 space-y-1">
-                  <p className="px-3 text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-3">Shop</p>
+                  <p className="px-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">Shop</p>
                   {storeNavLinks.map((link) => (
                     <Link
                       key={link.label}
                       to={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block px-3 py-3 text-base font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                      className="block px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-colors"
                     >
                       {link.label}
                     </Link>
                   ))}
-                  <div className="px-3 py-3">
-                    <p className="text-base font-medium text-foreground mb-2">Apparel</p>
-                    <div className="pl-4 space-y-1">
-                      <Link to="/store?category=Apparel&sub=Men" onClick={() => setMobileOpen(false)} className="block py-2 text-muted-foreground hover:text-foreground">Men</Link>
-                      <Link to="/store?category=Apparel&sub=Women" onClick={() => setMobileOpen(false)} className="block py-2 text-muted-foreground hover:text-foreground">Women</Link>
+                  <div className="px-3 py-2.5">
+                    <p className="text-sm font-medium text-foreground mb-2">Apparel</p>
+                    <div className="pl-3 space-y-1">
+                      <Link to="/store?category=Apparel&sub=Men" onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-muted-foreground hover:text-foreground">Men</Link>
+                      <Link to="/store?category=Apparel&sub=Women" onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-muted-foreground hover:text-foreground">Women</Link>
                     </div>
                   </div>
-                  <Link to="/store/about" onClick={() => setMobileOpen(false)} className="block px-3 py-3 text-base font-medium text-foreground hover:bg-muted rounded-lg transition-colors">
+                  <Link to="/store/about" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-colors">
                     About
                   </Link>
 
+                  {/* App navigation section */}
                   <div className="border-t border-border mt-4 pt-4">
-                    <p className="px-3 text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-3">PrayerForward</p>
+                    <p className="px-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">PrayerForward</p>
                     {visibleAppLinks.map((link) => {
                       const Icon = link.icon;
                       return (
@@ -135,30 +137,31 @@ const StoreHeader = () => {
                           key={link.href}
                           to={link.href}
                           onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-3 px-3 py-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                          className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
                         >
-                          <Icon className="h-5 w-5" />
+                          <Icon className="h-4 w-4" />
                           {link.label}
                         </Link>
                       );
                     })}
                   </div>
 
+                  {/* Auth */}
                   <div className="border-t border-border mt-4 pt-4">
                     {user ? (
                       <button
                         onClick={() => { signOut(); setMobileOpen(false); }}
-                        className="flex items-center gap-3 px-3 py-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors w-full"
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors w-full"
                       >
-                        <LogOut className="h-5 w-5" /> Sign Out
+                        <LogOut className="h-4 w-4" /> Sign Out
                       </button>
                     ) : (
                       <Link
                         to="/login"
                         onClick={() => setMobileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-3 font-medium text-primary bg-primary/10 rounded-lg"
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-primary bg-primary/10 rounded-md"
                       >
-                        <User className="h-5 w-5" /> Sign In
+                        <User className="h-4 w-4" /> Sign In
                       </Link>
                     )}
                   </div>
@@ -167,11 +170,11 @@ const StoreHeader = () => {
             </Sheet>
 
             {/* Logo */}
-            <Link to="/store" className="flex items-center gap-2.5 shrink-0">
-              <Heart className="h-7 w-7 text-primary" />
+            <Link to="/store" className="flex items-center gap-2 shrink-0">
+              <Heart className="h-6 w-6 text-primary" />
               <div className="hidden sm:block">
-                <span className="font-serif text-xl font-semibold text-primary">PrayerForward</span>
-                <span className="text-xs text-muted-foreground ml-2 uppercase tracking-widest">Store</span>
+                <span className="font-playfair text-lg font-semibold text-primary">PrayerForward</span>
+                <span className="text-[10px] text-muted-foreground ml-1.5 uppercase tracking-widest">Store</span>
               </div>
             </Link>
 
@@ -181,7 +184,7 @@ const StoreHeader = () => {
                 <Link
                   key={link.label}
                   to={link.href}
-                  className={`px-4 py-2.5 text-[15px] font-medium transition-colors rounded-lg ${
+                  className={`px-3 py-2 text-sm font-medium transition-colors rounded-md ${
                     isActive(link.href) ? "text-primary" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -189,44 +192,45 @@ const StoreHeader = () => {
                 </Link>
               ))}
 
+              {/* Apparel dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-1 px-4 py-2.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg">
-                    Apparel <ChevronDown className="h-4 w-4" />
+                  <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
+                    Apparel <ChevronDown className="h-3.5 w-3.5" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="w-44">
+                <DropdownMenuContent align="center" className="w-40">
                   <DropdownMenuItem onClick={() => navigate("/store?category=Apparel")}>All Apparel</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Link to="/store/about" className="px-4 py-2.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg">
+              <Link to="/store/about" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
                 About
               </Link>
             </nav>
 
             {/* Right icons */}
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setSearchOpen(!searchOpen)}>
-                {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+              <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setSearchOpen(!searchOpen)}>
+                {searchOpen ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10">
-                    <User className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <User className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-44">
                   {user ? (
                     <>
                       <DropdownMenuItem onClick={() => navigate("/profile")}>My Account</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/store/orders")}>My Orders</DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => signOut()}>
-                        <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                        <LogOut className="h-3.5 w-3.5 mr-2" /> Sign Out
                       </DropdownMenuItem>
                     </>
                   ) : (
@@ -245,17 +249,17 @@ const StoreHeader = () => {
 
         {/* Search bar */}
         {searchOpen && (
-          <div className="border-t border-border bg-background px-4 py-4">
+          <div className="border-t border-border bg-background px-4 py-3">
             <form onSubmit={handleSearch} className="max-w-xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 autoFocus
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-24 h-12 text-base"
+                className="pl-10 pr-20"
               />
-              <Button type="submit" size="sm" className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 rounded-full">
+              <Button type="submit" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 h-7">
                 Search
               </Button>
             </form>

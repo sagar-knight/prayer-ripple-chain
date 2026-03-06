@@ -7,6 +7,7 @@ import {
   Menu,
   Users,
   Waves,
+  HelpCircle,
   Church,
   Calendar,
   BookOpen,
@@ -15,170 +16,142 @@ import {
   HandHeart,
   LogIn,
   LogOut,
-  ChevronDown,
-  Home,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { CartDrawer } from "@/components/CartDrawer";
-import logo from "@/assets/logo-tight.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
 
-  const primaryAuth = [
-    { href: "/pray", label: "Pray", icon: Heart },
-    { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/family", label: "Family", icon: Users },
-    { href: "/scripture", label: "Scripture", icon: BookOpen },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
-    { href: "/profile", label: "Profile", icon: User },
-  ];
-
+  // Items visible to everyone
   const publicItems = [
     { href: "/churches", label: "Churches", icon: Church },
     { href: "/support", label: "Support", icon: HandHeart },
     { href: "/store", label: "Store", icon: Store },
-    { href: "/about", label: "About", icon: Home },
+    { href: "/about", label: "About", icon: HelpCircle },
   ];
 
+  // Items visible only to logged-in users
+  const authItems = [
+    { href: "/pray", label: "Pray", icon: Users },
+    { href: "/submit-prayer", label: "Request", icon: BookOpen },
+    { href: "/calendar", label: "Calendar", icon: Calendar },
+    { href: "/churches", label: "Churches", icon: Church },
+    { href: "/family", label: "Family", icon: Users },
+    { href: "/ripple", label: "Ripple", icon: Waves },
+    { href: "/scripture", label: "Scripture", icon: BookOpen },
+    { href: "/support", label: "Support", icon: HandHeart },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/profile", label: "Profile", icon: User },
+  ];
+
+  const navItems = user ? authItems : publicItems;
+
   const allMobileItems = user
-    ? [
-        { href: "/", label: "Home", icon: Home },
-        ...primaryAuth,
-        { href: "/churches", label: "Churches", icon: Church },
-        { href: "/store", label: "Store", icon: Store },
-        { href: "/support", label: "Support", icon: HandHeart },
-      ]
-    : [
-        { href: "/", label: "Home", icon: Home },
-        ...publicItems,
-      ];
+    ? [{ href: "/", label: "Home", icon: Heart }, ...authItems]
+    : [{ href: "/", label: "Home", icon: Heart }, ...publicItems];
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
-    if (href === "/store")
-      return (
-        location.pathname === "/store" ||
-        location.pathname.startsWith("/store/") ||
-        location.pathname.startsWith("/product/")
-      );
     return location.pathname === href || location.pathname.startsWith(href + "/");
   };
 
   return (
-    <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-28">
+    <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <img src={logo} alt="PrayerForward" className="h-24 w-auto object-contain" />
+          <Link to="/" className="flex items-center space-x-2">
+            <Heart className="h-8 w-8 text-primary" />
+            <span className="font-playfair text-xl font-semibold text-primary">
+              PrayerForward
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
-            {(user ? primaryAuth : publicItems).map((item) => {
-              const active = isActiveRoute(item.href);
+          <div className="hidden lg:flex items-center space-x-1">
+            {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
-                  key={item.href}
+                  key={item.href + item.label}
                   to={item.href}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActiveRoute(item.href)
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
-                  {item.label}
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
-
-            <div className="w-px h-5 bg-border/60 mx-2" />
-
             {user ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => signOut()}
-                className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded-full px-3"
-              >
+              <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1 text-muted-foreground hover:text-primary">
+                <LogOut className="h-4 w-4" />
                 Sign Out
               </Button>
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors"
               >
                 <LogIn className="h-4 w-4" />
-                Sign In
+                <span>Sign In</span>
               </Link>
             )}
-
-            <CartDrawer />
           </div>
 
-          {/* Mobile Right */}
-          <div className="flex items-center gap-1 lg:hidden">
-            <CartDrawer />
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[280px]">
-                <div className="flex flex-col gap-0.5 mt-6">
-                  {allMobileItems.map((item) => {
-                    const Icon = item.icon;
-                    const active = isActiveRoute(item.href);
-                    return (
-                      <Link
-                        key={item.href + item.label}
-                        to={item.href}
-                        onClick={() => setIsOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                          active
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                  <div className="border-t border-border/60 mt-3 pt-3">
-                    {user ? (
-                      <button
-                        onClick={() => {
-                          signOut();
-                          setIsOpen(false);
-                        }}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-destructive w-full"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    ) : (
-                      <Link
-                        to="/login"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary text-primary-foreground"
-                      >
-                        <LogIn className="h-4 w-4" />
-                        <span>Sign In</span>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+          {/* Mobile Navigation */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="sm">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+              <div className="flex flex-col space-y-4 mt-6">
+                {allMobileItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href + item.label}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute(item.href)
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+                {user ? (
+                  <button
+                    onClick={() => { signOut(); setIsOpen(false); }}
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Sign Out</span>
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-primary bg-primary/10"
+                  >
+                    <LogIn className="h-5 w-5" />
+                    <span>Sign In</span>
+                  </Link>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>

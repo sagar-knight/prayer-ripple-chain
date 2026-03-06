@@ -251,13 +251,13 @@ const Organizations = () => {
                     ...prev,
                     [id]: [...(prev[id] || []).filter((d) => d !== today), today],
                   }));
-                  toast({ title: "Prayer recorded", duration: 2000 });
+                  toast({ title: "Prayer recorded 🙏", duration: 2000 });
                 }}
                 onMarkAnswered={(id) => {
                   setRequests((prev) =>
                     prev.map((r) => (r.id === id ? { ...r, status: "answered" as const } : r))
                   );
-                  toast({ title: "Praise God! Prayer answered" });
+                  toast({ title: "Praise God! Prayer answered ✨" });
                 }}
               />
             </TabsContent>

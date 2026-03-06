@@ -93,7 +93,7 @@ export function usePrayerReminders() {
       timezone: tz,
     });
     if (!error) {
-      toast({ title: "Reminder enabled", description: `Daily reminder set for ${time}` });
+      toast({ title: "Reminder enabled 🔔", description: `Daily reminder set for ${time}` });
       await fetchReminders();
     }
   };
@@ -142,7 +142,7 @@ export function usePrayerReminders() {
         { onConflict: "prayer_reminder_id,date_local" }
       );
     if (!error) {
-      toast({ title: "Prayed today", description: "No more reminders for this request today." });
+      toast({ title: "Prayed today ✅", description: "No more reminders for this request today." });
       await fetchLogs(reminders.map((r) => r.id));
     }
   };

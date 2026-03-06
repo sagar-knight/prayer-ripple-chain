@@ -57,7 +57,7 @@ const FamilyPrayerRequests = ({ requests, onAddRequest, onPray, onMarkAnswered, 
     setTitle("");
     setDescription("");
     setShowAdd(false);
-    toast({ title: "Prayer request added" });
+    toast({ title: "Prayer request added 🙏" });
   };
 
   const active = requests.filter((r) => r.status === "active");

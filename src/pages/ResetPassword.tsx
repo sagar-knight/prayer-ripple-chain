@@ -42,7 +42,7 @@ const ResetPassword = () => {
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Password updated", description: "You can now sign in with your new password." });
+      toast({ title: "Password updated ✅", description: "You can now sign in with your new password." });
       navigate("/");
     }
   };

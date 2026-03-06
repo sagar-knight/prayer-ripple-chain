@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lock, Globe, Send, BookOpen, Loader2 } from "lucide-react";
+import { Heart, Lock, Globe, Send, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PrayerStatusTracker from "@/components/PrayerStatusTracker";
 import ScriptureEncouragement from "@/components/ScriptureEncouragement";
@@ -27,7 +27,7 @@ const SubmitPrayer = () => {
       setIsSubmitting(false);
       setShowConfirmation(true);
       toast({
-        title: "Your prayer has been shared",
+        title: "Your prayer has been shared 🙏",
         description: "Our community is here for you. People will begin praying soon.",
         duration: 5000,
       });
@@ -50,18 +50,19 @@ const SubmitPrayer = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background py-12 pb-24">
+    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-3 tracking-tight">
+        <div className="text-center mb-8 animate-gentle-fade">
+          <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
+          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
             Prayer Requests
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-lg text-muted-foreground">
             Share your needs or track your existing prayers
           </p>
         </div>
 
-        <Tabs defaultValue="submit">
+        <Tabs defaultValue="submit" className="animate-gentle-fade">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="submit" className="gap-2">
               <Send className="h-4 w-4" />
@@ -74,14 +75,15 @@ const SubmitPrayer = () => {
           </TabsList>
 
           <TabsContent value="submit">
+            {/* Confirmation Banner */}
             {showConfirmation && (
-              <div className="mb-6 space-y-4">
-                <Card className="bg-secondary border-border">
+              <div className="mb-6 space-y-4 animate-gentle-fade">
+                <Card className="bg-primary/10 border-primary/20">
                   <CardContent className="pt-6 text-center">
-                    <p className="text-sm font-medium text-foreground">
-                      Your prayer has been shared.
+                    <p className="text-lg font-semibold text-primary">
+                      ✅ Your prayer has been shared.
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       People are already being notified to pray for you.
                     </p>
                   </CardContent>
@@ -92,34 +94,44 @@ const SubmitPrayer = () => {
               </div>
             )}
 
-            <Card className="border border-border">
+            <Card className="shadow-peaceful">
               <CardHeader>
-                <CardTitle className="text-lg text-center">
+                <CardTitle className="font-playfair text-2xl text-center">
                   Your Prayer Request
                 </CardTitle>
               </CardHeader>
 
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Title */}
                   <div className="space-y-2">
-                    <Label htmlFor="title">Prayer Title *</Label>
+                    <Label htmlFor="title" className="text-base font-medium">
+                      Prayer Title *
+                    </Label>
                     <Input
                       id="title"
                       name="title"
                       placeholder="Brief title for your prayer request"
                       required
+                      className="text-base"
                     />
                   </div>
 
+                  {/* Category */}
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category *</Label>
+                    <Label htmlFor="category" className="text-base font-medium">
+                      Category *
+                    </Label>
                     <Select name="category" required onValueChange={setSelectedCategory}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map((category) => (
-                          <SelectItem key={category} value={category.toLowerCase()}>
+                          <SelectItem
+                            key={category}
+                            value={category.toLowerCase()}
+                          >
                             {category}
                           </SelectItem>
                         ))}
@@ -127,29 +139,39 @@ const SubmitPrayer = () => {
                     </Select>
                   </div>
 
+                  {/* Description */}
                   <div className="space-y-2">
-                    <Label htmlFor="description">Prayer Description *</Label>
+                    <Label
+                      htmlFor="description"
+                      className="text-base font-medium"
+                    >
+                      Prayer Description (Issue/Problem) *
+                    </Label>
                     <Textarea
                       id="description"
                       name="description"
                       placeholder="Describe what you need prayer for..."
-                      className="min-h-[120px]"
+                      className="min-h-[120px] text-base"
                       required
                     />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
+                  {/* Visibility Toggle */}
+                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                     <div className="flex items-center space-x-3">
                       {isAnonymous ? (
-                        <Lock className="h-4 w-4 text-foreground" />
+                        <Lock className="h-5 w-5 text-primary" />
                       ) : (
-                        <Globe className="h-4 w-4 text-muted-foreground" />
+                        <Globe className="h-5 w-5 text-muted-foreground" />
                       )}
                       <div>
-                        <Label htmlFor="anonymous" className="cursor-pointer text-sm">
+                        <Label
+                          htmlFor="anonymous"
+                          className="text-base font-medium cursor-pointer"
+                        >
                           {isAnonymous ? "Anonymous" : "Public"}
                         </Label>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           {isAnonymous
                             ? "Your identity will be hidden"
                             : "Your name will be visible to those who pray"}
@@ -163,20 +185,22 @@ const SubmitPrayer = () => {
                     />
                   </div>
 
+                  {/* Submit Button */}
                   <Button
                     type="submit"
                     disabled={isSubmitting}
+                    variant="peaceful"
                     size="lg"
-                    className="w-full rounded-full"
+                    className="w-full text-lg"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Submitting...
+                        <div className="animate-peaceful-glow">🙏</div>
+                        Submitting Prayer...
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        <Send className="h-4 w-4" />
+                        <Send className="h-5 w-5" />
                         Submit Prayer Request
                       </span>
                     )}
@@ -185,16 +209,27 @@ const SubmitPrayer = () => {
               </CardContent>
             </Card>
 
-            <Card className="mt-6 bg-secondary/30 border-border">
+            {/* Privacy Notice */}
+            <Card className="mt-6 bg-primary/5 border-primary/20">
               <CardContent className="pt-6">
-                <h3 className="font-medium text-foreground mb-2 text-sm">
+                <h3 className="font-semibold text-primary mb-2">
                   Privacy & Community Guidelines
                 </h3>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>Prayer actions are always free, with no ads inside prayer flows</li>
-                  <li>• Your personal information is kept secure and never shared</li>
-                  <li>• Our community commits to praying with respect and love</li>
-                  <li>• For urgent situations, please contact local emergency services</li>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>
+                    • Prayer actions are always free — no ads inside prayer
+                    flows
+                  </li>
+                  <li>
+                    • Your personal information is kept secure and never shared
+                  </li>
+                  <li>
+                    • Our community commits to praying with respect and love
+                  </li>
+                  <li>
+                    • For urgent situations, please contact local emergency
+                    services
+                  </li>
                 </ul>
               </CardContent>
             </Card>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingBag, ShoppingCart, Loader2, ArrowRight } from "lucide-react";
@@ -8,6 +9,7 @@ import {
   storefrontApiRequest,
   STOREFRONT_PRODUCTS_QUERY,
   STOREFRONT_COLLECTION_PRODUCTS_QUERY,
+  STOREFRONT_COLLECTIONS_QUERY,
 } from "@/lib/shopify";
 import { toast } from "sonner";
 import StoreLayout from "@/components/store/StoreLayout";
@@ -24,6 +26,9 @@ const genderTerms: Record<string, string[]> = {
   Women: ["women", "womens", "women's", "female", "ladies"],
 };
 
+const normalizeValue = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
 const categoryCollectionHandles: Record<string, string> = {
   Apparel: "apparel",
   "Wall Art": "wall-art",
@@ -32,10 +37,10 @@ const categoryCollectionHandles: Record<string, string> = {
 };
 
 const shopCategories = [
-  { label: "Apparel", description: "Faith-inspired clothing" },
-  { label: "Accessories", description: "Everyday essentials" },
-  { label: "Wall Art", description: "Scripture for your walls" },
-  { label: "Journals", description: "Prayer & devotional" },
+  { label: "Apparel", icon: "👕", description: "Faith-inspired clothing" },
+  { label: "Accessories", icon: "🎒", description: "Everyday essentials" },
+  { label: "Wall Art", icon: "🖼️", description: "Scripture for your walls" },
+  { label: "Journals", icon: "📓", description: "Prayer & devotional" },
 ];
 
 const Store = () => {
@@ -45,8 +50,9 @@ const Store = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
-  const [addingId, setAddingId] = useState<string | null>(null);
+  const isLoading = useCartStore((state) => state.isLoading);
 
+  // Read URL params
   const urlCategory = searchParams.get("category") || "";
   const urlSubCategory = searchParams.get("sub") || "";
   const urlSearch = searchParams.get("search") || "";
@@ -79,11 +85,13 @@ const Store = () => {
           return;
         }
 
+        // If filtering by collection handle
         if (urlCollection) {
-          setProducts(all);
+          setProducts(all); // show all, collection filtering could be expanded
           return;
         }
 
+        // Category filtering
         const handle = categoryCollectionHandles[urlCategory];
         if (handle) {
           try {
@@ -96,6 +104,7 @@ const Store = () => {
           } catch {}
         }
 
+        // Fallback
         setProducts(all.filter((p) => matchesFallback(p, urlCategory)));
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -107,6 +116,7 @@ const Store = () => {
     fetchProducts();
   }, [urlCategory, urlCollection]);
 
+  // Apply gender + search filters
   let filtered = urlSubCategory ? products.filter((p) => matchesGender(p, urlSubCategory)) : products;
   if (urlSearch) {
     const s = urlSearch.toLowerCase();
@@ -118,11 +128,7 @@ const Store = () => {
   const handleAddToCart = async (product: ShopifyProduct, e: React.MouseEvent) => {
     e.stopPropagation();
     const variant = product.node.variants.edges[0]?.node;
-    if (!variant || !variant.availableForSale) {
-      toast.error("This item is currently out of stock");
-      return;
-    }
-    setAddingId(product.node.id);
+    if (!variant) return;
     await addItem({
       product,
       variantId: variant.id,
@@ -131,87 +137,77 @@ const Store = () => {
       quantity: 1,
       selectedOptions: variant.selectedOptions || [],
     });
-    setAddingId(null);
     toast.success("Added to cart", { description: product.node.title });
   };
 
+  // Determine view: home (no category/search) vs filtered
   const isHome = !urlCategory && !urlSearch && !urlCollection;
 
+  // Build title
   const pageTitle = urlSearch
     ? `Results for "${urlSearch}"`
     : urlSubCategory
     ? `${urlCategory} — ${urlSubCategory}`
     : urlCategory || (urlCollection ? urlCollection.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Shop All");
 
-  const ProductCard = ({ product }: { product: ShopifyProduct }) => {
+  const ProductCard = ({ product, index }: { product: ShopifyProduct; index: number }) => {
     const price = product.node.priceRange.minVariantPrice;
     const image = product.node.images.edges[0]?.node;
-    const variant = product.node.variants.edges[0]?.node;
-    const inStock = variant?.availableForSale ?? false;
-    const isAdding = addingId === product.node.id;
-
     return (
-      <div
-        className="group cursor-pointer"
+      <Card
+        className="group overflow-hidden border-0 shadow-none hover:shadow-peaceful transition-all cursor-pointer bg-transparent"
         onClick={() => navigate(`/product/${product.node.handle}`)}
       >
-        <div className="aspect-[3/4] overflow-hidden rounded-xl bg-muted relative">
+        <div className="aspect-[3/4] overflow-hidden rounded-lg bg-muted">
           {image ? (
             <img
               src={image.url}
               alt={image.altText || product.node.title}
-              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <ShoppingBag className="h-12 w-12 text-muted-foreground/30" />
-            </div>
-          )}
-          {!inStock && (
-            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-              <span className="text-sm font-medium text-muted-foreground bg-background/90 px-4 py-1.5 rounded-full">Sold Out</span>
+              <ShoppingBag className="h-10 w-10 text-muted-foreground" />
             </div>
           )}
         </div>
-        <div className="pt-4 space-y-1.5">
-          <h3 className="font-medium leading-snug line-clamp-1 text-foreground">{product.node.title}</h3>
+        <div className="pt-3 space-y-1">
+          <h3 className="font-medium text-sm leading-snug line-clamp-1">{product.node.title}</h3>
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-foreground">
+            <span className="text-sm font-semibold text-foreground">
               ${parseFloat(price.amount).toFixed(2)}
             </span>
-            {inStock && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-sm gap-1.5 h-9 px-3 text-muted-foreground hover:text-foreground"
-                disabled={isAdding}
-                onClick={(e) => handleAddToCart(product, e)}
-              >
-                {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <><ShoppingCart className="h-4 w-4" /> Add</>}
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs gap-1 h-7 px-2"
+              disabled={isLoading}
+              onClick={(e) => handleAddToCart(product, e)}
+            >
+              {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <><ShoppingCart className="h-3 w-3" /> Add</>}
+            </Button>
           </div>
         </div>
-      </div>
+      </Card>
     );
   };
 
   const ProductRow = ({ title, items, viewAllHref }: { title: string; items: ShopifyProduct[]; viewAllHref?: string }) => {
     if (!items.length) return null;
     return (
-      <section className="mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-playfair text-xl font-semibold text-foreground">{title}</h2>
           {viewAllHref && (
-            <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground" onClick={() => navigate(viewAllHref)}>
-              View All <ArrowRight className="h-4 w-4" />
+            <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => navigate(viewAllHref)}>
+              View All <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
-          {items.slice(0, 4).map((p) => (
-            <ProductCard key={p.node.id} product={p} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {items.slice(0, 4).map((p, i) => (
+            <ProductCard key={p.node.id} product={p} index={i} />
           ))}
         </div>
       </section>
@@ -220,16 +216,16 @@ const Store = () => {
 
   return (
     <StoreLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
         {loading ? (
           <>
-            <Skeleton className="h-10 w-56 mb-10" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
+            <Skeleton className="h-8 w-48 mb-8" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i}>
-                  <Skeleton className="aspect-[3/4] w-full rounded-xl" />
-                  <Skeleton className="h-5 w-3/4 mt-4" />
-                  <Skeleton className="h-5 w-1/3 mt-2" />
+                  <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+                  <Skeleton className="h-4 w-3/4 mt-3" />
+                  <Skeleton className="h-4 w-1/3 mt-1" />
                 </div>
               ))}
             </div>
@@ -237,31 +233,34 @@ const Store = () => {
         ) : isHome ? (
           <>
             {/* Shop by Category */}
-            <section className="mb-16">
-              <h2 className="text-2xl font-semibold text-foreground mb-6">Shop by Category</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <section className="mb-12">
+              <h2 className="font-playfair text-xl font-semibold text-foreground mb-4">Shop by Category</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {shopCategories.map((cat) => (
                   <button
                     key={cat.label}
                     onClick={() => navigate(`/store?category=${encodeURIComponent(cat.label)}`)}
-                    className="group p-6 rounded-xl border border-border bg-card hover:border-foreground/20 transition-all text-left"
+                    className="group p-6 rounded-lg border border-border bg-card hover:border-primary/30 hover:shadow-peaceful transition-all text-left"
                   >
-                    <h3 className="font-semibold text-foreground group-hover:text-foreground/80 transition-colors">{cat.label}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{cat.description}</p>
+                    <span className="text-2xl mb-2 block">{cat.icon}</span>
+                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{cat.label}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>
                   </button>
                 ))}
               </div>
             </section>
 
+            {/* Product rows */}
             <ProductRow title="New Arrivals" items={allProducts.slice(0, 4)} viewAllHref="/store?collection=new" />
             <ProductRow title="Best Sellers" items={allProducts.slice(0, 8).reverse().slice(0, 4)} viewAllHref="/store?collection=best-sellers" />
 
+            {/* All products */}
             {allProducts.length > 0 && (
               <section>
-                <h2 className="text-2xl font-semibold text-foreground mb-6">All Products</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
-                  {allProducts.map((p) => (
-                    <ProductCard key={p.node.id} product={p} />
+                <h2 className="font-playfair text-xl font-semibold text-foreground mb-4">All Products</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                  {allProducts.map((p, i) => (
+                    <ProductCard key={p.node.id} product={p} index={i} />
                   ))}
                 </div>
               </section>
@@ -269,13 +268,14 @@ const Store = () => {
           </>
         ) : (
           <>
-            <div className="mb-8">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                <button onClick={() => navigate("/store")} className="hover:text-foreground transition-colors">Store</button>
+            {/* Category/Search results */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <button onClick={() => navigate("/store")} className="hover:text-primary transition-colors">Store</button>
                 {urlCategory && (
                   <>
                     <span>/</span>
-                    <button onClick={() => navigate(`/store?category=${urlCategory}`)} className="hover:text-foreground transition-colors">{urlCategory}</button>
+                    <button onClick={() => navigate(`/store?category=${urlCategory}`)} className="hover:text-primary transition-colors">{urlCategory}</button>
                   </>
                 )}
                 {urlSubCategory && (
@@ -285,28 +285,29 @@ const Store = () => {
                   </>
                 )}
               </div>
-              <h1 className="text-3xl md:text-4xl font-semibold text-foreground">{pageTitle}</h1>
-              <p className="text-sm text-muted-foreground mt-2">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
+              <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">{pageTitle}</h1>
+              <p className="text-sm text-muted-foreground mt-1">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
             </div>
 
+            {/* Sub-category chips for Apparel */}
             {urlCategory === "Apparel" && (
-              <div className="flex gap-2 mb-8">
-                <Button variant={!urlSubCategory ? "default" : "outline"} size="default" className="rounded-full" onClick={() => navigate("/store?category=Apparel")}>All</Button>
-                <Button variant={urlSubCategory === "Men" ? "default" : "outline"} size="default" className="rounded-full" onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</Button>
-                <Button variant={urlSubCategory === "Women" ? "default" : "outline"} size="default" className="rounded-full" onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</Button>
+              <div className="flex gap-2 mb-6">
+                <Button variant={!urlSubCategory ? "default" : "outline"} size="sm" onClick={() => navigate("/store?category=Apparel")}>All</Button>
+                <Button variant={urlSubCategory === "Men" ? "default" : "outline"} size="sm" onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</Button>
+                <Button variant={urlSubCategory === "Women" ? "default" : "outline"} size="sm" onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</Button>
               </div>
             )}
 
             {filtered.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
-                {filtered.map((p) => (
-                  <ProductCard key={p.node.id} product={p} />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {filtered.map((p, i) => (
+                  <ProductCard key={p.node.id} product={p} index={i} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <ShoppingBag className="h-14 w-14 text-muted-foreground/30 mx-auto mb-4" />
-                <p className="text-muted-foreground text-lg">No products found.</p>
+              <div className="text-center py-16">
+                <ShoppingBag className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground">No products found.</p>
               </div>
             )}
           </>

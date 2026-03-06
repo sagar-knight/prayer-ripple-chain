@@ -99,7 +99,7 @@ const PrayerSession = ({
           )}
         </div>
         <h2 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">
-          Thank you
+          Thank you 🙏
         </h2>
         <p className="text-lg text-muted-foreground">
           {isRescue ? (
@@ -176,7 +176,7 @@ const PrayerSession = ({
       {isRescue && currentIsRescueCandidate && (
         <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 text-center">
           <p className="text-xs text-accent-foreground font-medium">
-            This request has been prayed for very few times or not recently.
+            🙏 This request has been prayed for very few times or not recently.
           </p>
         </div>
       )}

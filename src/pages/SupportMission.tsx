@@ -49,7 +49,7 @@ const SupportMission = () => {
                 <Heart className="h-10 w-10 text-primary" />
               </div>
               <h1 className="font-playfair text-3xl font-bold text-foreground">
-                Thank you for supporting PrayerForward
+                Thank you for supporting PrayerForward 🙏
               </h1>
               <p className="text-muted-foreground leading-relaxed">
                 Your generosity helps keep prayer free for everyone. God bless

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, BookOpen, Waves, Users, Calendar, User, Store, LogIn } from "lucide-react";
+import { Home, Heart, BookOpen, Calendar, Users, User, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const BottomNav = () => {
@@ -10,13 +10,15 @@ const BottomNav = () => {
     { href: "/", label: "Home", icon: Home },
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/ripple", label: "Ripple", icon: Waves },
+    { href: "/family", label: "Family", icon: Users },
+    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/profile", label: "Profile", icon: User },
   ];
 
   const publicItems = [
     { href: "/", label: "Home", icon: Home },
-    { href: "/store", label: "Store", icon: Store },
+    { href: "/churches", label: "Churches", icon: Users },
+    { href: "/store", label: "Store", icon: BookOpen },
     { href: "/login", label: "Sign In", icon: LogIn },
   ];
 
@@ -24,18 +26,12 @@ const BottomNav = () => {
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
-    if (href === "/store")
-      return (
-        location.pathname === "/store" ||
-        location.pathname.startsWith("/store/") ||
-        location.pathname.startsWith("/product/")
-      );
     return location.pathname.startsWith(href);
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border/60 z-50 md:hidden safe-area-bottom">
-      <div className="flex justify-around items-center h-14 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border z-50 md:hidden">
+      <div className="flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -43,12 +39,14 @@ const BottomNav = () => {
             <Link
               key={item.href}
               to={item.href}
-              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg transition-colors min-w-0 ${
-                active ? "text-primary" : "text-muted-foreground"
+              className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1 rounded-md transition-colors min-w-0 ${
+                active
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-primary"
               }`}
             >
-              <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.5 : 2} />
-              <span className="text-[10px] font-medium tracking-wide">
+              <Icon className={`h-5 w-5 ${active ? "text-primary" : ""}`} />
+              <span className="text-[10px] font-medium truncate">
                 {item.label}
               </span>
             </Link>
