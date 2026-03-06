@@ -184,7 +184,7 @@ const Store = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-sm gap-1.5 h-9 px-3 text-muted-foreground hover:text-primary"
+                className="text-sm gap-1.5 h-9 px-3 text-muted-foreground hover:text-foreground"
                 disabled={isAdding}
                 onClick={(e) => handleAddToCart(product, e)}
               >
@@ -202,9 +202,9 @@ const Store = () => {
     return (
       <section className="mb-16">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-serif text-2xl font-bold text-foreground">{title}</h2>
+          <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
           {viewAllHref && (
-            <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-primary" onClick={() => navigate(viewAllHref)}>
+            <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground" onClick={() => navigate(viewAllHref)}>
               View All <ArrowRight className="h-4 w-4" />
             </Button>
           )}
@@ -238,7 +238,7 @@ const Store = () => {
           <>
             {/* Shop by Category */}
             <section className="mb-16">
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-6">Shop by Category</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-6">Shop by Category</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {shopCategories.map((cat) => (
                   <button
@@ -247,7 +247,6 @@ const Store = () => {
                     className="group p-6 rounded-xl border border-border bg-card hover:border-foreground/20 transition-all text-left"
                   >
                     <h3 className="font-semibold text-foreground group-hover:text-foreground/80 transition-colors">{cat.label}</h3>
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{cat.label}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{cat.description}</p>
                   </button>
                 ))}
@@ -259,7 +258,7 @@ const Store = () => {
 
             {allProducts.length > 0 && (
               <section>
-                <h2 className="font-serif text-2xl font-bold text-foreground mb-6">All Products</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-6">All Products</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
                   {allProducts.map((p) => (
                     <ProductCard key={p.node.id} product={p} />
@@ -272,11 +271,11 @@ const Store = () => {
           <>
             <div className="mb-8">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                <button onClick={() => navigate("/store")} className="hover:text-primary transition-colors">Store</button>
+                <button onClick={() => navigate("/store")} className="hover:text-foreground transition-colors">Store</button>
                 {urlCategory && (
                   <>
                     <span>/</span>
-                    <button onClick={() => navigate(`/store?category=${urlCategory}`)} className="hover:text-primary transition-colors">{urlCategory}</button>
+                    <button onClick={() => navigate(`/store?category=${urlCategory}`)} className="hover:text-foreground transition-colors">{urlCategory}</button>
                   </>
                 )}
                 {urlSubCategory && (
@@ -286,7 +285,7 @@ const Store = () => {
                   </>
                 )}
               </div>
-              <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{pageTitle}</h1>
+              <h1 className="text-3xl md:text-4xl font-semibold text-foreground">{pageTitle}</h1>
               <p className="text-sm text-muted-foreground mt-2">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
             </div>
 

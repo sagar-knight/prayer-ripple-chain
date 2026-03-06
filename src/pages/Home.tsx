@@ -54,7 +54,7 @@ const Home = () => {
                 </Link>
               </Button>
 
-              <Button asChild variant="outline" size="lg" className="text-base px-10 py-6 rounded-full">
+              <Button asChild variant="outline" size="lg" className="text-base px-10 py-6 rounded-full border-foreground/20 text-foreground hover:bg-foreground hover:text-background">
                 <Link to="/login">
                   Sign In
                 </Link>
@@ -165,7 +165,7 @@ const Home = () => {
             <Button asChild variant="secondary" size="lg" className="text-base px-10 py-6 rounded-full">
               <Link to="/signup">Join Now</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-base px-10 py-6 rounded-full border-background/30 text-background hover:bg-background hover:text-foreground">
+            <Button asChild size="lg" className="text-base px-10 py-6 rounded-full bg-transparent border border-background/40 text-background hover:bg-background hover:text-foreground">
               <Link to="/login">Sign In</Link>
             </Button>
           </div>

@@ -26,13 +26,13 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { CartDrawer } from "@/components/CartDrawer";
+import logo from "@/assets/logo.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
 
-  // Primary: only 4 visible items on desktop
   const primaryAuth = [
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
@@ -83,14 +83,12 @@ const Navigation = () => {
     <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo — text only, no icon clutter */}
+          {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="font-serif text-xl font-semibold text-foreground tracking-tight">
-              PrayerForward
-            </span>
+            <img src={logo} alt="PrayerForward" className="h-12 w-auto" />
           </Link>
 
-          {/* Desktop Navigation — minimal */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {(user ? primaryAuth : publicItems).map((item) => {
               const active = isActiveRoute(item.href);
@@ -98,7 +96,7 @@ const Navigation = () => {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                     active
                       ? "bg-foreground text-background"
                       : "text-muted-foreground hover:text-foreground"
@@ -109,12 +107,11 @@ const Navigation = () => {
               );
             })}
 
-            {/* More dropdown for auth users */}
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                       isMoreActive
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:text-foreground"
@@ -150,14 +147,14 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => signOut()}
-                className="text-sm text-muted-foreground hover:text-foreground rounded-full px-3"
+                className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded-full px-3"
               >
                 Sign Out
               </Button>
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-1.5 rounded-full text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 rounded-full text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
               >
                 Sign In
               </Link>
@@ -185,7 +182,7 @@ const Navigation = () => {
                         key={item.href + item.label}
                         to={item.href}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                           active
                             ? "bg-foreground text-background"
                             : "text-muted-foreground hover:text-foreground"
@@ -203,7 +200,7 @@ const Navigation = () => {
                           signOut();
                           setIsOpen(false);
                         }}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive w-full"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-destructive w-full"
                       >
                         <LogOut className="h-4 w-4" />
                         <span>Sign Out</span>
@@ -212,7 +209,7 @@ const Navigation = () => {
                       <Link
                         to="/login"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-foreground text-background"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-foreground text-background"
                       >
                         <LogIn className="h-4 w-4" />
                         <span>Sign In</span>
