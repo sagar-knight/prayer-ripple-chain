@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,9 @@ const Signup = () => {
   const [success, setSuccess] = useState(false);
   const { signUp } = useAuth();
   const { toast } = useToast();
+  const location = useLocation();
+
+  const returnTo = (location.state as any)?.returnTo || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +30,8 @@ const Signup = () => {
       return;
     }
     setIsLoading(true);
+    // Store returnTo so after email verification + login they land on the right page
+    sessionStorage.setItem("returnTo", returnTo);
     const { error } = await signUp(email, password, displayName);
     setIsLoading(false);
 
@@ -47,7 +52,7 @@ const Signup = () => {
             <h2 className="font-playfair text-2xl font-bold">Check Your Email</h2>
             <p className="text-muted-foreground">We've sent a confirmation link to <strong>{email}</strong>. Please verify your email to sign in.</p>
             <Button asChild variant="outline" className="mt-4">
-              <Link to="/login">Go to Sign In</Link>
+              <Link to="/login" state={{ returnTo }}>Go to Sign In</Link>
             </Button>
           </CardContent>
         </Card>
@@ -104,6 +109,7 @@ const Signup = () => {
             variant="outline"
             className="w-full gap-2"
             onClick={async () => {
+              sessionStorage.setItem("returnTo", returnTo);
               const { error } = await lovable.auth.signInWithOAuth("google", {
                 redirect_uri: window.location.origin,
               });
@@ -123,7 +129,7 @@ const Signup = () => {
 
           <p className="text-center text-sm text-muted-foreground mt-6">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link>
+            <Link to="/login" state={{ returnTo }} className="text-primary hover:underline font-medium">Sign in</Link>
           </p>
         </CardContent>
       </Card>

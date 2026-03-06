@@ -1,28 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, BookOpen, Calendar, Users, User, LogIn } from "lucide-react";
+import { Home, Heart, BookOpen, Calendar, Users, User, LogIn, Store } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const BottomNav = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-  const authItems = [
+  // Always show full nav - ProtectedRoute handles auth gating
+  const items = [
     { href: "/", label: "Home", icon: Home },
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/family", label: "Family", icon: Users },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
-    { href: "/profile", label: "Profile", icon: User },
+    { href: "/store", label: "Store", icon: Store },
+    { href: user ? "/profile" : "/login", label: user ? "Profile" : "Sign In", icon: user ? User : LogIn },
   ];
-
-  const publicItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/churches", label: "Churches", icon: Users },
-    { href: "/store", label: "Store", icon: BookOpen },
-    { href: "/login", label: "Sign In", icon: LogIn },
-  ];
-
-  const navItems = user ? authItems : publicItems;
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
@@ -32,7 +23,7 @@ const BottomNav = () => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border z-50 md:hidden">
       <div className="flex justify-around items-center h-16 px-2">
-        {navItems.map((item) => {
+        {items.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
           return (

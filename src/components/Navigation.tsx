@@ -3,6 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Heart,
   Menu,
   Users,
@@ -16,46 +22,39 @@ import {
   HandHeart,
   LogIn,
   LogOut,
+  ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
 
-  // Items visible to everyone
-  const publicItems = [
-    { href: "/churches", label: "Churches", icon: Church },
-    { href: "/support", label: "Support", icon: HandHeart },
-    { href: "/store", label: "Store", icon: Store },
-    { href: "/about", label: "About", icon: HelpCircle },
-  ];
-
-  // Items visible only to logged-in users
-  const authItems = [
+  // Main nav items - always visible to everyone
+  const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
-    { href: "/family", label: "Family", icon: Users },
     { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/support", label: "Support", icon: HandHeart },
     { href: "/store", label: "Store", icon: Store },
-    { href: "/profile", label: "Profile", icon: User },
   ];
 
-  const navItems = user ? authItems : publicItems;
-
-  const allMobileItems = user
-    ? [{ href: "/", label: "Home", icon: Heart }, ...authItems]
-    : [{ href: "/", label: "Home", icon: Heart }, ...publicItems];
+  // "More" dropdown items
+  const moreItems = [
+    { href: "/calendar", label: "Calendar", icon: Calendar },
+    { href: "/family", label: "Family", icon: Users },
+    { href: "/scripture", label: "Scripture", icon: BookOpen },
+  ];
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
     return location.pathname === href || location.pathname.startsWith(href + "/");
   };
+
+  const isMoreActive = moreItems.some((item) => isActiveRoute(item.href));
 
   return (
     <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
@@ -71,7 +70,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navItems.map((item) => {
+            {mainItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -88,11 +87,61 @@ const Navigation = () => {
                 </Link>
               );
             })}
+
+            {/* More Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isMoreActive
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                  }`}
+                >
+                  <HelpCircle className="h-4 w-4" />
+                  <span>More</span>
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {moreItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <DropdownMenuItem key={item.href} asChild>
+                      <Link
+                        to={item.href}
+                        className={`flex items-center space-x-2 w-full ${
+                          isActiveRoute(item.href) ? "text-primary" : ""
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Auth button */}
             {user ? (
-              <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1 text-muted-foreground hover:text-primary">
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </Button>
+              <div className="flex items-center space-x-1">
+                <Link
+                  to="/profile"
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActiveRoute("/profile")
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                  }`}
+                >
+                  <User className="h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1 text-muted-foreground hover:text-primary">
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
             ) : (
               <Link
                 to="/login"
@@ -112,8 +161,21 @@ const Navigation = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-              <div className="flex flex-col space-y-4 mt-6">
-                {allMobileItems.map((item) => {
+              <div className="flex flex-col space-y-1 mt-6">
+                <Link
+                  to="/"
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                    isActiveRoute("/")
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                  }`}
+                >
+                  <Heart className="h-5 w-5" />
+                  <span>Home</span>
+                </Link>
+
+                {mainItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <Link
@@ -131,14 +193,54 @@ const Navigation = () => {
                     </Link>
                   );
                 })}
+
+                {/* More section divider */}
+                <div className="px-4 pt-3 pb-1">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">More</span>
+                </div>
+                {moreItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href + item.label}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute(item.href)
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+
+                <div className="border-t border-border my-2" />
+
                 {user ? (
-                  <button
-                    onClick={() => { signOut(); setIsOpen(false); }}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                  >
-                    <LogOut className="h-5 w-5" />
-                    <span>Sign Out</span>
-                  </button>
+                  <>
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute("/profile")
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <User className="h-5 w-5" />
+                      <span>Profile</span>
+                    </Link>
+                    <button
+                      onClick={() => { signOut(); setIsOpen(false); }}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </>
                 ) : (
                   <Link
                     to="/login"
