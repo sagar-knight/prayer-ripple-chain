@@ -40,13 +40,13 @@ const Signup = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center px-4 py-12">
-        <Card className="w-full max-w-md animate-gentle-fade text-center">
-          <CardContent className="pt-8 space-y-4">
-            <Mail className="h-12 w-12 text-primary mx-auto" />
-            <h2 className="font-playfair text-2xl font-bold">Check Your Email</h2>
-            <p className="text-muted-foreground">We've sent a confirmation link to <strong>{email}</strong>. Please verify your email to sign in.</p>
-            <Button asChild variant="outline" className="mt-4">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md animate-gentle-fade text-center border border-border">
+          <CardContent className="pt-10 space-y-5">
+            <Mail className="h-14 w-14 text-primary mx-auto" />
+            <h2 className="font-serif text-3xl font-bold">Check Your Email</h2>
+            <p className="text-muted-foreground text-lg">We've sent a confirmation link to <strong>{email}</strong>. Please verify your email to sign in.</p>
+            <Button asChild variant="outline" className="mt-4 rounded-full">
               <Link to="/login">Go to Sign In</Link>
             </Button>
           </CardContent>
@@ -56,53 +56,53 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md animate-gentle-fade">
-        <CardHeader className="text-center">
-          <Heart className="h-10 w-10 text-primary mx-auto mb-2" />
-          <CardTitle className="font-playfair text-2xl">Join PrayerForward</CardTitle>
-          <p className="text-sm text-muted-foreground">Create an account to start your prayer journey</p>
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-md animate-gentle-fade border border-border">
+        <CardHeader className="text-center pb-2">
+          <Heart className="h-12 w-12 text-primary mx-auto mb-3" />
+          <CardTitle className="font-serif text-3xl">Join PrayerForward</CardTitle>
+          <p className="text-muted-foreground mt-2">Create an account to start your prayer journey</p>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="pt-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="displayName">Display Name</Label>
+              <Label htmlFor="displayName" className="text-base">Display Name</Label>
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input id="displayName" placeholder="Prayer Warrior" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="pl-10" />
+                <User className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                <Input id="displayName" placeholder="Prayer Warrior" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="pl-11 h-12 text-base" />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-base">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
+                <Mail className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-11 h-12 text-base" required />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-base">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input id="password" type={showPassword ? "text" : "password"} placeholder="At least 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 pr-10" required />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-muted-foreground hover:text-foreground">
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                <Lock className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                <Input id="password" type={showPassword ? "text" : "password"} placeholder="At least 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-11 pr-11 h-12 text-base" required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground">
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
             </div>
-            <Button type="submit" variant="peaceful" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full h-12 text-base rounded-full" disabled={isLoading}>
               {isLoading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
 
-          <div className="flex items-center gap-3 my-4">
+          <div className="flex items-center gap-3 my-6">
             <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">or</span>
+            <span className="text-sm text-muted-foreground">or</span>
             <Separator className="flex-1" />
           </div>
 
           <Button
             variant="outline"
-            className="w-full gap-2"
+            className="w-full gap-2 h-12 text-base rounded-full"
             onClick={async () => {
               const { error } = await lovable.auth.signInWithOAuth("google", {
                 redirect_uri: window.location.origin,
@@ -112,7 +112,7 @@ const Signup = () => {
               }
             }}
           >
-            <svg className="h-4 w-4" viewBox="0 0 24 24">
+            <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -121,7 +121,7 @@ const Signup = () => {
             Continue with Google
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          <p className="text-center text-muted-foreground mt-8">
             Already have an account?{" "}
             <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link>
           </p>

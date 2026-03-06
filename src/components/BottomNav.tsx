@@ -30,8 +30,8 @@ const BottomNav = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 md:hidden">
-      <div className="flex justify-around items-center h-14 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 md:hidden safe-area-bottom">
+      <div className="flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -39,14 +39,14 @@ const BottomNav = () => {
             <Link
               key={item.href}
               to={item.href}
-              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg transition-colors min-w-0 ${
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-lg transition-colors min-w-0 ${
                 active
                   ? "text-primary"
                   : "text-muted-foreground"
               }`}
             >
               <Icon className={`h-5 w-5 ${active ? "text-primary" : ""}`} />
-              <span className="text-[10px] font-medium truncate">
+              <span className="text-[11px] font-medium truncate">
                 {item.label}
               </span>
             </Link>

@@ -45,7 +45,6 @@ const Store = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
-  const isCartLoading = useCartStore((state) => state.isLoading);
   const [addingId, setAddingId] = useState<string | null>(null);
 
   const urlCategory = searchParams.get("category") || "";
@@ -156,7 +155,7 @@ const Store = () => {
         className="group cursor-pointer"
         onClick={() => navigate(`/product/${product.node.handle}`)}
       >
-        <div className="aspect-[3/4] overflow-hidden rounded-lg bg-muted relative">
+        <div className="aspect-[3/4] overflow-hidden rounded-xl bg-muted relative">
           {image ? (
             <img
               src={image.url}
@@ -166,30 +165,30 @@ const Store = () => {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <ShoppingBag className="h-10 w-10 text-muted-foreground/30" />
+              <ShoppingBag className="h-12 w-12 text-muted-foreground/30" />
             </div>
           )}
           {!inStock && (
             <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-              <span className="text-xs font-medium text-muted-foreground bg-background/90 px-3 py-1 rounded-full">Sold Out</span>
+              <span className="text-sm font-medium text-muted-foreground bg-background/90 px-4 py-1.5 rounded-full">Sold Out</span>
             </div>
           )}
         </div>
-        <div className="pt-3 space-y-1">
-          <h3 className="font-medium text-sm leading-snug line-clamp-1 text-foreground">{product.node.title}</h3>
+        <div className="pt-4 space-y-1.5">
+          <h3 className="font-medium leading-snug line-clamp-1 text-foreground">{product.node.title}</h3>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-foreground">
+            <span className="font-semibold text-foreground">
               ${parseFloat(price.amount).toFixed(2)}
             </span>
             {inStock && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs gap-1 h-7 px-2 text-muted-foreground hover:text-primary"
+                className="text-sm gap-1.5 h-9 px-3 text-muted-foreground hover:text-primary"
                 disabled={isAdding}
                 onClick={(e) => handleAddToCart(product, e)}
               >
-                {isAdding ? <Loader2 className="h-3 w-3 animate-spin" /> : <><ShoppingCart className="h-3 w-3" /> Add</>}
+                {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <><ShoppingCart className="h-4 w-4" /> Add</>}
               </Button>
             )}
           </div>
@@ -201,16 +200,16 @@ const Store = () => {
   const ProductRow = ({ title, items, viewAllHref }: { title: string; items: ShopifyProduct[]; viewAllHref?: string }) => {
     if (!items.length) return null;
     return (
-      <section className="mb-14">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-playfair text-xl font-bold text-foreground">{title}</h2>
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-serif text-2xl font-bold text-foreground">{title}</h2>
           {viewAllHref && (
-            <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground hover:text-primary" onClick={() => navigate(viewAllHref)}>
-              View All <ArrowRight className="h-3.5 w-3.5" />
+            <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-primary" onClick={() => navigate(viewAllHref)}>
+              View All <ArrowRight className="h-4 w-4" />
             </Button>
           )}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
           {items.slice(0, 4).map((p) => (
             <ProductCard key={p.node.id} product={p} />
           ))}
@@ -221,16 +220,16 @@ const Store = () => {
 
   return (
     <StoreLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-24">
         {loading ? (
           <>
-            <Skeleton className="h-8 w-48 mb-8" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <Skeleton className="h-10 w-56 mb-10" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i}>
-                  <Skeleton className="aspect-[3/4] w-full rounded-lg" />
-                  <Skeleton className="h-4 w-3/4 mt-3" />
-                  <Skeleton className="h-4 w-1/3 mt-1" />
+                  <Skeleton className="aspect-[3/4] w-full rounded-xl" />
+                  <Skeleton className="h-5 w-3/4 mt-4" />
+                  <Skeleton className="h-5 w-1/3 mt-2" />
                 </div>
               ))}
             </div>
@@ -238,18 +237,18 @@ const Store = () => {
         ) : isHome ? (
           <>
             {/* Shop by Category */}
-            <section className="mb-14">
-              <h2 className="font-playfair text-xl font-bold text-foreground mb-5">Shop by Category</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <section className="mb-16">
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-6">Shop by Category</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {shopCategories.map((cat) => (
                   <button
                     key={cat.label}
                     onClick={() => navigate(`/store?category=${encodeURIComponent(cat.label)}`)}
-                    className="group p-5 rounded-lg border border-border bg-card hover:border-primary/40 hover:shadow-warm transition-all text-left"
+                    className="group p-6 rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-warm transition-all text-left"
                   >
-                    <span className="text-2xl mb-2 block">{cat.emoji}</span>
-                    <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{cat.label}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>
+                    <span className="text-3xl mb-3 block">{cat.emoji}</span>
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{cat.label}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{cat.description}</p>
                   </button>
                 ))}
               </div>
@@ -260,8 +259,8 @@ const Store = () => {
 
             {allProducts.length > 0 && (
               <section>
-                <h2 className="font-playfair text-xl font-bold text-foreground mb-5">All Products</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-6">All Products</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
                   {allProducts.map((p) => (
                     <ProductCard key={p.node.id} product={p} />
                   ))}
@@ -271,8 +270,8 @@ const Store = () => {
           </>
         ) : (
           <>
-            <div className="mb-6">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+            <div className="mb-8">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                 <button onClick={() => navigate("/store")} className="hover:text-primary transition-colors">Store</button>
                 {urlCategory && (
                   <>
@@ -287,28 +286,28 @@ const Store = () => {
                   </>
                 )}
               </div>
-              <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">{pageTitle}</h1>
-              <p className="text-xs text-muted-foreground mt-1">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
+              <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{pageTitle}</h1>
+              <p className="text-sm text-muted-foreground mt-2">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
             </div>
 
             {urlCategory === "Apparel" && (
-              <div className="flex gap-2 mb-6">
-                <Button variant={!urlSubCategory ? "default" : "outline"} size="sm" className="rounded-full" onClick={() => navigate("/store?category=Apparel")}>All</Button>
-                <Button variant={urlSubCategory === "Men" ? "default" : "outline"} size="sm" className="rounded-full" onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</Button>
-                <Button variant={urlSubCategory === "Women" ? "default" : "outline"} size="sm" className="rounded-full" onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</Button>
+              <div className="flex gap-2 mb-8">
+                <Button variant={!urlSubCategory ? "default" : "outline"} size="default" className="rounded-full" onClick={() => navigate("/store?category=Apparel")}>All</Button>
+                <Button variant={urlSubCategory === "Men" ? "default" : "outline"} size="default" className="rounded-full" onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</Button>
+                <Button variant={urlSubCategory === "Women" ? "default" : "outline"} size="default" className="rounded-full" onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</Button>
               </div>
             )}
 
             {filtered.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
                 {filtered.map((p) => (
                   <ProductCard key={p.node.id} product={p} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16">
-                <ShoppingBag className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-muted-foreground text-sm">No products found.</p>
+              <div className="text-center py-20">
+                <ShoppingBag className="h-14 w-14 text-muted-foreground/30 mx-auto mb-4" />
+                <p className="text-muted-foreground text-lg">No products found.</p>
               </div>
             )}
           </>
