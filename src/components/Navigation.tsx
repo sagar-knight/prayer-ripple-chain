@@ -3,11 +3,16 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Heart,
   Menu,
   Users,
   Waves,
-  HelpCircle,
   Church,
   Calendar,
   BookOpen,
@@ -16,6 +21,8 @@ import {
   HandHeart,
   LogIn,
   LogOut,
+  ChevronDown,
+  Home,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -25,100 +32,151 @@ const Navigation = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
 
-  const publicItems = [
-    { href: "/churches", label: "Churches", icon: Church },
-    { href: "/support", label: "Support", icon: HandHeart },
-    { href: "/store", label: "Store", icon: Store },
-    { href: "/about", label: "About", icon: HelpCircle },
-  ];
-
-  const authItems = [
+  // Primary: only 4 visible items on desktop
+  const primaryAuth = [
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/churches", label: "Churches", icon: Church },
+    { href: "/store", label: "Store", icon: Store },
+  ];
+
+  const moreAuth = [
+    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/family", label: "Family", icon: Users },
     { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/support", label: "Support", icon: HandHeart },
-    { href: "/store", label: "Store", icon: Store },
     { href: "/profile", label: "Profile", icon: User },
   ];
 
-  const navItems = user ? authItems : publicItems;
+  const publicItems = [
+    { href: "/churches", label: "Churches", icon: Church },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/support", label: "Support", icon: HandHeart },
+  ];
 
   const allMobileItems = user
-    ? [{ href: "/", label: "Home", icon: Heart }, ...authItems]
-    : [{ href: "/", label: "Home", icon: Heart }, ...publicItems];
+    ? [
+        { href: "/", label: "Home", icon: Home },
+        ...primaryAuth,
+        ...moreAuth,
+      ]
+    : [
+        { href: "/", label: "Home", icon: Home },
+        ...publicItems,
+      ];
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
-    if (href === "/store") return location.pathname === "/store" || location.pathname.startsWith("/store/") || location.pathname.startsWith("/product/");
+    if (href === "/store")
+      return (
+        location.pathname === "/store" ||
+        location.pathname.startsWith("/store/") ||
+        location.pathname.startsWith("/product/")
+      );
     return location.pathname === href || location.pathname.startsWith(href + "/");
   };
 
+  const isMoreActive = moreAuth.some((item) => isActiveRoute(item.href));
+
   return (
-    <nav className="bg-background border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-[72px]">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2.5">
-            <Heart className="h-8 w-8 text-primary" />
-            <span className="font-serif text-2xl font-bold text-foreground tracking-tight">
+    <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo — text only, no icon clutter */}
+          <Link to="/" className="flex items-center">
+            <span className="font-serif text-xl font-semibold text-foreground tracking-tight">
               PrayerForward
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
+          {/* Desktop Navigation — minimal */}
+          <div className="hidden lg:flex items-center gap-1">
+            {(user ? primaryAuth : publicItems).map((item) => {
               const active = isActiveRoute(item.href);
               return (
                 <Link
-                  key={item.href + item.label}
+                  key={item.href}
                   to={item.href}
-                  className={`flex items-center space-x-1.5 px-4 py-2 rounded-full text-[15px] font-medium transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.label}</span>
+                  {item.label}
                 </Link>
               );
             })}
+
+            {/* More dropdown for auth users */}
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      isMoreActive
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    More
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-44">
+                  {moreAuth.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link
+                          to={item.href}
+                          className="flex items-center gap-2.5 cursor-pointer"
+                        >
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                          {item.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+            <div className="w-px h-5 bg-border/60 mx-2" />
+
             {user ? (
-              <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1.5 text-muted-foreground hover:text-foreground rounded-full ml-1 text-[15px]">
-                <LogOut className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => signOut()}
+                className="text-sm text-muted-foreground hover:text-foreground rounded-full px-3"
+              >
                 Sign Out
               </Button>
             ) : (
               <Link
                 to="/login"
-                className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors ml-1"
+                className="px-4 py-1.5 rounded-full text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
               >
-                <LogIn className="h-4 w-4" />
-                <span>Sign In</span>
+                Sign In
               </Link>
             )}
-            <div className="ml-3 pl-3 border-l border-border">
-              <CartDrawer />
-            </div>
+
+            <CartDrawer />
           </div>
 
           {/* Mobile Right */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-1 lg:hidden">
             <CartDrawer />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[340px]">
-                <div className="flex flex-col space-y-1 mt-6">
+              <SheetContent side="right" className="w-[280px]">
+                <div className="flex flex-col gap-0.5 mt-6">
                   {allMobileItems.map((item) => {
                     const Icon = item.icon;
                     const active = isActiveRoute(item.href);
@@ -127,33 +185,36 @@ const Navigation = () => {
                         key={item.href + item.label}
                         to={item.href}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center space-x-3 px-4 py-3.5 rounded-lg text-base font-medium transition-colors ${
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                           active
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                            ? "bg-foreground text-background"
+                            : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-4 w-4" />
                         <span>{item.label}</span>
                       </Link>
                     );
                   })}
-                  <div className="border-t border-border mt-3 pt-3">
+                  <div className="border-t border-border/60 mt-3 pt-3">
                     {user ? (
                       <button
-                        onClick={() => { signOut(); setIsOpen(false); }}
-                        className="flex items-center space-x-3 px-4 py-3.5 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full"
+                        onClick={() => {
+                          signOut();
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive w-full"
                       >
-                        <LogOut className="h-5 w-5" />
+                        <LogOut className="h-4 w-4" />
                         <span>Sign Out</span>
                       </button>
                     ) : (
                       <Link
                         to="/login"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-3 px-4 py-3.5 rounded-lg text-base font-medium bg-primary text-primary-foreground"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-foreground text-background"
                       >
-                        <LogIn className="h-5 w-5" />
+                        <LogIn className="h-4 w-4" />
                         <span>Sign In</span>
                       </Link>
                     )}
