@@ -170,7 +170,7 @@ const MyPrayerReminders = () => {
                         onClick={() => markPrayedToday(reminder.id)}
                         className="w-full"
                       >
-                        Mark prayed today 🙏
+                        Mark prayed today
                       </Button>
                     )}
                   </CardContent>

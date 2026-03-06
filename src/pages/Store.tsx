@@ -32,10 +32,10 @@ const categoryCollectionHandles: Record<string, string> = {
 };
 
 const shopCategories = [
-  { label: "Apparel", emoji: "👕", description: "Faith-inspired clothing" },
-  { label: "Accessories", emoji: "🎒", description: "Everyday essentials" },
-  { label: "Wall Art", emoji: "🖼️", description: "Scripture for your walls" },
-  { label: "Journals", emoji: "📓", description: "Prayer & devotional" },
+  { label: "Apparel", description: "Faith-inspired clothing" },
+  { label: "Accessories", description: "Everyday essentials" },
+  { label: "Wall Art", description: "Scripture for your walls" },
+  { label: "Journals", description: "Prayer & devotional" },
 ];
 
 const Store = () => {
@@ -244,9 +244,9 @@ const Store = () => {
                   <button
                     key={cat.label}
                     onClick={() => navigate(`/store?category=${encodeURIComponent(cat.label)}`)}
-                    className="group p-6 rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-warm transition-all text-left"
+                    className="group p-6 rounded-xl border border-border bg-card hover:border-foreground/20 transition-all text-left"
                   >
-                    <span className="text-3xl mb-3 block">{cat.emoji}</span>
+                    <h3 className="font-semibold text-foreground group-hover:text-foreground/80 transition-colors">{cat.label}</h3>
                     <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{cat.label}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{cat.description}</p>
                   </button>

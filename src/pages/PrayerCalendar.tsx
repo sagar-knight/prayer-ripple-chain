@@ -78,8 +78,8 @@ const PrayerCalendar = () => {
       )
     );
     toast({
-      title: "Prayer Marked ✅",
-      description: "You committed to pray for someone today 🙏",
+      title: "Prayer Marked",
+      description: "You committed to pray for someone today.",
     });
   };
 
@@ -177,7 +177,7 @@ const PrayerCalendar = () => {
                     <BellRing className="h-6 w-6 text-accent-foreground" />
                     <div>
                       <p className="font-semibold text-accent-foreground">
-                        You committed to pray for someone today 🙏
+                        You committed to pray for someone today
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {pendingCount} prayer{pendingCount > 1 ? "s" : ""} still
@@ -223,7 +223,7 @@ const PrayerCalendar = () => {
                           </div>
                         )}
                         <div className="flex items-center gap-1">
-                          <span>🔥 {prayer.daysStreak} day streak</span>
+                          <span>{prayer.daysStreak} day streak</span>
                         </div>
                       </div>
 
@@ -250,7 +250,7 @@ const PrayerCalendar = () => {
                       {prayer.prayedToday ? (
                         <Button variant="secondary" disabled className="gap-2">
                           <CheckCircle className="h-4 w-4" />
-                          Prayed Today ✅
+                          Prayed Today
                         </Button>
                       ) : (
                         <Button
