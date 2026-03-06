@@ -7,16 +7,28 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Heart, Search, User, Menu, X, ChevronDown, LogOut } from "lucide-react";
+import { Heart, Search, User, Menu, X, ChevronDown, LogOut, Home, BookOpen, Users, Calendar, Waves, Church, HandHeart } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
 
-const navLinks = [
+const storeNavLinks = [
   { label: "New", href: "/store?collection=new" },
   { label: "Best Sellers", href: "/store?collection=best-sellers" },
   { label: "Shop All", href: "/store" },
+];
+
+const appNavLinks = [
+  { label: "Home", href: "/", icon: Home },
+  { label: "Pray", href: "/pray", icon: Heart, protected: true },
+  { label: "Churches", href: "/churches", icon: Church },
+  { label: "Calendar", href: "/calendar", icon: Calendar, protected: true },
+  { label: "Family", href: "/family", icon: Users, protected: true },
+  { label: "Scripture", href: "/scripture", icon: BookOpen, protected: true },
+  { label: "Support", href: "/support", icon: HandHeart },
+  { label: "About", href: "/about", icon: Waves },
 ];
 
 const StoreHeader = () => {
@@ -41,11 +53,36 @@ const StoreHeader = () => {
     return location.pathname + location.search === href;
   };
 
+  const visibleAppLinks = user
+    ? appNavLinks
+    : appNavLinks.filter((l) => !l.protected);
+
   return (
     <>
-      {/* Announcement bar */}
-      <div className="bg-primary text-primary-foreground text-center py-1.5 text-xs tracking-wide">
-        Every purchase supports the PrayerForward mission · Free shipping on orders $75+
+      {/* Top utility bar — main site links */}
+      <div className="bg-foreground text-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs">
+          <nav className="hidden md:flex items-center gap-4">
+            {visibleAppLinks.slice(0, 6).map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <Link to="/" className="md:hidden text-background/70 hover:text-background transition-colors flex items-center gap-1">
+            <Home className="h-3 w-3" /> PrayerForward App
+          </Link>
+          <span className="text-background/60 tracking-wide hidden sm:block">
+            Every purchase supports the mission · Free shipping $75+
+          </span>
+          <span className="text-background/60 tracking-wide sm:hidden text-[10px]">
+            Free shipping $75+
+          </span>
+        </div>
       </div>
 
       <header className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50">
@@ -65,8 +102,11 @@ const StoreHeader = () => {
                     <span className="font-playfair text-lg font-semibold text-primary">PrayerForward</span>
                   </Link>
                 </div>
+
+                {/* Store nav */}
                 <nav className="p-4 space-y-1">
-                  {navLinks.map((link) => (
+                  <p className="px-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">Shop</p>
+                  {storeNavLinks.map((link) => (
                     <Link
                       key={link.label}
                       to={link.href}
@@ -86,10 +126,44 @@ const StoreHeader = () => {
                   <Link to="/store/about" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-colors">
                     About
                   </Link>
+
+                  {/* App navigation section */}
                   <div className="border-t border-border mt-4 pt-4">
-                    <Link to="/" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground">
-                      ← Back to PrayerForward
-                    </Link>
+                    <p className="px-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">PrayerForward</p>
+                    {visibleAppLinks.map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <Link
+                          key={link.href}
+                          to={link.href}
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+                        >
+                          <Icon className="h-4 w-4" />
+                          {link.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+
+                  {/* Auth */}
+                  <div className="border-t border-border mt-4 pt-4">
+                    {user ? (
+                      <button
+                        onClick={() => { signOut(); setMobileOpen(false); }}
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors w-full"
+                      >
+                        <LogOut className="h-4 w-4" /> Sign Out
+                      </button>
+                    ) : (
+                      <Link
+                        to="/login"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-primary bg-primary/10 rounded-md"
+                      >
+                        <User className="h-4 w-4" /> Sign In
+                      </Link>
+                    )}
                   </div>
                 </nav>
               </SheetContent>
@@ -98,12 +172,15 @@ const StoreHeader = () => {
             {/* Logo */}
             <Link to="/store" className="flex items-center gap-2 shrink-0">
               <Heart className="h-6 w-6 text-primary" />
-              <span className="font-playfair text-lg font-semibold text-primary hidden sm:block">PrayerForward</span>
+              <div className="hidden sm:block">
+                <span className="font-playfair text-lg font-semibold text-primary">PrayerForward</span>
+                <span className="text-[10px] text-muted-foreground ml-1.5 uppercase tracking-widest">Store</span>
+              </div>
             </Link>
 
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
+              {storeNavLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.href}
@@ -136,12 +213,10 @@ const StoreHeader = () => {
 
             {/* Right icons */}
             <div className="flex items-center gap-1">
-              {/* Search */}
               <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setSearchOpen(!searchOpen)}>
                 {searchOpen ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
               </Button>
 
-              {/* Account */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -153,6 +228,7 @@ const StoreHeader = () => {
                     <>
                       <DropdownMenuItem onClick={() => navigate("/profile")}>My Account</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/store/orders")}>My Orders</DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => signOut()}>
                         <LogOut className="h-3.5 w-3.5 mr-2" /> Sign Out
                       </DropdownMenuItem>
@@ -166,7 +242,6 @@ const StoreHeader = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Cart */}
               <CartDrawer />
             </div>
           </div>
