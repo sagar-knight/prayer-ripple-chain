@@ -60,17 +60,17 @@ const Navigation = () => {
   return (
     <nav className="bg-background border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-[72px]">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <Heart className="h-7 w-7 text-primary" />
-            <span className="font-playfair text-xl font-bold text-foreground tracking-tight">
+          <Link to="/" className="flex items-center space-x-2.5">
+            <Heart className="h-8 w-8 text-primary" />
+            <span className="font-serif text-2xl font-bold text-foreground tracking-tight">
               PrayerForward
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-0.5">
+          <div className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActiveRoute(item.href);
@@ -78,46 +78,46 @@ const Navigation = () => {
                 <Link
                   key={item.href + item.label}
                   to={item.href}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-1.5 px-4 py-2 rounded-full text-[15px] font-medium transition-colors ${
                     active
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
                 </Link>
               );
             })}
             {user ? (
-              <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1.5 text-muted-foreground hover:text-foreground rounded-full ml-1">
-                <LogOut className="h-3.5 w-3.5" />
+              <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1.5 text-muted-foreground hover:text-foreground rounded-full ml-1 text-[15px]">
+                <LogOut className="h-4 w-4" />
                 Sign Out
               </Button>
             ) : (
               <Link
                 to="/login"
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors ml-1"
+                className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors ml-1"
               >
-                <LogIn className="h-3.5 w-3.5" />
+                <LogIn className="h-4 w-4" />
                 <span>Sign In</span>
               </Link>
             )}
-            <div className="ml-2 pl-2 border-l border-border">
+            <div className="ml-3 pl-3 border-l border-border">
               <CartDrawer />
             </div>
           </div>
 
           {/* Mobile Right */}
-          <div className="flex items-center gap-1 lg:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <CartDrawer />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+              <SheetContent side="right" className="w-[300px] sm:w-[340px]">
                 <div className="flex flex-col space-y-1 mt-6">
                   {allMobileItems.map((item) => {
                     const Icon = item.icon;
@@ -127,13 +127,13 @@ const Navigation = () => {
                         key={item.href + item.label}
                         to={item.href}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                        className={`flex items-center space-x-3 px-4 py-3.5 rounded-lg text-base font-medium transition-colors ${
                           active
                             ? "bg-primary text-primary-foreground"
                             : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                         }`}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-5 w-5" />
                         <span>{item.label}</span>
                       </Link>
                     );
@@ -142,18 +142,18 @@ const Navigation = () => {
                     {user ? (
                       <button
                         onClick={() => { signOut(); setIsOpen(false); }}
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full"
+                        className="flex items-center space-x-3 px-4 py-3.5 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full"
                       >
-                        <LogOut className="h-4 w-4" />
+                        <LogOut className="h-5 w-5" />
                         <span>Sign Out</span>
                       </button>
                     ) : (
                       <Link
                         to="/login"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium bg-primary text-primary-foreground"
+                        className="flex items-center space-x-3 px-4 py-3.5 rounded-lg text-base font-medium bg-primary text-primary-foreground"
                       >
-                        <LogIn className="h-4 w-4" />
+                        <LogIn className="h-5 w-5" />
                         <span>Sign In</span>
                       </Link>
                     )}

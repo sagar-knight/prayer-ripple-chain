@@ -17,25 +17,23 @@ const NewsletterSubscribe = () => {
     e.preventDefault();
     if (!email.trim()) return;
     setIsSubmitting(true);
-    // Analytics: subscribe_submit
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
-      // Analytics: subscribe_success
     }, 1200);
   };
 
   if (submitted) {
     return (
-      <section className="py-12">
+      <section className="py-16">
         <div className="max-w-2xl mx-auto px-4">
           <Card className="bg-primary/5 border-primary/20">
-            <CardContent className="py-8 text-center space-y-3">
-              <CheckCircle className="h-10 w-10 text-primary mx-auto" />
-              <h3 className="font-playfair text-xl font-bold text-foreground">
+            <CardContent className="py-10 text-center space-y-4">
+              <CheckCircle className="h-12 w-12 text-primary mx-auto" />
+              <h3 className="font-serif text-2xl font-bold text-foreground">
                 Thank you for subscribing to PrayerForward 🙏
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-lg">
                 Please check your inbox to confirm your subscription.
               </p>
             </CardContent>
@@ -46,18 +44,18 @@ const NewsletterSubscribe = () => {
   }
 
   return (
-    <section className="py-12">
+    <section className="py-16">
       <div className="max-w-2xl mx-auto px-4">
         <Card className="bg-card border-border">
-          <CardContent className="pt-8 pb-8 space-y-5">
-            <div className="text-center space-y-2">
-              <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                <Mail className="h-6 w-6 text-primary" />
+          <CardContent className="pt-10 pb-10 space-y-6">
+            <div className="text-center space-y-3">
+              <div className="w-14 h-14 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
+                <Mail className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-playfair text-xl font-bold text-foreground">
+              <h3 className="font-serif text-2xl font-bold text-foreground">
                 Stay Connected
               </h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              <p className="text-muted-foreground max-w-md mx-auto">
                 Receive weekly encouragement, prayer updates, and mission news. No spam. Unsubscribe anytime.
               </p>
             </div>
@@ -69,14 +67,14 @@ const NewsletterSubscribe = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="text-base"
+                className="h-12 text-base"
               />
               <Input
                 type="text"
                 placeholder="First name (optional)"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="text-base"
+                className="h-12 text-base"
               />
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -84,19 +82,18 @@ const NewsletterSubscribe = () => {
                   checked={reminderOptIn}
                   onCheckedChange={(c) => setReminderOptIn(c === true)}
                 />
-                <Label htmlFor="reminder-opt" className="text-sm cursor-pointer text-muted-foreground">
+                <Label htmlFor="reminder-opt" className="cursor-pointer text-muted-foreground">
                   I also want to receive prayer reminder emails
                 </Label>
               </div>
               <Button
                 type="submit"
-                variant="peaceful"
-                className="w-full gap-2"
+                className="w-full gap-2 h-12 rounded-full text-base"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Subscribing..." : (
                   <>
-                    <Mail className="h-4 w-4" />
+                    <Mail className="h-5 w-5" />
                     Subscribe
                   </>
                 )}
