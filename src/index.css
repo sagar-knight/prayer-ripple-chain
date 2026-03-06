@@ -104,8 +104,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-bold;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
+    @apply font-sans font-semibold;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
   }
 }

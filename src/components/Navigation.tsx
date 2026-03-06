@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { CartDrawer } from "@/components/CartDrawer";
-import logo from "@/assets/logo.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,9 +84,8 @@ const Navigation = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo — text only, no icon clutter */}
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="PrayerForward" className="h-8 w-8" />
-            <span className="text-lg font-bold text-foreground tracking-tight">
+          <Link to="/" className="flex items-center">
+            <span className="font-serif text-xl font-semibold text-foreground tracking-tight">
               PrayerForward
             </span>
           </Link>
