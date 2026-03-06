@@ -84,8 +84,8 @@ const Navigation = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <img src={logo} alt="PrayerForward" className="h-[120px] w-auto" />
+          <Link to="/" className="flex items-center overflow-hidden h-16">
+            <img src={logo} alt="PrayerForward" className="h-[160px] w-auto max-w-none" />
           </Link>
 
           {/* Desktop Navigation */}
