@@ -104,7 +104,7 @@ const FamilyRequests = () => {
     setRequests((prev) => [newReq, ...prev]);
     setForm({ personName: "", relationship: "", title: "", description: "", category: "family", reminderEnabled: false, reminderTimeLocal: "08:00" });
     setShowAdd(false);
-    toast({ title: "Family request added 🙏" });
+    toast({ title: "Family request added" });
   };
 
   const markPrayedToday = (id: string) => {
@@ -114,7 +114,7 @@ const FamilyRequests = () => {
         return { ...r, prayerLog: [...r.prayerLog, today] };
       })
     );
-    toast({ title: "Marked as prayed today ✨", duration: 2000 });
+    toast({ title: "Marked as prayed today", duration: 2000 });
   };
 
   const archiveRequest = (id: string) => {

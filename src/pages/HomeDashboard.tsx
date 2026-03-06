@@ -53,51 +53,51 @@ const HomeDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
         {/* Welcome */}
-        <div className="text-center animate-gentle-fade">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-3">
+        <div className="text-center">
+          <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-2 tracking-tight">
             Welcome Back
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-muted-foreground">
             What would you like to do today?
           </p>
         </div>
 
-        {/* Section 1 — Pray Now */}
-        <Card className="border border-border shadow-peaceful animate-gentle-fade">
+        {/* Pray Now */}
+        <Card className="border border-border">
           <CardContent className="pt-10 pb-10 text-center space-y-5">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <Heart className="h-8 w-8 text-primary" />
+            <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center mx-auto">
+              <Heart className="h-7 w-7 text-foreground" />
             </div>
-            <CardTitle className="font-serif text-2xl">Pray Now</CardTitle>
-            <p className="text-muted-foreground max-w-md mx-auto">
+            <CardTitle className="text-xl">Pray Now</CardTitle>
+            <p className="text-muted-foreground max-w-md mx-auto text-sm">
               Take a moment to pray for someone who needs encouragement.
             </p>
-            <Button asChild size="lg" className="px-10 py-6 rounded-full text-base">
+            <Button asChild size="lg" className="px-10 py-6 rounded-full">
               <Link to="/pray">
                 Start Praying
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </CardContent>
         </Card>
 
-        {/* Section 2 — Today's Prayer Reminders */}
-        <Card className="border border-border shadow-peaceful animate-gentle-fade" style={{ animationDelay: "100ms" }}>
+        {/* Today's Reminders */}
+        <Card className="border border-border">
           <CardHeader>
-            <CardTitle className="font-serif text-xl flex items-center gap-3">
-              <Bell className="h-6 w-6 text-primary" />
+            <CardTitle className="text-base flex items-center gap-3">
+              <Bell className="h-5 w-5 text-muted-foreground" />
               Your Prayer Reminders Today
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {activeReminders.length === 0 ? (
               <div className="text-center py-6 space-y-4">
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   You have no reminders scheduled today.
                 </p>
-                <Button asChild variant="outline" size="default">
+                <Button asChild variant="outline" size="sm">
                   <Link to="/prayer-reminders">Manage Reminders</Link>
                 </Button>
               </div>
@@ -106,22 +106,22 @@ const HomeDashboard = () => {
                 {activeReminders.map((reminder: any) => (
                   <div
                     key={reminder.id}
-                    className="flex items-center justify-between p-4 rounded-xl bg-secondary/50"
+                    className="flex items-center justify-between p-4 rounded-lg bg-secondary/50"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-foreground truncate">
+                      <p className="font-medium text-foreground text-sm truncate">
                         {reminder.prayer_title || "Prayer request"}
                       </p>
                       {reminder.reminder_time_local && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                          <Clock className="h-3.5 w-3.5" />
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                          <Clock className="h-3 w-3" />
                           {reminder.reminder_time_local}
                         </p>
                       )}
                     </div>
                     {hasPrayedToday(reminder.id) ? (
-                      <span className="text-sm text-primary flex items-center gap-1 font-medium">
-                        <Check className="h-4 w-4" />
+                      <span className="text-xs text-foreground flex items-center gap-1 font-medium">
+                        <Check className="h-3.5 w-3.5" />
                         Prayed
                       </span>
                     ) : (
@@ -136,7 +136,7 @@ const HomeDashboard = () => {
                   </div>
                 ))}
                 <div className="pt-3 text-center">
-                  <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
+                  <Button asChild variant="ghost" size="sm" className="text-muted-foreground text-xs">
                     <Link to="/prayer-reminders">Manage Reminders</Link>
                   </Button>
                 </div>
@@ -145,60 +145,57 @@ const HomeDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Section 3 — Scripture Today */}
-        <Card className="border border-border shadow-peaceful animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+        {/* Scripture */}
+        <Card className="border border-border">
           <CardHeader>
-            <CardTitle className="font-serif text-xl flex items-center gap-3">
-              <BookOpen className="h-6 w-6 text-primary" />
+            <CardTitle className="text-base flex items-center gap-3">
+              <BookOpen className="h-5 w-5 text-muted-foreground" />
               Scripture Today
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <blockquote className="border-l-4 border-primary/30 pl-5 italic text-foreground/90 text-lg leading-relaxed">
+          <CardContent className="space-y-4">
+            <blockquote className="border-l-2 border-border pl-4 italic text-foreground/80 leading-relaxed">
               "{dailyVerse.text}"
             </blockquote>
-            <p className="font-semibold text-primary">
+            <p className="font-medium text-sm text-muted-foreground">
               — {dailyVerse.reference} ({dailyVerse.translation})
             </p>
             <div className="flex gap-3 flex-wrap">
-              <Button asChild variant="outline" size="default">
+              <Button asChild variant="outline" size="sm">
                 <Link to="/scripture">Read Passage</Link>
-              </Button>
-              <Button asChild variant="ghost" size="default">
-                <Link to="/scripture">Open Scripture</Link>
               </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Ripple Summary */}
-        <Card className="border border-border shadow-peaceful animate-gentle-fade" style={{ animationDelay: "300ms" }}>
+        <Card className="border border-border">
           <CardHeader>
-            <CardTitle className="font-serif text-xl flex items-center gap-3">
-              <Waves className="h-6 w-6 text-primary" />
+            <CardTitle className="text-base flex items-center gap-3">
+              <Waves className="h-5 w-5 text-muted-foreground" />
               Your Prayer Journey
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-6 text-center mb-6">
               <div>
-                <p className="text-3xl font-bold text-foreground">{stats?.total_prayers_offered ?? 0}</p>
-                <p className="text-sm text-muted-foreground mt-1">Prayed</p>
+                <p className="text-2xl font-semibold text-foreground">{stats?.total_prayers_offered ?? 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Prayed</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-foreground">{stats?.total_prayers_received ?? 0}</p>
-                <p className="text-sm text-muted-foreground mt-1">Received</p>
+                <p className="text-2xl font-semibold text-foreground">{stats?.total_prayers_received ?? 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Received</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-foreground">{stats?.total_chains_started ?? 0}</p>
-                <p className="text-sm text-muted-foreground mt-1">Passed forward</p>
+                <p className="text-2xl font-semibold text-foreground">{stats?.total_chains_started ?? 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Passed forward</p>
               </div>
             </div>
             <div className="text-center">
-              <Button asChild variant="outline" size="default">
+              <Button asChild variant="outline" size="sm">
                 <Link to="/ripple">
                   View Ripple Impact
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-3.5 w-3.5" />
                 </Link>
               </Button>
             </div>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Clock, User, MapPin, Send, BookOpen } from "lucide-react";
+import { Heart, Clock, User, MapPin, Send, BookOpen, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
@@ -39,9 +39,9 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
   const { getReminderForPrayer, toggleReminder, updateReminderTime } = usePrayerReminders();
 
   const encouragementSuggestions = [
-    "You are loved and not forgotten. God sees your heart and hears your prayers. 🙏",
-    "Praying for strength and peace for you during this time. God is with you. ✨",
-    "Trusting God with you for His perfect timing and provision. You're in my prayers. 💙",
+    "You are loved and not forgotten. God sees your heart and hears your prayers.",
+    "Praying for strength and peace for you during this time. God is with you.",
+    "Trusting God with you for His perfect timing and provision. You're in my prayers.",
   ];
 
   const handlePrayerOffered = async () => {
@@ -52,7 +52,7 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
       setHasPrayed(true);
       onPrayerOffered?.(request.id);
       toast({
-        title: "Prayer Offered 🙏",
+        title: "Prayer Offered",
         description: "Now pass the blessing forward!",
         duration: 3000,
       });
@@ -161,7 +161,7 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
               >
                 {isPraying ? (
                   <span className="flex items-center gap-2">
-                    <div className="animate-peaceful-glow">🙏</div>
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Praying...
                   </span>
                 ) : hasPrayed ? (

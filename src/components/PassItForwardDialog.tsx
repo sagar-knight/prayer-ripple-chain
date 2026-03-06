@@ -57,7 +57,7 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
       // Simulate copying share link
       navigator.clipboard?.writeText("https://prayerforward.org/join");
       toast({
-        title: "Link Copied! 🔗",
+        title: "Link Copied",
         description: "Share this link with a friend to invite them.",
       });
     }
@@ -66,7 +66,7 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
 
     setTimeout(() => {
       toast({
-        title: "Prayer Forwarded! 🙏",
+        title: "Prayer Forwarded",
         description: "You've continued the chain of blessings. Thank you!",
       });
       onComplete();
@@ -97,7 +97,7 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
               <CheckCircle className="h-8 w-8 text-primary" />
             </div>
             <h3 className="font-playfair text-xl font-semibold">
-              Blessing Forwarded! 🌊
+              Blessing Forwarded
             </h3>
             <p className="text-muted-foreground">
               The ripple continues. Thank you for making a difference.
