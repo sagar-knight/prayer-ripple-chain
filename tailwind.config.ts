@@ -69,9 +69,9 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				'sans': ['Inter', 'system-ui', 'sans-serif'],
-				'serif': ['Inter', 'system-ui', 'sans-serif'],
-				'playfair': ['Inter', 'system-ui', 'sans-serif'],
+				'sans': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+				'serif': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+				'playfair': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
 			},
 			keyframes: {
 				'accordion-down': {
