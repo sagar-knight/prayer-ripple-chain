@@ -18,6 +18,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { CartDrawer } from "@/components/CartDrawer";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,56 +103,61 @@ const Navigation = () => {
                 <span>Sign In</span>
               </Link>
             )}
+            {/* Cart - always visible */}
+            <CartDrawer />
           </div>
 
-          {/* Mobile Navigation */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="sm">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-              <div className="flex flex-col space-y-4 mt-6">
-                {allMobileItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href + item.label}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActiveRoute(item.href)
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                      }`}
+          {/* Mobile Right */}
+          <div className="flex items-center gap-1 lg:hidden">
+            <CartDrawer />
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+                <div className="flex flex-col space-y-4 mt-6">
+                  {allMobileItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href + item.label}
+                        to={item.href}
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                          isActiveRoute(item.href)
+                            ? "text-primary bg-primary/10"
+                            : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                        }`}
+                      >
+                        <Icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                  {user ? (
+                    <button
+                      onClick={() => { signOut(); setIsOpen(false); }}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                     >
-                      <Icon className="h-5 w-5" />
-                      <span>{item.label}</span>
+                      <LogOut className="h-5 w-5" />
+                      <span>Sign Out</span>
+                    </button>
+                  ) : (
+                    <Link
+                      to="/login"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-primary bg-primary/10"
+                    >
+                      <LogIn className="h-5 w-5" />
+                      <span>Sign In</span>
                     </Link>
-                  );
-                })}
-                {user ? (
-                  <button
-                    onClick={() => { signOut(); setIsOpen(false); }}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                  >
-                    <LogOut className="h-5 w-5" />
-                    <span>Sign Out</span>
-                  </button>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-primary bg-primary/10"
-                  >
-                    <LogIn className="h-5 w-5" />
-                    <span>Sign In</span>
-                  </Link>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </nav>
