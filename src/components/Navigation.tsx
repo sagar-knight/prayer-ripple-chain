@@ -37,13 +37,13 @@ const Navigation = () => {
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/churches", label: "Churches", icon: Church },
+    { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/store", label: "Store", icon: Store },
   ];
 
   const moreAuth = [
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/family", label: "Family", icon: Users },
-    { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/support", label: "Support", icon: HandHeart },
     { href: "/profile", label: "Profile", icon: User },
