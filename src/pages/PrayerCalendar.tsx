@@ -68,12 +68,7 @@ const PrayerCalendar = () => {
     setAcceptedPrayers((prev) =>
       prev.map((p) =>
         p.id === prayerId
-          ? {
-              ...p,
-              prayedToday: true,
-              lastPrayed: new Date(),
-              daysStreak: p.daysStreak + 1,
-            }
+          ? { ...p, prayedToday: true, lastPrayed: new Date(), daysStreak: p.daysStreak + 1 }
           : p
       )
     );
@@ -100,42 +95,42 @@ const PrayerCalendar = () => {
   const pendingCount = acceptedPrayers.filter((p) => !p.prayedToday).length;
 
   return (
-    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+    <div className="min-h-screen bg-background py-12 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-8 animate-gentle-fade">
-          <Calendar className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="text-center mb-8">
+          <Calendar className="h-10 w-10 text-foreground mx-auto mb-4" />
+          <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-3 tracking-tight">
             Prayer Calendar
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
             Track your prayer commitments and stay faithful
           </p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gradient-warm text-accent-foreground animate-gentle-fade">
+          <Card className="border border-border">
             <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold">{totalStreak}</div>
-              <div className="text-sm opacity-90">Day Streak</div>
+              <div className="text-2xl font-semibold text-foreground">{totalStreak}</div>
+              <div className="text-sm text-muted-foreground">Day Streak</div>
             </CardContent>
           </Card>
-          <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade" style={{ animationDelay: "100ms" }}>
+          <Card className="border border-border">
             <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold">{todayCount}</div>
-              <div className="text-sm opacity-90">Prayed Today</div>
+              <div className="text-2xl font-semibold text-foreground">{todayCount}</div>
+              <div className="text-sm text-muted-foreground">Prayed Today</div>
             </CardContent>
           </Card>
-          <Card className="animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+          <Card className="border border-border">
             <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold text-primary">{pendingCount}</div>
+              <div className="text-2xl font-semibold text-foreground">{pendingCount}</div>
               <div className="text-sm text-muted-foreground">Pending Today</div>
             </CardContent>
           </Card>
-          <Card className="animate-gentle-fade" style={{ animationDelay: "300ms" }}>
+          <Card className="border border-border">
             <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold text-primary">{acceptedPrayers.length}</div>
+              <div className="text-2xl font-semibold text-foreground">{acceptedPrayers.length}</div>
               <div className="text-sm text-muted-foreground">Total Commitments</div>
             </CardContent>
           </Card>
@@ -143,10 +138,10 @@ const PrayerCalendar = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Calendar View */}
-          <Card className="lg:col-span-1 animate-gentle-fade" style={{ animationDelay: "400ms" }}>
+          <Card className="lg:col-span-1 border border-border">
             <CardHeader>
-              <CardTitle className="font-playfair flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Calendar className="h-5 w-5 text-muted-foreground" />
                 Calendar
               </CardTitle>
             </CardHeader>
@@ -157,7 +152,7 @@ const PrayerCalendar = () => {
                 onSelect={setSelectedDate}
                 modifiers={{ prayed: prayedDates }}
                 modifiersClassNames={{
-                  prayed: "bg-primary/20 text-primary font-bold",
+                  prayed: "bg-foreground/10 text-foreground font-bold",
                 }}
               />
             </CardContent>
@@ -165,23 +160,21 @@ const PrayerCalendar = () => {
 
           {/* Prayer Commitments List */}
           <div className="lg:col-span-2 space-y-4">
-            <h2 className="font-playfair text-2xl font-bold text-foreground">
+            <h2 className="text-2xl font-semibold text-foreground">
               Your Prayer Commitments
             </h2>
 
-            {/* Daily Reminder Banner */}
             {pendingCount > 0 && (
-              <Card className="bg-accent/20 border-accent/40 animate-gentle-fade">
+              <Card className="bg-secondary border-border">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <BellRing className="h-6 w-6 text-accent-foreground" />
+                    <BellRing className="h-6 w-6 text-foreground" />
                     <div>
-                      <p className="font-semibold text-accent-foreground">
+                      <p className="font-semibold text-foreground">
                         You committed to pray for someone today
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {pendingCount} prayer{pendingCount > 1 ? "s" : ""} still
-                        pending for today
+                        {pendingCount} prayer{pendingCount > 1 ? "s" : ""} still pending for today
                       </p>
                     </div>
                   </div>
@@ -189,37 +182,25 @@ const PrayerCalendar = () => {
               </Card>
             )}
 
-            {acceptedPrayers.map((prayer, index) => (
-              <Card
-                key={prayer.id}
-                className="animate-gentle-fade hover:shadow-peaceful transition-all duration-300"
-                style={{ animationDelay: `${(index + 5) * 100}ms` }}
-              >
+            {acceptedPrayers.map((prayer) => (
+              <Card key={prayer.id} className="border border-border hover:border-foreground/20 transition-colors">
                 <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-2 flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-foreground">
-                          {prayer.title}
-                        </h3>
+                        <h3 className="font-semibold text-foreground">{prayer.title}</h3>
                         <Badge variant="secondary">{prayer.category}</Badge>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
-                          <span>
-                            Accepted:{" "}
-                            {prayer.acceptedDate.toLocaleDateString()}
-                          </span>
+                          <span>Accepted: {prayer.acceptedDate.toLocaleDateString()}</span>
                         </div>
                         {prayer.lastPrayed && (
                           <div className="flex items-center gap-1">
-                            <Heart className="h-4 w-4 text-primary" />
-                            <span>
-                              Last prayed:{" "}
-                              {prayer.lastPrayed.toLocaleDateString()}
-                            </span>
+                            <Heart className="h-4 w-4" />
+                            <span>Last prayed: {prayer.lastPrayed.toLocaleDateString()}</span>
                           </div>
                         )}
                         <div className="flex items-center gap-1">
@@ -227,21 +208,16 @@ const PrayerCalendar = () => {
                         </div>
                       </div>
 
-                      {/* Reminder Toggle */}
                       <div className="flex items-center gap-2">
                         {prayer.reminderEnabled ? (
-                          <Bell className="h-4 w-4 text-primary" />
+                          <Bell className="h-4 w-4 text-foreground" />
                         ) : (
                           <BellOff className="h-4 w-4 text-muted-foreground" />
                         )}
-                        <span className="text-sm text-muted-foreground">
-                          Daily reminder
-                        </span>
+                        <span className="text-sm text-muted-foreground">Daily reminder</span>
                         <Switch
                           checked={prayer.reminderEnabled}
-                          onCheckedChange={() =>
-                            handleToggleReminder(prayer.id)
-                          }
+                          onCheckedChange={() => handleToggleReminder(prayer.id)}
                         />
                       </div>
                     </div>
@@ -254,9 +230,8 @@ const PrayerCalendar = () => {
                         </Button>
                       ) : (
                         <Button
-                          variant="peaceful"
                           onClick={() => handleMarkPrayed(prayer.id)}
-                          className="gap-2"
+                          className="gap-2 rounded-full"
                         >
                           <Circle className="h-4 w-4" />
                           Mark Prayed
@@ -269,15 +244,12 @@ const PrayerCalendar = () => {
             ))}
 
             {acceptedPrayers.length === 0 && (
-              <Card className="text-center py-12">
+              <Card className="text-center py-12 border border-border">
                 <CardContent>
-                  <Heart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">
-                    No prayer commitments yet
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Start praying for others and your commitments will appear
-                    here.
+                  <Heart className="h-14 w-14 text-muted-foreground/30 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No prayer commitments yet</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Start praying for others and your commitments will appear here.
                   </p>
                 </CardContent>
               </Card>
@@ -286,12 +258,12 @@ const PrayerCalendar = () => {
         </div>
 
         {/* Scripture Encouragement */}
-        <Card className="mt-8 bg-gradient-primary text-primary-foreground animate-gentle-fade">
+        <Card className="mt-8 bg-foreground text-background border-none">
           <CardContent className="pt-6 text-center">
             <p className="text-lg italic leading-relaxed">
               "Devote yourselves to prayer, being watchful and thankful."
             </p>
-            <p className="font-semibold mt-2 opacity-90">— Colossians 4:2</p>
+            <p className="font-semibold mt-2 opacity-80">— Colossians 4:2</p>
           </CardContent>
         </Card>
       </div>
