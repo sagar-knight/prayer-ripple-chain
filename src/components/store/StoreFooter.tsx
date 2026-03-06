@@ -11,7 +11,6 @@ const StoreFooter = () => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    // Simple local storage for now
     const subs = JSON.parse(localStorage.getItem("pf-store-subscribers") || "[]");
     if (subs.find((s: any) => s.email === email.trim())) {
       toast.info("You're already subscribed!");
@@ -49,7 +48,6 @@ const StoreFooter = () => {
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Column 1 */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Heart className="h-5 w-5" />
@@ -62,7 +60,6 @@ const StoreFooter = () => {
             </ul>
           </div>
 
-          {/* Column 2 */}
           <div>
             <h4 className="font-semibold text-sm mb-4 uppercase tracking-wider">Customer Care</h4>
             <ul className="space-y-2 text-sm text-background/70">
@@ -73,7 +70,6 @@ const StoreFooter = () => {
             </ul>
           </div>
 
-          {/* Column 3 */}
           <div>
             <h4 className="font-semibold text-sm mb-4 uppercase tracking-wider">Help</h4>
             <ul className="space-y-2 text-sm text-background/70">
@@ -84,7 +80,6 @@ const StoreFooter = () => {
             </ul>
           </div>
 
-          {/* Column 4 */}
           <div>
             <h4 className="font-semibold text-sm mb-4 uppercase tracking-wider">Connect</h4>
             <div className="flex gap-3 mb-4">
@@ -98,13 +93,20 @@ const StoreFooter = () => {
                 <Youtube className="h-5 w-5" />
               </a>
             </div>
-            <Link to="/" className="text-sm text-background/70 hover:text-background transition-colors">
-              ← Back to PrayerForward
-            </Link>
+            <div className="space-y-2 text-sm text-background/70">
+              <Link to="/" className="block hover:text-background transition-colors">
+                ← Back to PrayerForward
+              </Link>
+              <Link to="/churches" className="block hover:text-background transition-colors">
+                Find a Church
+              </Link>
+              <Link to="/support" className="block hover:text-background transition-colors">
+                Support the Mission
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="border-t border-background/10 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-background/50">
           <p>© {new Date().getFullYear()} PrayerForward. All rights reserved.</p>
           <div className="flex gap-4">
