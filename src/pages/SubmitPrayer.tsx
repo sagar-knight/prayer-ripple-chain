@@ -191,7 +191,7 @@ const SubmitPrayer = () => {
                   Privacy & Community Guidelines
                 </h3>
                 <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• Prayer actions are always free — no ads inside prayer flows</li>
+                  <li>Prayer actions are always free, with no ads inside prayer flows</li>
                   <li>• Your personal information is kept secure and never shared</li>
                   <li>• Our community commits to praying with respect and love</li>
                   <li>• For urgent situations, please contact local emergency services</li>

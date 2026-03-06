@@ -8,7 +8,7 @@ const About = () => {
   const faqItems = [
     {
       question: "What is PrayerForward?",
-      answer: "PrayerForward is a faith-based prayer app where you can receive prayers, pray for others, and become part of a growing chain of compassion. Every prayer you offer carries the potential to spark another — creating a spiritual ripple of love, healing, and hope. Prayer actions are always free — no ads or product links inside prayer flows."
+      answer: "PrayerForward is a faith-based prayer app where you can receive prayers, pray for others, and become part of a growing chain of compassion. Every prayer you offer carries the potential to spark another, creating a spiritual ripple of love, healing, and hope. Prayer actions are always free with no ads or product links inside prayer flows."
     },
     {
       question: "Is my privacy protected?",
@@ -32,7 +32,7 @@ const About = () => {
     },
     {
       question: "Is there a cost to use PrayerForward?",
-      answer: "Prayer actions are always 100% free — no ads or product links inside prayer flows. Optional resources (journals, devotionals) are available in the Resources tab. Counseling services may have fees."
+      answer: "Prayer actions are always 100% free with no ads or product links inside prayer flows. Optional resources (journals, devotionals) are available in the Resources tab. Counseling services may have fees."
     },
     {
       question: "How do I get started?",
