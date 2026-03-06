@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,9 @@ const Login = () => {
   const { signIn } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const returnTo = (location.state as any)?.returnTo || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +32,7 @@ const Login = () => {
       toast({ title: "Sign in failed", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Welcome back! 🙏", description: "You're signed in." });
-      navigate("/");
+      navigate(returnTo, { replace: true });
     }
   };
 
@@ -78,6 +81,8 @@ const Login = () => {
             variant="outline"
             className="w-full gap-2"
             onClick={async () => {
+              // Store returnTo in sessionStorage for OAuth redirect
+              sessionStorage.setItem("returnTo", returnTo);
               const { error } = await lovable.auth.signInWithOAuth("google", {
                 redirect_uri: window.location.origin,
               });
@@ -97,7 +102,7 @@ const Login = () => {
 
           <p className="text-center text-sm text-muted-foreground mt-6">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-primary hover:underline font-medium">Sign up</Link>
+            <Link to="/signup" state={{ returnTo }} className="text-primary hover:underline font-medium">Sign up</Link>
           </p>
         </CardContent>
       </Card>

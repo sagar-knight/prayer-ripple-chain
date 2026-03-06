@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "./Home";
 import HomeDashboard from "./HomeDashboard";
@@ -9,13 +10,23 @@ const HomeRouter = () => {
   const { user, loading } = useAuth();
   const { completed, setCompleted } = useOnboardingStatus();
   const [showOnboarding, setShowOnboarding] = useState(!completed);
+  const navigate = useNavigate();
+
+  // Handle OAuth returnTo redirect
+  useEffect(() => {
+    if (user && !loading) {
+      const returnTo = sessionStorage.getItem("returnTo");
+      if (returnTo && returnTo !== "/") {
+        sessionStorage.removeItem("returnTo");
+        navigate(returnTo, { replace: true });
+      }
+    }
+  }, [user, loading, navigate]);
 
   if (loading) return null;
 
-  // Not logged in → landing page
   if (!user) return <Home />;
 
-  // Logged in → dashboard + optional onboarding
   return (
     <>
       {showOnboarding && !completed && (
