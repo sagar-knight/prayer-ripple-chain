@@ -35,7 +35,7 @@ const Home = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button asChild variant="peaceful" size="lg" className="text-lg px-8 py-6">
-                <Link to="/signup">
+                <Link to="/pray">
                   🙏 Get Started
                 </Link>
               </Button>
@@ -45,6 +45,25 @@ const Home = () => {
                   Sign In
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
+              </Button>
+            </div>
+
+            {/* Feature CTAs */}
+            <div className="flex flex-wrap gap-3 justify-center mt-4">
+              <Button asChild variant="outline" size="sm" className="gap-1">
+                <Link to="/submit-prayer">📝 Request Prayer</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="gap-1">
+                <Link to="/ripple">🌊 Explore Ripple</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="gap-1">
+                <Link to="/scripture">📖 Scripture</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="gap-1">
+                <Link to="/churches">⛪ Churches</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="gap-1">
+                <Link to="/family">👨‍👩‍👧‍👦 Family</Link>
               </Button>
             </div>
           </div>
@@ -146,11 +165,11 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild variant="secondary" size="lg" className="text-lg px-10 py-4">
-              <Link to="/signup">🙏 Join Now</Link>
+              <Link to="/pray">🙏 Start Praying</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-10 py-4 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-              <Link to="/login">
-                Sign In
+              <Link to="/submit-prayer">
+                Request Prayer
                 <Heart className="ml-2 h-5 w-5" />
               </Link>
             </Button>
