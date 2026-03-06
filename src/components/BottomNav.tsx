@@ -44,7 +44,7 @@ const BottomNav = () => {
               key={item.href}
               to={item.href}
               className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg transition-colors min-w-0 ${
-                active ? "text-foreground" : "text-muted-foreground"
+                active ? "text-primary" : "text-muted-foreground"
               }`}
             >
               <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.5 : 2} />

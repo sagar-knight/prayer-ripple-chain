@@ -92,16 +92,18 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center gap-1">
             {(user ? primaryAuth : publicItems).map((item) => {
               const active = isActiveRoute(item.href);
+              const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                     active
-                      ? "bg-foreground text-background"
+                      ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
+                  <Icon className="h-4 w-4" />
                   {item.label}
                 </Link>
               );
@@ -113,7 +115,7 @@ const Navigation = () => {
                   <button
                     className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                       isMoreActive
-                        ? "bg-foreground text-background"
+                        ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -154,7 +156,7 @@ const Navigation = () => {
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-1.5 rounded-full text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
               >
                 Sign In
               </Link>
@@ -184,7 +186,7 @@ const Navigation = () => {
                         onClick={() => setIsOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                           active
-                            ? "bg-foreground text-background"
+                            ? "bg-primary text-primary-foreground"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
@@ -209,7 +211,7 @@ const Navigation = () => {
                       <Link
                         to="/login"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-foreground text-background"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary text-primary-foreground"
                       >
                         <LogIn className="h-4 w-4" />
                         <span>Sign In</span>
