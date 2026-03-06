@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, BookOpen, Calendar, User, LogIn, Store } from "lucide-react";
+import { Home, Heart, BookOpen, Store, User, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const BottomNav = () => {
@@ -11,7 +11,6 @@ const BottomNav = () => {
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/store", label: "Store", icon: Store },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/profile", label: "Profile", icon: User },
   ];
 
@@ -25,13 +24,18 @@ const BottomNav = () => {
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
-    if (href === "/store") return location.pathname === "/store" || location.pathname.startsWith("/store/") || location.pathname.startsWith("/product/");
+    if (href === "/store")
+      return (
+        location.pathname === "/store" ||
+        location.pathname.startsWith("/store/") ||
+        location.pathname.startsWith("/product/")
+      );
     return location.pathname.startsWith(href);
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 md:hidden safe-area-bottom">
-      <div className="flex justify-around items-center h-16 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border/60 z-50 md:hidden safe-area-bottom">
+      <div className="flex justify-around items-center h-14 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -39,14 +43,12 @@ const BottomNav = () => {
             <Link
               key={item.href}
               to={item.href}
-              className={`flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-lg transition-colors min-w-0 ${
-                active
-                  ? "text-primary"
-                  : "text-muted-foreground"
+              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg transition-colors min-w-0 ${
+                active ? "text-foreground" : "text-muted-foreground"
               }`}
             >
-              <Icon className={`h-5 w-5 ${active ? "text-primary" : ""}`} />
-              <span className="text-[11px] font-medium truncate">
+              <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.5 : 2} />
+              <span className="text-[10px] font-medium tracking-wide">
                 {item.label}
               </span>
             </Link>
