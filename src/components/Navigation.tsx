@@ -3,12 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Heart,
   Menu,
   Users,
@@ -36,30 +30,27 @@ const Navigation = () => {
   const primaryAuth = [
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/churches", label: "Churches", icon: Church },
     { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/store", label: "Store", icon: Store },
-  ];
-
-  const moreAuth = [
-    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/family", label: "Family", icon: Users },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
-    { href: "/support", label: "Support", icon: HandHeart },
+    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/profile", label: "Profile", icon: User },
   ];
 
   const publicItems = [
     { href: "/churches", label: "Churches", icon: Church },
-    { href: "/store", label: "Store", icon: Store },
     { href: "/support", label: "Support", icon: HandHeart },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/about", label: "About", icon: Home },
   ];
 
   const allMobileItems = user
     ? [
         { href: "/", label: "Home", icon: Home },
         ...primaryAuth,
-        ...moreAuth,
+        { href: "/churches", label: "Churches", icon: Church },
+        { href: "/store", label: "Store", icon: Store },
+        { href: "/support", label: "Support", icon: HandHeart },
       ]
     : [
         { href: "/", label: "Home", icon: Home },
@@ -76,8 +67,6 @@ const Navigation = () => {
       );
     return location.pathname === href || location.pathname.startsWith(href + "/");
   };
-
-  const isMoreActive = moreAuth.some((item) => isActiveRoute(item.href));
 
   return (
     <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50">
@@ -97,7 +86,7 @@ const Navigation = () => {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                     active
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground"
@@ -108,39 +97,6 @@ const Navigation = () => {
                 </Link>
               );
             })}
-
-            {user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
-                      isMoreActive
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    More
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-44">
-                  {moreAuth.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <DropdownMenuItem key={item.href} asChild>
-                        <Link
-                          to={item.href}
-                          className="flex items-center gap-2.5 cursor-pointer"
-                        >
-                          <Icon className="h-4 w-4 text-muted-foreground" />
-                          {item.label}
-                        </Link>
-                      </DropdownMenuItem>
-                    );
-                  })}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
 
             <div className="w-px h-5 bg-border/60 mx-2" />
 
@@ -156,8 +112,9 @@ const Navigation = () => {
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
               >
+                <LogIn className="h-4 w-4" />
                 Sign In
               </Link>
             )}
