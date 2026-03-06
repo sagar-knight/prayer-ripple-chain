@@ -82,10 +82,10 @@ const Navigation = () => {
   return (
     <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-24">
+        <div className="flex justify-between items-center h-28">
           {/* Logo */}
-          <Link to="/" className="flex items-center py-2">
-            <img src={logo} alt="PrayerForward" className="h-20 w-auto object-contain" />
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="PrayerForward" className="h-24 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
