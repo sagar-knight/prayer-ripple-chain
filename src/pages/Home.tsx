@@ -74,7 +74,7 @@ const Home = () => {
             PrayerForward is a faith-based prayer app where you can receive
             prayers, pray for others, and become part of a growing chain of
             compassion. Every prayer you offer carries the potential to spark
-            another — creating a spiritual ripple of love, healing, and hope
+            another, creating a spiritual ripple of love, healing, and hope
             across the globe.
           </p>
         </div>
@@ -88,9 +88,9 @@ const Home = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {[
-              { step: 1, title: "Create Your Profile", desc: "Choose to receive or offer prayers — or both. Stay anonymous or share your journey." },
+              { step: 1, title: "Create Your Profile", desc: "Choose to receive or offer prayers, or both. Stay anonymous or share your journey." },
               { step: 2, title: "Submit or Accept", desc: "Post your prayer needs or browse the Prayer Wall to lift others in prayer." },
-              { step: 3, title: "Track Your Ripple", desc: "See how your prayers have traveled — through individuals, churches, and beyond." },
+              { step: 3, title: "Track Your Ripple", desc: "See how your prayers have traveled through individuals, churches, and beyond." },
               { step: 4, title: "Pray It Forward", desc: "After praying, pass the blessing on. The ripple begins with you." },
             ].map((item) => (
               <div key={item.step} className="text-center space-y-5">
@@ -114,7 +114,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed." },
-              { title: "Ripple Reach Tracker", desc: "Visualize your impact — see how many lives your prayer has touched." },
+              { title: "Ripple Reach Tracker", desc: "Visualize your impact and see how many lives your prayer has touched." },
               { title: "Church Collaboration", desc: "Connect with churches, submit requests to them, or join their prayer groups." },
               { title: "Calendar & Reminders", desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks." },
               { title: "Smart Notifications", desc: '"Have you prayed today?", "Someone\'s waiting for your prayer."' },
