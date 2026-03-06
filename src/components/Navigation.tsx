@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { CartDrawer } from "@/components/CartDrawer";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-tight.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -84,8 +84,8 @@ const Navigation = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-24">
           {/* Logo */}
-          <Link to="/" className="flex items-center overflow-hidden h-24">
-            <img src={logo} alt="PrayerForward" className="h-[220px] w-auto max-w-none" />
+          <Link to="/" className="flex items-center py-2">
+            <img src={logo} alt="PrayerForward" className="h-20 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
