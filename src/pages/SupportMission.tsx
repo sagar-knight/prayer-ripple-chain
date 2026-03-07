@@ -40,6 +40,8 @@ const ONETIME_PRICES = [
 const SupportMission = () => {
   const [selectedMonthly, setSelectedMonthly] = useState<number | null>(1);
   const [selectedOneTime, setSelectedOneTime] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState("");
+  const [isCustom, setIsCustom] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
@@ -54,16 +56,25 @@ const SupportMission = () => {
 
     let priceId: string | null = null;
     let mode: "payment" | "subscription" = "payment";
+    let customAmountCents: number | null = null;
 
-    if (selectedMonthly !== null) {
+    if (selectedMonthly !== null && !isCustom) {
       priceId = MONTHLY_PRICES[selectedMonthly]?.priceId;
       mode = "subscription";
+    } else if (isCustom && customAmount) {
+      const amt = parseFloat(customAmount);
+      if (isNaN(amt) || amt < 1) {
+        toast.error("Please enter an amount of at least $1.");
+        return;
+      }
+      customAmountCents = Math.round(amt * 100);
+      mode = "payment";
     } else if (selectedOneTime !== null) {
       priceId = ONETIME_PRICES[selectedOneTime]?.priceId;
       mode = "payment";
     }
 
-    if (!priceId) {
+    if (!priceId && !customAmountCents) {
       toast.error("Please select a support option.");
       return;
     }
@@ -71,7 +82,7 @@ const SupportMission = () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-support-checkout", {
-        body: { priceId, mode },
+        body: { priceId, mode, customAmountCents },
       });
 
       if (error) throw error;
@@ -176,20 +187,51 @@ const SupportMission = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 gap-3">
+             <div className="grid grid-cols-3 gap-3">
               {ONETIME_PRICES.map((price, idx) => (
                 <Button
                   key={price.priceId}
-                  variant={selectedOneTime === idx ? "peaceful" : "outline"}
+                  variant={selectedOneTime === idx && !isCustom ? "peaceful" : "outline"}
                   className="text-lg py-6"
                   onClick={() => {
                     setSelectedOneTime(idx);
                     setSelectedMonthly(null);
+                    setIsCustom(false);
                   }}
                 >
                   ${price.amount}
                 </Button>
               ))}
+            </div>
+            <div className="pt-2">
+              <Label htmlFor="custom-amount" className="text-sm text-muted-foreground mb-1.5 block">
+                Or enter a custom amount
+              </Label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                  <Input
+                    id="custom-amount"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="50"
+                    value={customAmount}
+                    className="pl-7"
+                    onFocus={() => {
+                      setIsCustom(true);
+                      setSelectedMonthly(null);
+                      setSelectedOneTime(null);
+                    }}
+                    onChange={(e) => {
+                      setCustomAmount(e.target.value);
+                      setIsCustom(true);
+                      setSelectedMonthly(null);
+                      setSelectedOneTime(null);
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -200,7 +242,7 @@ const SupportMission = () => {
           size="lg"
           className="w-full text-lg py-6 mb-8 shadow-peaceful"
           onClick={handleDonate}
-          disabled={isLoading || (selectedMonthly === null && selectedOneTime === null)}
+          disabled={isLoading || (selectedMonthly === null && selectedOneTime === null && !isCustom)}
         >
           {isLoading ? (
             <>

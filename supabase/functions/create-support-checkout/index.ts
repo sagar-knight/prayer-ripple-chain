@@ -25,8 +25,8 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    const { priceId, mode } = await req.json();
-    if (!priceId) throw new Error("priceId is required");
+    const { priceId, mode, customAmountCents } = await req.json();
+    if (!priceId && !customAmountCents) throw new Error("priceId or customAmountCents is required");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -38,10 +38,25 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
+    let lineItems;
+    if (customAmountCents) {
+      // Custom amount: use price_data for one-time payment
+      lineItems = [{
+        price_data: {
+          currency: "usd",
+          product_data: { name: "Custom Gift to PrayerForward" },
+          unit_amount: customAmountCents,
+        },
+        quantity: 1,
+      }];
+    } else {
+      lineItems = [{ price: priceId, quantity: 1 }];
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: lineItems,
       mode: mode === "subscription" ? "subscription" : "payment",
       success_url: `${req.headers.get("origin")}/support?success=true`,
       cancel_url: `${req.headers.get("origin")}/support`,
