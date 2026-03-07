@@ -82,7 +82,7 @@ const SupportMission = () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-support-checkout", {
-        body: { priceId, mode },
+        body: { priceId, mode, customAmountCents },
       });
 
       if (error) throw error;
