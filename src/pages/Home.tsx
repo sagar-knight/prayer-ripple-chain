@@ -197,7 +197,7 @@ const Home = () => {
                 Start Praying
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-10 py-4 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+            <Button asChild variant="secondary" size="lg" className="text-lg px-10 py-4">
               <Link to="/submit-prayer">
                 Request Prayer
                 <BookOpen className="ml-2 h-5 w-5" />
