@@ -187,20 +187,51 @@ const SupportMission = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 gap-3">
+             <div className="grid grid-cols-3 gap-3">
               {ONETIME_PRICES.map((price, idx) => (
                 <Button
                   key={price.priceId}
-                  variant={selectedOneTime === idx ? "peaceful" : "outline"}
+                  variant={selectedOneTime === idx && !isCustom ? "peaceful" : "outline"}
                   className="text-lg py-6"
                   onClick={() => {
                     setSelectedOneTime(idx);
                     setSelectedMonthly(null);
+                    setIsCustom(false);
                   }}
                 >
                   ${price.amount}
                 </Button>
               ))}
+            </div>
+            <div className="pt-2">
+              <Label htmlFor="custom-amount" className="text-sm text-muted-foreground mb-1.5 block">
+                Or enter a custom amount
+              </Label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                  <Input
+                    id="custom-amount"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="50"
+                    value={customAmount}
+                    className="pl-7"
+                    onFocus={() => {
+                      setIsCustom(true);
+                      setSelectedMonthly(null);
+                      setSelectedOneTime(null);
+                    }}
+                    onChange={(e) => {
+                      setCustomAmount(e.target.value);
+                      setIsCustom(true);
+                      setSelectedMonthly(null);
+                      setSelectedOneTime(null);
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -211,7 +242,7 @@ const SupportMission = () => {
           size="lg"
           className="w-full text-lg py-6 mb-8 shadow-peaceful"
           onClick={handleDonate}
-          disabled={isLoading || (selectedMonthly === null && selectedOneTime === null)}
+          disabled={isLoading || (selectedMonthly === null && selectedOneTime === null && !isCustom)}
         >
           {isLoading ? (
             <>
