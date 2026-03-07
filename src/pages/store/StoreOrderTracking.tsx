@@ -1,5 +1,5 @@
 import { useState } from "react";
-import StoreLayout from "@/components/store/StoreLayout";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Package, Search } from "lucide-react";
@@ -19,7 +19,7 @@ const StoreOrderTracking = () => {
   };
 
   return (
-    <StoreLayout>
+    <>
       <div className="max-w-lg mx-auto px-4 py-12 sm:py-16 text-center">
         <Package className="h-12 w-12 text-primary mx-auto mb-4" />
         <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">Track Your Order</h1>
@@ -54,7 +54,7 @@ const StoreOrderTracking = () => {
           You can also find tracking information in the confirmation email sent after your order was shipped.
         </p>
       </div>
-    </StoreLayout>
+    </>
   );
 };
 

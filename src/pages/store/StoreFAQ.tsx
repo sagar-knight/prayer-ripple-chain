@@ -1,4 +1,3 @@
-import StoreLayout from "@/components/store/StoreLayout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const faqs = [
@@ -13,7 +12,7 @@ const faqs = [
 ];
 
 const StoreFAQ = () => (
-  <StoreLayout>
+  <>
     <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
       <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">Frequently Asked Questions</h1>
       <p className="text-muted-foreground mb-8">Got questions? We've got answers.</p>
@@ -26,7 +25,7 @@ const StoreFAQ = () => (
         ))}
       </Accordion>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreFAQ;

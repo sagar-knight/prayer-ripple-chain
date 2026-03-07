@@ -1,9 +1,7 @@
 import { useState } from "react";
-import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,42 +12,90 @@ import {
   Globe,
   CheckCircle,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+
+const MONTHLY_PRICES = [
+  { amount: 3, priceId: "price_1T88IVP0AaPv7hClq3iXPSmN" },
+  { amount: 5, priceId: "price_1T88IsP0AaPv7hClSVisj9ad" },
+  { amount: 10, priceId: "price_1T88JFP0AaPv7hClYZi3kARk" },
+];
+
+const ONETIME_PRICES = [
+  { amount: 5, priceId: "price_1T88LCP0AaPv7hCl6RWWgUAn" },
+  { amount: 10, priceId: "price_1T88LuP0AaPv7hClzGHxx0d8" },
+  { amount: 25, priceId: "price_1T88MQP0AaPv7hClKADrzalb" },
+];
 
 const SupportMission = () => {
-  const [selectedMonthly, setSelectedMonthly] = useState<number | null>(5);
+  const [selectedMonthly, setSelectedMonthly] = useState<number | null>(1);
   const [selectedOneTime, setSelectedOneTime] = useState<number | null>(null);
-  const [customAmount, setCustomAmount] = useState("");
-  const [makeMonthly, setMakeMonthly] = useState(false);
-  const [donated, setDonated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
 
-  const monthlyOptions = [3, 5, 10];
-  const oneTimeOptions = [5, 10, 25];
+  const success = searchParams.get("success") === "true";
 
-  const handleDonate = () => {
-    // Analytics: support_donation_start
-    setDonated(true);
-    // Analytics: support_donation_success
+  const handleDonate = async () => {
+    if (!user) {
+      toast.error("Please sign in to support the mission.");
+      return;
+    }
+
+    let priceId: string | null = null;
+    let mode: "payment" | "subscription" = "payment";
+
+    if (selectedMonthly !== null) {
+      priceId = MONTHLY_PRICES[selectedMonthly]?.priceId;
+      mode = "subscription";
+    } else if (selectedOneTime !== null) {
+      priceId = ONETIME_PRICES[selectedOneTime]?.priceId;
+      mode = "payment";
+    }
+
+    if (!priceId) {
+      toast.error("Please select a support option.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-support-checkout", {
+        body: { priceId, mode },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (donated) {
+  if (success) {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-16 pb-24">
         <div className="max-w-lg mx-auto px-4 text-center">
           <Card className="py-12 animate-gentle-fade">
             <CardContent className="space-y-6">
               <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                <Heart className="h-10 w-10 text-primary" />
+                <CheckCircle className="h-10 w-10 text-primary" />
               </div>
               <h1 className="font-playfair text-3xl font-bold text-foreground">
-                Thank you for supporting PrayerForward 🙏
+                Thank you for supporting PrayerForward
               </h1>
               <p className="text-muted-foreground leading-relaxed">
                 Your generosity helps keep prayer free for everyone. God bless
@@ -58,9 +104,6 @@ const SupportMission = () => {
               <div className="flex flex-col gap-3 pt-4">
                 <Button asChild variant="peaceful">
                   <Link to="/">Return Home</Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/profile">Manage Support</Link>
                 </Button>
               </div>
             </CardContent>
@@ -74,9 +117,9 @@ const SupportMission = () => {
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <Button asChild variant="ghost" size="sm" className="mb-6 gap-2">
-          <Link to="/profile">
+          <Link to="/">
             <ArrowLeft className="h-4 w-4" />
-            Back to Profile
+            Back to Home
           </Link>
         </Button>
 
@@ -107,19 +150,18 @@ const SupportMission = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              {monthlyOptions.map((amount) => (
+            <div className="grid grid-cols-3 gap-3">
+              {MONTHLY_PRICES.map((price, idx) => (
                 <Button
-                  key={amount}
-                  variant={selectedMonthly === amount && !selectedOneTime ? "peaceful" : "outline"}
+                  key={price.priceId}
+                  variant={selectedMonthly === idx && selectedOneTime === null ? "peaceful" : "outline"}
                   className="text-lg py-6"
                   onClick={() => {
-                    setSelectedMonthly(amount);
+                    setSelectedMonthly(idx);
                     setSelectedOneTime(null);
-                    setCustomAmount("");
                   }}
                 >
-                  ${amount}/mo
+                  ${price.amount}/mo
                 </Button>
               ))}
             </div>
@@ -135,44 +177,19 @@ const SupportMission = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
-              {oneTimeOptions.map((amount) => (
+              {ONETIME_PRICES.map((price, idx) => (
                 <Button
-                  key={amount}
-                  variant={selectedOneTime === amount ? "peaceful" : "outline"}
+                  key={price.priceId}
+                  variant={selectedOneTime === idx ? "peaceful" : "outline"}
                   className="text-lg py-6"
                   onClick={() => {
-                    setSelectedOneTime(amount);
+                    setSelectedOneTime(idx);
                     setSelectedMonthly(null);
-                    setCustomAmount("");
                   }}
                 >
-                  ${amount}
+                  ${price.amount}
                 </Button>
               ))}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="custom">Custom Amount</Label>
-              <Input
-                id="custom"
-                type="number"
-                placeholder="Enter amount"
-                value={customAmount}
-                onChange={(e) => {
-                  setCustomAmount(e.target.value);
-                  setSelectedMonthly(null);
-                  setSelectedOneTime(null);
-                }}
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="monthly"
-                checked={makeMonthly}
-                onCheckedChange={(checked) => setMakeMonthly(checked === true)}
-              />
-              <Label htmlFor="monthly" className="text-sm cursor-pointer">
-                Make this monthly
-              </Label>
             </div>
           </CardContent>
         </Card>
@@ -183,10 +200,27 @@ const SupportMission = () => {
           size="lg"
           className="w-full text-lg py-6 mb-8 shadow-peaceful"
           onClick={handleDonate}
+          disabled={isLoading || (selectedMonthly === null && selectedOneTime === null)}
         >
-          <Heart className="mr-2 h-5 w-5" />
-          Support PrayerForward
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Heart className="mr-2 h-5 w-5" />
+              {!user ? "Sign In to Support" : "Support PrayerForward"}
+            </>
+          )}
         </Button>
+
+        {!user && (
+          <p className="text-center text-sm text-muted-foreground mb-8">
+            <Link to="/login" className="text-primary hover:underline">Sign in</Link> or{" "}
+            <Link to="/signup" className="text-primary hover:underline">create an account</Link> to complete your contribution.
+          </p>
+        )}
 
         {/* FAQ */}
         <Card className="animate-gentle-fade" style={{ animationDelay: "300ms" }}>
@@ -236,8 +270,6 @@ const SupportMission = () => {
             </Accordion>
           </CardContent>
         </Card>
-
-        <NewsletterSubscribe />
       </div>
     </div>
   );

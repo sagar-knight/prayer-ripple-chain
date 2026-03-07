@@ -5,6 +5,13 @@ import {
   Heart,
   ArrowRight,
   BookOpen,
+  Users,
+  Waves,
+  Church,
+  Calendar,
+  Bell,
+  Sparkles,
+  HandHeart,
 } from "lucide-react";
 import heroImage from "@/assets/hero-prayer.jpg";
 import DailyVerseCard from "@/components/DailyVerseCard";
@@ -36,7 +43,8 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button asChild variant="peaceful" size="lg" className="text-lg px-8 py-6">
                 <Link to="/pray">
-                  🙏 Get Started
+                  <Heart className="mr-2 h-5 w-5" />
+                  Get Started
                 </Link>
               </Button>
 
@@ -50,20 +58,35 @@ const Home = () => {
 
             {/* Feature CTAs */}
             <div className="flex flex-wrap gap-3 justify-center mt-4">
-              <Button asChild variant="outline" size="sm" className="gap-1">
-                <Link to="/submit-prayer">📝 Request Prayer</Link>
+              <Button asChild variant="secondary" size="sm" className="gap-1.5">
+                <Link to="/submit-prayer">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  Request Prayer
+                </Link>
               </Button>
-              <Button asChild variant="outline" size="sm" className="gap-1">
-                <Link to="/ripple">🌊 Explore Ripple</Link>
+              <Button asChild variant="secondary" size="sm" className="gap-1.5">
+                <Link to="/ripple">
+                  <Waves className="h-3.5 w-3.5" />
+                  Explore Ripple
+                </Link>
               </Button>
-              <Button asChild variant="outline" size="sm" className="gap-1">
-                <Link to="/scripture">📖 Scripture</Link>
+              <Button asChild variant="secondary" size="sm" className="gap-1.5">
+                <Link to="/scripture">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  Scripture
+                </Link>
               </Button>
-              <Button asChild variant="outline" size="sm" className="gap-1">
-                <Link to="/churches">⛪ Churches</Link>
+              <Button asChild variant="secondary" size="sm" className="gap-1.5">
+                <Link to="/churches">
+                  <Church className="h-3.5 w-3.5" />
+                  Churches
+                </Link>
               </Button>
-              <Button asChild variant="outline" size="sm" className="gap-1">
-                <Link to="/family">👨‍👩‍👧‍👦 Family</Link>
+              <Button asChild variant="secondary" size="sm" className="gap-1.5">
+                <Link to="/family">
+                  <Users className="h-3.5 w-3.5" />
+                  Family
+                </Link>
               </Button>
             </div>
           </div>
@@ -74,7 +97,7 @@ const Home = () => {
       <section className="py-16 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-8">
-            ✨ What Is PrayerForward?
+            What Is PrayerForward?
           </h2>
           <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             PrayerForward is a faith-based prayer app where you can receive
@@ -90,7 +113,7 @@ const Home = () => {
       <section className="py-16 bg-card/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
-            📲 How It Works
+            How It Works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -115,30 +138,34 @@ const Home = () => {
       <section className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
-            🔥 Key Features
+            Key Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { emoji: "🙌", title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.", gradient: "bg-gradient-warm" },
-              { emoji: "🌊", title: "Ripple Reach Tracker", desc: "Visualize your impact — see how many lives your prayer has touched.", gradient: "bg-gradient-primary text-primary-foreground" },
-              { emoji: "⛪", title: "Church Collaboration", desc: "Connect with churches, submit requests to them, or join their prayer groups.", gradient: "bg-gradient-warm" },
-              { emoji: "📅", title: "Calendar & Reminders", desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks.", gradient: "" },
-              { emoji: "🔔", title: "Smart Notifications", desc: '"Have you prayed today?", "Someone\'s waiting for your prayer."', gradient: "" },
-              { emoji: "📖", title: "Scripture & Encouragement", desc: "Receive curated Bible verses and reflections matched to your prayer needs.", gradient: "" },
-            ].map((feature) => (
-              <Card key={feature.title} className={`group hover:shadow-peaceful transition-all duration-300 border-0 ${feature.gradient || "bg-card/70"}`}>
-                <CardHeader>
-                  <CardTitle className="font-playfair text-lg flex items-center gap-2">
-                    {feature.emoji} {feature.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className={`leading-relaxed text-sm ${feature.gradient.includes("primary") ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
-                    {feature.desc}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+              { icon: HandHeart, title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.", gradient: "bg-gradient-warm" },
+              { icon: Waves, title: "Ripple Reach Tracker", desc: "Visualize your impact — see how many lives your prayer has touched.", gradient: "bg-gradient-primary text-primary-foreground" },
+              { icon: Church, title: "Church Collaboration", desc: "Connect with churches, submit requests to them, or join their prayer groups.", gradient: "bg-gradient-warm" },
+              { icon: Calendar, title: "Calendar & Reminders", desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks.", gradient: "" },
+              { icon: Bell, title: "Smart Notifications", desc: "\"Have you prayed today?\", \"Someone's waiting for your prayer.\"", gradient: "" },
+              { icon: BookOpen, title: "Scripture & Encouragement", desc: "Receive curated Bible verses and reflections matched to your prayer needs.", gradient: "" },
+            ].map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={feature.title} className={`group hover:shadow-peaceful transition-all duration-300 border-0 ${feature.gradient || "bg-card/70"}`}>
+                  <CardHeader>
+                    <CardTitle className="font-playfair text-lg flex items-center gap-2">
+                      <Icon className="h-5 w-5" />
+                      {feature.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className={`leading-relaxed text-sm ${feature.gradient.includes("primary") ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
+                      {feature.desc}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -157,7 +184,7 @@ const Home = () => {
       <section className="py-16 bg-gradient-primary text-primary-foreground">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-6">
-            💖 Your One Prayer Can Change Everything.
+            Your One Prayer Can Change Everything.
           </h2>
           <p className="text-lg mb-8 text-primary-foreground/90 max-w-3xl mx-auto">
             Join a movement where every prayer leads to another, and every person
@@ -165,12 +192,15 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild variant="secondary" size="lg" className="text-lg px-10 py-4">
-              <Link to="/pray">🙏 Start Praying</Link>
+              <Link to="/pray">
+                <Heart className="mr-2 h-5 w-5" />
+                Start Praying
+              </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-10 py-4 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
               <Link to="/submit-prayer">
                 Request Prayer
-                <Heart className="ml-2 h-5 w-5" />
+                <BookOpen className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>

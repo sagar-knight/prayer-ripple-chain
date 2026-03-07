@@ -12,7 +12,7 @@ import {
   STOREFRONT_COLLECTIONS_QUERY,
 } from "@/lib/shopify";
 import { toast } from "sonner";
-import StoreLayout from "@/components/store/StoreLayout";
+import { CartDrawer } from "@/components/CartDrawer";
 
 const categoryFallbackTerms: Record<string, string[]> = {
   Apparel: ["apparel", "shirt", "t-shirt", "tee", "hoodie", "crewneck", "sweatshirt"],
@@ -215,7 +215,7 @@ const Store = () => {
   };
 
   return (
-    <StoreLayout>
+    <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
         {loading ? (
           <>
@@ -313,7 +313,7 @@ const Store = () => {
           </>
         )}
       </div>
-    </StoreLayout>
+    </>
   );
 };
 

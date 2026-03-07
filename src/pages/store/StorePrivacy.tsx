@@ -1,7 +1,5 @@
-import StoreLayout from "@/components/store/StoreLayout";
-
 const StorePrivacy = () => (
-  <StoreLayout>
+  <>
     <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
       <h1 className="font-playfair text-3xl font-bold text-foreground mb-6">Privacy Policy</h1>
       <div className="prose prose-sm max-w-none text-muted-foreground space-y-4">
@@ -20,7 +18,7 @@ const StorePrivacy = () => (
         <p>For privacy-related inquiries, please reach out through our Contact page.</p>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StorePrivacy;
