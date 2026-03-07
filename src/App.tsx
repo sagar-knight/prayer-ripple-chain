@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import Navigation from "./components/Navigation";
 import BottomNav from "./components/BottomNav";
+import AppFooter from "./components/AppFooter";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomeRouter from "./pages/HomeRouter";
 import SubmitPrayer from "./pages/SubmitPrayer";
@@ -57,23 +58,26 @@ const AppContent = () => {
   return null;
 };
 
-// Hide main Navigation and BottomNav on store routes
-const ConditionalNav = () => {
+// Show store sub-nav only on store routes
+const StoreSubNav = () => {
   const location = useLocation();
   const isStoreRoute = location.pathname === "/store" || location.pathname.startsWith("/store/") || location.pathname.startsWith("/product/");
-  if (isStoreRoute) return null;
-  return (
-    <>
-      <Navigation />
-    </>
-  );
-};
+  if (!isStoreRoute) return null;
 
-const ConditionalBottomNav = () => {
-  const location = useLocation();
-  const isStoreRoute = location.pathname === "/store" || location.pathname.startsWith("/store/") || location.pathname.startsWith("/product/");
-  if (isStoreRoute) return null;
-  return <BottomNav />;
+  return (
+    <div className="bg-muted border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs">
+        <nav className="flex items-center gap-4">
+          <a href="/store" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Shop All</a>
+          <a href="/store?collection=new" className="text-muted-foreground hover:text-foreground font-medium transition-colors">New</a>
+          <a href="/store?category=Apparel" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Apparel</a>
+        </nav>
+        <span className="text-muted-foreground hidden sm:block">
+          Every purchase supports the mission
+        </span>
+      </div>
+    </div>
+  );
 };
 
 const App = () => (
@@ -84,57 +88,63 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AppContent />
-          <ConditionalNav />
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<HomeRouter />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/support" element={<SupportMission />} />
+          <div className="min-h-screen flex flex-col">
+            <Navigation />
+            <StoreSubNav />
+            <main className="flex-1">
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<HomeRouter />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/support" element={<SupportMission />} />
 
-            {/* Store routes - use their own layout */}
-            <Route path="/store" element={<Store />} />
-            <Route path="/product/:handle" element={<ProductDetail />} />
-            <Route path="/store/about" element={<StoreAbout />} />
-            <Route path="/store/terms" element={<StoreTerms />} />
-            <Route path="/store/privacy" element={<StorePrivacy />} />
-            <Route path="/store/refund-policy" element={<StoreRefundPolicy />} />
-            <Route path="/store/shipping" element={<StoreShipping />} />
-            <Route path="/store/returns" element={<StoreReturns />} />
-            <Route path="/store/faq" element={<StoreFAQ />} />
-            <Route path="/store/contact" element={<StoreContact />} />
-            <Route path="/store/order-tracking" element={<StoreOrderTracking />} />
-            <Route path="/store/orders" element={<StoreOrders />} />
+                {/* Store routes */}
+                <Route path="/store" element={<Store />} />
+                <Route path="/product/:handle" element={<ProductDetail />} />
+                <Route path="/store/about" element={<StoreAbout />} />
+                <Route path="/store/terms" element={<StoreTerms />} />
+                <Route path="/store/privacy" element={<StorePrivacy />} />
+                <Route path="/store/refund-policy" element={<StoreRefundPolicy />} />
+                <Route path="/store/shipping" element={<StoreShipping />} />
+                <Route path="/store/returns" element={<StoreReturns />} />
+                <Route path="/store/faq" element={<StoreFAQ />} />
+                <Route path="/store/contact" element={<StoreContact />} />
+                <Route path="/store/order-tracking" element={<StoreOrderTracking />} />
+                <Route path="/store/orders" element={<StoreOrders />} />
 
-            <Route path="/churches" element={<Churches />} />
+                <Route path="/churches" element={<Churches />} />
 
-            {/* Protected routes */}
-            <Route path="/submit-prayer" element={<ProtectedRoute><SubmitPrayer /></ProtectedRoute>} />
-            <Route path="/pray" element={<ProtectedRoute><PrayForOthers /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/churches/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
-            <Route path="/churches/:churchId" element={<ProtectedRoute><ChurchDetail /></ProtectedRoute>} />
-            <Route path="/churches/:churchId/wall" element={<ProtectedRoute><ChurchPrayerWall /></ProtectedRoute>} />
-            <Route path="/churches/:churchId/submit" element={<ProtectedRoute><ChurchSubmitPrayer /></ProtectedRoute>} />
-            <Route path="/churches/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
-            <Route path="/churches/:churchId/prayers" element={<ProtectedRoute><ChurchPrayerWall /></ProtectedRoute>} />
-            <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
-            <Route path="/calendar" element={<ProtectedRoute><PrayerCalendar /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/organizations" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
-            <Route path="/organizations/create" element={<ProtectedRoute><CreateOrganization /></ProtectedRoute>} />
-            <Route path="/organizations/:orgId" element={<ProtectedRoute><OrganizationDetail /></ProtectedRoute>} />
-            <Route path="/scripture" element={<ProtectedRoute><Scripture /></ProtectedRoute>} />
-            <Route path="/commitments" element={<ProtectedRoute><MyCommitments /></ProtectedRoute>} />
-            <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
-            <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ConditionalBottomNav />
+                {/* Protected routes */}
+                <Route path="/submit-prayer" element={<ProtectedRoute><SubmitPrayer /></ProtectedRoute>} />
+                <Route path="/pray" element={<ProtectedRoute><PrayForOthers /></ProtectedRoute>} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/churches/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
+                <Route path="/churches/:churchId" element={<ProtectedRoute><ChurchDetail /></ProtectedRoute>} />
+                <Route path="/churches/:churchId/wall" element={<ProtectedRoute><ChurchPrayerWall /></ProtectedRoute>} />
+                <Route path="/churches/:churchId/submit" element={<ProtectedRoute><ChurchSubmitPrayer /></ProtectedRoute>} />
+                <Route path="/churches/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
+                <Route path="/churches/:churchId/prayers" element={<ProtectedRoute><ChurchPrayerWall /></ProtectedRoute>} />
+                <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
+                <Route path="/calendar" element={<ProtectedRoute><PrayerCalendar /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/organizations" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
+                <Route path="/organizations/create" element={<ProtectedRoute><CreateOrganization /></ProtectedRoute>} />
+                <Route path="/organizations/:orgId" element={<ProtectedRoute><OrganizationDetail /></ProtectedRoute>} />
+                <Route path="/scripture" element={<ProtectedRoute><Scripture /></ProtectedRoute>} />
+                <Route path="/commitments" element={<ProtectedRoute><MyCommitments /></ProtectedRoute>} />
+                <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
+                <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <AppFooter />
+          </div>
+          <BottomNav />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
