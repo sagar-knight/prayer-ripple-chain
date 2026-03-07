@@ -33,7 +33,7 @@ const NewsletterSubscribe = () => {
             <CardContent className="py-8 text-center space-y-3">
               <CheckCircle className="h-10 w-10 text-primary mx-auto" />
               <h3 className="font-playfair text-xl font-bold text-foreground">
-                Thank you for subscribing to PrayerForward 🙏
+                Thank you for subscribing to PrayerForward
               </h3>
               <p className="text-sm text-muted-foreground">
                 Please check your inbox to confirm your subscription.
