@@ -124,6 +124,9 @@ const Navigation = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Cart */}
+            <CartDrawer />
+
             {/* Auth button */}
             {user ? (
               <div className="flex items-center space-x-1">
