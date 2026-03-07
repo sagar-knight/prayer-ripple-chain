@@ -40,6 +40,8 @@ const ONETIME_PRICES = [
 const SupportMission = () => {
   const [selectedMonthly, setSelectedMonthly] = useState<number | null>(1);
   const [selectedOneTime, setSelectedOneTime] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState("");
+  const [isCustom, setIsCustom] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
@@ -54,16 +56,25 @@ const SupportMission = () => {
 
     let priceId: string | null = null;
     let mode: "payment" | "subscription" = "payment";
+    let customAmountCents: number | null = null;
 
-    if (selectedMonthly !== null) {
+    if (selectedMonthly !== null && !isCustom) {
       priceId = MONTHLY_PRICES[selectedMonthly]?.priceId;
       mode = "subscription";
+    } else if (isCustom && customAmount) {
+      const amt = parseFloat(customAmount);
+      if (isNaN(amt) || amt < 1) {
+        toast.error("Please enter an amount of at least $1.");
+        return;
+      }
+      customAmountCents = Math.round(amt * 100);
+      mode = "payment";
     } else if (selectedOneTime !== null) {
       priceId = ONETIME_PRICES[selectedOneTime]?.priceId;
       mode = "payment";
     }
 
-    if (!priceId) {
+    if (!priceId && !customAmountCents) {
       toast.error("Please select a support option.");
       return;
     }
