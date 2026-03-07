@@ -24,7 +24,7 @@ const StoreAbout = () => (
         When you shop with PrayerForward, you're not just buying a product—you're joining a movement. A portion of every sale goes directly toward supporting prayer chains, community outreach, and spreading encouragement to those who need it most.
       </p>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreAbout;

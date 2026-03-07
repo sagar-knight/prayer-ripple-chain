@@ -19,7 +19,7 @@ const StoreReturns = () => (
         <p>Return shipping for defective or incorrect items is free. For other returns, a flat rate of $5.99 will be deducted from your refund.</p>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreReturns;

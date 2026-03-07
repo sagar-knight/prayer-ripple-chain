@@ -28,7 +28,7 @@ const StoreShipping = () => (
         <p>A tracking number will be emailed to you once your order ships. You can also check your order status on our Order Tracking page.</p>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreShipping;

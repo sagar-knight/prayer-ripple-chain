@@ -16,7 +16,7 @@ const StoreRefundPolicy = () => (
         <p>If you receive a damaged or defective item, contact us immediately. We'll send a replacement at no extra cost.</p>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreRefundPolicy;

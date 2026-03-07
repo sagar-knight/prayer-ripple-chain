@@ -20,7 +20,7 @@ const StoreTerms = () => (
         <p>For questions about these terms, please contact us through our Contact page.</p>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreTerms;

@@ -18,7 +18,7 @@ const StorePrivacy = () => (
         <p>For privacy-related inquiries, please reach out through our Contact page.</p>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StorePrivacy;
