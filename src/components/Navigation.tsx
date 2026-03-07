@@ -25,6 +25,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { CartDrawer } from "@/components/CartDrawer";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
