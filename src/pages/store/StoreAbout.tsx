@@ -1,8 +1,7 @@
-import StoreLayout from "@/components/store/StoreLayout";
 import { Heart, Globe, Users } from "lucide-react";
 
 const StoreAbout = () => (
-  <StoreLayout>
+  <>
     <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
       <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-6">Our Mission</h1>
       <p className="text-muted-foreground text-lg leading-relaxed mb-8">

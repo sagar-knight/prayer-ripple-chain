@@ -1,8 +1,7 @@
-import StoreLayout from "@/components/store/StoreLayout";
 import { Truck, Clock, Globe } from "lucide-react";
 
 const StoreShipping = () => (
-  <StoreLayout>
+  <>
     <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
       <h1 className="font-playfair text-3xl font-bold text-foreground mb-6">Shipping Policy</h1>
 
