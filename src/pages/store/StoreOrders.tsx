@@ -1,10 +1,9 @@
-import StoreLayout from "@/components/store/StoreLayout";
 import { Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const StoreOrders = () => (
-  <StoreLayout>
+  <>
     <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16 text-center">
       <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
       <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">My Orders</h1>
@@ -20,7 +19,7 @@ const StoreOrders = () => (
         </Link>
       </div>
     </div>
-  </StoreLayout>
+  </>
 );
 
 export default StoreOrders;

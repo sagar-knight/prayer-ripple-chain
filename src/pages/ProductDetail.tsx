@@ -7,7 +7,7 @@ import { ShoppingCart, Loader2, Minus, Plus, Truck, RotateCcw, Shield } from "lu
 import { useCartStore } from "@/stores/cartStore";
 import { storefrontApiRequest, STOREFRONT_PRODUCT_BY_HANDLE_QUERY, STOREFRONT_PRODUCTS_QUERY, type ShopifyProduct } from "@/lib/shopify";
 import { toast } from "sonner";
-import StoreLayout from "@/components/store/StoreLayout";
+
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
@@ -76,7 +76,7 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <StoreLayout>
+      <>
         <div className="max-w-6xl mx-auto px-4 py-10">
           <div className="grid md:grid-cols-2 gap-10">
             <Skeleton className="aspect-square w-full rounded-xl" />
@@ -88,18 +88,18 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-      </StoreLayout>
+      </>
     );
   }
 
   if (!product) {
     return (
-      <StoreLayout>
+      <>
         <div className="max-w-6xl mx-auto px-4 py-16 text-center">
           <p className="text-muted-foreground mb-4">Product not found</p>
           <Button variant="outline" onClick={() => navigate("/store")}>Back to Store</Button>
         </div>
-      </StoreLayout>
+      </>
     );
   }
 
@@ -260,7 +260,7 @@ const ProductDetail = () => {
           </section>
         )}
       </div>
-    </StoreLayout>
+    </>
   );
 };
 

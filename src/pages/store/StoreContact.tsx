@@ -1,5 +1,5 @@
 import { useState } from "react";
-import StoreLayout from "@/components/store/StoreLayout";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ const StoreContact = () => {
   };
 
   return (
-    <StoreLayout>
+    <>
       <div className="max-w-2xl mx-auto px-4 py-12 sm:py-16">
         <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">Contact Us</h1>
         <p className="text-muted-foreground mb-8">We'd love to hear from you. Fill out the form below and we'll respond within 1–2 business days.</p>
@@ -57,7 +57,7 @@ const StoreContact = () => {
           </Button>
         </form>
       </div>
-    </StoreLayout>
+    </>
   );
 };
 
