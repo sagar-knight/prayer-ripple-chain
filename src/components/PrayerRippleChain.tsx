@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PrayerRequestCard from "@/components/PrayerRequestCard";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Share2, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
