@@ -152,6 +152,7 @@ export type Database = {
           name: string
           phone: string | null
           privacy: string
+          slug: string | null
           state: string | null
           status: string
           updated_at: string
@@ -171,6 +172,7 @@ export type Database = {
           name: string
           phone?: string | null
           privacy?: string
+          slug?: string | null
           state?: string | null
           status?: string
           updated_at?: string
@@ -190,6 +192,7 @@ export type Database = {
           name?: string
           phone?: string | null
           privacy?: string
+          slug?: string | null
           state?: string | null
           status?: string
           updated_at?: string

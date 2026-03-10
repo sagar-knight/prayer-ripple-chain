@@ -9,6 +9,7 @@ import {
   ArrowLeft, Shield, CheckCircle, XCircle, Clock, Users,
   Heart, TrendingUp, BarChart3, AlertCircle,
 } from "lucide-react";
+import ChurchInviteTools from "@/components/ChurchInviteTools";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useChurch, useChurchMembership, useChurchMembers,
@@ -290,6 +291,18 @@ const ChurchAdmin = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Church Invite Tools */}
+        {isAdmin && (
+          <div className="mt-8">
+            <ChurchInviteTools
+              churchId={churchId!}
+              churchSlug={(church as any)?.slug || null}
+              churchName={church?.name || "Church"}
+              userId={user?.id}
+            />
+          </div>
+        )}
 
         {/* Post Official Request */}
         {isAdmin && (

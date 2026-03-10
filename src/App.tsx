@@ -37,8 +37,10 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import InviteLanding from "./pages/InviteLanding";
+import ChurchJoin from "./pages/ChurchJoin";
 import ProductDetail from "./pages/ProductDetail";
 import { useCartSync } from "./hooks/useCartSync";
+import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
 // Store pages
 import StoreAbout from "./pages/store/StoreAbout";
@@ -56,6 +58,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
+  useAutoJoinChurch();
   return null;
 };
 
@@ -124,6 +127,7 @@ const App = () => (
                 <Route path="/submit-prayer" element={<SubmitPrayer />} />
                 <Route path="/pray" element={<PrayForOthers />} />
                 <Route path="/invite/:inviteCode" element={<InviteLanding />} />
+                <Route path="/join/:slug" element={<ChurchJoin />} />
                 <Route path="/churches/:churchId" element={<ChurchDetail />} />
                 <Route path="/churches/:churchId/wall" element={<ChurchPrayerWall />} />
                 <Route path="/churches/:churchId/submit" element={<ChurchSubmitPrayer />} />

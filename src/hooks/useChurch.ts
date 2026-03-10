@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "@/hooks/use-toast";
+import { slugify } from "@/lib/slugify";
 
 export interface Church {
   id: string;
   name: string;
+  slug: string | null;
   denomination: string | null;
   city: string | null;
   state: string | null;
@@ -152,11 +154,16 @@ export function useCreateChurch() {
     }) => {
       if (!user) throw new Error("Must be logged in");
 
+      // Generate unique slug
+      const baseSlug = slugify(church.name);
+      const slug = baseSlug + "-" + Math.random().toString(36).slice(2, 8);
+
       // Create church
       const { data: churchData, error: churchError } = await supabase
         .from("churches")
         .insert({
           ...church,
+          slug,
           created_by: user.id,
         })
         .select()
