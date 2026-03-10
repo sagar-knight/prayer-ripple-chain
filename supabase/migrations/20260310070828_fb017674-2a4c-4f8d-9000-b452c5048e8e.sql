@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN commitment_level text NOT NULL DEFAULT 'open';

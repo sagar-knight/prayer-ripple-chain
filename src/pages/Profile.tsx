@@ -26,6 +26,7 @@ import {
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryByCode } from "@/data/countries";
+import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
 
 const Profile = () => {
   const [countryCode, setCountryCode] = useState<string | null>(null);
@@ -321,6 +322,11 @@ const Profile = () => {
             ))}
           </CardContent>
         </Card>
+
+        {/* Prayer Commitment Level */}
+        <div className="mb-8" style={{ animationDelay: "610ms" }}>
+          <CommitmentLevelSelector />
+        </div>
 
         {/* Country & Timezone Settings */}
         <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "620ms" }}>
