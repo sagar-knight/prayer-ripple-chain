@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,69 +9,111 @@ import {
   TrendingUp,
   MessageCircle,
   PartyPopper,
+  Loader2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-interface MyPrayerRequest {
-  id: string;
-  title: string;
-  category: string;
-  prayerCount: number;
-  chainProgress: number;
-  status: "active" | "answered";
-  submittedDate: string;
-}
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const PrayerStatusTracker = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const [myRequests, setMyRequests] = useState<MyPrayerRequest[]>([
-    {
-      id: "1",
-      title: "Healing for my grandmother",
-      category: "Health",
-      prayerCount: 23,
-      chainProgress: 12,
-      status: "active",
-      submittedDate: "Feb 3, 2026",
-    },
-    {
-      id: "2",
-      title: "Guidance for career change",
-      category: "Work",
-      prayerCount: 15,
-      chainProgress: 8,
-      status: "active",
-      submittedDate: "Feb 5, 2026",
-    },
-  ]);
+  // Fetch user's global prayer requests with coverage data
+  const { data: myRequests, isLoading } = useQuery({
+    queryKey: ["my_prayer_requests", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
 
-  // Simulate live count updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMyRequests((prev) =>
-        prev.map((r) =>
-          r.status === "active" && Math.random() > 0.7
-            ? { ...r, prayerCount: r.prayerCount + 1, chainProgress: r.chainProgress + 1 }
-            : r
-        )
+      const { data: requests, error } = await supabase
+        .from("global_prayer_requests")
+        .select("*")
+        .eq("created_by", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error || !requests) return [];
+
+      // Fetch coverage for each request
+      const prayerIds = requests.map((r) => r.id);
+      const { data: coverageData } = await supabase
+        .from("prayer_coverage")
+        .select("*")
+        .in("prayer_id", prayerIds);
+
+      const coverageMap = new Map(
+        (coverageData || []).map((c) => [c.prayer_id, c])
       );
-    }, 8000);
-    return () => clearInterval(interval);
-  }, []);
 
-  const handleMarkAnswered = (requestId: string) => {
-    setMyRequests((prev) =>
-      prev.map((r) =>
-        r.id === requestId ? { ...r, status: "answered" as const } : r
-      )
-    );
-    toast({
-      title: "Prayer Answered! 🎉",
-      description:
-        "Praise God! Your testimony encourages others. Consider sharing it.",
-    });
+      return requests.map((r) => {
+        const coverage = coverageMap.get(r.id);
+        return {
+          id: r.id,
+          title: r.title,
+          category: r.category,
+          prayerCount: coverage?.current_prayers ?? r.prayer_count,
+          uniquePeople: coverage?.unique_people_prayed ?? 0,
+          passedForward: coverage?.passed_forward_count ?? 0,
+          targetPrayers: coverage?.target_prayers ?? 3,
+          status: r.status as "open" | "answered",
+          createdAt: r.created_at,
+        };
+      });
+    },
+    enabled: !!user,
+  });
+
+  const markAnswered = useMutation({
+    mutationFn: async (requestId: string) => {
+      const { error } = await supabase
+        .from("global_prayer_requests")
+        .update({ status: "answered", answered_at: new Date().toISOString() })
+        .eq("id", requestId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my_prayer_requests"] });
+      toast({
+        title: "Prayer Answered",
+        description: "Praise God! Your testimony encourages others.",
+      });
+    },
+  });
+
+  // Reassurance helper: format prayer activity message
+  const getPrayerMessage = (count: number, uniquePeople: number) => {
+    if (count === 0) {
+      return "Prayer partners have received your request.";
+    }
+    if (count === 1) {
+      return "Someone has prayed for you.";
+    }
+    if (uniquePeople > 1) {
+      return `${uniquePeople} people have prayed for your request.`;
+    }
+    return `Your request has been prayed for ${count} times.`;
   };
+
+  if (!user) {
+    return (
+      <div className="text-center py-8">
+        <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+        <p className="text-muted-foreground">
+          Sign in to track your prayer requests.
+        </p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Loading your requests...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -81,11 +122,11 @@ const PrayerStatusTracker = () => {
           Your Prayer Status
         </h2>
         <p className="text-muted-foreground">
-          See how many people are praying for you
+          See how your prayers are being carried by the community
         </p>
       </div>
 
-      {myRequests.length === 0 ? (
+      {!myRequests?.length ? (
         <Card className="text-center py-8">
           <CardContent>
             <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
@@ -114,7 +155,11 @@ const PrayerStatusTracker = () => {
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant="secondary">{request.category}</Badge>
                     <span className="text-xs text-muted-foreground">
-                      {request.submittedDate}
+                      {new Date(request.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                 </div>
@@ -127,53 +172,63 @@ const PrayerStatusTracker = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Live Prayer Count */}
+              {/* Reassurance-first display */}
               <div className="bg-gradient-warm rounded-lg p-4 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Users className="h-5 w-5 text-accent-foreground" />
-                  <span className="text-3xl font-bold text-accent-foreground">
-                    {request.prayerCount}
-                  </span>
+                  {request.prayerCount > 0 && (
+                    <span className="text-3xl font-bold text-accent-foreground">
+                      {request.prayerCount}
+                    </span>
+                  )}
                 </div>
                 <p className="text-sm text-accent-foreground/80">
-                  people praying for you
+                  {getPrayerMessage(request.prayerCount, request.uniquePeople)}
                 </p>
               </div>
 
-              {/* Prayer Chain Progress */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1 text-muted-foreground">
-                    <TrendingUp className="h-4 w-4" />
-                    Prayer chain progress
-                  </span>
-                  <span className="font-medium text-primary">
-                    {request.chainProgress} people in chain
-                  </span>
+              {/* Prayer coverage progress */}
+              {request.prayerCount > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-1 text-muted-foreground">
+                      <TrendingUp className="h-4 w-4" />
+                      Prayer coverage
+                    </span>
+                    <span className="font-medium text-primary">
+                      {request.passedForward > 0
+                        ? `Passed forward ${request.passedForward} times`
+                        : `${request.uniquePeople} people prayed`}
+                    </span>
+                  </div>
+                  <Progress
+                    value={Math.min(
+                      (request.prayerCount / Math.max(request.targetPrayers, 1)) * 100,
+                      100
+                    )}
+                    className="h-2"
+                  />
                 </div>
-                <Progress
-                  value={Math.min(request.chainProgress * 5, 100)}
-                  className="h-2"
-                />
-              </div>
+              )}
 
               {/* Encouraging Message */}
               <div className="bg-primary/5 rounded-lg p-3 text-center">
                 <p className="text-sm text-primary font-medium italic">
                   {request.status === "answered"
-                    ? "🎉 God answered your prayer! Share your testimony to encourage others."
-                    : "🙏 You are not alone. People are praying for you."}
+                    ? "God answered your prayer. Share your testimony to encourage others."
+                    : "You are not alone. People are praying for you."}
                 </p>
               </div>
 
               {/* Action Buttons */}
-              {request.status === "active" && (
+              {request.status === "open" && (
                 <div className="flex gap-2">
                   <Button
                     variant="peaceful"
                     size="sm"
                     className="flex-1 gap-2"
-                    onClick={() => handleMarkAnswered(request.id)}
+                    onClick={() => markAnswered.mutate(request.id)}
+                    disabled={markAnswered.isPending}
                   >
                     <PartyPopper className="h-4 w-4" />
                     Mark as Answered
@@ -186,17 +241,10 @@ const PrayerStatusTracker = () => {
               )}
 
               {request.status === "answered" && (
-                <div className="space-y-2">
-                  <Button variant="warm" size="sm" className="w-full gap-2">
-                    <Heart className="h-4 w-4" />
-                    Share Testimony & Thank Prayer Partners
-                  </Button>
-                  <Button asChild variant="outline" size="sm" className="w-full gap-2">
-                    <a href="/support">
-                      Support the Mission 🙏
-                    </a>
-                  </Button>
-                </div>
+                <Button variant="warm" size="sm" className="w-full gap-2">
+                  <Heart className="h-4 w-4" />
+                  Share Testimony
+                </Button>
               )}
             </CardContent>
           </Card>
