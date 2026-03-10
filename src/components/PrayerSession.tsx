@@ -259,6 +259,8 @@ const PrayerSession = ({
       <PassItForwardDialog
         open={showPassForward}
         onComplete={handlePassForwardComplete}
+        prayerId={currentBackendPrayer?.prayer_id}
+        prayerTitle={currentBackendPrayer?.title}
       />
     </div>
   );
