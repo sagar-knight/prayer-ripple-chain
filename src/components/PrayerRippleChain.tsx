@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PrayerRequestCard from "@/components/PrayerRequestCard";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Share2, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -127,14 +128,11 @@ const PrayerRippleChain = () => {
 
   if (!chains?.length) {
     return (
-      <Card className="text-center py-8">
-        <CardContent>
-          <Heart className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground text-sm">
-            Submit a prayer request to see how it ripples through the community.
-          </p>
-        </CardContent>
-      </Card>
+      <PrayerRequestCard
+        header="Your prayer requests"
+        description="Submit a prayer request to see how it ripples through the community."
+        className="text-center"
+      />
     );
   }
 
@@ -143,17 +141,24 @@ const PrayerRippleChain = () => {
       {chains.map((chain) => (
         <Card
           key={chain.prayerId}
-          className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade"
+          className="rounded-xl border-primary/10 shadow-sm animate-gentle-fade"
         >
-          <CardHeader className="pb-3">
-            <div className="flex items-start justify-between gap-2">
-              <CardTitle className="font-playfair text-lg">{chain.title}</CardTitle>
-              <Badge variant="secondary" className="text-xs flex-shrink-0">
-                {chain.category}
-              </Badge>
+          {/* Calm card header */}
+          <CardContent className="px-6 py-8 sm:px-8 sm:py-10 space-y-5">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
+              Your prayer request
+            </p>
+            <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
+              {chain.title}
+            </p>
+            <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+              <Heart className="h-3.5 w-3.5 text-primary/60" />
+              <span>
+                {chain.uniquePeople > 0
+                  ? `${chain.uniquePeople} ${chain.uniquePeople === 1 ? "person has" : "people have"} prayed for this`
+                  : "Waiting for prayer"}
+              </span>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-5">
             {/* Summary stats */}
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-primary/5 rounded-lg p-3 text-center">

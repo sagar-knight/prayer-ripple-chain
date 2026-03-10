@@ -223,7 +223,7 @@ const PrayForOthers = () => {
             <span className="ml-3 text-muted-foreground">Finding prayer requests...</span>
           </div>
         ) : filteredRequests.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="max-w-xl mx-auto space-y-6">
             {filteredRequests.map((request, index) => (
               <div
                 key={request.id}

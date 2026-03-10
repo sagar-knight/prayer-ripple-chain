@@ -186,7 +186,7 @@ const PrayerSession = ({
   const currentIsRescueCandidate = currentRequest ? isRescueCandidate(currentRequest) : false;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-gentle-fade">
+    <div className="max-w-xl mx-auto space-y-8 animate-gentle-fade">
       {/* Session header */}
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" className="gap-1" onClick={onBack}>

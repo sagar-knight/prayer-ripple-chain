@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus, CheckCircle, Heart, Bell, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import PrayerRequestCard from "@/components/PrayerRequestCard";
 
 export interface FamilyGroupPrayerRequest {
   id: string;
@@ -104,90 +105,80 @@ const FamilyPrayerRequests = ({ requests, onAddRequest, onPray, onMarkAnswered, 
         </Dialog>
       </div>
 
-      {/* Active requests */}
+      {/* Active requests as calm cards */}
       {active.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-5">
           {active.map((req) => (
-            <Card key={req.id} className="hover:shadow-sm transition-shadow">
-              <CardContent className="pt-5 pb-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <h3 className="font-semibold text-foreground">{req.title}</h3>
-                      <Badge variant="secondary" className="text-xs">Active</Badge>
-                      {req.reminderEnabled && (
-                        <Bell className="h-3 w-3 text-primary" />
-                      )}
-                    </div>
-                    {req.description && (
-                      <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{req.description}</p>
-                    )}
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
-                      <span>Requested by {req.createdBy}</span>
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" /> Prayed {req.prayedCount} times
-                      </span>
-                      {req.lastPrayedAt && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> Last: {new Date(req.lastPrayedAt).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex gap-2 shrink-0">
+            <PrayerRequestCard
+              key={req.id}
+              header="A family member asked for prayer"
+              description={req.description || req.title}
+              prayerCount={req.prayedCount}
+              subtitle={
+                <>
+                  <span>Requested by {req.createdBy}</span>
+                  {req.reminderEnabled && (
+                    <span className="flex items-center gap-1">
+                      <Bell className="h-3 w-3 text-primary" /> Reminder set
+                    </span>
+                  )}
+                  {req.lastPrayedAt && (
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" /> Last: {new Date(req.lastPrayedAt).toLocaleDateString()}
+                    </span>
+                  )}
+                </>
+              }
+              actions={
+                <>
+                  <Button
+                    variant="peaceful"
+                    size="lg"
+                    className="gap-2 w-full sm:w-auto min-w-[160px]"
+                    onClick={() => onPray(req.id)}
+                  >
+                    🙏 I Prayed
+                  </Button>
+                  {req.createdBy === currentUser && (
                     <Button
-                      variant="peaceful"
-                      size="sm"
-                      className="gap-1 text-xs"
-                      onClick={() => onPray(req.id)}
+                      variant="outline"
+                      size="lg"
+                      className="w-full sm:w-auto"
+                      onClick={() => onMarkAnswered(req.id)}
                     >
-                      <CheckCircle className="h-3 w-3" /> I Prayed
+                      Mark as Answered
                     </Button>
-                    {req.createdBy === currentUser && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => onMarkAnswered(req.id)}
-                      >
-                        Answered
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  )}
+                </>
+              }
+            />
           ))}
         </div>
       )}
 
       {/* Answered */}
       {answered.length > 0 && (
-        <div className="space-y-2 mt-6">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+        <div className="space-y-4 mt-8">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
             Answered Prayers
           </p>
           {answered.map((req) => (
-            <Card key={req.id} className="opacity-75">
-              <CardContent className="pt-4 pb-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary shrink-0" />
-                  <span className="font-medium text-foreground text-sm">{req.title}</span>
-                  <Badge className="bg-primary/10 text-primary text-xs ml-auto">Answered</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1 ml-6">
-                  Prayed {req.prayedCount} times · Requested by {req.createdBy}
-                </p>
-              </CardContent>
-            </Card>
+            <PrayerRequestCard
+              key={req.id}
+              header="God answered this prayer"
+              description={req.description || req.title}
+              prayerCount={req.prayedCount}
+              className="opacity-80"
+              subtitle={<span>Requested by {req.createdBy}</span>}
+            />
           ))}
         </div>
       )}
 
       {requests.length === 0 && (
-        <Card>
+        <Card className="rounded-xl border-primary/10">
           <CardContent className="py-10 text-center">
-            <Heart className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
+            <Heart className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
             <p className="text-muted-foreground text-sm">
               No prayer requests yet. Share your first need with the family.
             </p>

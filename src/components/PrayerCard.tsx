@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Clock, User, MapPin, Send, BookOpen } from "lucide-react";
+import { Heart, Clock, MapPin, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
 import PrayerReminderToggle from "./PrayerReminderToggle";
+import PrayerRequestCard from "./PrayerRequestCard";
 import { usePrayerReminders } from "@/hooks/usePrayerReminders";
 
 interface PrayerRequest {
@@ -56,8 +56,6 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
         description: "Thank you for praying. Would you like to pass this forward?",
         duration: 3000,
       });
-      // Only show Pass It Forward dialog if NOT in session mode
-      // (session mode handles the dialog at a higher level)
       if (!onPrayerOffered) {
         setShowPassForward(true);
       }
@@ -82,179 +80,124 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
     }
   };
 
+  const subtitle = (
+    <>
+      <span className="flex items-center gap-1">
+        <Clock className="h-3 w-3" />
+        {request.timeAgo}
+      </span>
+      {request.location && (
+        <span className="flex items-center gap-1">
+          <MapPin className="h-3 w-3" />
+          {request.location}
+        </span>
+      )}
+      <Badge variant="secondary" className="text-[10px] px-2 py-0">
+        {request.category}
+      </Badge>
+    </>
+  );
+
+  const reminder = getReminderForPrayer(request.id);
+
+  const actions = (
+    <>
+      <Button
+        variant={hasPrayed ? "secondary" : "peaceful"}
+        size="lg"
+        className="gap-2 w-full sm:w-auto min-w-[160px]"
+        onClick={handlePrayerOffered}
+        disabled={isPraying || hasPrayed}
+      >
+        {isPraying ? (
+          <span className="flex items-center gap-2">
+            <Heart className="h-4 w-4 animate-pulse" />
+            Praying...
+          </span>
+        ) : hasPrayed ? (
+          "🙏 Prayed"
+        ) : (
+          "🙏 I Prayed"
+        )}
+      </Button>
+
+      {hasPrayed && passForwardComplete && (
+        <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
+              <Send className="h-4 w-4" />
+              Send Encouragement
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="font-playfair">Send Encouragement</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Share a word of encouragement or Bible verse with{" "}
+                {request.isAnonymous ? "this person" : "the prayer requester"}.
+              </p>
+              <Textarea
+                placeholder="Write your encouraging message..."
+                value={encouragementMessage}
+                onChange={(e) => setEncouragementMessage(e.target.value)}
+                className="min-h-[100px]"
+              />
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Quick suggestions:</p>
+                <div className="grid gap-2">
+                  {encouragementSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setEncouragementMessage(suggestion)}
+                      className="text-xs text-left p-2 rounded border hover:bg-accent transition-colors"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleSendEncouragement} className="flex-1">
+                  <Send className="h-4 w-4 mr-2" />
+                  Send Message
+                </Button>
+                <Button variant="outline" onClick={() => setShowMessageDialog(false)}>
+                  Skip
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  );
+
   return (
     <>
-      <Card className="group hover:shadow-peaceful transition-all duration-300 animate-gentle-fade">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <CardTitle className="text-lg font-playfair text-foreground group-hover:text-primary transition-colors">
-              {request.title}
-            </CardTitle>
-            <Badge variant="secondary" className="ml-2">
-              {request.category}
-            </Badge>
-          </div>
-        </CardHeader>
+      <PrayerRequestCard
+        header={request.churchName ? `From ${request.churchName}` : "Someone asked for prayer"}
+        description={request.description}
+        subtitle={subtitle}
+        prayerCount={request.prayerCount}
+        actions={actions}
+      >
+        {/* Scripture for prayer partners */}
+        <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
 
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground leading-relaxed">
-            {request.description}
-          </p>
+        {/* Optional Daily Reminder */}
+        <PrayerReminderToggle
+          prayerId={request.id}
+          prayerTitle={request.title}
+          enabled={reminder?.enabled ?? false}
+          reminderTime={reminder?.reminder_time_local ?? "08:00"}
+          onToggle={toggleReminder}
+          onTimeChange={reminder ? (time) => updateReminderTime(reminder.id, time) : undefined}
+        />
+      </PrayerRequestCard>
 
-          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <User className="h-4 w-4" />
-              <span>
-                {request.isAnonymous ? "Anonymous" : "Community Member"}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              <span>{request.timeAgo}</span>
-            </div>
-
-            {request.location && (
-              <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                <span>{request.location}</span>
-              </div>
-            )}
-          </div>
-
-          {request.churchName && (
-            <div className="text-sm text-primary font-medium">
-              From: {request.churchName}
-            </div>
-          )}
-
-          {/* Scripture for prayer partners */}
-          <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
-
-          {/* Optional Daily Reminder */}
-          {(() => {
-            const reminder = getReminderForPrayer(request.id);
-            return (
-              <PrayerReminderToggle
-                prayerId={request.id}
-                prayerTitle={request.title}
-                enabled={reminder?.enabled ?? false}
-                reminderTime={reminder?.reminder_time_local ?? "08:00"}
-                onToggle={toggleReminder}
-                onTimeChange={reminder ? (time) => updateReminderTime(reminder.id, time) : undefined}
-              />
-            );
-          })()}
-
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Heart className="h-4 w-4 text-primary" />
-              <span>
-                {request.prayerCount > 0
-                  ? `${request.prayerCount} ${request.prayerCount === 1 ? "person has" : "people have"} prayed`
-                  : "Be the first to pray"}
-              </span>
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                variant={hasPrayed ? "secondary" : "peaceful"}
-                size="sm"
-                onClick={handlePrayerOffered}
-                disabled={isPraying || hasPrayed}
-              >
-                {isPraying ? (
-                  <span className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 animate-pulse" />
-                    Praying...
-                  </span>
-                ) : hasPrayed ? (
-                  "Prayed"
-                ) : (
-                  "I Prayed for This"
-                )}
-              </Button>
-
-              {hasPrayed && passForwardComplete && (
-                <Dialog
-                  open={showMessageDialog}
-                  onOpenChange={setShowMessageDialog}
-                >
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                      <DialogTitle className="font-playfair">
-                        Send Encouragement
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        Share a word of encouragement or Bible verse with{" "}
-                        {request.isAnonymous
-                          ? "this person"
-                          : "the prayer requester"}
-                        .
-                      </p>
-
-                      <Textarea
-                        placeholder="Write your encouraging message..."
-                        value={encouragementMessage}
-                        onChange={(e) =>
-                          setEncouragementMessage(e.target.value)
-                        }
-                        className="min-h-[100px]"
-                      />
-
-                      <div className="space-y-2">
-                        <p className="text-xs text-muted-foreground font-medium">
-                          Quick suggestions:
-                        </p>
-                        <div className="grid gap-2">
-                          {encouragementSuggestions.map(
-                            (suggestion, index) => (
-                              <button
-                                key={index}
-                                onClick={() =>
-                                  setEncouragementMessage(suggestion)
-                                }
-                                className="text-xs text-left p-2 rounded border hover:bg-accent transition-colors"
-                              >
-                                {suggestion}
-                              </button>
-                            )
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={handleSendEncouragement}
-                          className="flex-1"
-                        >
-                          <Send className="h-4 w-4 mr-2" />
-                          Send Message
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowMessageDialog(false)}
-                        >
-                          Skip
-                        </Button>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Pass It Forward Dialog (mandatory after praying) */}
+      {/* Pass It Forward Dialog */}
       <PassItForwardDialog
         open={showPassForward}
         onComplete={handlePassForwardComplete}
