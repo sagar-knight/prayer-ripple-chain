@@ -57,6 +57,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
+  useAutoJoinChurch();
   return null;
 };
 
