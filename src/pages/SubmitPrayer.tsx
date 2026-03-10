@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,16 +8,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Lock, Globe, Send, BookOpen } from "lucide-react";
+import { Heart, Lock, Globe, Send, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PrayerStatusTracker from "@/components/PrayerStatusTracker";
 import ScriptureEncouragement from "@/components/ScriptureEncouragement";
 import { usePrayerService } from "@/hooks/usePrayerService";
 
 const SubmitPrayer = () => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [submittedCategory, setSubmittedCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -37,10 +40,11 @@ const SubmitPrayer = () => {
         anonymous: isAnonymous,
       });
 
+      setSubmittedCategory(selectedCategory);
       setShowConfirmation(true);
       toast({
-        title: "Your prayer has been shared 🙏",
-        description: "Our community is here for you. People will begin praying soon.",
+        title: "Your prayer has been shared",
+        description: "Prayer partners have received your request.",
         duration: 5000,
       });
 
@@ -48,8 +52,6 @@ const SubmitPrayer = () => {
       setDescription("");
       setSelectedCategory("");
       setIsAnonymous(false);
-
-      setTimeout(() => setShowConfirmation(false), 5000);
     } catch (err) {
       toast({
         title: "Something went wrong",
@@ -70,6 +72,94 @@ const SubmitPrayer = () => {
     "Strength",
     "Other",
   ];
+
+  // Post-submission reassurance + participation prompt
+  if (showConfirmation) {
+    return (
+      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+        <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          {/* Reassurance Card */}
+          <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
+            <CardContent className="pt-8 pb-8 text-center space-y-5">
+              <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+                <CheckCircle className="h-8 w-8 text-primary" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="font-playfair text-2xl font-bold text-foreground">
+                  Your prayer request has been shared
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  Prayer partners have received your request and will begin praying for you.
+                  You are not alone in this.
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground italic">
+                "Cast all your anxiety on him because he cares for you." — 1 Peter 5:7
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Scripture Encouragement */}
+          {submittedCategory && (
+            <div className="animate-gentle-fade" style={{ animationDelay: "100ms" }}>
+              <ScriptureEncouragement category={submittedCategory} mode="confirmation" />
+            </div>
+          )}
+
+          {/* Participation Prompt */}
+          <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+            <CardContent className="pt-6 pb-6 text-center space-y-4">
+              <div className="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+                <Heart className="h-6 w-6 text-primary" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-playfair text-lg font-semibold text-foreground">
+                  Would you also like to pray for someone else today?
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Someone is waiting for encouragement through prayer.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <Button
+                  variant="peaceful"
+                  size="lg"
+                  className="gap-2"
+                  onClick={() => navigate("/pray")}
+                >
+                  <Heart className="h-4 w-4" />
+                  Pray for someone
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => navigate("/")}
+                >
+                  Maybe later
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Submit another */}
+          <div className="text-center animate-gentle-fade" style={{ animationDelay: "300ms" }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground gap-1"
+              onClick={() => {
+                setShowConfirmation(false);
+                setSubmittedCategory("");
+              }}
+            >
+              Submit another prayer request
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
@@ -97,25 +187,6 @@ const SubmitPrayer = () => {
           </TabsList>
 
           <TabsContent value="submit">
-            {/* Confirmation Banner */}
-            {showConfirmation && (
-              <div className="mb-6 space-y-4 animate-gentle-fade">
-                <Card className="bg-primary/10 border-primary/20">
-                  <CardContent className="pt-6 text-center">
-                    <p className="text-lg font-semibold text-primary">
-                      ✅ Your prayer has been shared.
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      People are already being notified to pray for you.
-                    </p>
-                  </CardContent>
-                </Card>
-                {selectedCategory && (
-                  <ScriptureEncouragement category={selectedCategory} mode="confirmation" />
-                )}
-              </div>
-            )}
-
             <Card className="shadow-peaceful">
               <CardHeader>
                 <CardTitle className="font-playfair text-2xl text-center">
@@ -219,7 +290,9 @@ const SubmitPrayer = () => {
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
-                        <div className="animate-peaceful-glow">🙏</div>
+                        <div className="animate-peaceful-glow">
+                          <Heart className="h-5 w-5" />
+                        </div>
                         Submitting Prayer...
                       </span>
                     ) : (
@@ -241,18 +314,16 @@ const SubmitPrayer = () => {
                 </h3>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>
-                    • Prayer actions are always free — no ads inside prayer
-                    flows
+                    Prayer actions are always free, no ads inside prayer flows
                   </li>
                   <li>
-                    • Your personal information is kept secure and never shared
+                    Your personal information is kept secure and never shared
                   </li>
                   <li>
-                    • Our community commits to praying with respect and love
+                    Our community commits to praying with respect and love
                   </li>
                   <li>
-                    • For urgent situations, please contact local emergency
-                    services
+                    For urgent situations, please contact local emergency services
                   </li>
                 </ul>
               </CardContent>
