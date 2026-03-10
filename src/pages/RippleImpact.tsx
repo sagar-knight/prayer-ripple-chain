@@ -158,22 +158,18 @@ const RippleImpact = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.totalPrayers.toLocaleString()}</div>
                 <div className="text-sm opacity-90">Total Prayers</div>
               </div>
               <div className="space-y-1">
-                <div className="text-2xl font-bold">{globalStats.activeChains}</div>
+                <div className="text-2xl font-bold">{globalStats.activeRequests}</div>
                 <div className="text-sm opacity-90">Active Requests</div>
               </div>
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.churchesConnected}</div>
                 <div className="text-sm opacity-90">Churches Connected</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-2xl font-bold">{globalStats.countriesReached}</div>
-                <div className="text-sm opacity-90">Countries Reached</div>
               </div>
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.answeredPrayers.toLocaleString()}</div>
