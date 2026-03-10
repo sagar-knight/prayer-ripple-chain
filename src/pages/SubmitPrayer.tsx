@@ -11,20 +11,32 @@ import { Heart, Lock, Globe, Send, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PrayerStatusTracker from "@/components/PrayerStatusTracker";
 import ScriptureEncouragement from "@/components/ScriptureEncouragement";
+import { usePrayerService } from "@/hooks/usePrayerService";
 
 const SubmitPrayer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const { toast } = useToast();
+  const { submitGlobalPrayer } = usePrayerService();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!title.trim() || !description.trim() || !selectedCategory) return;
+
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await submitGlobalPrayer({
+        title: title.trim(),
+        description: description.trim(),
+        category: selectedCategory,
+        anonymous: isAnonymous,
+      });
+
       setShowConfirmation(true);
       toast({
         title: "Your prayer has been shared 🙏",
@@ -32,11 +44,21 @@ const SubmitPrayer = () => {
         duration: 5000,
       });
 
-      (e.target as HTMLFormElement).reset();
+      setTitle("");
+      setDescription("");
+      setSelectedCategory("");
       setIsAnonymous(false);
 
       setTimeout(() => setShowConfirmation(false), 5000);
-    }, 2000);
+    } catch (err) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again in a moment.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const categories = [
@@ -110,7 +132,8 @@ const SubmitPrayer = () => {
                     </Label>
                     <Input
                       id="title"
-                      name="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
                       placeholder="Brief title for your prayer request"
                       required
                       className="text-base"
@@ -122,7 +145,7 @@ const SubmitPrayer = () => {
                     <Label htmlFor="category" className="text-base font-medium">
                       Category *
                     </Label>
-                    <Select name="category" required onValueChange={setSelectedCategory}>
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
@@ -149,7 +172,8 @@ const SubmitPrayer = () => {
                     </Label>
                     <Textarea
                       id="description"
-                      name="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
                       placeholder="Describe what you need prayer for..."
                       className="min-h-[120px] text-base"
                       required
