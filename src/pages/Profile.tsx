@@ -323,6 +323,11 @@ const Profile = () => {
           </CardContent>
         </Card>
 
+        {/* Prayer Commitment Level */}
+        <div className="mb-8" style={{ animationDelay: "610ms" }}>
+          <CommitmentLevelSelector />
+        </div>
+
         {/* Country & Timezone Settings */}
         <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "620ms" }}>
           <CardHeader>

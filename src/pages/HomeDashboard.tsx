@@ -86,6 +86,9 @@ const HomeDashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Daily Prayer Focus */}
+        <DailyPrayerFocus />
+
         {/* Section 2 — Today's Prayer Reminders */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "100ms" }}>
           <CardHeader>
