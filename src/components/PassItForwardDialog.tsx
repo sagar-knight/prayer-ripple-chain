@@ -8,19 +8,37 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Users, Share2, MessageCircle, ArrowRight, CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Heart, Users, Share2, MessageCircle, ArrowRight, CheckCircle, Copy, Link as LinkIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PassItForwardDialogProps {
   open: boolean;
   onComplete: () => void;
+  prayerId?: string;
+  prayerTitle?: string;
 }
 
-const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => {
+function generateInviteCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  let code = "";
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+const PassItForwardDialog = ({ open, onComplete, prayerId, prayerTitle }: PassItForwardDialogProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [encouragementMessage, setEncouragementMessage] = useState("");
+  const [inviteMessage, setInviteMessage] = useState("");
+  const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const options = [
     {
@@ -33,7 +51,7 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
       id: "invite",
       icon: Share2,
       title: "Invite Someone to Pray",
-      description: "Share a link and invite a friend to join",
+      description: "Share a personal invitation link with a friend",
     },
     {
       id: "encourage",
@@ -42,6 +60,54 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
       description: "Send a short word of encouragement",
     },
   ];
+
+  const generateInviteLink = async () => {
+    if (!prayerId) return;
+    setIsGenerating(true);
+
+    try {
+      const code = generateInviteCode();
+      const { error } = await supabase.from("prayer_invites" as any).insert({
+        prayer_id: prayerId,
+        inviter_user_id: user?.id ?? "anonymous",
+        invite_code: code,
+        message: inviteMessage.trim() || null,
+      });
+
+      if (error) {
+        console.error("Failed to create invite:", error);
+        // Fallback to simple link
+        const baseUrl = window.location.origin;
+        setInviteLink(`${baseUrl}/invite/${code}`);
+      } else {
+        const baseUrl = window.location.origin;
+        setInviteLink(`${baseUrl}/invite/${code}`);
+      }
+    } catch (e) {
+      console.error("Invite generation error:", e);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const copyInviteText = () => {
+    const shareText = `I just prayed for someone through PrayerForward. Would you join me in praying for this person?\n\n${inviteLink}`;
+    navigator.clipboard?.writeText(shareText);
+    toast({
+      title: "Invitation copied",
+      description: "Share this link with a friend to invite them to pray.",
+    });
+  };
+
+  const copyLinkOnly = () => {
+    if (inviteLink) {
+      navigator.clipboard?.writeText(inviteLink);
+      toast({
+        title: "Link copied",
+        description: "The invite link has been copied to your clipboard.",
+      });
+    }
+  };
 
   const handleComplete = () => {
     if (selectedOption === "encourage" && !encouragementMessage.trim()) {
@@ -53,26 +119,29 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
       return;
     }
 
-    if (selectedOption === "invite") {
-      // Simulate copying share link
-      navigator.clipboard?.writeText("https://prayerforward.org/join");
-      toast({
-        title: "Link Copied! 🔗",
-        description: "Share this link with a friend to invite them.",
-      });
+    if (selectedOption === "invite" && !inviteLink) {
+      // Generate link first
+      generateInviteLink();
+      return;
+    }
+
+    if (selectedOption === "invite" && inviteLink) {
+      copyInviteText();
     }
 
     setIsCompleted(true);
 
     setTimeout(() => {
       toast({
-        title: "Prayer Forwarded! 🙏",
+        title: "Prayer Forwarded",
         description: "You've continued the chain of blessings. Thank you!",
       });
       onComplete();
       // Reset state
       setSelectedOption(null);
       setEncouragementMessage("");
+      setInviteMessage("");
+      setInviteLink(null);
       setIsCompleted(false);
     }, 1500);
   };
@@ -86,7 +155,7 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
             Pass the Prayer Forward
           </DialogTitle>
           <DialogDescription>
-            You've prayed for someone — now continue the chain! Choose one action
+            You've prayed for someone. Now continue the chain! Choose one action
             to complete your Prayer Forward.
           </DialogDescription>
         </DialogHeader>
@@ -97,7 +166,7 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
               <CheckCircle className="h-8 w-8 text-primary" />
             </div>
             <h3 className="font-playfair text-xl font-semibold">
-              Blessing Forwarded! 🌊
+              Blessing Forwarded
             </h3>
             <p className="text-muted-foreground">
               The ripple continues. Thank you for making a difference.
@@ -113,7 +182,10 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
                 return (
                   <button
                     key={option.id}
-                    onClick={() => setSelectedOption(option.id)}
+                    onClick={() => {
+                      setSelectedOption(option.id);
+                      setInviteLink(null); // Reset invite link when switching
+                    }}
                     className={`w-full flex items-center gap-4 p-4 rounded-lg border text-left transition-all ${
                       isSelected
                         ? "border-primary bg-primary/5 shadow-peaceful"
@@ -157,15 +229,82 @@ const PassItForwardDialog = ({ open, onComplete }: PassItForwardDialogProps) => 
               </div>
             )}
 
+            {/* Invite flow */}
+            {selectedOption === "invite" && (
+              <div className="animate-gentle-fade space-y-3">
+                {!inviteLink ? (
+                  <>
+                    <Textarea
+                      placeholder="Add a personal message (optional)..."
+                      value={inviteMessage}
+                      onChange={(e) => setInviteMessage(e.target.value)}
+                      className="min-h-[60px]"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      A personal invite link will be generated for you to share.
+                    </p>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    {/* Generated invite preview */}
+                    <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                      <p className="text-sm text-foreground leading-relaxed">
+                        I just prayed for someone through PrayerForward. Would you join me in praying for this person?
+                      </p>
+                      <div className="flex items-center gap-2 bg-background rounded-md border p-2">
+                        <LinkIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-xs text-muted-foreground truncate flex-1">
+                          {inviteLink}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 flex-shrink-0"
+                          onClick={copyLinkOnly}
+                        >
+                          <Copy className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-2"
+                      onClick={copyInviteText}
+                    >
+                      <Copy className="h-4 w-4" />
+                      Copy full invitation message
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Complete button */}
             <Button
               variant="peaceful"
               className="w-full gap-2"
-              disabled={!selectedOption}
+              disabled={!selectedOption || isGenerating}
               onClick={handleComplete}
             >
-              Complete Prayer Forward
-              <ArrowRight className="h-4 w-4" />
+              {isGenerating ? (
+                "Generating invite..."
+              ) : selectedOption === "invite" && !inviteLink ? (
+                <>
+                  Generate Invite Link
+                  <LinkIcon className="h-4 w-4" />
+                </>
+              ) : selectedOption === "invite" && inviteLink ? (
+                <>
+                  Complete Prayer Forward
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Complete Prayer Forward
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </Button>
 
             <p className="text-xs text-center text-muted-foreground italic">
