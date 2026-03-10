@@ -141,71 +141,12 @@ const RippleImpact = () => {
           })}
         </div>
 
-        {/* Per Prayer Request Display */}
+        {/* Prayer Ripple Chain Visualization */}
         <div className="mb-12">
           <h2 className="font-playfair text-2xl font-bold text-foreground mb-6">
             Your Prayer Requests
           </h2>
-
-          <div className="space-y-6">
-            {rippleChains.map((chain, index) => (
-              <Card
-                key={chain.id}
-                className="hover:shadow-peaceful transition-all duration-300 animate-gentle-fade"
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                        <Waves className="h-5 w-5 text-primary" />
-                        {chain.title}
-                      </CardTitle>
-                    </div>
-                    <Badge variant="secondary">{chain.status}</Badge>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  {/* Prayer Summary */}
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                    Prayer Summary
-                  </p>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-primary/5 rounded-lg p-3 text-center">
-                      <p className="text-lg font-semibold text-foreground">{chain.prayedCount}</p>
-                      <p className="text-xs text-muted-foreground">Prayed {chain.prayedCount} times</p>
-                    </div>
-                    <div className="bg-primary/5 rounded-lg p-3 text-center">
-                      <p className="text-lg font-semibold text-foreground">{chain.uniquePeople}</p>
-                      <p className="text-xs text-muted-foreground">{chain.uniquePeople} people prayed</p>
-                    </div>
-                    <div className="bg-primary/5 rounded-lg p-3 text-center">
-                      <p className="text-lg font-semibold text-foreground">{chain.forwardCount}</p>
-                      <p className="text-xs text-muted-foreground">Passed forward {chain.forwardCount} times</p>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-muted-foreground/70 italic">
-                    "Passed forward" means someone shared this prayer with another person.
-                  </p>
-
-                  {/* Latest Update */}
-                  <div className="bg-primary/5 p-4 rounded-lg">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-                      Latest Update
-                    </p>
-                    <p className="text-sm text-muted-foreground">{chain.lastUpdate}</p>
-                  </div>
-
-                  <Button variant="outline" className="w-full">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share This Prayer
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <PrayerRippleChain />
         </div>
 
         {/* Global Prayer Network */}
