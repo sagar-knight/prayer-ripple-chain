@@ -26,6 +26,7 @@ import {
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryByCode } from "@/data/countries";
+import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
 
 const Profile = () => {
   const [countryCode, setCountryCode] = useState<string | null>(null);
