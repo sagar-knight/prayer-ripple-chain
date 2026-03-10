@@ -9,6 +9,7 @@ import {
   ArrowLeft, Shield, CheckCircle, XCircle, Clock, Users,
   Heart, TrendingUp, BarChart3, AlertCircle,
 } from "lucide-react";
+import ChurchInviteTools from "@/components/ChurchInviteTools";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useChurch, useChurchMembership, useChurchMembers,
