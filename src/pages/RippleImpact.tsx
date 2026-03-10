@@ -7,6 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerChainsDetail from "@/components/PrayerChainsDetail";
 import PrayersReceivedDetail from "@/components/PrayersReceivedDetail";
+import PrayerRippleChain from "@/components/PrayerRippleChain";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const RippleImpact = () => {
   const [userStats] = useState({
