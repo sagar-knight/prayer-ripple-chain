@@ -47,7 +47,7 @@ const PrayerRequestCard = ({
     >
     <Card
       className={cn(
-        "rounded-xl border-primary/10 shadow-sm hover:shadow-md transition-shadow duration-300",
+        "rounded-xl border-border/60",
         className
       )}
     >

@@ -141,7 +141,7 @@ const PrayerRippleChain = () => {
       {chains.map((chain) => (
         <Card
           key={chain.prayerId}
-          className="rounded-xl border-primary/10 shadow-sm animate-gentle-fade"
+          className="rounded-xl animate-gentle-fade"
         >
           {/* Calm card header */}
           <CardContent className="px-6 py-8 sm:px-8 sm:py-10 space-y-5">

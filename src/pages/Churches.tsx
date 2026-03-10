@@ -22,20 +22,18 @@ const Churches = () => {
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-container-wide section-gap">
         {/* Header */}
-        <div className="text-center mb-8 animate-gentle-fade">
+        <div className="page-header">
           <Church className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Church Communities
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <h1 className="page-title">Church Communities</h1>
+          <p className="page-subtitle">
             Connect with churches and their prayer communities
           </p>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-center gap-3 mb-8">
+        <div className="flex justify-center gap-3">
           {user ? (
             <Button asChild>
               <Link to="/churches/register"><Plus className="h-4 w-4 mr-2" />Register Your Church</Link>
@@ -48,8 +46,8 @@ const Churches = () => {
         </div>
 
         {/* Search */}
-        <Card className="mb-8 animate-gentle-fade">
-          <CardContent className="pt-6">
+        <Card className="animate-gentle-fade">
+          <CardContent className="pt-7">
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -75,7 +73,7 @@ const Churches = () => {
               return (
                 <Card
                   key={church.id}
-                  className="group hover:shadow-peaceful transition-all duration-300 animate-gentle-fade"
+                  className="group animate-gentle-fade"
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <CardHeader>
@@ -107,7 +105,7 @@ const Churches = () => {
                       </Badge>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
                       <Button asChild variant="default" size="sm" className="flex-1">
                         <Link to={`/churches/${church.id}`}>Church Page</Link>
                       </Button>

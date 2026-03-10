@@ -100,16 +100,14 @@ const RippleImpact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-container section-gap">
         {/* Header */}
-        <div className="text-center mb-10 animate-gentle-fade">
+        <div className="page-header">
           <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-5">
             <Waves className="h-8 w-8 text-primary opacity-80" />
           </div>
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Your Prayer Journey
-          </h1>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+          <h1 className="page-title">Your Prayer Journey</h1>
+          <p className="page-subtitle">
             Every prayer matters. Even when unseen, God is at work.
           </p>
           <p className="text-sm text-muted-foreground/80 max-w-lg mx-auto mt-2 leading-relaxed">
@@ -119,24 +117,24 @@ const RippleImpact = () => {
         </div>
 
         {/* Personal Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 animate-gentle-fade">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 animate-gentle-fade">
           {metricCards.map((card, i) => {
             const Icon = card.icon;
             return (
               <Card
                 key={card.label}
-                className="border-primary/10 shadow-sm hover:shadow-md transition-shadow animate-gentle-fade"
+                className="animate-gentle-fade"
                 style={{ animationDelay: `${i * 80}ms` }}
               >
-                <CardContent className="pt-6 text-center space-y-2">
-                  <div className="w-10 h-10 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-1">
+                <CardContent className="pt-7 text-center space-y-3">
+                  <div className="w-11 h-11 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
                     <Icon className="h-5 w-5 text-primary opacity-80" />
                   </div>
                   <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                     {card.label}
                   </p>
                   <p className="text-2xl font-semibold text-foreground">{card.value}</p>
-                  <p className="text-sm text-muted-foreground leading-snug">{card.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{card.description}</p>
                   {card.detail === "offered" && <PrayersOfferedDetail />}
                   {card.detail === "received" && <PrayersReceivedDetail />}
                   {card.detail === "chains" && <PrayerChainsDetail />}
@@ -147,15 +145,15 @@ const RippleImpact = () => {
         </div>
 
         {/* Prayer Ripple Chain Visualization */}
-        <div className="mb-12">
-          <h2 className="font-playfair text-2xl font-bold text-foreground mb-6">
+        <div>
+          <h2 className="section-title text-2xl mb-6">
             Your Prayer Requests
           </h2>
           <PrayerRippleChain />
         </div>
 
         {/* Global Prayer Network */}
-        <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade mb-12">
+        <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade border-0">
           <CardHeader className="text-center">
             <CardTitle className="font-playfair text-2xl">Global Prayer Community</CardTitle>
             <p className="text-primary-foreground/90">
@@ -163,7 +161,7 @@ const RippleImpact = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.totalPrayers.toLocaleString()}</div>
                 <div className="text-sm opacity-90">Prayer Requests</div>
@@ -185,7 +183,7 @@ const RippleImpact = () => {
         </Card>
 
         {/* Encouragement Footer */}
-        <div className="text-center animate-gentle-fade space-y-2">
+        <div className="text-center animate-gentle-fade space-y-3">
           <Separator className="max-w-24 mx-auto mb-6 bg-primary/20" />
           <p className="text-sm italic text-muted-foreground max-w-md mx-auto leading-relaxed">
             "The prayer of a righteous person is powerful and effective." - James 5:16

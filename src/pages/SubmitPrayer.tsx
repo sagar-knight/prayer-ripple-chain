@@ -77,9 +77,9 @@ const SubmitPrayer = () => {
   if (showConfirmation) {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-        <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="page-container card-gap">
           {/* Reassurance Card */}
-          <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
+          <Card className="border-0 animate-gentle-fade">
             <CardContent className="pt-8 pb-8 text-center space-y-5">
               <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
                 <CheckCircle className="h-8 w-8 text-primary" />
@@ -107,13 +107,13 @@ const SubmitPrayer = () => {
           )}
 
           {/* Participation Prompt */}
-          <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "200ms" }}>
-            <CardContent className="pt-6 pb-6 text-center space-y-4">
+          <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+            <CardContent className="pt-7 pb-7 text-center space-y-5">
               <div className="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
                 <Heart className="h-6 w-6 text-primary" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-playfair text-lg font-semibold text-foreground">
+                <h3 className="section-title">
                   Would you also like to pray for someone else today?
                 </h3>
                 <p className="text-sm text-muted-foreground">
@@ -163,13 +163,11 @@ const SubmitPrayer = () => {
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 animate-gentle-fade">
+      <div className="page-container">
+        <div className="page-header">
           <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Prayer Requests
-          </h1>
-          <p className="text-lg text-muted-foreground">
+          <h1 className="page-title">Prayer Requests</h1>
+          <p className="page-subtitle">
             Share your needs or track your existing prayers
           </p>
         </div>
@@ -187,7 +185,7 @@ const SubmitPrayer = () => {
           </TabsList>
 
           <TabsContent value="submit">
-            <Card className="shadow-peaceful">
+            <Card>
               <CardHeader>
                 <CardTitle className="font-playfair text-2xl text-center">
                   Your Prayer Request
@@ -252,7 +250,7 @@ const SubmitPrayer = () => {
                   </div>
 
                   {/* Visibility Toggle */}
-                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-xl">
                     <div className="flex items-center space-x-3">
                       {isAnonymous ? (
                         <Lock className="h-5 w-5 text-primary" />
@@ -286,7 +284,7 @@ const SubmitPrayer = () => {
                     disabled={isSubmitting}
                     variant="peaceful"
                     size="lg"
-                    className="w-full text-lg"
+                    className="w-full text-base"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
@@ -308,11 +306,11 @@ const SubmitPrayer = () => {
 
             {/* Privacy Notice */}
             <Card className="mt-6 bg-primary/5 border-primary/20">
-              <CardContent className="pt-6">
-                <h3 className="font-semibold text-primary mb-2">
+              <CardContent className="pt-7">
+                <h3 className="font-semibold text-primary mb-3">
                   Privacy & Community Guidelines
                 </h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
+                <ul className="text-sm text-muted-foreground space-y-2 leading-relaxed">
                   <li>
                     Prayer actions are always free, no ads inside prayer flows
                   </li>
