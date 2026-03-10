@@ -39,40 +39,40 @@ const focusOptions: {
     id: "needs_most",
     icon: Heart,
     title: "Needs prayer most",
-    description: "Requests with the fewest prayers offered",
+    description: "Someone waiting for prayer with few people lifting them up",
   },
   {
     id: "my_country",
     icon: Globe,
     title: "From my country",
-    description: "Prayer requests near you",
+    description: "Pray for someone near you",
     requiresCountry: true,
   },
   {
     id: "interests",
     icon: Sparkles,
     title: "Based on my interests",
-    description: "Matched to your prayer interests",
+    description: "Matched to the categories close to your heart",
   },
   {
     id: "recent",
     icon: Clock,
-    title: "Recently added",
-    description: "Newest prayer requests",
+    title: "Recently shared",
+    description: "Someone who just asked for prayer",
   },
   {
     id: "surprise",
     icon: Shuffle,
     title: "Surprise me",
-    description: "A random request chosen for you",
+    description: "Let God lead you to someone who needs prayer",
   },
 ];
 
 const rescueOption = {
   id: "rescue" as PrayerFocusMode,
   icon: LifeBuoy,
-  title: "Rescue Mode",
-  description: "Pray for someone who may have no one yet",
+  title: "Rescue Prayer",
+  description: "Pray for someone who may have no one praying for them yet",
 };
 
 const commitmentCounts = [1, 3, 5];
@@ -96,10 +96,10 @@ const PrayFocusSelector = ({
       <div className="text-center">
         <Heart className="h-10 w-10 text-primary mx-auto mb-3" />
         <h2 className="font-playfair text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Choose your prayer focus
+          Someone needs prayer
         </h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Select how you'd like to pray today, and we'll guide you one request at a time.
+          Take a quiet moment to pray for someone who asked for support.
         </p>
       </div>
 
@@ -175,7 +175,7 @@ const PrayFocusSelector = ({
                   {rescueOption.title}
                 </h4>
                 <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                  {rescueCount} waiting
+                  {rescueCount} {rescueCount === 1 ? "person" : "people"} waiting
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -194,7 +194,7 @@ const PrayFocusSelector = ({
       {/* Commitment Count */}
       <div className="text-center space-y-3 max-w-lg mx-auto">
         <p className="text-sm font-medium text-foreground">
-          How many would you like to pray for today?
+          How many people would you like to pray for?
         </p>
         <div className="flex justify-center gap-3">
           {commitmentCounts.map((count) => (
@@ -228,7 +228,7 @@ const PrayFocusSelector = ({
           className="flex items-center justify-center gap-2 w-full text-sm text-muted-foreground hover:text-primary transition-colors py-2"
         >
           <List className="h-4 w-4" />
-          Browse requests (advanced)
+          Browse all requests
         </button>
       </div>
     </div>

@@ -39,8 +39,8 @@ export function useReminderNotifications(
             notifiedToday.current.add(r.id);
 
             toast({
-              title: "Reminder 🙏",
-              description: `You planned to pray today for: ${r.prayer_title}`,
+              title: "Prayer Reminder",
+              description: `Someone you care about could still use prayer today: ${r.prayer_title}`,
               duration: 15000,
               action: undefined,
             });

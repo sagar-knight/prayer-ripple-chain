@@ -63,28 +63,36 @@ const RippleImpact = () => {
     answeredPrayers: 0,
   };
 
+  const getEncouragingMessage = (count: number) => {
+    if (count === 0) return "Begin your journey by praying for someone today.";
+    if (count < 5) return "You have been praying for others. Thank you.";
+    if (count < 15) return "You've helped carry several requests in prayer.";
+    return "You are part of a growing circle of prayer.";
+  };
+
   const metricCards = [
     {
-      label: "Prayers Offered",
+      label: "Prayed for Others",
       value: userStats.prayersOffered,
-      description: `You have prayed for others ${userStats.prayersOffered} times.`,
-      secondaryText: "View the requests you prayed for.",
+      description: getEncouragingMessage(userStats.prayersOffered),
       icon: Heart,
       detail: "offered" as const,
     },
     {
-      label: "Prayers Received",
+      label: "People Praying for You",
       value: userStats.prayersReceived,
-      description: `Your prayer requests have been prayed for ${userStats.prayersReceived} times.`,
-      secondaryText: "View the requests that received prayer.",
+      description: userStats.prayersReceived > 0
+        ? "People have been praying for your requests."
+        : "Share a request and others will pray with you.",
       icon: Users,
       detail: "received" as const,
     },
     {
-      label: "Prayer Requests You Started",
+      label: "Prayers Passed Forward",
       value: userStats.chainStarted,
-      description: `You started ${userStats.chainStarted} prayer requests, and others joined you in prayer.`,
-      secondaryText: "View and track each request.",
+      description: userStats.chainStarted > 0
+        ? "Your prayers have been shared with others who joined in."
+        : "When you pass a prayer forward, more people join in.",
       icon: Waves,
       detail: "chains" as const,
     },
@@ -99,13 +107,13 @@ const RippleImpact = () => {
             <Waves className="h-8 w-8 text-primary opacity-80" />
           </div>
           <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Ripple Impact
+            Your Prayer Journey
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
             Every prayer matters. Even when unseen, God is at work.
           </p>
           <p className="text-sm text-muted-foreground/80 max-w-lg mx-auto mt-2 leading-relaxed">
-            Here you can see how you are praying for others, how others are praying for you, and how your prayer requests are being passed forward.
+            See how you are praying for others, how others are praying for you, and how prayer is being passed forward.
           </p>
           <Separator className="max-w-24 mx-auto mt-6 bg-primary/20" />
         </div>
@@ -129,9 +137,6 @@ const RippleImpact = () => {
                   </p>
                   <p className="text-2xl font-semibold text-foreground">{card.value}</p>
                   <p className="text-sm text-muted-foreground leading-snug">{card.description}</p>
-                  {card.secondaryText && (
-                    <p className="text-[10px] text-muted-foreground/60">{card.secondaryText}</p>
-                  )}
                   {card.detail === "offered" && <PrayersOfferedDetail />}
                   {card.detail === "received" && <PrayersReceivedDetail />}
                   {card.detail === "chains" && <PrayerChainsDetail />}
@@ -152,20 +157,20 @@ const RippleImpact = () => {
         {/* Global Prayer Network */}
         <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade mb-12">
           <CardHeader className="text-center">
-            <CardTitle className="font-playfair text-2xl">Global Prayer Network</CardTitle>
+            <CardTitle className="font-playfair text-2xl">Global Prayer Community</CardTitle>
             <p className="text-primary-foreground/90">
-              See the worldwide reach of our prayer community
+              You are part of a worldwide community of prayer.
             </p>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.totalPrayers.toLocaleString()}</div>
-                <div className="text-sm opacity-90">Total Prayers</div>
+                <div className="text-sm opacity-90">Prayer Requests</div>
               </div>
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.activeRequests}</div>
-                <div className="text-sm opacity-90">Active Requests</div>
+                <div className="text-sm opacity-90">Needing Prayer</div>
               </div>
               <div className="space-y-1">
                 <div className="text-2xl font-bold">{globalStats.churchesConnected}</div>
@@ -183,10 +188,10 @@ const RippleImpact = () => {
         <div className="text-center animate-gentle-fade space-y-2">
           <Separator className="max-w-24 mx-auto mb-6 bg-primary/20" />
           <p className="text-sm italic text-muted-foreground max-w-md mx-auto leading-relaxed">
-            "The prayer of a righteous person is powerful and effective." — James 5:16
+            "The prayer of a righteous person is powerful and effective." - James 5:16
           </p>
           <p className="text-xs text-muted-foreground/70">
-            Your faithfulness creates impact beyond what you can see.
+            Your faithfulness in prayer makes a difference beyond what you can see.
           </p>
         </div>
       </div>

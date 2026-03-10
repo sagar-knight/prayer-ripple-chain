@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
-import { Heart, Calendar, CheckCircle, Clock, ArrowLeft, Flame, Bell } from "lucide-react";
+import { Heart, Calendar, CheckCircle, Clock, ArrowLeft, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
@@ -136,10 +135,10 @@ const MyCommitments = () => {
           </Button>
           <div>
             <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">
-              My Commitments
+              People You're Praying For
             </h1>
             <p className="text-sm text-muted-foreground">
-              Track your prayer commitments and stay consistent.
+              Continue carrying others in prayer. There is no pressure, only grace.
             </p>
           </div>
         </div>
@@ -156,13 +155,9 @@ const MyCommitments = () => {
                   <p className="text-2xl font-bold text-foreground">
                     {commitments.filter((c) => c.status === "active").length}
                   </p>
-                  <p className="text-sm text-muted-foreground">Active commitments</p>
+                  <p className="text-sm text-muted-foreground">People you're praying for</p>
                 </div>
               </div>
-              <Badge variant="secondary" className="gap-1">
-                <Flame className="h-3 w-3" />
-                Faithful
-              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -190,7 +185,7 @@ const MyCommitments = () => {
           {filtered.length === 0 && (
             <Card>
               <CardContent className="pt-6 text-center text-muted-foreground">
-                <p>No {filter} commitments yet.</p>
+                <p>No {filter} prayers yet.</p>
                 <Button asChild variant="peaceful" size="sm" className="mt-3">
                   <Link to="/pray">Start Praying</Link>
                 </Button>
@@ -200,12 +195,6 @@ const MyCommitments = () => {
 
           {filtered.map((commitment, i) => {
             const prayedToday = commitment.prayerLog.includes(today);
-            const progressPct =
-              commitment.totalDaysSinceStart > 0
-                ? Math.round(
-                    (commitment.daysPrayedCount / commitment.totalDaysSinceStart) * 100
-                  )
-                : 0;
 
             return (
               <Card
@@ -224,17 +213,11 @@ const MyCommitments = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Progress */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        Prayed {commitment.daysPrayedCount} of{" "}
-                        {commitment.totalDaysSinceStart} days
-                      </span>
-                      <span className="font-medium text-primary">{progressPct}%</span>
-                    </div>
-                    <Progress value={progressPct} className="h-2" />
-                  </div>
+                  {/* Encouraging summary instead of progress bar */}
+                  <p className="text-sm text-muted-foreground">
+                    You've prayed for this {commitment.daysPrayedCount} {commitment.daysPrayedCount === 1 ? "day" : "days"}.
+                    {!prayedToday && " You can still pray for them today."}
+                  </p>
 
                   {/* Mini calendar */}
                   <div className="space-y-1">
@@ -255,7 +238,7 @@ const MyCommitments = () => {
                             }`}
                             title={day}
                           >
-                            {prayed ? "✓" : new Date(day + "T00:00:00").getDate()}
+                            {prayed ? <CheckCircle className="h-3 w-3" /> : new Date(day + "T00:00:00").getDate()}
                           </div>
                         );
                       })}
@@ -298,7 +281,7 @@ const MyCommitments = () => {
                             onClick={() => markPrayedToday(commitment.id)}
                           >
                             <CheckCircle className="h-3.5 w-3.5" />
-                            {prayedToday ? "Prayed today" : "Mark prayed"}
+                            {prayedToday ? "Prayed today" : "I prayed for them"}
                           </Button>
                           <Button
                             variant="ghost"

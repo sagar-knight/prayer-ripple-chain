@@ -39,9 +39,9 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
   const { getReminderForPrayer, toggleReminder, updateReminderTime } = usePrayerReminders();
 
   const encouragementSuggestions = [
-    "You are loved and not forgotten. God sees your heart and hears your prayers. 🙏",
-    "Praying for strength and peace for you during this time. God is with you. ✨",
-    "Trusting God with you for His perfect timing and provision. You're in my prayers. 💙",
+    "You are loved and not forgotten. God sees your heart and hears your prayers.",
+    "Praying for strength and peace for you during this time. God is with you.",
+    "Trusting God with you for His perfect timing and provision. You're in my prayers.",
   ];
 
   const handlePrayerOffered = async () => {
@@ -52,8 +52,8 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
       setHasPrayed(true);
       onPrayerOffered?.(request.id);
       toast({
-        title: "Prayer Offered 🙏",
-        description: "Now pass the blessing forward!",
+        title: "Prayer offered",
+        description: "Thank you for praying. Would you like to pass this forward?",
         duration: 3000,
       });
       // Only show Pass It Forward dialog if NOT in session mode
@@ -73,7 +73,7 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
   const handleSendEncouragement = () => {
     if (encouragementMessage.trim()) {
       toast({
-        title: "Encouragement Sent 💙",
+        title: "Encouragement Sent",
         description: "Your message of hope has been delivered.",
         duration: 3000,
       });
@@ -149,7 +149,11 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <Heart className="h-4 w-4 text-primary" />
-              <span>{request.prayerCount} prayers offered</span>
+              <span>
+                {request.prayerCount > 0
+                  ? `${request.prayerCount} ${request.prayerCount === 1 ? "person has" : "people have"} prayed`
+                  : "Be the first to pray"}
+              </span>
             </div>
 
             <div className="flex gap-2">
@@ -161,11 +165,11 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
               >
                 {isPraying ? (
                   <span className="flex items-center gap-2">
-                    <div className="animate-peaceful-glow">🙏</div>
+                    <Heart className="h-4 w-4 animate-pulse" />
                     Praying...
                   </span>
                 ) : hasPrayed ? (
-                  "Prayed 💙"
+                  "Prayed"
                 ) : (
                   "I Prayed for This"
                 )}
