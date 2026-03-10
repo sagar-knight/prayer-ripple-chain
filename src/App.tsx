@@ -40,6 +40,7 @@ import InviteLanding from "./pages/InviteLanding";
 import ChurchJoin from "./pages/ChurchJoin";
 import ProductDetail from "./pages/ProductDetail";
 import { useCartSync } from "./hooks/useCartSync";
+import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
 // Store pages
 import StoreAbout from "./pages/store/StoreAbout";
