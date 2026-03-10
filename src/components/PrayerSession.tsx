@@ -1,67 +1,90 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Home, Plus, ArrowLeft, LifeBuoy } from "lucide-react";
+import { Heart, Home, Plus, ArrowLeft, LifeBuoy, Loader2 } from "lucide-react";
 import PrayerCard from "./PrayerCard";
 import PassItForwardDialog from "./PassItForwardDialog";
 import { PrayerFocusMode } from "./PrayFocusSelector";
-import {
-  ScoredPrayerRequest,
-  UserPrayerHistoryEntry,
-  selectNextPrayers,
-  isRescueCandidate,
-} from "@/lib/prayerScoring";
+import { usePrayerService, BackendPrayer } from "@/hooks/usePrayerService";
+import { isRescueCandidate, ScoredPrayerRequest } from "@/lib/prayerScoring";
 
 interface PrayerSessionProps {
   mode: PrayerFocusMode;
   targetCount: number;
-  requests: ScoredPrayerRequest[];
-  userHistory?: UserPrayerHistoryEntry[];
-  userCountry?: string;
-  userInterests?: string[];
   onComplete: () => void;
   onBack: () => void;
+}
+
+function toCardRequest(p: BackendPrayer): ScoredPrayerRequest {
+  const createdAt = new Date(p.created_at);
+  const lastPrayedAt = p.last_prayed_at ? new Date(p.last_prayed_at) : null;
+  const ageMs = Date.now() - createdAt.getTime();
+  const hours = Math.floor(ageMs / (1000 * 60 * 60));
+  const days = Math.floor(hours / 24);
+  const timeAgo =
+    days > 0 ? `${days} day${days > 1 ? "s" : ""} ago` : `${Math.max(1, hours)} hour${hours !== 1 ? "s" : ""} ago`;
+
+  return {
+    id: p.prayer_id,
+    title: p.title,
+    description: p.description,
+    category: p.category,
+    isAnonymous: p.anonymous,
+    location: p.show_country && p.country ? p.country : undefined,
+    timeAgo,
+    prayerCount: p.prayer_count,
+    createdAt,
+    lastPrayedAt,
+    assignedTargetCount: p.target_prayers,
+    assignedPrayedCount: p.prayer_count,
+    assignmentStatus: p.prayer_count >= p.target_prayers ? "completed" : "pending",
+    status: p.status === "open" ? "open" : "closed",
+    country: p.country ?? undefined,
+    interestCategories: [p.category],
+    visibility: "public",
+  };
 }
 
 const PrayerSession = ({
   mode,
   targetCount,
-  requests,
-  userHistory = [],
-  userCountry,
-  userInterests,
   onComplete,
   onBack,
 }: PrayerSessionProps) => {
   const [completedCount, setCompletedCount] = useState(0);
   const [effectiveTarget, setEffectiveTarget] = useState(targetCount);
-  const [prayedIds, setPrayedIds] = useState<Set<string>>(new Set());
+  const [prayedIds, setPrayedIds] = useState<string[]>([]);
   const [showPassForward, setShowPassForward] = useState(false);
   const [pendingPrayedId, setPendingPrayedId] = useState<string | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<ScoredPrayerRequest | null>(null);
+  const [currentBackendPrayer, setCurrentBackendPrayer] = useState<BackendPrayer | null>(null);
+  const [fetchingNext, setFetchingNext] = useState(false);
+  const [noMorePrayers, setNoMorePrayers] = useState(false);
 
+  const { fetchNextPrayer, recordPrayed } = usePrayerService();
   const isRescue = mode === "rescue";
 
-  // Build live history combining persisted + session-local
-  const liveHistory = useMemo(() => {
-    const sessionEntries: UserPrayerHistoryEntry[] = Array.from(prayedIds).map((id) => ({
-      prayerId: id,
-      prayedAt: new Date(),
-      modeUsed: mode,
-    }));
-    return [...userHistory, ...sessionEntries];
-  }, [userHistory, prayedIds, mode]);
+  const loadNext = useCallback(async (excludeIds: string[]) => {
+    setFetchingNext(true);
+    const prayer = await fetchNextPrayer(mode, excludeIds);
+    if (prayer) {
+      setCurrentBackendPrayer(prayer);
+      setCurrentRequest(toCardRequest(prayer));
+    } else {
+      setCurrentRequest(null);
+      setNoMorePrayers(true);
+    }
+    setFetchingNext(false);
+  }, [fetchNextPrayer, mode]);
 
-  // Use scoring system to get ordered eligible prayers
-  const orderedRequests = useMemo(() => {
-    return selectNextPrayers(requests, liveHistory, mode, requests.length, {
-      userCountry,
-      userInterests,
-    });
-  }, [requests, liveHistory, mode, userCountry, userInterests]);
+  // Load first prayer on mount
+  useEffect(() => {
+    loadNext([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const isSessionComplete = completedCount >= effectiveTarget || orderedRequests.length === 0;
-  const currentRequest = orderedRequests[0];
+  const isSessionComplete = completedCount >= effectiveTarget || (noMorePrayers && !currentRequest);
   const progressPercent = effectiveTarget > 0 ? (completedCount / effectiveTarget) * 100 : 0;
 
   const handlePrayerOffered = useCallback(
@@ -75,14 +98,30 @@ const PrayerSession = ({
   const handlePassForwardComplete = useCallback(() => {
     setShowPassForward(false);
     if (pendingPrayedId) {
-      setPrayedIds((prev) => new Set(prev).add(pendingPrayedId));
+      // Record to backend
+      if (currentBackendPrayer) {
+        recordPrayed(currentBackendPrayer.prayer_id, currentBackendPrayer.source_type);
+      }
+
+      const newPrayedIds = [...prayedIds, pendingPrayedId];
+      setPrayedIds(newPrayedIds);
       setCompletedCount((prev) => prev + 1);
       setPendingPrayedId(null);
+
+      // Load next prayer
+      const nextCompleted = completedCount + 1;
+      if (nextCompleted < effectiveTarget) {
+        loadNext(newPrayedIds);
+      } else {
+        setCurrentRequest(null);
+      }
     }
-  }, [pendingPrayedId]);
+  }, [pendingPrayedId, prayedIds, completedCount, effectiveTarget, loadNext, recordPrayed, currentBackendPrayer]);
 
   const handlePrayOneMore = () => {
     setEffectiveTarget((prev) => prev + 1);
+    setNoMorePrayers(false);
+    loadNext(prayedIds);
   };
 
   // Completion screen
@@ -121,7 +160,7 @@ const PrayerSession = ({
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-          {orderedRequests.length > 0 && (
+          {!noMorePrayers && (
             <Button
               variant="outline"
               size="lg"
@@ -172,8 +211,16 @@ const PrayerSession = ({
       {/* Progress bar */}
       <Progress value={progressPercent} className="h-2" />
 
+      {/* Loading state */}
+      {fetchingNext && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="ml-3 text-muted-foreground">Finding a prayer for you...</span>
+        </div>
+      )}
+
       {/* Rescue note */}
-      {isRescue && currentIsRescueCandidate && (
+      {!fetchingNext && isRescue && currentIsRescueCandidate && (
         <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 text-center">
           <p className="text-xs text-accent-foreground font-medium">
             🙏 This request has been prayed for very few times or not recently.
@@ -182,7 +229,7 @@ const PrayerSession = ({
       )}
 
       {/* Needs-prayer badge for rescue candidates in any mode */}
-      {!isRescue && currentIsRescueCandidate && currentRequest && (
+      {!fetchingNext && !isRescue && currentIsRescueCandidate && currentRequest && (
         <div className="flex justify-center">
           <Badge variant="secondary" className="gap-1 text-xs">
             <Heart className="h-3 w-3" />
@@ -192,7 +239,7 @@ const PrayerSession = ({
       )}
 
       {/* Current prayer card */}
-      {currentRequest && (
+      {!fetchingNext && currentRequest && (
         <div key={currentRequest.id} className="animate-gentle-fade">
           <PrayerCard
             request={currentRequest}
@@ -202,9 +249,11 @@ const PrayerSession = ({
       )}
 
       {/* Quiet encouragement */}
-      <p className="text-center text-xs text-muted-foreground italic">
-        Take your time. There is no rush.
-      </p>
+      {!fetchingNext && currentRequest && (
+        <p className="text-center text-xs text-muted-foreground italic">
+          Take your time. There is no rush.
+        </p>
+      )}
 
       {/* Pass It Forward Dialog (lifted to session level) */}
       <PassItForwardDialog
