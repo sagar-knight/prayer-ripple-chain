@@ -49,7 +49,7 @@ const MyPrayerReminders = () => {
         <div className="max-w-3xl mx-auto px-4 text-center space-y-4">
           <Bell className="h-12 w-12 text-muted-foreground mx-auto opacity-40" />
           <h2 className="font-playfair text-xl font-semibold">Sign in to manage reminders</h2>
-          <p className="text-sm text-muted-foreground">You need an account to track prayer reminders.</p>
+          <p className="text-sm text-muted-foreground">You need an account to keep track of who you're praying for.</p>
           <Button asChild variant="peaceful"><Link to="/login">Sign In</Link></Button>
         </div>
       </div>
@@ -72,10 +72,10 @@ const MyPrayerReminders = () => {
         <div className="text-center mb-8">
           <Bell className="h-10 w-10 text-primary mx-auto mb-3" />
           <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">
-            My Prayer Reminders
+            People You're Praying For
           </h1>
           <p className="text-muted-foreground">
-            Manage your daily prayer reminders and track your consistency.
+            Gentle reminders to continue carrying others in prayer.
           </p>
         </div>
 
@@ -85,7 +85,7 @@ const MyPrayerReminders = () => {
               <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-40" />
               <h3 className="font-playfair text-lg font-semibold mb-2">No reminders yet</h3>
               <p className="text-sm text-muted-foreground">
-                Enable reminders on any prayer request you're praying for to get daily nudges.
+                When you pray for someone, you can set a gentle reminder to continue praying for them.
               </p>
             </CardContent>
           </Card>
@@ -125,16 +125,16 @@ const MyPrayerReminders = () => {
                       />
                     </div>
 
-                    {/* Stats */}
+                    {/* Stats - encouraging language */}
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="gap-1">
                         <Calendar className="h-3 w-3" />
-                        Prayed {stats.prayedDays} of {stats.totalDays} days
+                        You've prayed {stats.prayedDays} of the last {stats.totalDays} days
                       </Badge>
                       {prayedToday && (
                         <Badge className="bg-primary/10 text-primary gap-1">
                           <CheckCircle className="h-3 w-3" />
-                          Done today
+                          Prayed today
                         </Badge>
                       )}
                     </div>
@@ -155,7 +155,7 @@ const MyPrayerReminders = () => {
                                   : "bg-muted/50 text-muted-foreground"
                               }`}
                             >
-                              {day.completed ? "✓" : new Date(day.date).getDate()}
+                              {day.completed ? <CheckCircle className="h-3.5 w-3.5" /> : new Date(day.date).getDate()}
                             </div>
                           </div>
                         );
@@ -170,7 +170,7 @@ const MyPrayerReminders = () => {
                         onClick={() => markPrayedToday(reminder.id)}
                         className="w-full"
                       >
-                        Mark prayed today 🙏
+                        I prayed for them today
                       </Button>
                     )}
                   </CardContent>

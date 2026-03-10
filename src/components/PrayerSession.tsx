@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Heart, Home, Plus, ArrowLeft, LifeBuoy, Loader2 } from "lucide-react";
 import PrayerCard from "./PrayerCard";
 import PassItForwardDialog from "./PassItForwardDialog";
@@ -85,7 +84,6 @@ const PrayerSession = ({
   }, []);
 
   const isSessionComplete = completedCount >= effectiveTarget || (noMorePrayers && !currentRequest);
-  const progressPercent = effectiveTarget > 0 ? (completedCount / effectiveTarget) * 100 : 0;
 
   const handlePrayerOffered = useCallback(
     (requestId: string) => {
@@ -138,14 +136,14 @@ const PrayerSession = ({
           )}
         </div>
         <h2 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">
-          Thank you 🙏
+          Thank you for praying
         </h2>
         <p className="text-lg text-muted-foreground">
           {isRescue ? (
             <>
-              You rescued{" "}
+              You lifted up{" "}
               <span className="font-bold text-accent-foreground">{completedCount}</span>{" "}
-              {completedCount === 1 ? "prayer" : "prayers"} today.
+              {completedCount === 1 ? "person" : "people"} who needed prayer.
             </>
           ) : (
             <>
@@ -156,7 +154,7 @@ const PrayerSession = ({
           )}
         </p>
         <p className="text-sm text-muted-foreground italic">
-          "The prayer of a righteous person is powerful and effective." — James 5:16
+          "The prayer of a righteous person is powerful and effective." - James 5:16
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
@@ -168,7 +166,7 @@ const PrayerSession = ({
               onClick={handlePrayOneMore}
             >
               <Plus className="h-4 w-4" />
-              {isRescue ? "Rescue 1 more" : "Pray 1 more"}
+              Pray for one more
             </Button>
           )}
           <Button
@@ -203,19 +201,16 @@ const PrayerSession = ({
             </Badge>
           )}
           <span className="text-sm text-muted-foreground">
-            {completedCount} of {effectiveTarget} prayers
+            Prayer {completedCount + 1} of {effectiveTarget}
           </span>
         </div>
       </div>
-
-      {/* Progress bar */}
-      <Progress value={progressPercent} className="h-2" />
 
       {/* Loading state */}
       {fetchingNext && (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">Finding a prayer for you...</span>
+          <span className="ml-3 text-muted-foreground">Finding someone who needs prayer...</span>
         </div>
       )}
 
@@ -223,7 +218,7 @@ const PrayerSession = ({
       {!fetchingNext && isRescue && currentIsRescueCandidate && (
         <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 text-center">
           <p className="text-xs text-accent-foreground font-medium">
-            🙏 This request has been prayed for very few times or not recently.
+            This person may not have had anyone pray for them yet.
           </p>
         </div>
       )}

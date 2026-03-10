@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Bell, CheckCircle, Clock } from "lucide-react";
 import type { FamilyGroupPrayerRequest } from "./FamilyPrayerRequests";
 
@@ -36,8 +35,6 @@ const FamilyReminders = ({ requests, prayedDays, onToggleReminder, onMarkPrayed 
           {activeRequests.map((req) => {
             const days = prayedDays[req.id] || [];
             const prayedToday = days.includes(today);
-            const totalDays = Math.max(1, Math.floor((Date.now() - new Date(req.createdAt).getTime()) / 86400000));
-            const pct = Math.round((days.length / Math.min(totalDays, 7)) * 100);
 
             return (
               <Card key={req.id} className="hover:shadow-sm transition-shadow">
@@ -55,13 +52,10 @@ const FamilyReminders = ({ requests, prayedDays, onToggleReminder, onMarkPrayed 
                     </Button>
                   </div>
 
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>You prayed {days.length} out of {Math.min(totalDays, 7)} days</span>
-                      <span className="text-primary font-medium">{Math.min(pct, 100)}%</span>
-                    </div>
-                    <Progress value={Math.min(pct, 100)} className="h-2" />
-                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    You've prayed for this {days.length} {days.length === 1 ? "day" : "days"}.
+                    {!prayedToday && " You can still pray for them today."}
+                  </p>
 
                   <Button
                     variant={prayedToday ? "outline" : "peaceful"}
@@ -71,7 +65,7 @@ const FamilyReminders = ({ requests, prayedDays, onToggleReminder, onMarkPrayed 
                     onClick={() => onMarkPrayed(req.id)}
                   >
                     <CheckCircle className="h-3 w-3" />
-                    {prayedToday ? "Prayed today ✓" : "Mark prayed today"}
+                    {prayedToday ? "Prayed today" : "I prayed for them today"}
                   </Button>
                 </CardContent>
               </Card>

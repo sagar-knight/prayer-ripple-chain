@@ -1,12 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   Heart,
   Users,
   CheckCircle,
-  TrendingUp,
   MessageCircle,
   PartyPopper,
   Loader2,
@@ -84,15 +82,15 @@ const PrayerStatusTracker = () => {
   // Reassurance helper: format prayer activity message
   const getPrayerMessage = (count: number, uniquePeople: number) => {
     if (count === 0) {
-      return "Prayer partners have received your request.";
+      return "Your request has been shared. People are being invited to pray.";
     }
     if (count === 1) {
       return "Someone has prayed for you.";
     }
     if (uniquePeople > 1) {
-      return `${uniquePeople} people have prayed for your request.`;
+      return `${uniquePeople} people have been praying for your request.`;
     }
-    return `Your request has been prayed for ${count} times.`;
+    return "People have been praying for your request.";
   };
 
   if (!user) {
@@ -100,7 +98,7 @@ const PrayerStatusTracker = () => {
       <div className="text-center py-8">
         <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
         <p className="text-muted-foreground">
-          Sign in to track your prayer requests.
+          Sign in to see your prayer requests.
         </p>
       </div>
     );
@@ -119,10 +117,10 @@ const PrayerStatusTracker = () => {
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="font-playfair text-2xl font-bold text-foreground mb-2">
-          Your Prayer Status
+          Your Prayer Requests
         </h2>
         <p className="text-muted-foreground">
-          See how your prayers are being carried by the community
+          See how your prayers are being carried by the community.
         </p>
       </div>
 
@@ -131,7 +129,7 @@ const PrayerStatusTracker = () => {
           <CardContent>
             <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
             <p className="text-muted-foreground">
-              No prayer requests submitted yet. Share your needs above.
+              No prayer requests shared yet. You can share one above.
             </p>
           </CardContent>
         </Card>
@@ -176,38 +174,24 @@ const PrayerStatusTracker = () => {
               <div className="bg-gradient-warm rounded-lg p-4 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Users className="h-5 w-5 text-accent-foreground" />
-                  {request.prayerCount > 0 && (
-                    <span className="text-3xl font-bold text-accent-foreground">
-                      {request.prayerCount}
-                    </span>
-                  )}
                 </div>
                 <p className="text-sm text-accent-foreground/80">
                   {getPrayerMessage(request.prayerCount, request.uniquePeople)}
                 </p>
               </div>
 
-              {/* Prayer coverage progress */}
+              {/* Prayer activity summary (no progress bars) */}
               {request.prayerCount > 0 && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <TrendingUp className="h-4 w-4" />
-                      Prayer coverage
+                <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-4 w-4 text-primary/60" />
+                    {request.uniquePeople} {request.uniquePeople === 1 ? "person" : "people"} prayed
+                  </span>
+                  {request.passedForward > 0 && (
+                    <span className="flex items-center gap-1">
+                      Passed forward {request.passedForward} {request.passedForward === 1 ? "time" : "times"}
                     </span>
-                    <span className="font-medium text-primary">
-                      {request.passedForward > 0
-                        ? `Passed forward ${request.passedForward} times`
-                        : `${request.uniquePeople} people prayed`}
-                    </span>
-                  </div>
-                  <Progress
-                    value={Math.min(
-                      (request.prayerCount / Math.max(request.targetPrayers, 1)) * 100,
-                      100
-                    )}
-                    className="h-2"
-                  />
+                  )}
                 </div>
               )}
 

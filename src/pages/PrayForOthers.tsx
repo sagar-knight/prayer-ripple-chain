@@ -58,7 +58,6 @@ const PrayForOthers = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("selector");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [prayerStats, setPrayerStats] = useState({ offered: 0, streak: 0 });
 
   // Session state
   const [sessionMode, setSessionMode] = useState<PrayerFocusMode>("needs_most");
@@ -112,10 +111,6 @@ const PrayForOthers = () => {
 
   const handlePrayerOffered = (requestId: string) => {
     recordPrayed(requestId);
-    setPrayerStats((prev) => ({
-      offered: prev.offered + 1,
-      streak: prev.streak + 1,
-    }));
   };
 
   const handleStartPraying = (mode: PrayerFocusMode, count: number) => {
@@ -133,22 +128,6 @@ const PrayForOthers = () => {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Prayer Stats (compact) */}
-          <Card className="mb-8 bg-gradient-warm text-accent-foreground animate-gentle-fade max-w-lg mx-auto">
-            <CardContent className="pt-4 pb-4">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-bold">{prayerStats.offered}</div>
-                  <div className="text-xs opacity-90">Prayers Offered</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{prayerStats.streak}</div>
-                  <div className="text-xs opacity-90">Day Streak</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           <PrayFocusSelector
             rescueCount={rescueCount}
             onStartPraying={handleStartPraying}
@@ -241,7 +220,7 @@ const PrayForOthers = () => {
         {browseLoading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-3 text-muted-foreground">Loading prayers...</span>
+            <span className="ml-3 text-muted-foreground">Finding prayer requests...</span>
           </div>
         ) : filteredRequests.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -266,7 +245,7 @@ const PrayForOthers = () => {
               </h3>
               <p className="text-muted-foreground">
                 {browseRequests.length === 0
-                  ? "Be the first to submit a prayer request!"
+                  ? "Be the first to share a prayer request."
                   : "Try adjusting your search or category filter."}
               </p>
             </CardContent>

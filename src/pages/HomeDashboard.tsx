@@ -54,28 +54,31 @@ const HomeDashboard = () => {
 
   const hasPrayedToday = (reminderId: string) => prayedToday[reminderId] === today;
 
+  const prayersOffered = stats?.total_prayers_offered ?? 0;
+  const prayersReceived = stats?.total_prayers_received ?? 0;
+
   return (
     <div className="min-h-screen bg-gradient-peaceful pb-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         {/* Welcome */}
         <div className="text-center animate-gentle-fade">
           <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-2">
-            Welcome Back
+            Welcome back
           </h1>
           <p className="text-muted-foreground">
-            What would you like to do today?
+            Let's take a moment to pray.
           </p>
         </div>
 
-        {/* Section 1 — Pray Now */}
+        {/* Section 1 — Pray for Someone */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
           <CardContent className="pt-8 pb-8 text-center space-y-4">
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Heart className="h-7 w-7 text-primary" />
             </div>
-            <CardTitle className="font-playfair text-xl">Pray Now</CardTitle>
+            <CardTitle className="font-playfair text-xl">Someone needs prayer</CardTitle>
             <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              Take a moment to pray for someone who needs encouragement.
+              Take a quiet moment to pray for someone who asked for support.
             </p>
             <Button asChild variant="peaceful" size="lg" className="px-10">
               <Link to="/pray">
@@ -89,19 +92,19 @@ const HomeDashboard = () => {
         {/* Daily Prayer Focus */}
         <DailyPrayerFocus />
 
-        {/* Section 2 — Today's Prayer Reminders */}
+        {/* Section 2 — Prayer Reminders */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "100ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair text-lg flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
-              Your Prayer Reminders Today
+              People you're praying for
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {activeReminders.length === 0 ? (
               <div className="text-center py-4 space-y-3">
                 <p className="text-muted-foreground text-sm">
-                  You have no reminders scheduled today.
+                  No prayer reminders set yet. You can add one when you pray for someone.
                 </p>
                 <Button asChild variant="outline" size="sm">
                   <Link to="/prayer-reminders">Manage Reminders</Link>
@@ -128,7 +131,7 @@ const HomeDashboard = () => {
                     {hasPrayedToday(reminder.id) ? (
                       <span className="text-xs text-primary flex items-center gap-1 font-medium">
                         <Check className="h-3.5 w-3.5" />
-                        Prayed
+                        Prayed today
                       </span>
                     ) : (
                       <Button
@@ -137,7 +140,7 @@ const HomeDashboard = () => {
                         className="text-xs shrink-0"
                         onClick={() => handlePrayedToday(reminder.id)}
                       >
-                        I prayed today
+                        I prayed for them
                       </Button>
                     )}
                   </div>
@@ -165,7 +168,7 @@ const HomeDashboard = () => {
               "{dailyVerse.text}"
             </blockquote>
             <p className="text-sm font-medium text-primary">
-              — {dailyVerse.reference} ({dailyVerse.translation})
+              {dailyVerse.reference} ({dailyVerse.translation})
             </p>
             <div className="flex gap-3 flex-wrap">
               <Button asChild variant="outline" size="sm">
@@ -178,7 +181,7 @@ const HomeDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Ripple Summary */}
+        {/* Your Prayer Journey */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "300ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair text-lg flex items-center gap-2">
@@ -186,25 +189,35 @@ const HomeDashboard = () => {
               Your Prayer Journey
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4 text-center mb-4">
-              <div>
-                <p className="text-2xl font-bold text-foreground">{stats?.total_prayers_offered ?? 0}</p>
-                <p className="text-xs text-muted-foreground">Prayed</p>
+          <CardContent className="space-y-4">
+            {/* Encouraging message first, numbers secondary */}
+            <p className="text-sm text-muted-foreground text-center">
+              {prayersOffered > 0 || prayersReceived > 0
+                ? "You have been praying for others, and others have been praying for you."
+                : "Begin your prayer journey by praying for someone today."}
+            </p>
+
+            {(prayersOffered > 0 || prayersReceived > 0) && (
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{prayersOffered}</p>
+                  <p className="text-xs text-muted-foreground">Prayed for others</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{prayersReceived}</p>
+                  <p className="text-xs text-muted-foreground">People praying for you</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{stats?.total_chains_started ?? 0}</p>
+                  <p className="text-xs text-muted-foreground">Passed forward</p>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{stats?.total_prayers_received ?? 0}</p>
-                <p className="text-xs text-muted-foreground">Received</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{stats?.total_chains_started ?? 0}</p>
-                <p className="text-xs text-muted-foreground">Passed forward</p>
-              </div>
-            </div>
+            )}
+
             <div className="text-center">
               <Button asChild variant="outline" size="sm">
                 <Link to="/ripple">
-                  View Ripple Impact
+                  See your prayer journey
                   <ArrowRight className="ml-2 h-3.5 w-3.5" />
                 </Link>
               </Button>
