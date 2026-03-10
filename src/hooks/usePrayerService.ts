@@ -106,7 +106,7 @@ export function usePrayerService() {
       show_country?: boolean;
       country?: string;
     }) => {
-      const { error } = await supabase.from("global_prayer_requests").insert({
+      const { error } = await (supabase.from as any)("global_prayer_requests").insert({
         title: data.title,
         description: data.description,
         category: data.category,
