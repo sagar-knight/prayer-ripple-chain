@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 export interface Church {
   id: string;
   name: string;
+  slug: string | null;
   denomination: string | null;
   city: string | null;
   state: string | null;
