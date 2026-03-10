@@ -13,39 +13,54 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
 const RippleImpact = () => {
-  const [userStats] = useState({
-    prayersOffered: 47,
-    prayersReceived: 12,
-    chainStarted: 3,
+  const { user } = useAuth();
+
+  // Fetch real stats
+  const { data: stats } = useQuery({
+    queryKey: ["user_prayer_stats_ripple", user?.id],
+    queryFn: async () => {
+      if (!user) return { total_prayers_offered: 0, total_prayers_received: 0, total_chains_started: 0 };
+      const { data } = await supabase
+        .from("user_prayer_stats")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      return data || { total_prayers_offered: 0, total_prayers_received: 0, total_chains_started: 0 };
+    },
+    enabled: !!user,
   });
 
-  const rippleChains = [
-    {
-      id: "1",
-      title: "Healing Prayer",
-      status: "Active" as const,
-      prayedCount: 42,
-      uniquePeople: 15,
-      forwardCount: 7,
-      lastUpdate: "Prayers continue to be lifted up. Trust in God's timing.",
-    },
-    {
-      id: "2",
-      title: "Family Restoration",
-      status: "Active" as const,
-      prayedCount: 68,
-      uniquePeople: 32,
-      forwardCount: 12,
-      lastUpdate: "This prayer has been passed forward to multiple communities.",
-    },
-  ];
+  const userStats = {
+    prayersOffered: stats?.total_prayers_offered ?? 0,
+    prayersReceived: stats?.total_prayers_received ?? 0,
+    chainStarted: stats?.total_chains_started ?? 0,
+  };
 
-  const globalStats = {
-    totalPrayers: 15247,
-    activeChains: 89,
-    churchesConnected: 156,
-    countriesReached: 23,
-    answeredPrayers: 3842,
+  // Fetch global stats from real data
+  const { data: globalData } = useQuery({
+    queryKey: ["global_prayer_stats"],
+    queryFn: async () => {
+      const [prayersRes, churchesRes] = await Promise.all([
+        supabase.from("global_prayer_requests").select("id, status", { count: "exact", head: false }),
+        supabase.from("churches").select("id", { count: "exact", head: true }),
+      ]);
+      const total = prayersRes.data?.length ?? 0;
+      const answered = prayersRes.data?.filter((r) => r.status === "answered").length ?? 0;
+      const active = total - answered;
+      return {
+        totalPrayers: total,
+        activeRequests: active,
+        churchesConnected: churchesRes.count ?? 0,
+        answeredPrayers: answered,
+      };
+    },
+  });
+
+  const globalStats = globalData || {
+    totalPrayers: 0,
+    activeRequests: 0,
+    churchesConnected: 0,
+    answeredPrayers: 0,
   };
 
   const metricCards = [
