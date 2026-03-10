@@ -128,14 +128,11 @@ const PrayerRippleChain = () => {
 
   if (!chains?.length) {
     return (
-      <Card className="text-center py-8">
-        <CardContent>
-          <Heart className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground text-sm">
-            Submit a prayer request to see how it ripples through the community.
-          </p>
-        </CardContent>
-      </Card>
+      <PrayerRequestCard
+        header="Your prayer requests"
+        description="Submit a prayer request to see how it ripples through the community."
+        className="text-center"
+      />
     );
   }
 
