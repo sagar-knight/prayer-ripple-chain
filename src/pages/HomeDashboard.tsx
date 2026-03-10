@@ -59,25 +59,23 @@ const HomeDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-peaceful pb-24">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <div className="page-container py-12 section-gap">
         {/* Welcome */}
-        <div className="text-center animate-gentle-fade">
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-2">
-            Welcome back
-          </h1>
-          <p className="text-muted-foreground">
+        <div className="page-header">
+          <h1 className="page-title">Welcome back</h1>
+          <p className="page-subtitle">
             Let's take a moment to pray.
           </p>
         </div>
 
         {/* Section 1 — Pray for Someone */}
-        <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
-          <CardContent className="pt-8 pb-8 text-center space-y-4">
+        <Card className="border-0 animate-gentle-fade">
+          <CardContent className="pt-8 pb-8 text-center space-y-5">
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Heart className="h-7 w-7 text-primary" />
             </div>
-            <CardTitle className="font-playfair text-xl">Someone needs prayer</CardTitle>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            <CardTitle className="section-title text-xl">Someone needs prayer</CardTitle>
+            <p className="text-muted-foreground text-sm max-w-md mx-auto leading-relaxed">
               Take a quiet moment to pray for someone who asked for support.
             </p>
             <Button asChild variant="peaceful" size="lg" className="px-10">
@@ -93,17 +91,17 @@ const HomeDashboard = () => {
         <DailyPrayerFocus />
 
         {/* Section 2 — Prayer Reminders */}
-        <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "100ms" }}>
+        <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "100ms" }}>
           <CardHeader>
-            <CardTitle className="font-playfair text-lg flex items-center gap-2">
+            <CardTitle className="section-title flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
               People you're praying for
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {activeReminders.length === 0 ? (
-              <div className="text-center py-4 space-y-3">
-                <p className="text-muted-foreground text-sm">
+              <div className="text-center py-6 space-y-3">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   No prayer reminders set yet. You can add one when you pray for someone.
                 </p>
                 <Button asChild variant="outline" size="sm">
@@ -115,14 +113,14 @@ const HomeDashboard = () => {
                 {activeReminders.map((reminder: any) => (
                   <div
                     key={reminder.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-secondary/50"
+                    className="flex items-center justify-between p-4 rounded-xl bg-secondary/50"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-foreground truncate">
                         {reminder.prayer_title || "Prayer request"}
                       </p>
                       {reminder.reminder_time_local && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                           <Clock className="h-3 w-3" />
                           {reminder.reminder_time_local}
                         </p>
@@ -145,7 +143,7 @@ const HomeDashboard = () => {
                     )}
                   </div>
                 ))}
-                <div className="pt-2 text-center">
+                <div className="pt-3 text-center">
                   <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
                     <Link to="/prayer-reminders">Manage Reminders</Link>
                   </Button>
@@ -156,14 +154,14 @@ const HomeDashboard = () => {
         </Card>
 
         {/* Section 3 — Scripture Today */}
-        <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+        <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "200ms" }}>
           <CardHeader>
-            <CardTitle className="font-playfair text-lg flex items-center gap-2">
+            <CardTitle className="section-title flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-primary" />
               Scripture Today
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
             <blockquote className="border-l-4 border-primary/30 pl-4 italic text-foreground/90 text-sm leading-relaxed">
               "{dailyVerse.text}"
             </blockquote>
@@ -182,16 +180,15 @@ const HomeDashboard = () => {
         </Card>
 
         {/* Your Prayer Journey */}
-        <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade" style={{ animationDelay: "300ms" }}>
+        <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "300ms" }}>
           <CardHeader>
-            <CardTitle className="font-playfair text-lg flex items-center gap-2">
+            <CardTitle className="section-title flex items-center gap-2">
               <Waves className="h-5 w-5 text-primary" />
               Your Prayer Journey
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Encouraging message first, numbers secondary */}
-            <p className="text-sm text-muted-foreground text-center">
+          <CardContent className="space-y-5">
+            <p className="text-sm text-muted-foreground text-center leading-relaxed">
               {prayersOffered > 0 || prayersReceived > 0
                 ? "You have been praying for others, and others have been praying for you."
                 : "Begin your prayer journey by praying for someone today."}
@@ -199,17 +196,17 @@ const HomeDashboard = () => {
 
             {(prayersOffered > 0 || prayersReceived > 0) && (
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
+                <div className="bg-secondary/50 rounded-xl p-4">
                   <p className="text-2xl font-bold text-foreground">{prayersOffered}</p>
-                  <p className="text-xs text-muted-foreground">Prayed for others</p>
+                  <p className="text-xs text-muted-foreground mt-1">Prayed for others</p>
                 </div>
-                <div>
+                <div className="bg-secondary/50 rounded-xl p-4">
                   <p className="text-2xl font-bold text-foreground">{prayersReceived}</p>
-                  <p className="text-xs text-muted-foreground">People praying for you</p>
+                  <p className="text-xs text-muted-foreground mt-1">People praying for you</p>
                 </div>
-                <div>
+                <div className="bg-secondary/50 rounded-xl p-4">
                   <p className="text-2xl font-bold text-foreground">{stats?.total_chains_started ?? 0}</p>
-                  <p className="text-xs text-muted-foreground">Passed forward</p>
+                  <p className="text-xs text-muted-foreground mt-1">Passed forward</p>
                 </div>
               </div>
             )}

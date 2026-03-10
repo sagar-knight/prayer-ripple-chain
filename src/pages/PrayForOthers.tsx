@@ -127,7 +127,7 @@ const PrayForOthers = () => {
   if (viewMode === "selector") {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="page-container">
           <PrayFocusSelector
             rescueCount={rescueCount}
             onStartPraying={handleStartPraying}
@@ -145,7 +145,7 @@ const PrayForOthers = () => {
   if (viewMode === "session") {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="page-container">
           <PrayerSession
             mode={sessionMode}
             targetCount={sessionTarget}
@@ -160,9 +160,9 @@ const PrayForOthers = () => {
   // ── BROWSE VIEW (advanced) ──
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-container-wide section-gap">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="sm"
@@ -178,7 +178,7 @@ const PrayForOthers = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 animate-gentle-fade">
+        <Card className="animate-gentle-fade">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <Filter className="h-4 w-4" />
@@ -223,7 +223,7 @@ const PrayForOthers = () => {
             <span className="ml-3 text-muted-foreground">Finding prayer requests...</span>
           </div>
         ) : filteredRequests.length > 0 ? (
-          <div className="max-w-xl mx-auto space-y-6">
+          <div className="max-w-xl mx-auto card-gap">
             {filteredRequests.map((request, index) => (
               <div
                 key={request.id}
