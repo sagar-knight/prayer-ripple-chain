@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
+import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
