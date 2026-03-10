@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_events: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          event_type: string
+          id: string
+          metadata_json: Json | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type: string
+          id?: string
+          metadata_json?: Json | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: string
+          metadata_json?: Json | null
+        }
+        Relationships: []
+      }
       church_memberships: {
         Row: {
           church_id: string
@@ -373,6 +403,117 @@ export type Database = {
           },
         ]
       }
+      global_prayer_requests: {
+        Row: {
+          anonymous: boolean
+          answered_at: string | null
+          category: string
+          country: string | null
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          prayer_count: number
+          show_country: boolean
+          status: string
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          anonymous?: boolean
+          answered_at?: string | null
+          category?: string
+          country?: string | null
+          created_at?: string
+          created_by: string
+          description: string
+          id?: string
+          prayer_count?: number
+          show_country?: boolean
+          status?: string
+          title: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          anonymous?: boolean
+          answered_at?: string | null
+          category?: string
+          country?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          prayer_count?: number
+          show_country?: boolean
+          status?: string
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      prayer_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          metadata_json: Json | null
+          prayer_id: string
+          source_type: string
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          metadata_json?: Json | null
+          prayer_id: string
+          source_type?: string
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          metadata_json?: Json | null
+          prayer_id?: string
+          source_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      prayer_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_user_id: string
+          completed_at: string | null
+          id: string
+          prayer_id: string
+          source_type: string
+          status: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_user_id: string
+          completed_at?: string | null
+          id?: string
+          prayer_id: string
+          source_type?: string
+          status?: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_user_id?: string
+          completed_at?: string | null
+          id?: string
+          prayer_id?: string
+          source_type?: string
+          status?: string
+        }
+        Relationships: []
+      }
       prayer_chain_nodes: {
         Row: {
           created_at: string
@@ -403,6 +544,42 @@ export type Database = {
           prayer_id?: string
           shared_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      prayer_coverage: {
+        Row: {
+          current_prayers: number
+          id: string
+          last_prayed_at: string | null
+          passed_forward_count: number
+          prayer_id: string
+          source_type: string
+          target_prayers: number
+          unique_people_prayed: number
+          updated_at: string
+        }
+        Insert: {
+          current_prayers?: number
+          id?: string
+          last_prayed_at?: string | null
+          passed_forward_count?: number
+          prayer_id: string
+          source_type?: string
+          target_prayers?: number
+          unique_people_prayed?: number
+          updated_at?: string
+        }
+        Update: {
+          current_prayers?: number
+          id?: string
+          last_prayed_at?: string | null
+          passed_forward_count?: number
+          prayer_id?: string
+          source_type?: string
+          target_prayers?: number
+          unique_people_prayed?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -530,7 +707,29 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      unified_prayer_feed: {
+        Row: {
+          anonymous: boolean | null
+          category: string | null
+          country: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          last_prayed_at: string | null
+          prayer_count: number | null
+          prayer_id: string | null
+          show_country: boolean | null
+          source_id: string | null
+          source_type: string | null
+          status: string | null
+          target_prayers: number | null
+          title: string | null
+          unique_people_prayed: number | null
+          updated_at: string | null
+          visibility: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_church_role: {
@@ -544,6 +743,16 @@ export type Database = {
       is_family_member: {
         Args: { _family_group_id: string; _user_id: string }
         Returns: boolean
+      }
+      record_prayer_action: {
+        Args: {
+          _action_type: string
+          _metadata?: Json
+          _prayer_id: string
+          _source_type: string
+          _user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
