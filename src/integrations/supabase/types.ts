@@ -583,6 +583,39 @@ export type Database = {
         }
         Relationships: []
       }
+      prayer_invites: {
+        Row: {
+          click_count: number
+          created_at: string
+          id: string
+          invite_code: string
+          inviter_user_id: string
+          message: string | null
+          prayer_id: string
+          signup_count: number
+        }
+        Insert: {
+          click_count?: number
+          created_at?: string
+          id?: string
+          invite_code: string
+          inviter_user_id: string
+          message?: string | null
+          prayer_id: string
+          signup_count?: number
+        }
+        Update: {
+          click_count?: number
+          created_at?: string
+          id?: string
+          invite_code?: string
+          inviter_user_id?: string
+          message?: string | null
+          prayer_id?: string
+          signup_count?: number
+        }
+        Relationships: []
+      }
       prayer_reminder_daily_logs: {
         Row: {
           completed_at: string | null
