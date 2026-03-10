@@ -35,7 +35,7 @@ const DailyPrayerFocus = () => {
   const prompt = focusPrompts[category] || "Pray for someone today.";
 
   return (
-    <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
+    <Card className="border-0 animate-gentle-fade">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="font-playfair text-lg flex items-center gap-2">

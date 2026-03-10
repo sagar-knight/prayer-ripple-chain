@@ -137,7 +137,7 @@ const PrayerStatusTracker = () => {
         myRequests.map((request, index) => (
           <Card
             key={request.id}
-            className={`animate-gentle-fade hover:shadow-peaceful transition-all ${
+            className={`animate-gentle-fade ${
               request.status === "answered"
                 ? "bg-primary/5 border-primary/20"
                 : ""
