@@ -88,6 +88,7 @@ const PrayerRequestCard = ({
         )}
       </CardContent>
     </Card>
+    </motion.div>
   );
 };
 
