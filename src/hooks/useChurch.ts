@@ -154,11 +154,16 @@ export function useCreateChurch() {
     }) => {
       if (!user) throw new Error("Must be logged in");
 
+      // Generate unique slug
+      const baseSlug = slugify(church.name);
+      const slug = baseSlug + "-" + Math.random().toString(36).slice(2, 8);
+
       // Create church
       const { data: churchData, error: churchError } = await supabase
         .from("churches")
         .insert({
           ...church,
+          slug,
           created_by: user.id,
         })
         .select()

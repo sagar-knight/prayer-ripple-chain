@@ -292,6 +292,18 @@ const ChurchAdmin = () => {
           </TabsContent>
         </Tabs>
 
+        {/* Church Invite Tools */}
+        {isAdmin && (
+          <div className="mt-8">
+            <ChurchInviteTools
+              churchId={churchId!}
+              churchSlug={(church as any)?.slug || null}
+              churchName={church?.name || "Church"}
+              userId={user?.id}
+            />
+          </div>
+        )}
+
         {/* Post Official Request */}
         {isAdmin && (
           <Card className="mt-8">
