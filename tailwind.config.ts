@@ -71,9 +71,12 @@ export default {
 			},
 			boxShadow: {
 				'peaceful': 'var(--shadow-peaceful)',
-				'warm': 'var(--shadow-warm)'
+				'warm': 'var(--shadow-warm)',
+				'card': 'var(--shadow-card)',
+				'card-hover': 'var(--shadow-card-hover)'
 			},
 			borderRadius: {
+				xl: 'calc(var(--radius) + 4px)',
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
