@@ -39,6 +39,7 @@ import NotFound from "./pages/NotFound";
 import InviteLanding from "./pages/InviteLanding";
 import ChurchJoin from "./pages/ChurchJoin";
 import ProductDetail from "./pages/ProductDetail";
+import AuthCallback from "./pages/AuthCallback";
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
@@ -103,6 +104,7 @@ const App = () => (
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/support" element={<SupportMission />} />
 

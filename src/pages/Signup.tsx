@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Heart, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Heart, Mail, Lock, User, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +18,8 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
   const { signUp } = useAuth();
   const { toast } = useToast();
   const location = useLocation();
@@ -30,7 +33,6 @@ const Signup = () => {
       return;
     }
     setIsLoading(true);
-    // Store returnTo so after email verification + login they land on the right page
     sessionStorage.setItem("returnTo", returnTo);
     const { error } = await signUp(email, password, displayName);
     setIsLoading(false);
@@ -43,6 +45,36 @@ const Signup = () => {
     }
   };
 
+  const handleResendEmail = async () => {
+    if (resendCooldown > 0 || isResending) return;
+
+    setIsResending(true);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    setIsResending(false);
+
+    if (error) {
+      toast({ title: "Could not resend", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Email resent 📧", description: "Check your inbox for the new confirmation link." });
+      setResendCooldown(60);
+      const interval = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+  };
+
   if (success) {
     return (
       <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center px-4 py-12">
@@ -50,8 +82,28 @@ const Signup = () => {
           <CardContent className="pt-8 space-y-4">
             <Mail className="h-12 w-12 text-primary mx-auto" />
             <h2 className="font-playfair text-2xl font-bold">Check Your Email</h2>
-            <p className="text-muted-foreground">We've sent a confirmation link to <strong>{email}</strong>. Please verify your email to sign in.</p>
-            <Button asChild variant="outline" className="mt-4">
+            <p className="text-muted-foreground">
+              We've sent a confirmation link to <strong>{email}</strong>. Please verify your email to sign in.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              If you don't see the email, check your spam folder or resend the confirmation email.
+            </p>
+
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              onClick={handleResendEmail}
+              disabled={resendCooldown > 0 || isResending}
+            >
+              <RefreshCw className={`h-4 w-4 ${isResending ? "animate-spin" : ""}`} />
+              {isResending
+                ? "Sending..."
+                : resendCooldown > 0
+                ? `Resend in ${resendCooldown}s`
+                : "Resend confirmation email"}
+            </Button>
+
+            <Button asChild variant="peaceful" className="w-full mt-2">
               <Link to="/login" state={{ returnTo }}>Go to Sign In</Link>
             </Button>
           </CardContent>
