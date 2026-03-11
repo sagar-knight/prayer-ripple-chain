@@ -10,7 +10,10 @@ export function useChurchBySlug(slug: string) {
         .from("churches")
         .select("*")
         .eq("slug", slug)
-        .single();
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Church not found");
+      return data as Church;
       if (error) throw error;
       return data as Church;
     },
