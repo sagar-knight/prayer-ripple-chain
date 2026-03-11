@@ -39,6 +39,7 @@ import NotFound from "./pages/NotFound";
 import InviteLanding from "./pages/InviteLanding";
 import ChurchJoin from "./pages/ChurchJoin";
 import ProductDetail from "./pages/ProductDetail";
+import AuthCallback from "./pages/AuthCallback";
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
