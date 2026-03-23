@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import PrayerStatusTracker from "@/components/PrayerStatusTracker";
 import ScriptureEncouragement from "@/components/ScriptureEncouragement";
 import { usePrayerService } from "@/hooks/usePrayerService";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { prayerRequestSchema } from "@/lib/validation";
 
 const SubmitPrayer = () => {
   const navigate = useNavigate();
@@ -25,19 +27,43 @@ const SubmitPrayer = () => {
   const [description, setDescription] = useState("");
   const { toast } = useToast();
   const { submitGlobalPrayer } = usePrayerService();
+  const { moderate, checking } = useContentModeration();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim() || !selectedCategory) return;
+
+    // Validate input
+    const parsed = prayerRequestSchema.safeParse({
+      title,
+      description,
+      category: selectedCategory,
+      anonymous: isAnonymous,
+    });
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Please check your input";
+      toast({ title: firstError, variant: "destructive" });
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
+      // Content moderation
+      const modResult = await moderate(
+        `${parsed.data.title} ${parsed.data.description}`,
+        "prayer request",
+        "submit_prayer"
+      );
+      if (!modResult.allowed) {
+        setIsSubmitting(false);
+        return;
+      }
+
       await submitGlobalPrayer({
-        title: title.trim(),
-        description: description.trim(),
-        category: selectedCategory,
-        anonymous: isAnonymous,
+        title: parsed.data.title,
+        description: parsed.data.description,
+        category: parsed.data.category,
+        anonymous: parsed.data.anonymous,
       });
 
       setSubmittedCategory(selectedCategory);
@@ -205,6 +231,7 @@ const SubmitPrayer = () => {
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Brief title for your prayer request"
                       required
+                      maxLength={120}
                       className="text-base"
                     />
                   </div>
@@ -246,6 +273,7 @@ const SubmitPrayer = () => {
                       placeholder="Describe what you need prayer for..."
                       className="min-h-[120px] text-base"
                       required
+                      maxLength={2000}
                     />
                   </div>
 
@@ -281,7 +309,7 @@ const SubmitPrayer = () => {
                   {/* Submit Button */}
                   <Button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || checking}
                     variant="peaceful"
                     size="lg"
                     className="w-full text-base"

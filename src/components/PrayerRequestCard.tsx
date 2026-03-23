@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ReportButton from "@/components/ReportButton";
 
 interface PrayerRequestCardProps {
   /** Optional header text, defaults to "Someone asked for prayer" */
@@ -19,6 +20,9 @@ interface PrayerRequestCardProps {
   children?: ReactNode;
   /** Additional className */
   className?: string;
+  /** Entity ID and type for reporting */
+  reportEntityId?: string;
+  reportEntityType?: "global_prayer" | "church_prayer" | "family_note" | "family_scripture";
 }
 
 const PrayerRequestCard = ({
@@ -29,6 +33,8 @@ const PrayerRequestCard = ({
   actions,
   children,
   className,
+  reportEntityId,
+  reportEntityType,
 }: PrayerRequestCardProps) => {
   const prayerMessage =
     prayerCount === undefined
@@ -84,6 +90,13 @@ const PrayerRequestCard = ({
         {actions && (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             {actions}
+          </div>
+        )}
+
+        {/* Report */}
+        {reportEntityId && reportEntityType && (
+          <div className="flex justify-end pt-1">
+            <ReportButton entityId={reportEntityId} entityType={reportEntityType} />
           </div>
         )}
       </CardContent>

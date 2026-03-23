@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Send } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurch, useChurchMembership, useSubmitChurchPrayer } from "@/hooks/useChurch";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { churchPrayerSchema } from "@/lib/validation";
 
 const categories = ["General", "Health", "Family", "Guidance", "Gratitude", "Urgent", "Other"];
 
@@ -38,15 +40,28 @@ const ChurchSubmitPrayer = () => {
     );
   }
 
+  const { moderate, checking } = useContentModeration();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !description || !churchId) return;
+    if (!churchId) return;
+
+    const parsed = churchPrayerSchema.safeParse({ title, description, category, anonymous });
+    if (!parsed.success) return;
+
+    const modResult = await moderate(
+      `${parsed.data.title} ${parsed.data.description}`,
+      "church prayer request",
+      "submit_church_prayer"
+    );
+    if (!modResult.allowed) return;
+
     await submitPrayer.mutateAsync({
       church_id: churchId,
-      title,
-      description,
-      category: category.toLowerCase(),
-      anonymous,
+      title: parsed.data.title,
+      description: parsed.data.description,
+      category: parsed.data.category.toLowerCase(),
+      anonymous: parsed.data.anonymous,
     });
     navigate(`/churches/${churchId}`);
   };
@@ -98,7 +113,7 @@ const ChurchSubmitPrayer = () => {
               <p className="text-xs text-muted-foreground">
                 Your request will be reviewed by a church admin before appearing on the Prayer Wall.
               </p>
-              <Button type="submit" className="w-full" disabled={submitPrayer.isPending || !title || !description}>
+              <Button type="submit" className="w-full" disabled={submitPrayer.isPending || checking || !title || !description}>
                 {submitPrayer.isPending ? "Submitting..." : "Submit for Review"}
               </Button>
             </form>

@@ -11,6 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { familyNoteSchema, CONTENT_BLOCKED_MESSAGE } from "@/lib/validation";
+import ReportButton from "@/components/ReportButton";
 
 export interface FamilyTestimony {
   id: string;
@@ -29,10 +32,19 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
   const [showAdd, setShowAdd] = useState(false);
   const [text, setText] = useState("");
   const { toast } = useToast();
+  const { moderate, checking } = useContentModeration();
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!text.trim()) return;
-    onAdd(text.trim(), currentUser);
+    const parsed = familyNoteSchema.safeParse({ noteText: text });
+    if (!parsed.success) {
+      toast({ title: parsed.error.errors[0]?.message || "Invalid input", variant: "destructive" });
+      return;
+    }
+    const modResult = await moderate(parsed.data.noteText, "family note", "family_note");
+    if (!modResult.allowed) return;
+
+    onAdd(parsed.data.noteText, currentUser);
     setText("");
     setShowAdd(false);
     toast({ title: "Note added 🙏" });
@@ -61,7 +73,7 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
                 onChange={(e) => setText(e.target.value)}
                 className="min-h-[120px]"
               />
-              <Button onClick={handleAdd} className="w-full" variant="peaceful" disabled={!text.trim()}>
+              <Button onClick={handleAdd} className="w-full" variant="peaceful" disabled={!text.trim() || checking}>
                 Share with Family
               </Button>
             </div>
@@ -96,6 +108,9 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
                       minute: "2-digit",
                     })}
                   </span>
+                </div>
+                <div className="flex justify-end">
+                  <ReportButton entityId={n.id} entityType="family_note" />
                 </div>
               </CardContent>
             </Card>
