@@ -40,15 +40,28 @@ const ChurchSubmitPrayer = () => {
     );
   }
 
+  const { moderate, checking } = useContentModeration();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !description || !churchId) return;
+    if (!churchId) return;
+
+    const parsed = churchPrayerSchema.safeParse({ title, description, category, anonymous });
+    if (!parsed.success) return;
+
+    const modResult = await moderate(
+      `${parsed.data.title} ${parsed.data.description}`,
+      "church prayer request",
+      "submit_church_prayer"
+    );
+    if (!modResult.allowed) return;
+
     await submitPrayer.mutateAsync({
       church_id: churchId,
-      title,
-      description,
-      category: category.toLowerCase(),
-      anonymous,
+      title: parsed.data.title,
+      description: parsed.data.description,
+      category: parsed.data.category.toLowerCase(),
+      anonymous: parsed.data.anonymous,
     });
     navigate(`/churches/${churchId}`);
   };
