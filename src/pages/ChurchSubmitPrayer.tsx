@@ -113,7 +113,7 @@ const ChurchSubmitPrayer = () => {
               <p className="text-xs text-muted-foreground">
                 Your request will be reviewed by a church admin before appearing on the Prayer Wall.
               </p>
-              <Button type="submit" className="w-full" disabled={submitPrayer.isPending || !title || !description}>
+              <Button type="submit" className="w-full" disabled={submitPrayer.isPending || checking || !title || !description}>
                 {submitPrayer.isPending ? "Submitting..." : "Submit for Review"}
               </Button>
             </form>

@@ -307,7 +307,7 @@ const SubmitPrayer = () => {
                   {/* Submit Button */}
                   <Button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || checking}
                     variant="peaceful"
                     size="lg"
                     className="w-full text-base"
