@@ -109,6 +109,9 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
                     })}
                   </span>
                 </div>
+                <div className="flex justify-end">
+                  <ReportButton entityId={n.id} entityType="family_note" />
+                </div>
               </CardContent>
             </Card>
           ))}

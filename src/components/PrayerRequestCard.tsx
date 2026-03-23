@@ -92,6 +92,13 @@ const PrayerRequestCard = ({
             {actions}
           </div>
         )}
+
+        {/* Report */}
+        {reportEntityId && reportEntityType && (
+          <div className="flex justify-end pt-1">
+            <ReportButton entityId={reportEntityId} entityType={reportEntityType} />
+          </div>
+        )}
       </CardContent>
     </Card>
     </motion.div>
