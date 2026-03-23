@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import PrayerStatusTracker from "@/components/PrayerStatusTracker";
 import ScriptureEncouragement from "@/components/ScriptureEncouragement";
 import { usePrayerService } from "@/hooks/usePrayerService";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { prayerRequestSchema } from "@/lib/validation";
 
 const SubmitPrayer = () => {
   const navigate = useNavigate();
