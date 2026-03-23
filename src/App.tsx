@@ -149,6 +149,7 @@ const App = () => (
                 <Route path="/commitments" element={<ProtectedRoute><MyCommitments /></ProtectedRoute>} />
                 <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
                 <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
+                <Route path="/moderation" element={<ProtectedRoute><ModerationDashboard /></ProtectedRoute>} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
