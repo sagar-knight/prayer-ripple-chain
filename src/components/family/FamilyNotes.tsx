@@ -32,10 +32,19 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
   const [showAdd, setShowAdd] = useState(false);
   const [text, setText] = useState("");
   const { toast } = useToast();
+  const { moderate, checking } = useContentModeration();
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!text.trim()) return;
-    onAdd(text.trim(), currentUser);
+    const parsed = familyNoteSchema.safeParse({ noteText: text });
+    if (!parsed.success) {
+      toast({ title: parsed.error.errors[0]?.message || "Invalid input", variant: "destructive" });
+      return;
+    }
+    const modResult = await moderate(parsed.data.noteText, "family note", "family_note");
+    if (!modResult.allowed) return;
+
+    onAdd(parsed.data.noteText, currentUser);
     setText("");
     setShowAdd(false);
     toast({ title: "Note added 🙏" });
