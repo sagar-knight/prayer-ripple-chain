@@ -11,6 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { familyNoteSchema, CONTENT_BLOCKED_MESSAGE } from "@/lib/validation";
+import ReportButton from "@/components/ReportButton";
 
 export interface FamilyTestimony {
   id: string;
