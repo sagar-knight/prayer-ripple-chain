@@ -27,19 +27,43 @@ const SubmitPrayer = () => {
   const [description, setDescription] = useState("");
   const { toast } = useToast();
   const { submitGlobalPrayer } = usePrayerService();
+  const { moderate, checking } = useContentModeration();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim() || !selectedCategory) return;
+
+    // Validate input
+    const parsed = prayerRequestSchema.safeParse({
+      title,
+      description,
+      category: selectedCategory,
+      anonymous: isAnonymous,
+    });
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Please check your input";
+      toast({ title: firstError, variant: "destructive" });
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
+      // Content moderation
+      const modResult = await moderate(
+        `${parsed.data.title} ${parsed.data.description}`,
+        "prayer request",
+        "submit_prayer"
+      );
+      if (!modResult.allowed) {
+        setIsSubmitting(false);
+        return;
+      }
+
       await submitGlobalPrayer({
-        title: title.trim(),
-        description: description.trim(),
-        category: selectedCategory,
-        anonymous: isAnonymous,
+        title: parsed.data.title,
+        description: parsed.data.description,
+        category: parsed.data.category,
+        anonymous: parsed.data.anonymous,
       });
 
       setSubmittedCategory(selectedCategory);
