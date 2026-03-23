@@ -231,6 +231,7 @@ const SubmitPrayer = () => {
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Brief title for your prayer request"
                       required
+                      maxLength={120}
                       className="text-base"
                     />
                   </div>
