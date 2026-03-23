@@ -20,6 +20,9 @@ interface PrayerRequestCardProps {
   children?: ReactNode;
   /** Additional className */
   className?: string;
+  /** Entity ID and type for reporting */
+  reportEntityId?: string;
+  reportEntityType?: "global_prayer" | "church_prayer" | "family_note" | "family_scripture";
 }
 
 const PrayerRequestCard = ({
