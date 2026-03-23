@@ -38,6 +38,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import InviteLanding from "./pages/InviteLanding";
 import ChurchJoin from "./pages/ChurchJoin";
+import ModerationDashboard from "./pages/ModerationDashboard";
 import ProductDetail from "./pages/ProductDetail";
 import AuthCallback from "./pages/AuthCallback";
 import { useCartSync } from "./hooks/useCartSync";
@@ -148,6 +149,7 @@ const App = () => (
                 <Route path="/commitments" element={<ProtectedRoute><MyCommitments /></ProtectedRoute>} />
                 <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
                 <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
+                <Route path="/moderation" element={<ProtectedRoute><ModerationDashboard /></ProtectedRoute>} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

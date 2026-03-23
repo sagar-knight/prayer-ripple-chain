@@ -182,6 +182,8 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
         subtitle={subtitle}
         prayerCount={request.prayerCount}
         actions={actions}
+        reportEntityId={request.id}
+        reportEntityType={request.churchName ? "church_prayer" : "global_prayer"}
       >
         {/* Scripture for prayer partners */}
         <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
