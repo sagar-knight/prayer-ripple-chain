@@ -33,6 +33,8 @@ const PrayerRequestCard = ({
   actions,
   children,
   className,
+  reportEntityId,
+  reportEntityType,
 }: PrayerRequestCardProps) => {
   const prayerMessage =
     prayerCount === undefined
