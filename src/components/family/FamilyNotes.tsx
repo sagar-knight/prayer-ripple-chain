@@ -73,7 +73,7 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
                 onChange={(e) => setText(e.target.value)}
                 className="min-h-[120px]"
               />
-              <Button onClick={handleAdd} className="w-full" variant="peaceful" disabled={!text.trim()}>
+              <Button onClick={handleAdd} className="w-full" variant="peaceful" disabled={!text.trim() || checking}>
                 Share with Family
               </Button>
             </div>
