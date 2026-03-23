@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Send } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurch, useChurchMembership, useSubmitChurchPrayer } from "@/hooks/useChurch";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { churchPrayerSchema } from "@/lib/validation";
 
 const categories = ["General", "Health", "Family", "Guidance", "Gratitude", "Urgent", "Other"];
 
