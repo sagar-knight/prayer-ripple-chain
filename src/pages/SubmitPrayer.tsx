@@ -273,6 +273,7 @@ const SubmitPrayer = () => {
                       placeholder="Describe what you need prayer for..."
                       className="min-h-[120px] text-base"
                       required
+                      maxLength={2000}
                     />
                   </div>
 
