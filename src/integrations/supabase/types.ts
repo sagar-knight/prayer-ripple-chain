@@ -990,6 +990,7 @@ export type Database = {
         Args: { _church_id: string; _user_id: string }
         Returns: string
       }
+      get_invite_by_code: { Args: { _invite_code: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
