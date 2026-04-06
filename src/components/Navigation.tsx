@@ -33,7 +33,7 @@ const Navigation = () => {
   const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
-
+  const { isAdmin } = useAdminRole();
   // Main nav items - always visible to everyone
   const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
