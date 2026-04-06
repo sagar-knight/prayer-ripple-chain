@@ -938,6 +938,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_invite_click: {
+        Args: { _invite_id: string }
+        Returns: undefined
+      }
       is_church_member: {
         Args: { _church_id: string; _user_id: string }
         Returns: boolean
@@ -945,6 +949,15 @@ export type Database = {
       is_family_member: {
         Args: { _family_group_id: string; _user_id: string }
         Returns: boolean
+      }
+      log_public_event: {
+        Args: {
+          _entity_id?: string
+          _entity_type?: string
+          _event_type: string
+          _metadata?: Json
+        }
+        Returns: undefined
       }
       record_prayer_action: {
         Args: {
