@@ -149,6 +149,13 @@ export type Database = {
             referencedRelation: "churches"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "church_memberships_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       church_prayer_requests: {
@@ -206,6 +213,13 @@ export type Database = {
             columns: ["church_id"]
             isOneToOne: false
             referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_prayer_requests_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches_public"
             referencedColumns: ["id"]
           },
         ]
@@ -902,6 +916,51 @@ export type Database = {
       }
     }
     Views: {
+      churches_public: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string | null
+          denomination: string | null
+          id: string | null
+          logo_url: string | null
+          name: string | null
+          privacy: string | null
+          slug: string | null
+          state: string | null
+          status: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          denomination?: string | null
+          id?: string | null
+          logo_url?: string | null
+          name?: string | null
+          privacy?: string | null
+          slug?: string | null
+          state?: string | null
+          status?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          denomination?: string | null
+          id?: string | null
+          logo_url?: string | null
+          name?: string | null
+          privacy?: string | null
+          slug?: string | null
+          state?: string | null
+          status?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       unified_prayer_feed: {
         Row: {
           anonymous: boolean | null
