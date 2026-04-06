@@ -149,15 +149,11 @@ const AdminNotificationBell = () => {
   useEffect(() => {
     fetchAlerts();
 
-    const channel = supabase
-      .channel("admin-notifications")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "moderation_queue" }, () => fetchAlerts())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "app_events" }, () => fetchAlerts())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "churches" }, () => fetchAlerts())
-      .subscribe();
+    // Poll every 30 seconds for new alerts (realtime removed for security)
+    const interval = setInterval(fetchAlerts, 30000);
 
     return () => {
-      supabase.removeChannel(channel);
+      clearInterval(interval);
     };
   }, [fetchAlerts]);
 
