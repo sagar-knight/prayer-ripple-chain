@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -13,36 +13,52 @@ import { formatDistanceToNow } from "date-fns";
 
 interface AdminAlert {
   id: string;
-  type: string;
+  type: "moderation" | "report" | "church" | "auto-denied" | "suspicious";
   message: string;
   link: string;
   created_at: string;
 }
 
+const TYPE_COLORS: Record<AdminAlert["type"], string> = {
+  moderation: "bg-yellow-500",
+  report: "bg-red-500",
+  church: "bg-blue-500",
+  "auto-denied": "bg-orange-500",
+  suspicious: "bg-purple-500",
+};
+
 const AdminNotificationBell = () => {
   const [alerts, setAlerts] = useState<AdminAlert[]>([]);
   const [open, setOpen] = useState(false);
 
-  const fetchAlerts = async () => {
-    // Fetch pending moderation items
-    const { data: modItems } = await supabase
-      .from("moderation_queue")
-      .select("id, title, status, created_at")
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(5);
-
-    // Fetch recent reports
-    const { data: reports } = await supabase
-      .from("app_events")
-      .select("id, metadata_json, created_at")
-      .eq("event_type", "content_reported")
-      .order("created_at", { ascending: false })
-      .limit(5);
+  const fetchAlerts = useCallback(async () => {
+    const [modQ, reports, autoD] = await Promise.all([
+      // Pending moderation items
+      supabase
+        .from("moderation_queue")
+        .select("id, title, status, created_at")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(5),
+      // Recent reports
+      supabase
+        .from("app_events")
+        .select("id, metadata_json, created_at")
+        .eq("event_type", "content_reported")
+        .order("created_at", { ascending: false })
+        .limit(5),
+      // Auto-denied content
+      supabase
+        .from("moderation_queue")
+        .select("id, title, created_at")
+        .eq("status", "auto-denied")
+        .order("created_at", { ascending: false })
+        .limit(3),
+    ]);
 
     const combined: AdminAlert[] = [];
 
-    (modItems || []).forEach((item) => {
+    (modQ.data || []).forEach((item) => {
       combined.push({
         id: `mod-${item.id}`,
         type: "moderation",
@@ -52,9 +68,9 @@ const AdminNotificationBell = () => {
       });
     });
 
-    (reports || []).forEach((item) => {
+    (reports.data || []).forEach((item) => {
       const meta = item.metadata_json as Record<string, unknown> | null;
-      const reason = meta?.reason as string || "No reason";
+      const reason = (meta?.reason as string) || "No reason";
       combined.push({
         id: `report-${item.id}`,
         type: "report",
@@ -64,34 +80,87 @@ const AdminNotificationBell = () => {
       });
     });
 
-    combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    setAlerts(combined.slice(0, 10));
-  };
+    (autoD.data || []).forEach((item) => {
+      combined.push({
+        id: `auto-${item.id}`,
+        type: "auto-denied",
+        message: `Auto-denied: ${item.title || "Content"}`,
+        link: "/admin/moderation",
+        created_at: item.created_at,
+      });
+    });
+
+    // Check for new church registrations (churches created in last 7 days)
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: newChurches } = await supabase
+      .from("churches")
+      .select("id, name, created_at")
+      .gte("created_at", weekAgo)
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    (newChurches || []).forEach((c) => {
+      combined.push({
+        id: `church-${c.id}`,
+        type: "church",
+        message: `New church registered: ${c.name}`,
+        link: "/admin/churches",
+        created_at: c.created_at,
+      });
+    });
+
+    // Check for suspicious activity — users with many reports against them
+    const { data: suspiciousReports } = await supabase
+      .from("app_events")
+      .select("metadata_json, created_at, id")
+      .eq("event_type", "content_reported")
+      .gte("created_at", weekAgo)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    // Group by reported entity to detect patterns
+    const entityReportCounts = new Map<string, number>();
+    (suspiciousReports || []).forEach((r) => {
+      const meta = r.metadata_json as Record<string, unknown> | null;
+      const entityId = meta?.entity_id as string;
+      if (entityId) {
+        entityReportCounts.set(entityId, (entityReportCounts.get(entityId) || 0) + 1);
+      }
+    });
+
+    entityReportCounts.forEach((count, entityId) => {
+      if (count >= 3) {
+        combined.push({
+          id: `suspicious-${entityId}`,
+          type: "suspicious",
+          message: `Suspicious: ${count} reports on same content`,
+          link: "/admin/reports",
+          created_at: new Date().toISOString(),
+        });
+      }
+    });
+
+    combined.sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+    setAlerts(combined.slice(0, 15));
+  }, []);
 
   useEffect(() => {
     fetchAlerts();
 
-    // Subscribe to realtime changes on moderation_queue
     const channel = supabase
       .channel("admin-notifications")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "moderation_queue" },
-        () => fetchAlerts()
-      )
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "app_events" },
-        () => fetchAlerts()
-      )
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "moderation_queue" }, () => fetchAlerts())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "app_events" }, () => fetchAlerts())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "churches" }, () => fetchAlerts())
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [fetchAlerts]);
 
-  const pendingCount = alerts.filter((a) => a.type === "moderation").length;
   const totalCount = alerts.length;
 
   return (
@@ -104,7 +173,7 @@ const AdminNotificationBell = () => {
               variant="destructive"
               className="absolute -top-1 -right-1 h-5 min-w-5 px-1 text-[10px] flex items-center justify-center"
             >
-              {totalCount}
+              {totalCount > 99 ? "99+" : totalCount}
             </Badge>
           )}
         </Button>
@@ -112,13 +181,11 @@ const AdminNotificationBell = () => {
       <PopoverContent align="end" className="w-80 p-0">
         <div className="p-3 border-b border-border">
           <h4 className="font-semibold text-sm">Admin Notifications</h4>
-          {pendingCount > 0 && (
-            <p className="text-xs text-muted-foreground mt-1">
-              {pendingCount} item{pendingCount !== 1 ? "s" : ""} pending review
-            </p>
-          )}
+          <p className="text-xs text-muted-foreground mt-1">
+            {totalCount} alert{totalCount !== 1 ? "s" : ""}
+          </p>
         </div>
-        <div className="max-h-64 overflow-y-auto">
+        <div className="max-h-72 overflow-y-auto">
           {alerts.length === 0 ? (
             <p className="text-sm text-muted-foreground p-4 text-center">
               No new notifications
@@ -131,11 +198,7 @@ const AdminNotificationBell = () => {
                 onClick={() => setOpen(false)}
                 className="flex items-start gap-3 p-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0"
               >
-                <div
-                  className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
-                    alert.type === "moderation" ? "bg-yellow-500" : "bg-red-500"
-                  }`}
-                />
+                <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${TYPE_COLORS[alert.type]}`} />
                 <div className="min-w-0">
                   <p className="text-sm leading-snug line-clamp-2">{alert.message}</p>
                   <p className="text-xs text-muted-foreground mt-1">
