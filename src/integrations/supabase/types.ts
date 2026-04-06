@@ -961,6 +961,51 @@ export type Database = {
         }
         Relationships: []
       }
+      global_prayers_public: {
+        Row: {
+          anonymous: boolean | null
+          category: string | null
+          country: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string | null
+          prayer_count: number | null
+          show_country: boolean | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          anonymous?: boolean | null
+          category?: string | null
+          country?: string | null
+          created_at?: string | null
+          created_by?: never
+          description?: string | null
+          id?: string | null
+          prayer_count?: number | null
+          show_country?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          anonymous?: boolean | null
+          category?: string | null
+          country?: string | null
+          created_at?: string | null
+          created_by?: never
+          description?: string | null
+          id?: string | null
+          prayer_count?: number | null
+          show_country?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       unified_prayer_feed: {
         Row: {
           anonymous: boolean | null
