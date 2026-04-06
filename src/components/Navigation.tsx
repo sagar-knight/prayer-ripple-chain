@@ -132,6 +132,19 @@ const Navigation = () => {
             {/* Auth button */}
             {user ? (
               <div className="flex items-center space-x-1">
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActiveRoute("/admin")
+                        ? "text-primary bg-primary/10"
+                        : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                    }`}
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
                 <Link
                   to="/profile"
                   className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
