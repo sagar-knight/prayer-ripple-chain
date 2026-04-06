@@ -28,6 +28,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { CartDrawer } from "@/components/CartDrawer";
+import AdminNotificationBell from "@/components/AdminNotificationBell";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
