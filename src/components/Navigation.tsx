@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Heart,
+  Shield,
   Menu,
   Users,
   Waves,
@@ -25,6 +26,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import { CartDrawer } from "@/components/CartDrawer";
 
 const Navigation = () => {
@@ -32,7 +34,7 @@ const Navigation = () => {
   const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
-
+  const { isAdmin } = useAdminRole();
   // Main nav items - always visible to everyone
   const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
@@ -130,6 +132,19 @@ const Navigation = () => {
             {/* Auth button */}
             {user ? (
               <div className="flex items-center space-x-1">
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActiveRoute("/admin")
+                        ? "text-primary bg-primary/10"
+                        : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                    }`}
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
                 <Link
                   to="/profile"
                   className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${

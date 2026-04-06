@@ -41,6 +41,15 @@ import ChurchJoin from "./pages/ChurchJoin";
 import ModerationDashboard from "./pages/ModerationDashboard";
 import ProductDetail from "./pages/ProductDetail";
 import AuthCallback from "./pages/AuthCallback";
+import AdminRoute from "./components/AdminRoute";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminModeration from "./pages/admin/AdminModeration";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminChurches from "./pages/admin/AdminChurches";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminAutomation from "./pages/admin/AdminAutomation";
+import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
@@ -150,6 +159,18 @@ const App = () => (
                 <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
                 <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
                 <Route path="/moderation" element={<ProtectedRoute><ModerationDashboard /></ProtectedRoute>} />
+
+                {/* Admin routes */}
+                <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="moderation" element={<AdminModeration />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="churches" element={<AdminChurches />} />
+                  <Route path="reports" element={<AdminReports />} />
+                  <Route path="automation" element={<AdminAutomation />} />
+                  <Route path="audit" element={<AdminAuditLog />} />
+                </Route>
+
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
