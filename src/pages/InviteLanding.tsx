@@ -42,26 +42,36 @@ const InviteLanding = () => {
         return;
       }
 
-      // Fetch invite
-      const { data: inviteData, error: inviteError } = await supabase
-        .from("prayer_invites" as any)
-        .select("*")
-        .eq("invite_code", inviteCode)
-        .maybeSingle();
+      // Fetch invite + prayer + inviter name via secure RPC (works for anonymous visitors)
+      const { data: result, error } = await supabase.rpc("get_invite_by_code", { _invite_code: inviteCode });
 
-      if (inviteError || !inviteData) {
+      if (error || !result) {
         setNotFound(true);
         setLoading(false);
         return;
       }
 
-      const inv = inviteData as any as InviteData;
-      setInvite(inv);
+      const inv = result as any;
+      setInvite({
+        id: inv.id,
+        prayer_id: inv.prayer_id,
+        inviter_user_id: inv.inviter_user_id,
+        invite_code: inv.invite_code,
+        message: inv.message,
+      });
+
+      if (inv.prayer) {
+        setPrayer(inv.prayer);
+      }
+
+      if (inv.inviter_name) {
+        setInviterName(inv.inviter_name);
+      }
 
       // Track click via secure RPC
       await supabase.rpc("increment_invite_click", { _invite_id: inv.id });
 
-      // Log event via secure RPC (works for anonymous visitors too)
+      // Log event
       if (user) {
         await supabase.from("app_events").insert({
           event_type: "invite_clicked",
@@ -75,30 +85,6 @@ const InviteLanding = () => {
           _entity_type: "prayer_invite",
           _entity_id: inv.id,
         });
-      }
-
-      // Fetch prayer
-      const { data: prayerData } = await supabase
-        .from("global_prayer_requests")
-        .select("*")
-        .eq("id", inv.prayer_id)
-        .maybeSingle();
-
-      if (prayerData) {
-        setPrayer(prayerData as PrayerData);
-      }
-
-      // Fetch inviter name
-      if (inv.inviter_user_id && inv.inviter_user_id !== "anonymous") {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("display_name")
-          .eq("id", inv.inviter_user_id)
-          .maybeSingle();
-
-        if (profile?.display_name) {
-          setInviterName(profile.display_name);
-        }
       }
 
       setLoading(false);
