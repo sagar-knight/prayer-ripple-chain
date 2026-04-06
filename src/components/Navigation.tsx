@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Heart,
+  Shield,
   Menu,
   Users,
   Waves,
