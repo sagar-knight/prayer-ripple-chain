@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: string
+          metadata_json: Json | null
+          reason: string | null
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: string
+          metadata_json?: Json | null
+          reason?: string | null
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: string
+          metadata_json?: Json | null
+          reason?: string | null
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       app_events: {
         Row: {
           actor_user_id: string | null
@@ -41,6 +74,45 @@ export type Database = {
           event_type?: string
           id?: string
           metadata_json?: Json | null
+        }
+        Relationships: []
+      }
+      automation_rules: {
+        Row: {
+          conditions: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enabled: boolean
+          id: string
+          name: string
+          priority: number
+          rule_type: string
+          updated_at: string
+        }
+        Insert: {
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          name: string
+          priority?: number
+          rule_type: string
+          updated_at?: string
+        }
+        Update: {
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          name?: string
+          priority?: number
+          rule_type?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -457,6 +529,69 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_queue: {
+        Row: {
+          admin_notes: string | null
+          confidence_score: number | null
+          content_id: string
+          content_preview: string | null
+          content_type: string
+          created_at: string
+          id: string
+          metadata_json: Json | null
+          moderation_source: string
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_id: string | null
+          source_type: string
+          status: string
+          submitted_by: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          confidence_score?: number | null
+          content_id: string
+          content_preview?: string | null
+          content_type: string
+          created_at?: string
+          id?: string
+          metadata_json?: Json | null
+          moderation_source?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_id?: string | null
+          source_type?: string
+          status?: string
+          submitted_by?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          confidence_score?: number | null
+          content_id?: string
+          content_preview?: string | null
+          content_type?: string
+          created_at?: string
+          id?: string
+          metadata_json?: Json | null
+          moderation_source?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_id?: string | null
+          source_type?: string
+          status?: string
+          submitted_by?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       prayer_actions: {
         Row: {
           action_type: string
@@ -744,6 +879,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       unified_prayer_feed: {
@@ -775,6 +931,13 @@ export type Database = {
         Args: { _church_id: string; _user_id: string }
         Returns: string
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_church_member: {
         Args: { _church_id: string; _user_id: string }
         Returns: boolean
@@ -795,7 +958,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -922,6 +1085,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
