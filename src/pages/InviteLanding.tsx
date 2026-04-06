@@ -66,7 +66,25 @@ const InviteLanding = () => {
 
       if (inv.inviter_name) {
         setInviterName(inv.inviter_name);
-        }
+      }
+
+      // Track click via secure RPC
+      await supabase.rpc("increment_invite_click", { _invite_id: inv.id });
+
+      // Log event
+      if (user) {
+        await supabase.from("app_events").insert({
+          event_type: "invite_clicked",
+          actor_user_id: user.id,
+          entity_type: "prayer_invite",
+          entity_id: inv.id,
+        });
+      } else {
+        await supabase.rpc("log_public_event", {
+          _event_type: "invite_clicked",
+          _entity_type: "prayer_invite",
+          _entity_id: inv.id,
+        });
       }
 
       setLoading(false);
