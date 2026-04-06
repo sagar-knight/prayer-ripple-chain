@@ -41,6 +41,15 @@ import ChurchJoin from "./pages/ChurchJoin";
 import ModerationDashboard from "./pages/ModerationDashboard";
 import ProductDetail from "./pages/ProductDetail";
 import AuthCallback from "./pages/AuthCallback";
+import AdminRoute from "./components/AdminRoute";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminModeration from "./pages/admin/AdminModeration";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminChurches from "./pages/admin/AdminChurches";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminAutomation from "./pages/admin/AdminAutomation";
+import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
