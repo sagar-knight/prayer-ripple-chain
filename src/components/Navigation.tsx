@@ -138,37 +138,57 @@ const Navigation = () => {
             {/* Auth button */}
             {user ? (
               <div className="flex items-center space-x-1">
-                {isAdmin && (
-                  <>
-                    <AdminNotificationBell />
-                    <Link
-                      to="/admin"
+                {isAdmin && <AdminNotificationBell />}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
                       className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        isActiveRoute("/admin")
+                        isActiveRoute("/profile")
                           ? "text-primary bg-primary/10"
                           : "text-muted-foreground hover:text-primary hover:bg-accent/50"
                       }`}
                     >
-                      <Shield className="h-4 w-4" />
-                      <span>Admin</span>
-                    </Link>
-                  </>
-                )}
-                <Link
-                  to="/profile"
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActiveRoute("/profile")
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                  }`}
-                >
-                  <User className="h-4 w-4" />
-                  <span>Profile</span>
-                </Link>
-                <Button variant="ghost" size="sm" onClick={() => signOut()} className="gap-1 text-muted-foreground hover:text-primary">
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
+                      <User className="h-4 w-4" />
+                      <span>Profile</span>
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="flex items-center space-x-2 w-full">
+                        <User className="h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="flex items-center space-x-2 w-full">
+                        <Heart className="h-4 w-4" />
+                        <span>My Activity</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/commitments" className="flex items-center space-x-2 w-full">
+                        <Calendar className="h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="flex items-center space-x-2 w-full">
+                          <Shield className="h-4 w-4" />
+                          <span>Admin</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem
+                      onClick={() => signOut()}
+                      className="flex items-center space-x-2 w-full text-destructive focus:text-destructive"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sign Out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : (
               <Link
@@ -261,6 +281,44 @@ const Navigation = () => {
                       <User className="h-5 w-5" />
                       <span>Profile</span>
                     </Link>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute("/dashboard")
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <Heart className="h-5 w-5" />
+                      <span>My Activity</span>
+                    </Link>
+                    <Link
+                      to="/commitments"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute("/commitments")
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <Calendar className="h-5 w-5" />
+                      <span>Settings</span>
+                    </Link>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                          isActiveRoute("/admin")
+                            ? "text-primary bg-primary/10"
+                            : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                        }`}
+                      >
+                        <Shield className="h-5 w-5" />
+                        <span>Admin</span>
+                      </Link>
+                    )}
                     <button
                       onClick={() => { signOut(); setIsOpen(false); }}
                       className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
