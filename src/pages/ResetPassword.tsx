@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const ResetPassword = () => {
@@ -13,16 +13,41 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isRecovery, setIsRecovery] = useState(false);
-  const { updatePassword } = useAuth();
+  const [sessionReady, setSessionReady] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const [sessionError, setSessionError] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const hash = window.location.hash;
-    if (hash.includes("type=recovery")) {
-      setIsRecovery(true);
-    }
+    // Listen for the PASSWORD_RECOVERY event which fires when Supabase
+    // exchanges the token from the URL hash into a valid session.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" && session) {
+        setSessionReady(true);
+        setChecking(false);
+      } else if (event === "SIGNED_IN" && session) {
+        // Also accept SIGNED_IN as the recovery token creates a session
+        setSessionReady(true);
+        setChecking(false);
+      }
+    });
+
+    // Fallback: if the session is already established (e.g. page reload after token exchange)
+    const timeout = setTimeout(async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setSessionReady(true);
+      } else {
+        setSessionError("Your reset link has expired or is invalid. Please request a new one.");
+      }
+      setChecking(false);
+    }, 3000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +61,7 @@ const ResetPassword = () => {
       return;
     }
     setIsLoading(true);
-    const { error } = await updatePassword(password);
+    const { error } = await supabase.auth.updateUser({ password });
     setIsLoading(false);
 
     if (error) {
@@ -46,6 +71,36 @@ const ResetPassword = () => {
       navigate("/");
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md animate-gentle-fade text-center">
+          <CardContent className="pt-8 space-y-4">
+            <Loader2 className="h-10 w-10 text-primary mx-auto animate-spin" />
+            <p className="text-muted-foreground">Verifying your reset link...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!sessionReady && sessionError) {
+    return (
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md animate-gentle-fade text-center">
+          <CardContent className="pt-8 space-y-4">
+            <Lock className="h-10 w-10 text-destructive mx-auto" />
+            <h2 className="font-playfair text-2xl font-bold">Link Expired</h2>
+            <p className="text-muted-foreground">{sessionError}</p>
+            <Button variant="peaceful" onClick={() => navigate("/forgot-password")}>
+              Request New Reset Link
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center px-4 py-12">
