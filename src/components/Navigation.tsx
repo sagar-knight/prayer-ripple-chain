@@ -42,7 +42,7 @@ const Navigation = () => {
     location.pathname.startsWith("/cart") ||
     location.pathname.startsWith("/checkout");
   const { user, signOut } = useAuth();
-  const { isAdmin } = useAdminRole();
+  const { isTestAccount } = useTestAccount();
   // Main nav items - always visible to everyone
   const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
