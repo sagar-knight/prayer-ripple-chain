@@ -281,6 +281,44 @@ const Navigation = () => {
                       <User className="h-5 w-5" />
                       <span>Profile</span>
                     </Link>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute("/dashboard")
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <Heart className="h-5 w-5" />
+                      <span>My Activity</span>
+                    </Link>
+                    <Link
+                      to="/commitments"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute("/commitments")
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <Calendar className="h-5 w-5" />
+                      <span>Settings</span>
+                    </Link>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                          isActiveRoute("/admin")
+                            ? "text-primary bg-primary/10"
+                            : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                        }`}
+                      >
+                        <Shield className="h-5 w-5" />
+                        <span>Admin</span>
+                      </Link>
+                    )}
                     <button
                       onClick={() => { signOut(); setIsOpen(false); }}
                       className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
