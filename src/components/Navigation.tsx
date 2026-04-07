@@ -313,6 +313,13 @@ const Navigation = () => {
                       <Calendar className="h-5 w-5" />
                       <span>Settings</span>
                     </Link>
+                    {isTestAccount && (
+                      <div className="px-4 py-2">
+                        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 gap-1">
+                          Internal Test Account
+                        </Badge>
+                      </div>
+                    )}
                     {isAdmin && (
                       <Link
                         to="/admin"
