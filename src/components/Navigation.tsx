@@ -133,7 +133,7 @@ const Navigation = () => {
             </DropdownMenu>
 
             {/* Cart */}
-            <CartDrawer />
+            {isStorePage && <CartDrawer />}
 
             {/* Auth button */}
             {user ? (
