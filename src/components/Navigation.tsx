@@ -142,6 +142,11 @@ const Navigation = () => {
             {user ? (
               <div className="flex items-center space-x-1">
                 {isAdmin && <AdminNotificationBell />}
+                {isTestAccount && (
+                  <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 gap-1 mr-1">
+                    Internal Test Account
+                  </Badge>
+                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
