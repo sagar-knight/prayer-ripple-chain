@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import PasswordStrengthMeter from "@/components/PasswordStrengthMeter";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -119,6 +120,7 @@ const ResetPassword = () => {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              <PasswordStrengthMeter password={password} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm">Confirm Password</Label>
