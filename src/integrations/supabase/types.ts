@@ -845,7 +845,11 @@ export type Database = {
           commitment_level: string
           created_at: string
           display_name: string | null
+          exclude_from_analytics: boolean
           id: string
+          internal_only: boolean
+          is_test_account: boolean
+          test_role_label: string | null
           updated_at: string
         }
         Insert: {
@@ -853,7 +857,11 @@ export type Database = {
           commitment_level?: string
           created_at?: string
           display_name?: string | null
+          exclude_from_analytics?: boolean
           id: string
+          internal_only?: boolean
+          is_test_account?: boolean
+          test_role_label?: string | null
           updated_at?: string
         }
         Update: {
@@ -861,7 +869,11 @@ export type Database = {
           commitment_level?: string
           created_at?: string
           display_name?: string | null
+          exclude_from_analytics?: boolean
           id?: string
+          internal_only?: boolean
+          is_test_account?: boolean
+          test_role_label?: string | null
           updated_at?: string
         }
         Relationships: []

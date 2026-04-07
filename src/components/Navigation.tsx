@@ -27,8 +27,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminRole } from "@/hooks/useAdminRole";
+import { useTestAccount } from "@/hooks/useTestAccount";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
+import { Badge } from "@/components/ui/badge";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +43,7 @@ const Navigation = () => {
     location.pathname.startsWith("/checkout");
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdminRole();
+  const { isTestAccount } = useTestAccount();
   // Main nav items - always visible to everyone
   const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
@@ -139,6 +142,11 @@ const Navigation = () => {
             {user ? (
               <div className="flex items-center space-x-1">
                 {isAdmin && <AdminNotificationBell />}
+                {isTestAccount && (
+                  <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 gap-1 mr-1">
+                    Internal Test Account
+                  </Badge>
+                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -305,6 +313,13 @@ const Navigation = () => {
                       <Calendar className="h-5 w-5" />
                       <span>Settings</span>
                     </Link>
+                    {isTestAccount && (
+                      <div className="px-4 py-2">
+                        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 gap-1">
+                          Internal Test Account
+                        </Badge>
+                      </div>
+                    )}
                     {isAdmin && (
                       <Link
                         to="/admin"
