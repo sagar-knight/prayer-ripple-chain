@@ -34,6 +34,11 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
+  const isStorePage =
+    location.pathname.startsWith("/store") ||
+    location.pathname.startsWith("/product") ||
+    location.pathname.startsWith("/cart") ||
+    location.pathname.startsWith("/checkout");
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdminRole();
   // Main nav items - always visible to everyone
@@ -128,7 +133,7 @@ const Navigation = () => {
             </DropdownMenu>
 
             {/* Cart */}
-            <CartDrawer />
+            {isStorePage && <CartDrawer />}
 
             {/* Auth button */}
             {user ? (
