@@ -48,11 +48,11 @@ const Navigation = () => {
     { href: "/churches", label: "Churches", icon: Church },
     { href: "/ripple", label: "Ripple", icon: Waves },
     { href: "/support", label: "Support", icon: HandHeart },
-    { href: "/store", label: "Store", icon: Store },
   ];
 
   // "More" dropdown items
   const moreItems = [
+    { href: "/store", label: "Store", icon: Store },
     { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/family", label: "Family", icon: Users },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
