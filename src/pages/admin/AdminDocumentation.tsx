@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import DocUserFlows from "@/components/admin/DocUserFlows";
 
 type DocStatus = "active" | "draft" | "needs_review" | "updated";
 
