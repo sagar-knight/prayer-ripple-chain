@@ -1008,6 +1008,7 @@ export type Database = {
       test_cases: {
         Row: {
           actual_result: string | null
+          archived: boolean
           created_at: string | null
           description: string | null
           expected_result: string | null
@@ -1026,6 +1027,7 @@ export type Database = {
         }
         Insert: {
           actual_result?: string | null
+          archived?: boolean
           created_at?: string | null
           description?: string | null
           expected_result?: string | null
@@ -1044,6 +1046,7 @@ export type Database = {
         }
         Update: {
           actual_result?: string | null
+          archived?: boolean
           created_at?: string | null
           description?: string | null
           expected_result?: string | null
