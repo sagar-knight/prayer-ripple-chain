@@ -406,7 +406,15 @@ const AdminDocumentation = () => {
                     </div>
                   )}
 
-                  {/* Scenarios */}
+                  {/* User Flows (DB-backed) */}
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold text-sm mb-2 flex items-center gap-1.5">
+                      <GitBranch className="w-4 h-4 text-primary" /> User Flows
+                    </h4>
+                    <DocUserFlows moduleId={doc.id} moduleName={doc.module_name} />
+                  </div>
+                  <Separator />
                   {content.scenarios?.length > 0 && (
                     <div>
                       <h4 className="font-semibold text-sm mb-1">Scenarios</h4>
