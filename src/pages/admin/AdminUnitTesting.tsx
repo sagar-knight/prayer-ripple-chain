@@ -126,7 +126,7 @@ const AdminUnitTesting = () => {
     } else {
       setTestModules(mods);
       const { data: cases } = await supabase.from("test_cases").select("*").order("created_at");
-      setTestCases(cases || []);
+      setTestCases((cases || []).map(c => ({ ...c, archived: (c as any).archived ?? false })));
     }
     setLoading(false);
   };
