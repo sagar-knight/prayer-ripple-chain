@@ -287,6 +287,50 @@ export type Database = {
         }
         Relationships: []
       }
+      documentation_flow_steps: {
+        Row: {
+          created_at: string | null
+          expected_result: string | null
+          flow_id: string
+          id: string
+          step_description: string | null
+          step_number: number
+          step_title: string
+          system_action: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expected_result?: string | null
+          flow_id: string
+          id?: string
+          step_description?: string | null
+          step_number?: number
+          step_title: string
+          system_action?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expected_result?: string | null
+          flow_id?: string
+          id?: string
+          step_description?: string | null
+          step_number?: number
+          step_title?: string
+          system_action?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_flow_steps_flow_id_fkey"
+            columns: ["flow_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_user_flows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documentation_modules: {
         Row: {
           access_roles: string[] | null
@@ -408,6 +452,50 @@ export type Database = {
           {
             foreignKeyName: "documentation_screenshots_documentation_module_id_fkey"
             columns: ["documentation_module_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_user_flows: {
+        Row: {
+          created_at: string | null
+          flow_name: string
+          flow_type: string
+          id: string
+          module_id: string
+          role_type: string
+          steps_json: Json | null
+          updated_at: string | null
+          version: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          flow_name: string
+          flow_type?: string
+          id?: string
+          module_id: string
+          role_type?: string
+          steps_json?: Json | null
+          updated_at?: string | null
+          version?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          flow_name?: string
+          flow_type?: string
+          id?: string
+          module_id?: string
+          role_type?: string
+          steps_json?: Json | null
+          updated_at?: string | null
+          version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_user_flows_module_id_fkey"
+            columns: ["module_id"]
             isOneToOne: false
             referencedRelation: "documentation_modules"
             referencedColumns: ["id"]
