@@ -154,16 +154,19 @@ const AdminUnitTesting = () => {
     });
   }, [search, moduleFilter, statusFilter, priorityFilter, testCases, moduleNameMap, showArchived]);
 
+  const activeCases = useMemo(() => testCases.filter(t => !t.archived), [testCases]);
+  const archivedCount = useMemo(() => testCases.filter(t => t.archived).length, [testCases]);
+
   const stats = useMemo(() => {
-    const total = testCases.length;
+    const total = activeCases.length;
     return {
       total,
-      passed: testCases.filter(t => t.status === "passed").length,
-      failed: testCases.filter(t => t.status === "failed").length,
-      blocked: testCases.filter(t => t.status === "blocked").length,
-      notRun: testCases.filter(t => t.status === "not_run").length,
+      passed: activeCases.filter(t => t.status === "passed").length,
+      failed: activeCases.filter(t => t.status === "failed").length,
+      blocked: activeCases.filter(t => t.status === "blocked").length,
+      notRun: activeCases.filter(t => t.status === "not_run").length,
     };
-  }, [testCases]);
+  }, [activeCases]);
 
   const moduleCoverage = useMemo(() => {
     const mc: Record<string, { total: number; passed: number }> = {};
