@@ -143,6 +143,8 @@ const AdminUnitTesting = () => {
 
   const filtered = useMemo(() => {
     return testCases.filter(t => {
+      if (!showArchived && t.archived) return false;
+      if (showArchived && !t.archived) return false;
       const modName = moduleNameMap[t.module_id] || "";
       const matchSearch = !search || t.title.toLowerCase().includes(search.toLowerCase()) || (t.description || "").toLowerCase().includes(search.toLowerCase());
       const matchModule = moduleFilter === "all" || modName === moduleFilter;
@@ -150,7 +152,7 @@ const AdminUnitTesting = () => {
       const matchPriority = priorityFilter === "all" || t.priority === priorityFilter;
       return matchSearch && matchModule && matchStatus && matchPriority;
     });
-  }, [search, moduleFilter, statusFilter, priorityFilter, testCases, moduleNameMap]);
+  }, [search, moduleFilter, statusFilter, priorityFilter, testCases, moduleNameMap, showArchived]);
 
   const stats = useMemo(() => {
     const total = testCases.length;
