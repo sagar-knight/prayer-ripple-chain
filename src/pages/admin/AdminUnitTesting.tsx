@@ -381,7 +381,11 @@ const AdminUnitTesting = () => {
                     <TableCell>
                       <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                         <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEditCase(tc)}><Edit className="w-3 h-3" /></Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => handleDeleteCase(tc.id)}><X className="w-3 h-3" /></Button>
+                        {showArchived ? (
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-green-600" onClick={() => handleRestoreCase(tc.id)}><ArchiveRestore className="w-3 h-3" /></Button>
+                        ) : (
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => setDeleteConfirm(tc.id)}><Trash2 className="w-3 h-3" /></Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
