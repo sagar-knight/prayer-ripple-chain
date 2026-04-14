@@ -1,0 +1,1 @@
+ALTER TABLE public.test_cases ADD COLUMN archived boolean NOT NULL DEFAULT false;

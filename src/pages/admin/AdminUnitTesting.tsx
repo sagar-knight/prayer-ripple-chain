@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X } from "lucide-react";
+import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -22,7 +23,7 @@ interface DbTestCase {
   description: string | null; preconditions: string | null; steps_json: any;
   test_data: string | null; expected_result: string | null; actual_result: string | null;
   priority: string | null; severity: string | null; role_tested: string | null;
-  status: string | null; created_at: string; updated_at: string;
+  status: string | null; created_at: string; updated_at: string; archived: boolean;
 }
 
 const STATUS_ICON: Record<TestStatus, typeof CheckCircle2> = { passed: CheckCircle2, failed: XCircle, blocked: AlertTriangle, not_run: Minus };
@@ -91,6 +92,8 @@ const AdminUnitTesting = () => {
   const [editForm, setEditForm] = useState<any>({});
   const [addDialog, setAddDialog] = useState(false);
   const [newCase, setNewCase] = useState({ module_id: "", feature_name: "", title: "", description: "", preconditions: "", steps: "", expected_result: "", priority: "medium", severity: "medium", role_tested: "user" });
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -123,7 +126,7 @@ const AdminUnitTesting = () => {
     } else {
       setTestModules(mods);
       const { data: cases } = await supabase.from("test_cases").select("*").order("created_at");
-      setTestCases(cases || []);
+      setTestCases((cases || []).map(c => ({ ...c, archived: (c as any).archived ?? false })));
     }
     setLoading(false);
   };
@@ -140,6 +143,8 @@ const AdminUnitTesting = () => {
 
   const filtered = useMemo(() => {
     return testCases.filter(t => {
+      if (!showArchived && t.archived) return false;
+      if (showArchived && !t.archived) return false;
       const modName = moduleNameMap[t.module_id] || "";
       const matchSearch = !search || t.title.toLowerCase().includes(search.toLowerCase()) || (t.description || "").toLowerCase().includes(search.toLowerCase());
       const matchModule = moduleFilter === "all" || modName === moduleFilter;
@@ -147,29 +152,32 @@ const AdminUnitTesting = () => {
       const matchPriority = priorityFilter === "all" || t.priority === priorityFilter;
       return matchSearch && matchModule && matchStatus && matchPriority;
     });
-  }, [search, moduleFilter, statusFilter, priorityFilter, testCases, moduleNameMap]);
+  }, [search, moduleFilter, statusFilter, priorityFilter, testCases, moduleNameMap, showArchived]);
+
+  const activeCases = useMemo(() => testCases.filter(t => !t.archived), [testCases]);
+  const archivedCount = useMemo(() => testCases.filter(t => t.archived).length, [testCases]);
 
   const stats = useMemo(() => {
-    const total = testCases.length;
+    const total = activeCases.length;
     return {
       total,
-      passed: testCases.filter(t => t.status === "passed").length,
-      failed: testCases.filter(t => t.status === "failed").length,
-      blocked: testCases.filter(t => t.status === "blocked").length,
-      notRun: testCases.filter(t => t.status === "not_run").length,
+      passed: activeCases.filter(t => t.status === "passed").length,
+      failed: activeCases.filter(t => t.status === "failed").length,
+      blocked: activeCases.filter(t => t.status === "blocked").length,
+      notRun: activeCases.filter(t => t.status === "not_run").length,
     };
-  }, [testCases]);
+  }, [activeCases]);
 
   const moduleCoverage = useMemo(() => {
     const mc: Record<string, { total: number; passed: number }> = {};
-    testCases.forEach(t => {
+    activeCases.forEach(t => {
       const name = moduleNameMap[t.module_id] || "Unknown";
       if (!mc[name]) mc[name] = { total: 0, passed: 0 };
       mc[name].total++;
       if (t.status === "passed") mc[name].passed++;
     });
     return mc;
-  }, [testCases, moduleNameMap]);
+  }, [activeCases, moduleNameMap]);
 
   const handleStatusChange = async (caseId: string, newStatus: string) => {
     const { error } = await supabase.from("test_cases").update({ status: newStatus, updated_at: new Date().toISOString() }).eq("id", caseId);
@@ -220,10 +228,19 @@ const AdminUnitTesting = () => {
     loadData();
   };
 
-  const handleDeleteCase = async (id: string) => {
-    await supabase.from("test_cases").delete().eq("id", id);
-    toast.success("Test case deleted");
-    loadData();
+  const handleArchiveCase = async (id: string) => {
+    const { error } = await supabase.from("test_cases").update({ archived: true, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) { toast.error("Failed to archive"); return; }
+    setTestCases(prev => prev.map(t => t.id === id ? { ...t, archived: true } : t));
+    toast.success("Test case archived");
+    setDeleteConfirm(null);
+  };
+
+  const handleRestoreCase = async (id: string) => {
+    const { error } = await supabase.from("test_cases").update({ archived: false, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) { toast.error("Failed to restore"); return; }
+    setTestCases(prev => prev.map(t => t.id === id ? { ...t, archived: false } : t));
+    toast.success("Test case restored");
   };
 
   const openEditCase = (tc: DbTestCase) => {
@@ -251,7 +268,12 @@ const AdminUnitTesting = () => {
           <h1 className="text-2xl font-bold flex items-center gap-2"><FlaskConical className="w-6 h-6 text-primary" /> Unit Testing</h1>
           <p className="text-sm text-muted-foreground mt-1">QA test management — {stats.total} cases across {MODULES.length} modules • Database-backed</p>
         </div>
-        <Button size="sm" onClick={() => setAddDialog(true)}><Plus className="w-4 h-4 mr-1" /> Add Test Case</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant={showArchived ? "default" : "outline"} onClick={() => setShowArchived(!showArchived)}>
+            <ArchiveRestore className="w-4 h-4 mr-1" /> {showArchived ? "View Active" : `Archived (${archivedCount})`}
+          </Button>
+          <Button size="sm" onClick={() => setAddDialog(true)}><Plus className="w-4 h-4 mr-1" /> Add Test Case</Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -364,7 +386,11 @@ const AdminUnitTesting = () => {
                     <TableCell>
                       <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                         <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEditCase(tc)}><Edit className="w-3 h-3" /></Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => handleDeleteCase(tc.id)}><X className="w-3 h-3" /></Button>
+                        {showArchived ? (
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-green-600" onClick={() => handleRestoreCase(tc.id)}><ArchiveRestore className="w-3 h-3" /></Button>
+                        ) : (
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => setDeleteConfirm(tc.id)}><Trash2 className="w-3 h-3" /></Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -506,6 +532,21 @@ const AdminUnitTesting = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Archive this test case?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This test case will be moved to the archive. You can restore it later from the Archived view.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteConfirm && handleArchiveCase(deleteConfirm)}>Archive</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
