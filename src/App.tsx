@@ -50,6 +50,8 @@ import AdminChurches from "./pages/admin/AdminChurches";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminAutomation from "./pages/admin/AdminAutomation";
 import AdminAuditLog from "./pages/admin/AdminAuditLog";
+import AdminDocumentation from "./pages/admin/AdminDocumentation";
+import AdminUnitTesting from "./pages/admin/AdminUnitTesting";
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
@@ -169,6 +171,8 @@ const App = () => (
                   <Route path="reports" element={<AdminReports />} />
                   <Route path="automation" element={<AdminAutomation />} />
                   <Route path="audit" element={<AdminAuditLog />} />
+                  <Route path="docs" element={<AdminDocumentation />} />
+                  <Route path="testing" element={<AdminUnitTesting />} />
                 </Route>
 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

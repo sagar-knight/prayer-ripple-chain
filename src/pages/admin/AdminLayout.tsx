@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, Shield, Users, Church, Flag, Cog, ScrollText } from "lucide-react";
+import { LayoutDashboard, Shield, Users, Church, Flag, Cog, ScrollText, BookOpen, FlaskConical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -10,6 +10,8 @@ const navItems = [
   { to: "/admin/reports", icon: Flag, label: "Reports" },
   { to: "/admin/automation", icon: Cog, label: "Automation" },
   { to: "/admin/audit", icon: ScrollText, label: "Audit Log" },
+  { to: "/admin/docs", icon: BookOpen, label: "Documentation" },
+  { to: "/admin/testing", icon: FlaskConical, label: "Unit Testing" },
 ];
 
 const AdminLayout = () => (
