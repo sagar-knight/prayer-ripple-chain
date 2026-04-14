@@ -268,7 +268,12 @@ const AdminUnitTesting = () => {
           <h1 className="text-2xl font-bold flex items-center gap-2"><FlaskConical className="w-6 h-6 text-primary" /> Unit Testing</h1>
           <p className="text-sm text-muted-foreground mt-1">QA test management — {stats.total} cases across {MODULES.length} modules • Database-backed</p>
         </div>
-        <Button size="sm" onClick={() => setAddDialog(true)}><Plus className="w-4 h-4 mr-1" /> Add Test Case</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant={showArchived ? "default" : "outline"} onClick={() => setShowArchived(!showArchived)}>
+            <ArchiveRestore className="w-4 h-4 mr-1" /> {showArchived ? "View Active" : `Archived (${archivedCount})`}
+          </Button>
+          <Button size="sm" onClick={() => setAddDialog(true)}><Plus className="w-4 h-4 mr-1" /> Add Test Case</Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
