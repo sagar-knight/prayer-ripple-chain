@@ -170,14 +170,14 @@ const AdminUnitTesting = () => {
 
   const moduleCoverage = useMemo(() => {
     const mc: Record<string, { total: number; passed: number }> = {};
-    testCases.forEach(t => {
+    activeCases.forEach(t => {
       const name = moduleNameMap[t.module_id] || "Unknown";
       if (!mc[name]) mc[name] = { total: 0, passed: 0 };
       mc[name].total++;
       if (t.status === "passed") mc[name].passed++;
     });
     return mc;
-  }, [testCases, moduleNameMap]);
+  }, [activeCases, moduleNameMap]);
 
   const handleStatusChange = async (caseId: string, newStatus: string) => {
     const { error } = await supabase.from("test_cases").update({ status: newStatus, updated_at: new Date().toISOString() }).eq("id", caseId);
