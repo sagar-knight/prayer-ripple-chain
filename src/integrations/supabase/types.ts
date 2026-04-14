@@ -287,6 +287,133 @@ export type Database = {
         }
         Relationships: []
       }
+      documentation_modules: {
+        Row: {
+          access_roles: string[] | null
+          content_json: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          last_updated_at: string | null
+          module_key: string
+          module_name: string
+          parent_module: string | null
+          slug: string | null
+          status: string | null
+          updated_at: string | null
+          version: string | null
+        }
+        Insert: {
+          access_roles?: string[] | null
+          content_json?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          last_updated_at?: string | null
+          module_key: string
+          module_name: string
+          parent_module?: string | null
+          slug?: string | null
+          status?: string | null
+          updated_at?: string | null
+          version?: string | null
+        }
+        Update: {
+          access_roles?: string[] | null
+          content_json?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          last_updated_at?: string | null
+          module_key?: string
+          module_name?: string
+          parent_module?: string | null
+          slug?: string | null
+          status?: string | null
+          updated_at?: string | null
+          version?: string | null
+        }
+        Relationships: []
+      }
+      documentation_notes: {
+        Row: {
+          created_at: string | null
+          documentation_module_id: string
+          id: string
+          note_body: string | null
+          note_title: string
+          note_type: string | null
+          updated_by: string | null
+          version_tag: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          documentation_module_id: string
+          id?: string
+          note_body?: string | null
+          note_title: string
+          note_type?: string | null
+          updated_by?: string | null
+          version_tag?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          documentation_module_id?: string
+          id?: string
+          note_body?: string | null
+          note_title?: string
+          note_type?: string | null
+          updated_by?: string | null
+          version_tag?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_notes_documentation_module_id_fkey"
+            columns: ["documentation_module_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_screenshots: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          documentation_module_id: string
+          id: string
+          image_url: string
+          sort_order: number | null
+          title: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          documentation_module_id: string
+          id?: string
+          image_url: string
+          sort_order?: number | null
+          title: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          documentation_module_id?: string
+          id?: string
+          image_url?: string
+          sort_order?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_screenshots_documentation_module_id_fkey"
+            columns: ["documentation_module_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       family_groups: {
         Row: {
           created_at: string
@@ -875,6 +1002,95 @@ export type Database = {
           is_test_account?: boolean
           test_role_label?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      test_cases: {
+        Row: {
+          actual_result: string | null
+          created_at: string | null
+          description: string | null
+          expected_result: string | null
+          feature_name: string
+          id: string
+          module_id: string
+          preconditions: string | null
+          priority: string | null
+          role_tested: string | null
+          severity: string | null
+          status: string | null
+          steps_json: Json | null
+          test_data: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_result?: string | null
+          created_at?: string | null
+          description?: string | null
+          expected_result?: string | null
+          feature_name: string
+          id?: string
+          module_id: string
+          preconditions?: string | null
+          priority?: string | null
+          role_tested?: string | null
+          severity?: string | null
+          status?: string | null
+          steps_json?: Json | null
+          test_data?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_result?: string | null
+          created_at?: string | null
+          description?: string | null
+          expected_result?: string | null
+          feature_name?: string
+          id?: string
+          module_id?: string
+          preconditions?: string | null
+          priority?: string | null
+          role_tested?: string | null
+          severity?: string | null
+          status?: string | null
+          steps_json?: Json | null
+          test_data?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_cases_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "test_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      test_modules: {
+        Row: {
+          created_at: string | null
+          id: string
+          module_key: string
+          module_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          module_key: string
+          module_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          module_key?: string
+          module_name?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
