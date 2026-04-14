@@ -228,10 +228,19 @@ const AdminUnitTesting = () => {
     loadData();
   };
 
-  const handleDeleteCase = async (id: string) => {
-    await supabase.from("test_cases").delete().eq("id", id);
-    toast.success("Test case deleted");
-    loadData();
+  const handleArchiveCase = async (id: string) => {
+    const { error } = await supabase.from("test_cases").update({ archived: true, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) { toast.error("Failed to archive"); return; }
+    setTestCases(prev => prev.map(t => t.id === id ? { ...t, archived: true } : t));
+    toast.success("Test case archived");
+    setDeleteConfirm(null);
+  };
+
+  const handleRestoreCase = async (id: string) => {
+    const { error } = await supabase.from("test_cases").update({ archived: false, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) { toast.error("Failed to restore"); return; }
+    setTestCases(prev => prev.map(t => t.id === id ? { ...t, archived: false } : t));
+    toast.success("Test case restored");
   };
 
   const openEditCase = (tc: DbTestCase) => {
