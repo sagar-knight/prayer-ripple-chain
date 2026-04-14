@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X } from "lucide-react";
+import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import DocUserFlows from "@/components/admin/DocUserFlows";
 
 type DocStatus = "active" | "draft" | "needs_review" | "updated";
 
@@ -405,7 +406,15 @@ const AdminDocumentation = () => {
                     </div>
                   )}
 
-                  {/* Scenarios */}
+                  {/* User Flows (DB-backed) */}
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold text-sm mb-2 flex items-center gap-1.5">
+                      <GitBranch className="w-4 h-4 text-primary" /> User Flows
+                    </h4>
+                    <DocUserFlows moduleId={doc.id} moduleName={doc.module_name} />
+                  </div>
+                  <Separator />
                   {content.scenarios?.length > 0 && (
                     <div>
                       <h4 className="font-semibold text-sm mb-1">Scenarios</h4>
