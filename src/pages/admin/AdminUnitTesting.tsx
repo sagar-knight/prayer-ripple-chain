@@ -92,6 +92,8 @@ const AdminUnitTesting = () => {
   const [editForm, setEditForm] = useState<any>({});
   const [addDialog, setAddDialog] = useState(false);
   const [newCase, setNewCase] = useState({ module_id: "", feature_name: "", title: "", description: "", preconditions: "", steps: "", expected_result: "", priority: "medium", severity: "medium", role_tested: "user" });
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
