@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X } from "lucide-react";
+import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
