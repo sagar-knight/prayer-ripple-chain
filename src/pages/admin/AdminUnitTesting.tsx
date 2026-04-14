@@ -23,7 +23,7 @@ interface DbTestCase {
   description: string | null; preconditions: string | null; steps_json: any;
   test_data: string | null; expected_result: string | null; actual_result: string | null;
   priority: string | null; severity: string | null; role_tested: string | null;
-  status: string | null; created_at: string; updated_at: string;
+  status: string | null; created_at: string; updated_at: string; archived: boolean;
 }
 
 const STATUS_ICON: Record<TestStatus, typeof CheckCircle2> = { passed: CheckCircle2, failed: XCircle, blocked: AlertTriangle, not_run: Minus };
