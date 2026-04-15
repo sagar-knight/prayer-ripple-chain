@@ -445,8 +445,9 @@ const AdminUnitTesting = () => {
       )}
 
       <div className="text-xs text-muted-foreground text-right">Showing {filtered.length} of {stats.total} test cases</div>
+      </TabsContent>
+      </Tabs>
 
-      {/* Edit Test Case Dialog */}
       <Dialog open={!!editingCase} onOpenChange={open => !open && setEditingCase(null)}>
         <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Edit Test Case</DialogTitle></DialogHeader>
