@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2 } from "lucide-react";
+import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2, Link2, History } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
