@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch } from "lucide-react";
+import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch, History } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import DocUserFlows from "@/components/admin/DocUserFlows";
+import ChangeLog from "@/components/admin/ChangeLog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type DocStatus = "active" | "draft" | "needs_review" | "updated";
 
