@@ -458,6 +458,134 @@ export type Database = {
           },
         ]
       }
+      documentation_update_modules: {
+        Row: {
+          created_at: string
+          documentation_update_id: string
+          id: string
+          module_id: string
+        }
+        Insert: {
+          created_at?: string
+          documentation_update_id: string
+          id?: string
+          module_id: string
+        }
+        Update: {
+          created_at?: string
+          documentation_update_id?: string
+          id?: string
+          module_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_update_modules_documentation_update_id_fkey"
+            columns: ["documentation_update_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_updates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_update_modules_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_update_notes: {
+        Row: {
+          author: string | null
+          created_at: string
+          documentation_update_id: string
+          id: string
+          note_body: string | null
+          note_title: string
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          documentation_update_id: string
+          id?: string
+          note_body?: string | null
+          note_title: string
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          documentation_update_id?: string
+          id?: string
+          note_body?: string | null
+          note_title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_update_notes_documentation_update_id_fkey"
+            columns: ["documentation_update_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_updates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_updates: {
+        Row: {
+          affected_roles: string[] | null
+          change_type: string
+          created_at: string
+          created_by: string | null
+          detailed_description: string | null
+          flow_types: string[] | null
+          id: string
+          module_keys: string[] | null
+          source_reference: string | null
+          status: string
+          submodule_keys: string[] | null
+          summary: string | null
+          title: string
+          update_id: string
+          updated_at: string
+          version_tag: string | null
+        }
+        Insert: {
+          affected_roles?: string[] | null
+          change_type?: string
+          created_at?: string
+          created_by?: string | null
+          detailed_description?: string | null
+          flow_types?: string[] | null
+          id?: string
+          module_keys?: string[] | null
+          source_reference?: string | null
+          status?: string
+          submodule_keys?: string[] | null
+          summary?: string | null
+          title: string
+          update_id?: string
+          updated_at?: string
+          version_tag?: string | null
+        }
+        Update: {
+          affected_roles?: string[] | null
+          change_type?: string
+          created_at?: string
+          created_by?: string | null
+          detailed_description?: string | null
+          flow_types?: string[] | null
+          id?: string
+          module_keys?: string[] | null
+          source_reference?: string | null
+          status?: string
+          submodule_keys?: string[] | null
+          summary?: string | null
+          title?: string
+          update_id?: string
+          updated_at?: string
+          version_tag?: string | null
+        }
+        Relationships: []
+      }
       documentation_user_flows: {
         Row: {
           created_at: string | null
@@ -821,6 +949,45 @@ export type Database = {
         }
         Relationships: []
       }
+      module_change_history: {
+        Row: {
+          change_summary: string | null
+          created_at: string
+          documentation_update_id: string
+          id: string
+          module_id: string
+        }
+        Insert: {
+          change_summary?: string | null
+          created_at?: string
+          documentation_update_id: string
+          id?: string
+          module_id: string
+        }
+        Update: {
+          change_summary?: string | null
+          created_at?: string
+          documentation_update_id?: string
+          id?: string
+          module_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_change_history_documentation_update_id_fkey"
+            columns: ["documentation_update_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_updates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "module_change_history_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prayer_actions: {
         Row: {
           action_type: string
@@ -1092,6 +1259,45 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      test_case_update_links: {
+        Row: {
+          created_at: string
+          documentation_update_id: string
+          id: string
+          link_type: string
+          test_case_id: string
+        }
+        Insert: {
+          created_at?: string
+          documentation_update_id: string
+          id?: string
+          link_type?: string
+          test_case_id: string
+        }
+        Update: {
+          created_at?: string
+          documentation_update_id?: string
+          id?: string
+          link_type?: string
+          test_case_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_case_update_links_documentation_update_id_fkey"
+            columns: ["documentation_update_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_updates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "test_case_update_links_test_case_id_fkey"
+            columns: ["test_case_id"]
+            isOneToOne: false
+            referencedRelation: "test_cases"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       test_cases: {
         Row: {
