@@ -340,6 +340,7 @@ const AdminUnitTesting = () => {
             <SelectItem value="failed">Failed</SelectItem>
             <SelectItem value="blocked">Blocked</SelectItem>
             <SelectItem value="not_run">Not Run</SelectItem>
+            <SelectItem value="needs_review">Needs Review</SelectItem>
           </SelectContent>
         </Select>
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
@@ -395,6 +396,7 @@ const AdminUnitTesting = () => {
                           <SelectItem value="passed">Passed</SelectItem>
                           <SelectItem value="failed">Failed</SelectItem>
                           <SelectItem value="blocked">Blocked</SelectItem>
+                          <SelectItem value="needs_review">Needs Review</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
