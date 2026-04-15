@@ -279,7 +279,19 @@ const AdminUnitTesting = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <Tabs defaultValue="cases" className="w-full">
+        <TabsList>
+          <TabsTrigger value="cases"><FlaskConical className="w-4 h-4 mr-1" /> Test Cases</TabsTrigger>
+          <TabsTrigger value="impact"><Link2 className="w-4 h-4 mr-1" /> Update Impact</TabsTrigger>
+        </TabsList>
+        <TabsContent value="impact">
+          <div className="space-y-4">
+            <TestingImpactPanel />
+            <ChangeLog moduleFilter="admin" />
+          </div>
+        </TabsContent>
+        <TabsContent value="cases">
+
         <Card className="p-3"><div className="text-2xl font-bold">{stats.total}</div><div className="text-xs text-muted-foreground">Total</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-green-600">{stats.passed}</div><div className="text-xs text-muted-foreground">Passed</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-red-600">{stats.failed}</div><div className="text-xs text-muted-foreground">Failed</div></Card>
