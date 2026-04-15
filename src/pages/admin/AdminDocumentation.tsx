@@ -547,6 +547,8 @@ const AdminDocumentation = () => {
 
       {/* Hidden file input for screenshot upload */}
       <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotUpload} />
+      </TabsContent>
+      </Tabs>
 
       {/* Edit Module Dialog */}
       <Dialog open={!!editingModule} onOpenChange={open => !open && setEditingModule(null)}>
