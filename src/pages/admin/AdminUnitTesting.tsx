@@ -429,6 +429,7 @@ const AdminUnitTesting = () => {
                           <div className="flex gap-4 text-xs text-muted-foreground">
                             <span>Severity: <Badge className={`${PRIORITY_COLOR[tc.severity || "medium"]} text-[10px]`}>{tc.severity}</Badge></span>
                           </div>
+                          <TestingImpactPanel testCaseId={tc.id} />
                         </div>
                       </TableCell>
                     </TableRow>
