@@ -292,6 +292,7 @@ const AdminUnitTesting = () => {
         </TabsContent>
         <TabsContent value="cases">
 
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card className="p-3"><div className="text-2xl font-bold">{stats.total}</div><div className="text-xs text-muted-foreground">Total</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-green-600">{stats.passed}</div><div className="text-xs text-muted-foreground">Passed</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-red-600">{stats.failed}</div><div className="text-xs text-muted-foreground">Failed</div></Card>
