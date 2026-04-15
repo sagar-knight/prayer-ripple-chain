@@ -13,6 +13,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import TestingImpactPanel from "@/components/admin/TestingImpactPanel";
+import ChangeLog from "@/components/admin/ChangeLog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type TestStatus = "passed" | "failed" | "blocked" | "not_run";
 type Priority = "critical" | "high" | "medium" | "low";
