@@ -526,6 +526,11 @@ const AdminDocumentation = () => {
                       {modNotes.length === 0 && <p className="text-xs text-muted-foreground">No notes yet</p>}
                     </div>
                   </div>
+                  {/* Module-specific Change History */}
+                  <Separator />
+                  <div>
+                    <ChangeLog moduleFilter={doc.module_key} />
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
