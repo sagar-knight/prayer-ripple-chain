@@ -17,7 +17,7 @@ import TestingImpactPanel from "@/components/admin/TestingImpactPanel";
 import ChangeLog from "@/components/admin/ChangeLog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-type TestStatus = "passed" | "failed" | "blocked" | "not_run";
+type TestStatus = "passed" | "failed" | "blocked" | "not_run" | "needs_review";
 type Priority = "critical" | "high" | "medium" | "low";
 
 interface DbTestModule { id: string; module_key: string; module_name: string; }
@@ -29,9 +29,9 @@ interface DbTestCase {
   status: string | null; created_at: string; updated_at: string; archived: boolean;
 }
 
-const STATUS_ICON: Record<TestStatus, typeof CheckCircle2> = { passed: CheckCircle2, failed: XCircle, blocked: AlertTriangle, not_run: Minus };
-const STATUS_COLOR: Record<TestStatus, string> = { passed: "text-green-600", failed: "text-red-600", blocked: "text-yellow-600", not_run: "text-muted-foreground" };
-const STATUS_BADGE: Record<TestStatus, string> = { passed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", blocked: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", not_run: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400" };
+const STATUS_ICON: Record<TestStatus, typeof CheckCircle2> = { passed: CheckCircle2, failed: XCircle, blocked: AlertTriangle, not_run: Minus, needs_review: AlertTriangle };
+const STATUS_COLOR: Record<TestStatus, string> = { passed: "text-green-600", failed: "text-red-600", blocked: "text-yellow-600", not_run: "text-muted-foreground", needs_review: "text-orange-600" };
+const STATUS_BADGE: Record<TestStatus, string> = { passed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", blocked: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", not_run: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400", needs_review: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" };
 const PRIORITY_COLOR: Record<string, string> = { critical: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", high: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", medium: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", low: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400" };
 
 const SEED_MODULES = [
