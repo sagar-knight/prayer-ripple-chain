@@ -295,6 +295,16 @@ const AdminDocumentation = () => {
         </div>
       </div>
 
+      <Tabs defaultValue="modules" className="w-full">
+        <TabsList>
+          <TabsTrigger value="modules"><FileText className="w-4 h-4 mr-1" /> Modules</TabsTrigger>
+          <TabsTrigger value="changelog"><History className="w-4 h-4 mr-1" /> Change Log</TabsTrigger>
+        </TabsList>
+        <TabsContent value="changelog">
+          <ChangeLog />
+        </TabsContent>
+        <TabsContent value="modules">
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="p-3"><div className="text-2xl font-bold">{modules.length}</div><div className="text-xs text-muted-foreground">Total Modules</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-green-600">{modules.filter(d => d.status === "active").length}</div><div className="text-xs text-muted-foreground">Active</div></Card>
