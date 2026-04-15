@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2 } from "lucide-react";
+import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2, Link2, History } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import TestingImpactPanel from "@/components/admin/TestingImpactPanel";
+import ChangeLog from "@/components/admin/ChangeLog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-type TestStatus = "passed" | "failed" | "blocked" | "not_run";
+type TestStatus = "passed" | "failed" | "blocked" | "not_run" | "needs_review";
 type Priority = "critical" | "high" | "medium" | "low";
 
 interface DbTestModule { id: string; module_key: string; module_name: string; }
@@ -26,9 +29,9 @@ interface DbTestCase {
   status: string | null; created_at: string; updated_at: string; archived: boolean;
 }
 
-const STATUS_ICON: Record<TestStatus, typeof CheckCircle2> = { passed: CheckCircle2, failed: XCircle, blocked: AlertTriangle, not_run: Minus };
-const STATUS_COLOR: Record<TestStatus, string> = { passed: "text-green-600", failed: "text-red-600", blocked: "text-yellow-600", not_run: "text-muted-foreground" };
-const STATUS_BADGE: Record<TestStatus, string> = { passed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", blocked: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", not_run: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400" };
+const STATUS_ICON: Record<TestStatus, typeof CheckCircle2> = { passed: CheckCircle2, failed: XCircle, blocked: AlertTriangle, not_run: Minus, needs_review: AlertTriangle };
+const STATUS_COLOR: Record<TestStatus, string> = { passed: "text-green-600", failed: "text-red-600", blocked: "text-yellow-600", not_run: "text-muted-foreground", needs_review: "text-orange-600" };
+const STATUS_BADGE: Record<TestStatus, string> = { passed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", blocked: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", not_run: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400", needs_review: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" };
 const PRIORITY_COLOR: Record<string, string> = { critical: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", high: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", medium: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", low: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400" };
 
 const SEED_MODULES = [
@@ -276,6 +279,19 @@ const AdminUnitTesting = () => {
         </div>
       </div>
 
+      <Tabs defaultValue="cases" className="w-full">
+        <TabsList>
+          <TabsTrigger value="cases"><FlaskConical className="w-4 h-4 mr-1" /> Test Cases</TabsTrigger>
+          <TabsTrigger value="impact"><Link2 className="w-4 h-4 mr-1" /> Update Impact</TabsTrigger>
+        </TabsList>
+        <TabsContent value="impact">
+          <div className="space-y-4">
+            <TestingImpactPanel />
+            <ChangeLog moduleFilter="admin" />
+          </div>
+        </TabsContent>
+        <TabsContent value="cases">
+
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card className="p-3"><div className="text-2xl font-bold">{stats.total}</div><div className="text-xs text-muted-foreground">Total</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-green-600">{stats.passed}</div><div className="text-xs text-muted-foreground">Passed</div></Card>
@@ -324,6 +340,7 @@ const AdminUnitTesting = () => {
             <SelectItem value="failed">Failed</SelectItem>
             <SelectItem value="blocked">Blocked</SelectItem>
             <SelectItem value="not_run">Not Run</SelectItem>
+            <SelectItem value="needs_review">Needs Review</SelectItem>
           </SelectContent>
         </Select>
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
@@ -379,6 +396,7 @@ const AdminUnitTesting = () => {
                           <SelectItem value="passed">Passed</SelectItem>
                           <SelectItem value="failed">Failed</SelectItem>
                           <SelectItem value="blocked">Blocked</SelectItem>
+                          <SelectItem value="needs_review">Needs Review</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -411,6 +429,7 @@ const AdminUnitTesting = () => {
                           <div className="flex gap-4 text-xs text-muted-foreground">
                             <span>Severity: <Badge className={`${PRIORITY_COLOR[tc.severity || "medium"]} text-[10px]`}>{tc.severity}</Badge></span>
                           </div>
+                          <TestingImpactPanel testCaseId={tc.id} />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -430,8 +449,9 @@ const AdminUnitTesting = () => {
       )}
 
       <div className="text-xs text-muted-foreground text-right">Showing {filtered.length} of {stats.total} test cases</div>
+      </TabsContent>
+      </Tabs>
 
-      {/* Edit Test Case Dialog */}
       <Dialog open={!!editingCase} onOpenChange={open => !open && setEditingCase(null)}>
         <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Edit Test Case</DialogTitle></DialogHeader>

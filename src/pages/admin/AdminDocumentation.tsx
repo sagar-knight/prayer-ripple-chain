@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch } from "lucide-react";
+import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch, History } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import DocUserFlows from "@/components/admin/DocUserFlows";
+import ChangeLog from "@/components/admin/ChangeLog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type DocStatus = "active" | "draft" | "needs_review" | "updated";
 
@@ -293,6 +295,16 @@ const AdminDocumentation = () => {
         </div>
       </div>
 
+      <Tabs defaultValue="modules" className="w-full">
+        <TabsList>
+          <TabsTrigger value="modules"><FileText className="w-4 h-4 mr-1" /> Modules</TabsTrigger>
+          <TabsTrigger value="changelog"><History className="w-4 h-4 mr-1" /> Change Log</TabsTrigger>
+        </TabsList>
+        <TabsContent value="changelog">
+          <ChangeLog />
+        </TabsContent>
+        <TabsContent value="modules">
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="p-3"><div className="text-2xl font-bold">{modules.length}</div><div className="text-xs text-muted-foreground">Total Modules</div></Card>
         <Card className="p-3"><div className="text-2xl font-bold text-green-600">{modules.filter(d => d.status === "active").length}</div><div className="text-xs text-muted-foreground">Active</div></Card>
@@ -514,6 +526,11 @@ const AdminDocumentation = () => {
                       {modNotes.length === 0 && <p className="text-xs text-muted-foreground">No notes yet</p>}
                     </div>
                   </div>
+                  {/* Module-specific Change History */}
+                  <Separator />
+                  <div>
+                    <ChangeLog moduleFilter={doc.module_key} />
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -530,6 +547,8 @@ const AdminDocumentation = () => {
 
       {/* Hidden file input for screenshot upload */}
       <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotUpload} />
+      </TabsContent>
+      </Tabs>
 
       {/* Edit Module Dialog */}
       <Dialog open={!!editingModule} onOpenChange={open => !open && setEditingModule(null)}>
