@@ -42,7 +42,7 @@ const RippleImpact = () => {
     queryFn: async () => {
       const [prayersRes, churchesRes] = await Promise.all([
         supabase.from("global_prayer_requests").select("id, status", { count: "exact", head: false }),
-        supabase.from("churches").select("id", { count: "exact", head: true }),
+        supabase.from("churches_public").select("id", { count: "exact", head: true }),
       ]);
       const total = prayersRes.data?.length ?? 0;
       const answered = prayersRes.data?.filter((r) => r.status === "answered").length ?? 0;
