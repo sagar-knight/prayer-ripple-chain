@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { Search, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import { Search, CheckCircle, XCircle, Trash2, Flag } from "lucide-react";
 
 interface Report {
   id: string;
@@ -56,13 +56,31 @@ const AdminReports = () => {
   );
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Reports</h1>
-      <div className="relative">
-        <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Search reports..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+    <div className="space-y-6">
+      {/* Hero header */}
+      <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 sm:p-8">
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+        <div className="relative flex items-start gap-4">
+          <div className="hidden sm:flex w-12 h-12 rounded-xl bg-primary/15 text-primary items-center justify-center shrink-0 shadow-sm">
+            <Flag className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Reports</h1>
+            <p className="text-sm text-muted-foreground mt-1.5">
+              <span className="font-medium text-foreground">{filtered.length}</span> reports · Review user-submitted content reports
+            </p>
+          </div>
+        </div>
       </div>
-      <p className="text-sm text-muted-foreground">{filtered.length} reports</p>
+
+      {/* Filter bar */}
+      <div className="rounded-xl border bg-muted/30 p-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search reports..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 bg-background" />
+        </div>
+      </div>
       {loading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : filtered.length === 0 ? (
@@ -72,7 +90,7 @@ const AdminReports = () => {
           {filtered.map((r) => {
             const meta = r.metadata_json as any;
             return (
-              <Card key={r.id}>
+              <Card key={r.id} className="rounded-xl hover:shadow-md transition-shadow">
                 <CardContent className="pt-4 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div>
