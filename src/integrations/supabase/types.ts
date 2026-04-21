@@ -1552,6 +1552,7 @@ export type Database = {
         Args: { _family_group_id: string; _user_id: string }
         Returns: boolean
       }
+      join_family_by_invite: { Args: { _invite_code: string }; Returns: string }
       log_public_event: {
         Args: {
           _entity_id?: string

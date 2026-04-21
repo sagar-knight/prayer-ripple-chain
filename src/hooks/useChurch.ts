@@ -55,11 +55,12 @@ export function useChurches() {
     queryKey: ["churches"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("churches")
+        .from("churches_public")
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Church[];
+      // churches_public excludes contact_email/phone/address/website by design
+      return (data || []) as unknown as Church[];
     },
   });
 }
