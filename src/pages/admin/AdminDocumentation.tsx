@@ -396,29 +396,40 @@ const AdminDocumentation = () => {
         </div>
       )}
 
-      <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
+      <Accordion type="multiple" value={openSections} onValueChange={setOpenSections} className="space-y-3">
         {filtered.map(doc => {
           const content = (doc.content_json as any) || {};
           const modNotes = notes[doc.id] || [];
           const modScreenshots = screenshots[doc.id] || [];
 
           return (
-            <AccordionItem key={doc.id} value={doc.id} id={`doc-${doc.id}`}>
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-3 text-left">
-                  <FileText className="w-4 h-4 text-primary shrink-0" />
-                  <div>
-                    <div className="font-semibold text-sm">{doc.description || doc.module_name}</div>
-                    <div className="text-xs text-muted-foreground">{doc.module_name} • v{doc.version}</div>
+            <AccordionItem
+              key={doc.id}
+              value={doc.id}
+              id={`doc-${doc.id}`}
+              className="border rounded-xl bg-card shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md data-[state=open]:border-primary/30 overflow-hidden"
+            >
+              <AccordionTrigger className="hover:no-underline px-4 py-3 hover:bg-muted/40 transition-colors [&[data-state=open]]:bg-muted/30">
+                <div className="flex items-center gap-3 text-left w-full">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <FileText className="w-4 h-4" />
                   </div>
-                  <Badge className={`${STATUS_COLORS[doc.status || "active"]} text-[10px] ml-2`}>{doc.status}</Badge>
-                  <span className="text-[10px] text-muted-foreground ml-auto mr-4 hidden sm:block">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold text-sm truncate">{doc.description || doc.module_name}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      <span className="font-medium">{doc.module_name}</span>
+                      <span className="mx-1.5 opacity-50">·</span>
+                      <span>v{doc.version}</span>
+                    </div>
+                  </div>
+                  <Badge className={`${STATUS_COLORS[doc.status || "active"]} text-[10px] ml-2 shrink-0`}>{doc.status}</Badge>
+                  <span className="text-[10px] text-muted-foreground ml-3 mr-2 hidden md:block shrink-0">
                     {doc.last_updated_at ? new Date(doc.last_updated_at).toLocaleDateString() : ""}
                   </span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="pt-2 pb-4 px-1 space-y-6">
+                <div className="pt-4 pb-5 px-5 space-y-6 border-t bg-background">
                   {/* Edit button */}
                   <div className="flex justify-end">
                     <Button size="sm" variant="outline" onClick={() => openEdit(doc)}>
