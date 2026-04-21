@@ -284,95 +284,152 @@ const AdminDocumentation = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><BookOpen className="w-6 h-6 text-primary" /> Documentation</h1>
-          <p className="text-sm text-muted-foreground mt-1">Complete reference — {modules.length} modules • Database-backed & editable</p>
-        </div>
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={handleExpandAll}>{expandAll ? "Collapse All" : "Expand All"}</Button>
-          <Button size="sm" variant="outline" onClick={() => window.print()}><Printer className="w-4 h-4 mr-1" /> Print</Button>
+      {/* Hero header */}
+      <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 sm:p-8">
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="hidden sm:flex w-12 h-12 rounded-xl bg-primary/15 text-primary items-center justify-center shrink-0 shadow-sm">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Documentation</h1>
+              <p className="text-sm text-muted-foreground mt-1.5">
+                Complete reference · <span className="font-medium text-foreground">{modules.length} modules</span> · Database-backed & editable
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" className="rounded-lg" onClick={handleExpandAll}>
+              {expandAll ? "Collapse All" : "Expand All"}
+            </Button>
+            <Button size="sm" variant="outline" className="rounded-lg" onClick={() => window.print()}>
+              <Printer className="w-4 h-4 mr-1" /> Print
+            </Button>
+          </div>
         </div>
       </div>
 
       <Tabs defaultValue="modules" className="w-full">
-        <TabsList>
-          <TabsTrigger value="modules"><FileText className="w-4 h-4 mr-1" /> Modules</TabsTrigger>
-          <TabsTrigger value="changelog"><History className="w-4 h-4 mr-1" /> Change Log</TabsTrigger>
+        <TabsList className="bg-muted/60 p-1 rounded-xl">
+          <TabsTrigger value="modules" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <FileText className="w-4 h-4 mr-1.5" /> Modules
+          </TabsTrigger>
+          <TabsTrigger value="changelog" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <History className="w-4 h-4 mr-1.5" /> Change Log
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="changelog">
           <ChangeLog />
         </TabsContent>
-        <TabsContent value="modules">
+        <TabsContent value="modules" className="space-y-6 mt-6">
 
+      {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="p-3"><div className="text-2xl font-bold">{modules.length}</div><div className="text-xs text-muted-foreground">Total Modules</div></Card>
-        <Card className="p-3"><div className="text-2xl font-bold text-green-600">{modules.filter(d => d.status === "active").length}</div><div className="text-xs text-muted-foreground">Active</div></Card>
-        <Card className="p-3"><div className="text-2xl font-bold text-blue-600">{modules.filter(d => d.status === "updated").length}</div><div className="text-xs text-muted-foreground">Updated</div></Card>
-        <Card className="p-3"><div className="text-2xl font-bold text-yellow-600">{modules.filter(d => d.status === "draft" || d.status === "needs_review").length}</div><div className="text-xs text-muted-foreground">Draft / Review</div></Card>
+        <Card className="p-4 rounded-xl border-l-4 border-l-primary hover:shadow-md transition-shadow">
+          <div className="text-3xl font-bold tracking-tight">{modules.length}</div>
+          <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wide font-medium">Total Modules</div>
+        </Card>
+        <Card className="p-4 rounded-xl border-l-4 border-l-green-500 hover:shadow-md transition-shadow">
+          <div className="text-3xl font-bold tracking-tight text-green-600 dark:text-green-400">{modules.filter(d => d.status === "active").length}</div>
+          <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wide font-medium">Active</div>
+        </Card>
+        <Card className="p-4 rounded-xl border-l-4 border-l-blue-500 hover:shadow-md transition-shadow">
+          <div className="text-3xl font-bold tracking-tight text-blue-600 dark:text-blue-400">{modules.filter(d => d.status === "updated").length}</div>
+          <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wide font-medium">Updated</div>
+        </Card>
+        <Card className="p-4 rounded-xl border-l-4 border-l-yellow-500 hover:shadow-md transition-shadow">
+          <div className="text-3xl font-bold tracking-tight text-yellow-600 dark:text-yellow-400">{modules.filter(d => d.status === "draft" || d.status === "needs_review").length}</div>
+          <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wide font-medium">Draft / Review</div>
+        </Card>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search modules..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+      {/* Filter bar */}
+      <Card className="p-3 rounded-xl bg-muted/30 border-muted">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input placeholder="Search modules by name or description..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-muted rounded-lg" />
+          </div>
+          <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <SelectTrigger className="w-full sm:w-[150px] bg-background rounded-lg"><Filter className="w-4 h-4 mr-1" /><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Roles</SelectItem>
+              <SelectItem value="guest">Guest</SelectItem>
+              <SelectItem value="user">User</SelectItem>
+              <SelectItem value="moderator">Moderator</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-[150px] bg-background rounded-lg"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="updated">Updated</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="needs_review">Needs Review</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-[140px]"><Filter className="w-4 h-4 mr-1" /><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="guest">Guest</SelectItem>
-            <SelectItem value="user">User</SelectItem>
-            <SelectItem value="moderator">Moderator</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="updated">Updated</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="needs_review">Needs Review</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      </Card>
 
-      <div className="flex gap-2 flex-wrap">
-        {filtered.map(d => (
-          <Button key={d.id} size="sm" variant="ghost" className="text-xs h-7" onClick={() => {
-            setOpenSections(prev => prev.includes(d.id) ? prev : [...prev, d.id]);
-            document.getElementById(`doc-${d.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}>{d.module_name}</Button>
-        ))}
-      </div>
+      {/* Quick-jump chips */}
+      {filtered.length > 0 && (
+        <div>
+          <div className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-2">Jump to module</div>
+          <div className="flex gap-1.5 flex-wrap">
+            {filtered.map(d => (
+              <button
+                key={d.id}
+                onClick={() => {
+                  setOpenSections(prev => prev.includes(d.id) ? prev : [...prev, d.id]);
+                  document.getElementById(`doc-${d.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className="text-xs px-3 py-1.5 rounded-full border bg-background hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-colors"
+              >
+                {d.module_name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-      <Separator />
-
-      <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
+      <Accordion type="multiple" value={openSections} onValueChange={setOpenSections} className="space-y-3">
         {filtered.map(doc => {
           const content = (doc.content_json as any) || {};
           const modNotes = notes[doc.id] || [];
           const modScreenshots = screenshots[doc.id] || [];
 
           return (
-            <AccordionItem key={doc.id} value={doc.id} id={`doc-${doc.id}`}>
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-3 text-left">
-                  <FileText className="w-4 h-4 text-primary shrink-0" />
-                  <div>
-                    <div className="font-semibold text-sm">{doc.description || doc.module_name}</div>
-                    <div className="text-xs text-muted-foreground">{doc.module_name} • v{doc.version}</div>
+            <AccordionItem
+              key={doc.id}
+              value={doc.id}
+              id={`doc-${doc.id}`}
+              className="border rounded-xl bg-card shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md data-[state=open]:border-primary/30 overflow-hidden"
+            >
+              <AccordionTrigger className="hover:no-underline px-4 py-3 hover:bg-muted/40 transition-colors [&[data-state=open]]:bg-muted/30">
+                <div className="flex items-center gap-3 text-left w-full">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <FileText className="w-4 h-4" />
                   </div>
-                  <Badge className={`${STATUS_COLORS[doc.status || "active"]} text-[10px] ml-2`}>{doc.status}</Badge>
-                  <span className="text-[10px] text-muted-foreground ml-auto mr-4 hidden sm:block">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold text-sm truncate">{doc.description || doc.module_name}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      <span className="font-medium">{doc.module_name}</span>
+                      <span className="mx-1.5 opacity-50">·</span>
+                      <span>v{doc.version}</span>
+                    </div>
+                  </div>
+                  <Badge className={`${STATUS_COLORS[doc.status || "active"]} text-[10px] ml-2 shrink-0`}>{doc.status}</Badge>
+                  <span className="text-[10px] text-muted-foreground ml-3 mr-2 hidden md:block shrink-0">
                     {doc.last_updated_at ? new Date(doc.last_updated_at).toLocaleDateString() : ""}
                   </span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="pt-2 pb-4 px-1 space-y-6">
+                <div className="pt-4 pb-5 px-5 space-y-6 border-t bg-background">
                   {/* Edit button */}
                   <div className="flex justify-end">
                     <Button size="sm" variant="outline" onClick={() => openEdit(doc)}>
