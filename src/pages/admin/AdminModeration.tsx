@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { CheckCircle, XCircle, Eye, Search } from "lucide-react";
+import { CheckCircle, XCircle, Eye, Search, ShieldCheck } from "lucide-react";
 
 interface QueueItem {
   id: string;
@@ -143,25 +143,44 @@ const AdminModeration = () => {
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Content Moderation</h1>
-        {selected.size > 0 && (
-          <div className="flex gap-2">
-            <Button size="sm" onClick={() => bulkAction("approved")}>Approve ({selected.size})</Button>
-            <Button size="sm" variant="destructive" onClick={() => bulkAction("denied")}>Deny ({selected.size})</Button>
+    <div className="space-y-6">
+      {/* Hero header */}
+      <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 sm:p-8">
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="hidden sm:flex w-12 h-12 rounded-xl bg-primary/15 text-primary items-center justify-center shrink-0 shadow-sm">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Content Moderation</h1>
+              <p className="text-sm text-muted-foreground mt-1.5">
+                Review flagged content · <span className="font-medium text-foreground">{items.length}</span> total in queue
+              </p>
+            </div>
           </div>
-        )}
+          {selected.size > 0 && (
+            <div className="flex gap-2">
+              <Button size="sm" onClick={() => bulkAction("approved")} className="rounded-lg">Approve ({selected.size})</Button>
+              <Button size="sm" variant="destructive" onClick={() => bulkAction("denied")} className="rounded-lg">Deny ({selected.size})</Button>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="relative">
-        <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Search content..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+
+      {/* Filter bar */}
+      <div className="rounded-xl border bg-muted/30 p-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search content..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 bg-background" />
+        </div>
       </div>
       {loading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
         <Tabs defaultValue="pending">
-          <TabsList>
+          <TabsList className="bg-muted/60 p-1 rounded-xl">
             <TabsTrigger value="pending">Pending ({byStatus("pending").length})</TabsTrigger>
             <TabsTrigger value="flagged">Flagged ({byStatus("flagged").length})</TabsTrigger>
             <TabsTrigger value="approved">Approved ({byStatus("approved").length})</TabsTrigger>
