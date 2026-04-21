@@ -996,7 +996,7 @@ export type Database = {
           metadata_json: Json | null
           prayer_id: string
           source_type: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           action_type: string
@@ -1005,7 +1005,7 @@ export type Database = {
           metadata_json?: Json | null
           prayer_id: string
           source_type?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           action_type?: string
@@ -1014,7 +1014,7 @@ export type Database = {
           metadata_json?: Json | null
           prayer_id?: string
           source_type?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
