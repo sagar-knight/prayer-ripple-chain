@@ -7,9 +7,10 @@ describe("quickContentCheck", () => {
     expect(r.pass).toBe(true);
   });
 
-  it("rejects empty input", () => {
-    const r = quickContentCheck("");
+  it("flags repeated-character spam", () => {
+    const r = quickContentCheck("a".repeat(50));
     expect(r.pass).toBe(false);
+    expect(r.reason).toBe("spam");
   });
 });
 
