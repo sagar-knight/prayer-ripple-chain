@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2, Link2, History } from "lucide-react";
+import { Search, Filter, CheckCircle2, XCircle, AlertTriangle, Minus, FlaskConical, ChevronRight, Save, Plus, Edit, X, ArchiveRestore, Trash2, Link2, History, KeyRound, Copy, ShieldCheck, User, Church } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -283,12 +284,16 @@ const AdminUnitTesting = () => {
         <TabsList>
           <TabsTrigger value="cases"><FlaskConical className="w-4 h-4 mr-1" /> Test Cases</TabsTrigger>
           <TabsTrigger value="impact"><Link2 className="w-4 h-4 mr-1" /> Update Impact</TabsTrigger>
+          <TabsTrigger value="accounts"><KeyRound className="w-4 h-4 mr-1" /> Test Accounts</TabsTrigger>
         </TabsList>
         <TabsContent value="impact">
           <div className="space-y-4">
             <TestingImpactPanel />
             <ChangeLog moduleFilter="admin" />
           </div>
+        </TabsContent>
+        <TabsContent value="accounts">
+          <TestAccountsPanel />
         </TabsContent>
         <TabsContent value="cases">
 
