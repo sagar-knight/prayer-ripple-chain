@@ -28,9 +28,17 @@ import CountrySelect from "@/components/CountrySelect";
 import { getCountryByCode } from "@/data/countries";
 import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
 import { useUserCountry } from "@/hooks/useUserCountry";
+import LanguageSelect from "@/components/LanguageSelect";
+import { useUserLanguage } from "@/hooks/useUserLanguage";
+import { Languages } from "lucide-react";
 
 const Profile = () => {
   const { profileCountryCode, saveProfileCountry } = useUserCountry();
+  const {
+    profileLanguageCode,
+    browserLanguageCode,
+    savePreferredLanguage,
+  } = useUserLanguage();
   const [countryCode, setCountryCode] = useState<string | null>(null);
   const [showCountryBanner, setShowCountryBanner] = useState(true);
 
@@ -366,6 +374,32 @@ const Profile = () => {
                 Detected: {Intl.DateTimeFormat().resolvedOptions().timeZone}
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Preferred Language */}
+        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "625ms" }}>
+          <CardHeader>
+            <CardTitle className="font-playfair flex items-center gap-2">
+              <Languages className="h-5 w-5 text-primary" />
+              Preferred Language
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Label className="text-sm">Language (optional)</Label>
+            <LanguageSelect
+              value={profileLanguageCode}
+              onChange={(code) => void savePreferredLanguage(code)}
+              allowClear
+            />
+            <p className="text-xs text-muted-foreground">
+              Used to translate prayer requests into your language.
+            </p>
+            {!profileLanguageCode && browserLanguageCode && (
+              <p className="text-xs text-muted-foreground">
+                Defaulting to browser language: {browserLanguageCode.toUpperCase()}
+              </p>
+            )}
           </CardContent>
         </Card>
 
