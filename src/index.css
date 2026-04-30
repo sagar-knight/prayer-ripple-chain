@@ -8,50 +8,58 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Peaceful spiritual color palette */
-    --background: 35 25% 98%;
-    --foreground: 30 15% 15%;
+    /* Fresh, calm color palette: green → blue */
+    /* Background #F9FAFB */
+    --background: 220 14% 98%;
+    /* Text primary #111827 */
+    --foreground: 220 39% 11%;
 
+    /* Cards #FFFFFF */
     --card: 0 0% 100%;
-    --card-foreground: 30 15% 15%;
+    --card-foreground: 220 39% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 30 15% 15%;
+    --popover-foreground: 220 39% 11%;
 
-    /* Warm spiritual primary - deep forest green */
-    --primary: 158 35% 35%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 158 45% 55%;
+    /* Primary: sky blue #3B82F6 with green glow #6EE7B7 */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 152 76% 67%;
 
-    /* Soft warm secondary - gentle cream */
-    --secondary: 35 35% 92%;
-    --secondary-foreground: 30 15% 25%;
+    /* Secondary: light neutral */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 39% 11%;
 
-    /* Peaceful muted tones */
-    --muted: 35 25% 95%;
-    --muted-foreground: 30 10% 45%;
+    /* Muted: text secondary #6B7280 on near-white surface */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    /* Gentle accent - warm gold */
-    --accent: 45 85% 75%;
-    --accent-foreground: 30 25% 20%;
+    /* Accent: focus/highlight #F59E0B */
+    --accent: 38 92% 50%;
+    --accent-foreground: 220 39% 11%;
 
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 35 20% 88%;
-    --input: 35 20% 88%;
-    --ring: 158 35% 35%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
 
-    /* Spiritual gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(158 35% 35%), hsl(158 45% 55%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(35 25% 98%), hsl(35 35% 92%));
-    --gradient-warm: linear-gradient(45deg, hsl(45 85% 75%), hsl(35 85% 65%));
+    /* Success / prayer action #22C55E */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
 
-    /* Gentle shadows */
-    --shadow-peaceful: 0 4px 20px -4px hsl(158 35% 35% / 0.15);
-    --shadow-warm: 0 8px 30px -8px hsl(45 85% 75% / 0.3);
-    --shadow-card: 0 1px 3px 0 hsl(30 15% 15% / 0.04), 0 4px 14px -2px hsl(30 15% 15% / 0.06);
-    --shadow-card-hover: 0 2px 6px 0 hsl(30 15% 15% / 0.06), 0 8px 24px -4px hsl(30 15% 15% / 0.1);
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 60%));
+    --gradient-peaceful: linear-gradient(180deg, hsl(220 14% 98%), hsl(220 14% 96%));
+    --gradient-warm: linear-gradient(45deg, hsl(38 92% 50%), hsl(152 76% 67%));
+
+    /* Shadows / glow (success glow rgba(34,197,94,0.25)) */
+    --shadow-peaceful: 0 4px 20px -4px hsl(217 91% 60% / 0.20);
+    --shadow-warm: 0 8px 30px -8px hsl(142 71% 45% / 0.25);
+    --shadow-glow: 0 0 24px 0 hsl(142 71% 45% / 0.25);
+    --shadow-card: 0 1px 3px 0 hsl(220 39% 11% / 0.04), 0 4px 14px -2px hsl(220 39% 11% / 0.06);
+    --shadow-card-hover: 0 2px 6px 0 hsl(220 39% 11% / 0.06), 0 8px 24px -4px hsl(220 39% 11% / 0.10);
 
     /* Smooth animations */
     --transition-gentle: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -74,43 +82,46 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark mode with warm, peaceful tones */
-    --background: 30 15% 8%;
-    --foreground: 35 25% 92%;
+    /* Dark mode aligned to green→blue palette */
+    --background: 222 47% 8%;
+    --foreground: 220 14% 96%;
 
-    --card: 30 15% 12%;
-    --card-foreground: 35 25% 92%;
+    --card: 222 47% 12%;
+    --card-foreground: 220 14% 96%;
 
-    --popover: 30 15% 12%;
-    --popover-foreground: 35 25% 92%;
+    --popover: 222 47% 12%;
+    --popover-foreground: 220 14% 96%;
 
-    --primary: 158 45% 65%;
-    --primary-foreground: 30 15% 8%;
-    --primary-glow: 158 55% 75%;
+    --primary: 217 91% 65%;
+    --primary-foreground: 222 47% 8%;
+    --primary-glow: 152 76% 67%;
 
-    --secondary: 30 15% 18%;
-    --secondary-foreground: 35 25% 88%;
+    --secondary: 222 30% 18%;
+    --secondary-foreground: 220 14% 96%;
 
-    --muted: 30 15% 15%;
-    --muted-foreground: 35 15% 65%;
+    --muted: 222 30% 16%;
+    --muted-foreground: 220 9% 65%;
 
-    --accent: 45 75% 65%;
-    --accent-foreground: 30 15% 12%;
+    --accent: 38 92% 55%;
+    --accent-foreground: 222 47% 8%;
 
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 35 25% 92%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 30 15% 20%;
-    --input: 30 15% 20%;
-    --ring: 158 45% 65%;
+    --border: 222 30% 20%;
+    --input: 222 30% 20%;
+    --ring: 217 91% 65%;
 
-    /* Dark gradients maintain warmth */
-    --gradient-primary: linear-gradient(135deg, hsl(158 45% 65%), hsl(158 55% 75%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(30 15% 8%), hsl(30 15% 12%));
-    --gradient-warm: linear-gradient(45deg, hsl(45 75% 65%), hsl(35 75% 55%));
+    --success: 142 71% 50%;
+    --success-foreground: 0 0% 100%;
 
-    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 4px 14px -2px hsl(0 0% 0% / 0.15);
-    --shadow-card-hover: 0 2px 6px 0 hsl(0 0% 0% / 0.15), 0 8px 24px -4px hsl(0 0% 0% / 0.2);
+    --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 65%));
+    --gradient-peaceful: linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 12%));
+    --gradient-warm: linear-gradient(45deg, hsl(38 92% 55%), hsl(152 76% 67%));
+
+    --shadow-glow: 0 0 24px 0 hsl(142 71% 50% / 0.25);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.2), 0 4px 14px -2px hsl(0 0% 0% / 0.25);
+    --shadow-card-hover: 0 2px 6px 0 hsl(0 0% 0% / 0.25), 0 8px 24px -4px hsl(0 0% 0% / 0.3);
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
