@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, AlertTriangle, Flag, Church, Users, CheckCircle, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import CountryInsightsPanel from "@/components/admin/CountryInsightsPanel";
+import TranslationInsightsPanel from "@/components/admin/TranslationInsightsPanel";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -75,6 +76,7 @@ const AdminDashboard = () => {
         </div>
       )}
       <CountryInsightsPanel />
+      <TranslationInsightsPanel />
     </div>
   );
 };
