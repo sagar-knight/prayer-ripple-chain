@@ -1239,6 +1239,45 @@ export type Database = {
         }
         Relationships: []
       }
+      prayer_translations: {
+        Row: {
+          created_at: string
+          id: string
+          prayer_request_id: string
+          provider: string | null
+          source_language_code: string | null
+          source_type: string
+          target_language_code: string
+          translated_body: string | null
+          translated_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prayer_request_id: string
+          provider?: string | null
+          source_language_code?: string | null
+          source_type?: string
+          target_language_code: string
+          translated_body?: string | null
+          translated_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prayer_request_id?: string
+          provider?: string | null
+          source_language_code?: string | null
+          source_type?: string
+          target_language_code?: string
+          translated_body?: string | null
+          translated_title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1254,6 +1293,8 @@ export type Database = {
           last_login_at: string | null
           last_login_country_code: string | null
           last_login_country_name: string | null
+          preferred_language_code: string | null
+          preferred_language_name: string | null
           test_role_label: string | null
           updated_at: string
         }
@@ -1271,6 +1312,8 @@ export type Database = {
           last_login_at?: string | null
           last_login_country_code?: string | null
           last_login_country_name?: string | null
+          preferred_language_code?: string | null
+          preferred_language_name?: string | null
           test_role_label?: string | null
           updated_at?: string
         }
@@ -1288,6 +1331,8 @@ export type Database = {
           last_login_at?: string | null
           last_login_country_code?: string | null
           last_login_country_name?: string | null
+          preferred_language_code?: string | null
+          preferred_language_name?: string | null
           test_role_label?: string | null
           updated_at?: string
         }
