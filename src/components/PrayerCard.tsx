@@ -179,11 +179,16 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
       <PrayerRequestCard
         header={request.churchName ? `From ${request.churchName}` : "Someone asked for prayer"}
         description={request.description}
+        title={request.title}
         subtitle={subtitle}
         prayerCount={request.prayerCount}
         actions={actions}
         reportEntityId={request.id}
         reportEntityType={request.churchName ? "church_prayer" : "global_prayer"}
+        translatable={{
+          prayerId: request.id,
+          sourceType: request.churchName ? "church" : "global",
+        }}
       >
         {/* Scripture for prayer partners */}
         <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
