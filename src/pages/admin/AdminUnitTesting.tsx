@@ -577,3 +577,112 @@ const AdminUnitTesting = () => {
 };
 
 export default AdminUnitTesting;
+
+// ============================================================
+// QA Test Accounts reference panel
+// ============================================================
+const TEST_ACCOUNTS = [
+  {
+    role: "Member",
+    icon: User,
+    email: "tester.user@prayerforward.test",
+    password: "Pr@yerF0rward!2026#QA",
+    description: "Standard authenticated user. Use to test prayer feed, submitting requests, ripple, family, etc.",
+    color: "from-emerald-500/15 to-emerald-500/5 border-emerald-500/30 text-emerald-700 dark:text-emerald-400",
+  },
+  {
+    role: "Moderator",
+    icon: ShieldCheck,
+    email: "tester.mod@prayerforward.test",
+    password: "Pr@yerF0rward!2026#QA",
+    description: "Has the moderator role. Use to test the moderation queue, reports, and admin notification bell.",
+    color: "from-amber-500/15 to-amber-500/5 border-amber-500/30 text-amber-700 dark:text-amber-400",
+  },
+  {
+    role: "Church Admin",
+    icon: Church,
+    email: "tester.church@prayerforward.test",
+    password: "Pr@yerF0rward!2026#QA",
+    description: "Use to register a church and exercise the church admin workflow (approvals, members, stats).",
+    color: "from-sky-500/15 to-sky-500/5 border-sky-500/30 text-sky-700 dark:text-sky-400",
+  },
+];
+
+const TestAccountsPanel = () => {
+  const copy = (value: string, label: string) => {
+    navigator.clipboard.writeText(value);
+    sonnerToast.success(`${label} copied`);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Hero */}
+      <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 sm:p-8">
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="relative flex items-start gap-4">
+          <div className="hidden sm:flex w-12 h-12 rounded-xl bg-primary/15 text-primary items-center justify-center shrink-0 shadow-sm">
+            <KeyRound className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight">QA Test Accounts</h2>
+            <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
+              Internal accounts for end-to-end testing. All three are flagged <span className="font-medium text-foreground">is_test_account</span>, excluded from analytics, and use the same password for convenience.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Account cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {TEST_ACCOUNTS.map((acc) => {
+          const Icon = acc.icon;
+          return (
+            <Card key={acc.email} className={`rounded-xl border bg-gradient-to-br ${acc.color} p-5 hover:shadow-md transition-shadow`}>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-9 h-9 rounded-lg bg-background/70 flex items-center justify-center shadow-sm">
+                  <Icon className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wide opacity-70">Role</p>
+                  <p className="font-semibold leading-tight">{acc.role}</p>
+                </div>
+              </div>
+              <p className="text-xs text-foreground/80 mb-4 leading-relaxed">{acc.description}</p>
+              <div className="space-y-2">
+                <div className="rounded-lg bg-background/80 border px-3 py-2 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Email</p>
+                    <p className="text-xs font-mono truncate text-foreground">{acc.email}</p>
+                  </div>
+                  <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={() => copy(acc.email, "Email")}>
+                    <Copy className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+                <div className="rounded-lg bg-background/80 border px-3 py-2 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Password</p>
+                    <p className="text-xs font-mono truncate text-foreground">{acc.password}</p>
+                  </div>
+                  <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={() => copy(acc.password, "Password")}>
+                    <Copy className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Notes */}
+      <Card className="rounded-xl p-5 bg-muted/30">
+        <h3 className="text-sm font-semibold flex items-center gap-2 mb-2"><AlertTriangle className="w-4 h-4 text-amber-600" /> Important notes</h3>
+        <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-5">
+          <li>These accounts are for internal QA only. Do not share outside the team.</li>
+          <li>Prayers and activity from these users are excluded from analytics and the public counts.</li>
+          <li>Email verification was bypassed so they can sign in immediately at <span className="font-mono">/login</span>.</li>
+          <li>To rotate the password, change it on each account from the Profile page or via the auth admin.</li>
+        </ul>
+      </Card>
+    </div>
+  );
+};
