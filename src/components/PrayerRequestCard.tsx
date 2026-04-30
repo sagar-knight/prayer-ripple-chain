@@ -1,9 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReportButton from "@/components/ReportButton";
+import PrayerTranslateButton from "@/components/PrayerTranslateButton";
+import { getLanguageByCode } from "@/data/languages";
 
 interface PrayerRequestCardProps {
   /** Optional header text, defaults to "Someone asked for prayer" */
@@ -23,6 +25,13 @@ interface PrayerRequestCardProps {
   /** Entity ID and type for reporting */
   reportEntityId?: string;
   reportEntityType?: "global_prayer" | "church_prayer" | "family_note" | "family_scripture";
+  /** Optional title (used by translation; not displayed unless translation toggles it). */
+  title?: string;
+  /** Enable on-demand translation. Pass the prayer id + source type. */
+  translatable?: {
+    prayerId: string;
+    sourceType?: "global" | "church";
+  };
 }
 
 const PrayerRequestCard = ({
@@ -35,7 +44,24 @@ const PrayerRequestCard = ({
   className,
   reportEntityId,
   reportEntityType,
+  title,
+  translatable,
 }: PrayerRequestCardProps) => {
+  const [translation, setTranslation] = useState<{
+    title: string | null;
+    body: string | null;
+    sourceLang: string | null;
+    targetLang: string;
+  } | null>(null);
+
+  const showingTranslation = !!translation;
+  const displayedDescription =
+    showingTranslation && translation?.body ? translation.body : description;
+  const sourceLangName =
+    translation?.sourceLang
+      ? getLanguageByCode(translation.sourceLang)?.name || translation.sourceLang
+      : null;
+
   const prayerMessage =
     prayerCount === undefined
       ? null
@@ -65,8 +91,30 @@ const PrayerRequestCard = ({
 
         {/* Prayer text */}
         <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
-          {description}
+          {displayedDescription}
         </p>
+
+        {/* Translation badge */}
+        {showingTranslation && (
+          <p className="text-[11px] text-muted-foreground/80 text-center italic">
+            Translated{sourceLangName ? ` from ${sourceLangName}` : " from original language"}
+          </p>
+        )}
+
+        {/* Translate / Show Original control */}
+        {translatable && (
+          <div className="flex justify-center">
+            <PrayerTranslateButton
+              prayerId={translatable.prayerId}
+              sourceType={translatable.sourceType ?? "global"}
+              title={title}
+              body={description}
+              showingTranslation={showingTranslation}
+              onShowOriginal={() => setTranslation(null)}
+              onTranslated={(t) => setTranslation(t)}
+            />
+          </div>
+        )}
 
         {/* Subtitle / metadata */}
         {subtitle && (
