@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { getCurrentUserCountry } from "./useUserCountry";
 
 export interface BackendPrayer {
   prayer_id: string;
@@ -66,13 +67,32 @@ export function usePrayerService() {
   const recordPrayed = useCallback(
     async (prayerId: string, sourceType: string = "global") => {
       try {
+        const c = await getCurrentUserCountry(user?.id);
         await supabase.rpc("record_prayer_action", {
           _prayer_id: prayerId,
           _source_type: sourceType,
           _user_id: user?.id ?? "anonymous",
           _action_type: "prayed",
-          _metadata: null,
+          _metadata: c.code
+            ? { country_code: c.code, country_name: c.name }
+            : null,
         });
+        // Best-effort additive write of country columns on the action row.
+        if (c.code) {
+          try {
+            await (supabase.from as any)("prayer_actions")
+              .update({
+                prayer_country_code: c.code,
+                prayer_country_name: c.name,
+              })
+              .eq("prayer_id", prayerId)
+              .eq("user_id", user?.id ?? "anonymous")
+              .eq("action_type", "prayed")
+              .is("prayer_country_code", null);
+          } catch {
+            /* non-blocking */
+          }
+        }
       } catch (e) {
         console.error("record_prayer_action error:", e);
       }
@@ -83,13 +103,29 @@ export function usePrayerService() {
   const recordShared = useCallback(
     async (prayerId: string, channel: string, sourceType: string = "global") => {
       try {
+        const c = await getCurrentUserCountry(user?.id);
         await supabase.rpc("record_prayer_action", {
           _prayer_id: prayerId,
           _source_type: sourceType,
           _user_id: user?.id ?? "anonymous",
           _action_type: "shared",
-          _metadata: { channel },
+          _metadata: { channel, country_code: c.code, country_name: c.name },
         });
+        if (c.code) {
+          try {
+            await (supabase.from as any)("prayer_actions")
+              .update({
+                prayer_country_code: c.code,
+                prayer_country_name: c.name,
+              })
+              .eq("prayer_id", prayerId)
+              .eq("user_id", user?.id ?? "anonymous")
+              .eq("action_type", "shared")
+              .is("prayer_country_code", null);
+          } catch {
+            /* non-blocking */
+          }
+        }
       } catch (e) {
         console.error("record_prayer_action error:", e);
       }
@@ -106,6 +142,7 @@ export function usePrayerService() {
       show_country?: boolean;
       country?: string;
     }) => {
+      const c = await getCurrentUserCountry(user?.id);
       const { error } = await (supabase.from as any)("global_prayer_requests").insert({
         title: data.title,
         description: data.description,
@@ -113,6 +150,8 @@ export function usePrayerService() {
         anonymous: data.anonymous,
         show_country: data.show_country ?? false,
         country: data.country ?? null,
+        origin_country_code: c.code,
+        origin_country_name: c.name,
         created_by: user?.id ?? "anonymous",
         visibility: "public",
         status: "open",

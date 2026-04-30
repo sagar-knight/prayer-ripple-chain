@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,10 +27,21 @@ import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryByCode } from "@/data/countries";
 import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
+import { useUserCountry } from "@/hooks/useUserCountry";
 
 const Profile = () => {
+  const { profileCountryCode, saveProfileCountry } = useUserCountry();
   const [countryCode, setCountryCode] = useState<string | null>(null);
   const [showCountryBanner, setShowCountryBanner] = useState(true);
+
+  useEffect(() => {
+    setCountryCode(profileCountryCode);
+  }, [profileCountryCode]);
+
+  const handleCountryChange = (code: string | null) => {
+    setCountryCode(code);
+    void saveProfileCountry(code);
+  };
   const [notifications, setNotifications] = useState({
     dailyReminder: true,
     prayerAccepted: true,
@@ -139,7 +150,7 @@ const Profile = () => {
                   <p className="text-xs text-muted-foreground mb-3">
                     Improve prayer matching and reminder times. Optional.
                   </p>
-                  <CountrySelect value={countryCode} onChange={setCountryCode} />
+                  <CountrySelect value={countryCode} onChange={handleCountryChange} />
                 </div>
                 <Button
                   variant="ghost"
@@ -339,7 +350,10 @@ const Profile = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label className="text-sm">Country (optional)</Label>
-              <CountrySelect value={countryCode} onChange={setCountryCode} allowClear />
+              <CountrySelect value={countryCode} onChange={handleCountryChange} allowClear />
+              <p className="text-xs text-muted-foreground">
+                Used only for country-level prayer impact, not exact location.
+              </p>
               {countryCode && (
                 <p className="text-xs text-muted-foreground">
                   {getCountryByCode(countryCode)?.flag} {getCountryByCode(countryCode)?.name} selected
