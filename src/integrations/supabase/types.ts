@@ -50,6 +50,8 @@ export type Database = {
       app_events: {
         Row: {
           actor_user_id: string | null
+          country_code: string | null
+          country_name: string | null
           created_at: string
           entity_id: string | null
           entity_type: string | null
@@ -59,6 +61,8 @@ export type Database = {
         }
         Insert: {
           actor_user_id?: string | null
+          country_code?: string | null
+          country_name?: string | null
           created_at?: string
           entity_id?: string | null
           entity_type?: string | null
@@ -68,6 +72,8 @@ export type Database = {
         }
         Update: {
           actor_user_id?: string | null
+          country_code?: string | null
+          country_name?: string | null
           created_at?: string
           entity_id?: string | null
           entity_type?: string | null
@@ -845,6 +851,8 @@ export type Database = {
           created_by: string
           description: string
           id: string
+          origin_country_code: string | null
+          origin_country_name: string | null
           prayer_count: number
           show_country: boolean
           status: string
@@ -861,6 +869,8 @@ export type Database = {
           created_by: string
           description: string
           id?: string
+          origin_country_code?: string | null
+          origin_country_name?: string | null
           prayer_count?: number
           show_country?: boolean
           status?: string
@@ -877,6 +887,8 @@ export type Database = {
           created_by?: string
           description?: string
           id?: string
+          origin_country_code?: string | null
+          origin_country_name?: string | null
           prayer_count?: number
           show_country?: boolean
           status?: string
@@ -994,6 +1006,8 @@ export type Database = {
           created_at: string
           id: string
           metadata_json: Json | null
+          prayer_country_code: string | null
+          prayer_country_name: string | null
           prayer_id: string
           source_type: string
           user_id: string
@@ -1003,6 +1017,8 @@ export type Database = {
           created_at?: string
           id?: string
           metadata_json?: Json | null
+          prayer_country_code?: string | null
+          prayer_country_name?: string | null
           prayer_id: string
           source_type?: string
           user_id: string
@@ -1012,6 +1028,8 @@ export type Database = {
           created_at?: string
           id?: string
           metadata_json?: Json | null
+          prayer_country_code?: string | null
+          prayer_country_name?: string | null
           prayer_id?: string
           source_type?: string
           user_id?: string
@@ -1225,36 +1243,51 @@ export type Database = {
         Row: {
           avatar_url: string | null
           commitment_level: string
+          country_code: string | null
+          country_name: string | null
           created_at: string
           display_name: string | null
           exclude_from_analytics: boolean
           id: string
           internal_only: boolean
           is_test_account: boolean
+          last_login_at: string | null
+          last_login_country_code: string | null
+          last_login_country_name: string | null
           test_role_label: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           commitment_level?: string
+          country_code?: string | null
+          country_name?: string | null
           created_at?: string
           display_name?: string | null
           exclude_from_analytics?: boolean
           id: string
           internal_only?: boolean
           is_test_account?: boolean
+          last_login_at?: string | null
+          last_login_country_code?: string | null
+          last_login_country_name?: string | null
           test_role_label?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           commitment_level?: string
+          country_code?: string | null
+          country_name?: string | null
           created_at?: string
           display_name?: string | null
           exclude_from_analytics?: boolean
           id?: string
           internal_only?: boolean
           is_test_account?: boolean
+          last_login_at?: string | null
+          last_login_country_code?: string | null
+          last_login_country_name?: string | null
           test_role_label?: string | null
           updated_at?: string
         }
