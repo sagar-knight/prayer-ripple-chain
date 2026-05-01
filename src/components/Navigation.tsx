@@ -28,7 +28,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { useTestAccount } from "@/hooks/useTestAccount";
-import logoImage from "@/assets/prayer-forward-icon.png";
+import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +76,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" aria-label="PrayerForward home">
-            <img src={logoImage} alt="PrayerForward" className="h-9 w-9 object-contain" />
+            <PrayerForwardLogo className="h-9 w-9" />
             <span className="font-playfair text-xl font-semibold text-foreground">
               PrayerForward
             </span>
