@@ -130,6 +130,8 @@ export default {
 				'peaceful-glow': 'peaceful-glow 3s ease-in-out infinite',
 				'ripple': 'ripple 0.6s ease-out'
 			}
+			,
+			...({} as Record<string, never>)
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
