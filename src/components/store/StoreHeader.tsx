@@ -99,7 +99,7 @@ const StoreHeader = () => {
                 <div className="p-6 border-b border-border">
                   <Link to="/store" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
                     <Heart className="h-6 w-6 text-primary" />
-                    <span className="font-playfair text-lg font-semibold text-primary">PrayerForward</span>
+                    <span className="font-playfair text-lg font-semibold text-destructive-foreground">PrayerForward</span>
                   </Link>
                 </div>
 
@@ -173,7 +173,7 @@ const StoreHeader = () => {
             <Link to="/store" className="flex items-center gap-2 shrink-0">
               <Heart className="h-6 w-6 text-primary" />
               <div className="hidden sm:block">
-                <span className="font-playfair text-lg font-semibold text-primary">PrayerForward</span>
+                <span className="font-playfair text-lg font-semibold text-destructive-foreground">PrayerForward</span>
                 <span className="text-[10px] text-muted-foreground ml-1.5 uppercase tracking-widest">Store</span>
               </div>
             </Link>

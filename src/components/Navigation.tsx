@@ -76,7 +76,7 @@ const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Heart className="h-8 w-8 text-primary" />
-            <span className="font-playfair text-xl font-semibold text-primary">
+            <span className="font-playfair text-xl font-semibold text-destructive-foreground">
               PrayerForward
             </span>
           </Link>
