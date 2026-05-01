@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import logoImage from "@/assets/prayer-forward-logo.png";
+import logoImage from "@/assets/prayer-forward-logo.svg";
 
 interface PrayerForwardLogoProps {
   className?: string;
