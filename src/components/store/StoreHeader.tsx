@@ -96,12 +96,11 @@ const StoreHeader = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] p-0">
-                <div className="p-6 border-b border-border">
-                  <Link to="/store" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
-                    <Heart className="h-6 w-6 text-primary" />
-                    <span className="font-playfair text-lg font-semibold text-foreground">PrayerForward</span>
-                  </Link>
-                </div>
+                 <div className="p-6 border-b border-border">
+                   <Link to="/store" onClick={() => setMobileOpen(false)} className="flex items-center" aria-label="PrayerForward Store">
+                     <img src={logoImage} alt="PrayerForward" className="h-9 w-auto object-contain" />
+                   </Link>
+                 </div>
 
                 {/* Store nav */}
                 <nav className="p-4 space-y-1">
@@ -170,12 +169,9 @@ const StoreHeader = () => {
             </Sheet>
 
             {/* Logo */}
-            <Link to="/store" className="flex items-center gap-2 shrink-0">
-              <Heart className="h-6 w-6 text-primary" />
-              <div className="hidden sm:block">
-                <span className="font-playfair text-lg font-semibold text-foreground">PrayerForward</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5 uppercase tracking-widest">Store</span>
-              </div>
+            <Link to="/store" className="flex items-center gap-2 shrink-0" aria-label="PrayerForward Store">
+              <img src={logoImage} alt="PrayerForward" className="h-9 w-auto object-contain" />
+              <span className="hidden sm:inline text-[10px] text-muted-foreground uppercase tracking-widest">Store</span>
             </Link>
 
             {/* Desktop nav */}
