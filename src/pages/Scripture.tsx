@@ -17,7 +17,7 @@ const categoryEmojis: Record<string, string> = {
   Work: "💼",
   Grief: "💔",
   Forgiveness: "🤝",
-  Gratitude: "🙏",
+  Gratitude: "✨",
   Wisdom: "📖",
   Strength: "💪",
   Faith: "✝️",

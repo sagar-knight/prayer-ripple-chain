@@ -203,7 +203,7 @@ const RippleImpact = () => {
   ].filter((c, i) => i === 0 || c > 0);
 
   const handleShare = async () => {
-    const message = `Through prayer, ${livesReached} lives have been reached. 🙏`;
+    const message = `Through prayer, ${livesReached} lives have been reached.`;
     try {
       if (navigator.share) {
         await navigator.share({ title: "Prayer Journey", text: message });
@@ -268,7 +268,10 @@ const RippleImpact = () => {
               Your Ripple of Prayer
             </div>
             <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
-              Your prayers are <span className="text-gradient">moving</span> <span className="inline-block animate-float-slow">🙏</span>
+              Your prayers are <span className="text-gradient">moving</span>
+              <span className="ml-2 relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-gradient-primary shadow-[0_0_24px_hsl(var(--success)/0.35)] animate-float-slow align-middle">
+                <Sparkles className="h-5 w-5 text-white" strokeWidth={2.25} />
+              </span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
               Every prayer creates a ripple. See how yours have spread.

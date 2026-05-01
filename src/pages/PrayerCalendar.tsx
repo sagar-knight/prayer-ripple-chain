@@ -79,7 +79,7 @@ const PrayerCalendar = () => {
     );
     toast({
       title: "Prayer Marked ✅",
-      description: "You committed to pray for someone today 🙏",
+      description: "You committed to pray for someone today",
     });
   };
 
@@ -177,7 +177,7 @@ const PrayerCalendar = () => {
                     <BellRing className="h-6 w-6 text-accent-foreground" />
                     <div>
                       <p className="font-semibold text-accent-foreground">
-                        You committed to pray for someone today 🙏
+                        You committed to pray for someone today
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {pendingCount} prayer{pendingCount > 1 ? "s" : ""} still
