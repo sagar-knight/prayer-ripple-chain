@@ -126,7 +126,7 @@ const PrayForOthers = () => {
   // ── SELECTOR VIEW ──
   if (viewMode === "selector") {
     return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+      <div className="min-h-screen bg-aurora py-12 pb-24">
         <div className="page-container">
           <PrayFocusSelector
             rescueCount={rescueCount}
@@ -144,7 +144,7 @@ const PrayForOthers = () => {
   // ── SESSION VIEW (one-at-a-time from backend) ──
   if (viewMode === "session") {
     return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+      <div className="min-h-screen bg-aurora py-12 pb-24">
         <div className="page-container">
           <PrayerSession
             mode={sessionMode}
@@ -159,7 +159,7 @@ const PrayForOthers = () => {
 
   // ── BROWSE VIEW (advanced) ──
   return (
-    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+    <div className="min-h-screen bg-aurora py-12 pb-24">
       <div className="page-container-wide section-gap">
         {/* Header */}
         <div className="flex items-center gap-3">
