@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Waves, Heart, Users, Share2, Sparkles, Globe2, Layers } from "lucide-react";
+import { Waves, Heart, Users, Share2, Sparkles } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerChainsDetail from "@/components/PrayerChainsDetail";
