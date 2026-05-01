@@ -47,7 +47,7 @@ const FamilyNotes = ({ notes, onAdd, currentUser }: Props) => {
     onAdd(parsed.data.noteText, currentUser);
     setText("");
     setShowAdd(false);
-    toast({ title: "Note added 🙏" });
+    toast({ title: "Note added" });
   };
 
   return (

@@ -251,7 +251,7 @@ const Organizations = () => {
                     ...prev,
                     [id]: [...(prev[id] || []).filter((d) => d !== today), today],
                   }));
-                  toast({ title: "Prayer recorded 🙏", duration: 2000 });
+                  toast({ title: "Prayer recorded", duration: 2000 });
                 }}
                 onMarkAnswered={(id) => {
                   setRequests((prev) =>

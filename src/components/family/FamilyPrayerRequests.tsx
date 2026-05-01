@@ -58,7 +58,7 @@ const FamilyPrayerRequests = ({ requests, onAddRequest, onPray, onMarkAnswered, 
     setTitle("");
     setDescription("");
     setShowAdd(false);
-    toast({ title: "Prayer request added 🙏" });
+    toast({ title: "Prayer request added" });
   };
 
   const active = requests.filter((r) => r.status === "active");
@@ -137,7 +137,7 @@ const FamilyPrayerRequests = ({ requests, onAddRequest, onPray, onMarkAnswered, 
                     className="gap-2 w-full sm:w-auto min-w-[160px]"
                     onClick={() => onPray(req.id)}
                   >
-                    🙏 I Prayed
+                    I Prayed
                   </Button>
                   {req.createdBy === currentUser && (
                     <Button
