@@ -121,6 +121,18 @@ export default {
 				'ripple': {
 					'0%': { transform: 'scale(0)', opacity: '1' },
 					'100%': { transform: 'scale(4)', opacity: '0' }
+				},
+				'pulse-ring': {
+					'0%': { transform: 'scale(0.8)', opacity: '0.6' },
+					'80%, 100%': { transform: 'scale(2.4)', opacity: '0' }
+				},
+				'count-up': {
+					'0%': { opacity: '0', transform: 'translateY(8px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'float-slow': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-6px)' }
 				}
 			},
 			animation: {
@@ -128,10 +140,11 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'gentle-fade': 'gentle-fade 0.6s ease-out',
 				'peaceful-glow': 'peaceful-glow 3s ease-in-out infinite',
-				'ripple': 'ripple 0.6s ease-out'
+				'ripple': 'ripple 0.6s ease-out',
+				'pulse-ring': 'pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite',
+				'count-up': 'count-up 0.5s ease-out',
+				'float-slow': 'float-slow 6s ease-in-out infinite'
 			}
-			,
-			...({} as Record<string, never>)
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
