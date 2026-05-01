@@ -31,6 +31,7 @@ import { useTestAccount } from "@/hooks/useTestAccount";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -137,6 +138,9 @@ const Navigation = () => {
 
             {/* Cart */}
             {isStorePage && <CartDrawer />}
+
+            {/* Theme toggle */}
+            <ThemeToggle />
 
             {/* Auth button */}
             {user ? (
