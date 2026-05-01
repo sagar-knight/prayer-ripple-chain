@@ -18,7 +18,7 @@ const HomeDashboard = () => {
   const monthKey = today.slice(0, 7); // YYYY-MM
 
   // Grace-based "days in prayer this month" (no streak resets, no pressure)
-  const [prayerDays] = useLocalStorage<Record<string, string[]>>("prayer_days_log", {});
+  const [prayerDays, setPrayerDays] = useLocalStorage<Record<string, string[]>>("prayer_days_log", {});
   const daysInPrayerThisMonth = (prayerDays[monthKey] || []).length;
   const todayLabel = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 
@@ -56,6 +56,10 @@ const HomeDashboard = () => {
 
   const handlePrayedToday = (reminderId: string) => {
     setPrayedToday({ ...prayedToday, [reminderId]: today });
+    const monthDays = prayerDays[monthKey] || [];
+    if (!monthDays.includes(today)) {
+      setPrayerDays({ ...prayerDays, [monthKey]: [...monthDays, today] });
+    }
   };
 
   const hasPrayedToday = (reminderId: string) => prayedToday[reminderId] === today;
