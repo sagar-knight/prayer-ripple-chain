@@ -76,7 +76,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" aria-label="PrayerForward home">
-            <PrayerForwardLogo className="h-9 w-9" />
+            <PrayerForwardLogo className="h-9 w-9 text-xl" />
             <span className="font-playfair text-xl font-semibold text-foreground">
               PrayerForward
             </span>
