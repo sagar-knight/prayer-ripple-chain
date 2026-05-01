@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check } from "lucide-react";
+import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check, Sparkles, Sun } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,6 +15,12 @@ const HomeDashboard = () => {
   const [prayedToday, setPrayedToday] = useLocalStorage<Record<string, string>>("prayed_today_log", {});
 
   const today = new Date().toISOString().split("T")[0];
+  const monthKey = today.slice(0, 7); // YYYY-MM
+
+  // Grace-based "days in prayer this month" (no streak resets, no pressure)
+  const [prayerDays] = useLocalStorage<Record<string, string[]>>("prayer_days_log", {});
+  const daysInPrayerThisMonth = (prayerDays[monthKey] || []).length;
+  const todayLabel = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 
   // Fetch prayer stats from DB
   const { data: stats } = useQuery({
@@ -58,18 +64,55 @@ const HomeDashboard = () => {
   const prayersReceived = stats?.total_prayers_received ?? 0;
 
   return (
-    <div className="min-h-screen bg-gradient-peaceful pb-24">
-      <div className="page-container py-12 section-gap">
+    <div className="min-h-screen bg-aurora pb-24 relative overflow-hidden">
+      {/* Decorative floating orbs */}
+      <div className="pointer-events-none absolute -top-32 -left-24 w-72 h-72 rounded-full bg-primary/15 blur-3xl animate-float-slow" />
+      <div className="pointer-events-none absolute top-40 -right-24 w-80 h-80 rounded-full bg-success/15 blur-3xl animate-float-slow" style={{ animationDelay: "1.5s" }} />
+
+      <div className="page-container py-12 section-gap relative">
         {/* Welcome */}
         <div className="page-header">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-sm border border-border/60 text-xs text-muted-foreground mb-4">
+            <Sun className="h-3.5 w-3.5 text-accent" />
+            {todayLabel}
+          </div>
           <h1 className="page-title">Welcome back</h1>
           <p className="page-subtitle">
             Let's take a moment to pray.
           </p>
         </div>
 
+        {/* Prayer Journey highlight card (grace-based, no streaks) */}
+        <Card className="border-0 overflow-hidden card-glass animate-gentle-fade">
+          <div className="relative bg-gradient-primary p-6 sm:p-8 text-primary-foreground">
+            <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-aurora pointer-events-none" />
+            <div className="relative flex items-center justify-between gap-6 flex-wrap">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider opacity-90">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Your Prayer Journey
+                </div>
+                <p className="text-3xl sm:text-4xl font-playfair font-semibold leading-tight">
+                  {daysInPrayerThisMonth === 0
+                    ? "A new day to begin"
+                    : `${daysInPrayerThisMonth} ${daysInPrayerThisMonth === 1 ? "day" : "days"} in prayer this month`}
+                </p>
+                <p className="text-sm opacity-90 max-w-md leading-relaxed">
+                  Every prayer matters. There is no streak to keep, only grace to receive.
+                </p>
+              </div>
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse-ring" />
+                <div className="relative w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                  <Heart className="h-9 w-9" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+
         {/* Section 1 — Pray for Someone */}
-        <Card className="border-0 animate-gentle-fade">
+        <Card className="border-0 animate-gentle-fade lift-on-hover">
           <CardContent className="pt-8 pb-8 text-center space-y-5">
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Heart className="h-7 w-7 text-primary" />
