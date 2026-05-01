@@ -252,26 +252,38 @@ const RippleImpact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-aurora py-12 pb-24">
-      <div className="page-container section-gap">
+    <div className="min-h-screen bg-mesh py-12 pb-24 relative overflow-hidden">
+      {/* Decorative floating orbs */}
+      <div className="pointer-events-none absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-success/20 blur-3xl animate-float-slow" />
+      <div className="pointer-events-none absolute top-1/3 -right-24 w-80 h-80 rounded-full bg-primary/20 blur-3xl animate-float-slow" style={{ animationDelay: "2s" }} />
+      <div className="pointer-events-none absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-accent/15 blur-3xl animate-float-slow" style={{ animationDelay: "4s" }} />
+
+      <div className="page-container section-gap relative">
         {/* Hero */}
-        <div className="relative text-center max-w-3xl mx-auto animate-gentle-fade">
-          <div className="absolute inset-x-20 -top-10 h-40 bg-gradient-primary opacity-20 blur-3xl rounded-full pointer-events-none" />
+        <div className="relative text-center max-w-3xl mx-auto animate-rise-in">
+          <div className="absolute inset-x-20 -top-10 h-40 bg-gradient-primary opacity-30 blur-3xl rounded-full pointer-events-none" />
           <div className="relative">
-            <h1 className="font-playfair text-3xl md:text-5xl font-bold text-foreground mb-4 tracking-tight">
-              Your prayers are moving <span className="inline-block animate-float-slow">🙏</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-md border border-primary/20 text-xs font-medium text-primary mb-5 shadow-sm">
+              <Sparkles className="h-3.5 w-3.5" />
+              Your Ripple of Prayer
+            </div>
+            <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
+              Your prayers are <span className="text-gradient">moving</span> <span className="inline-block animate-float-slow">🙏</span>
             </h1>
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Every prayer creates a ripple. See how yours have spread.
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mt-8">
-              <div className="card-glass rounded-2xl p-5 text-center animate-count-up">
-                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
+              <div className="card-glass rounded-2xl p-5 text-center hover-glow animate-rise-in">
+                <p className="text-4xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
                 <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-semibold">People prayed for</p>
               </div>
-              <div className="card-glass rounded-2xl p-5 text-center animate-count-up" style={{ animationDelay: "100ms" }}>
-                <p className="text-3xl font-bold text-success"><AnimatedNumber value={livesReached} /></p>
+              <div className="card-glass rounded-2xl p-5 text-center hover-glow animate-rise-in" style={{ animationDelay: "120ms" }}>
+                <p className="text-4xl font-bold text-success"><AnimatedNumber value={livesReached} /></p>
                 <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-semibold">Lives reached</p>
               </div>
-              <div className="card-glass rounded-2xl p-5 text-center animate-count-up" style={{ animationDelay: "200ms" }}>
-                <p className="text-3xl font-bold text-primary"><AnimatedNumber value={rippleDepth} /></p>
+              <div className="card-glass rounded-2xl p-5 text-center hover-glow animate-rise-in" style={{ animationDelay: "240ms" }}>
+                <p className="text-4xl font-bold text-primary"><AnimatedNumber value={rippleDepth} /></p>
                 <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-semibold">Ripple layers</p>
               </div>
             </div>
@@ -279,10 +291,10 @@ const RippleImpact = () => {
         </div>
 
         {/* Ripple Visualization */}
-        <Card className="card-glass border-0 overflow-hidden animate-gentle-fade">
+        <Card className="card-glass border-0 overflow-hidden animate-rise-in hover-glow">
           <CardContent className="pt-8 pb-6">
             <div className="text-center mb-4">
-              <h2 className="section-title text-xl">A picture of your prayer ripple</h2>
+              <h2 className="font-playfair text-2xl font-semibold text-foreground">A picture of your prayer ripple</h2>
               <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
                 Each light is a person carried in prayer. The circle grows as prayer is passed forward.
               </p>
@@ -293,7 +305,7 @@ const RippleImpact = () => {
 
         {/* Live Impact Card */}
         {userStats.chainStarted > 0 && (
-          <Card className="card-glass border-success/20 animate-gentle-fade">
+          <Card className="card-glass border-success/20 animate-rise-in animate-glow-pulse">
             <CardContent className="pt-6 pb-6 flex items-start gap-4">
               <div className="w-11 h-11 rounded-xl bg-success/15 flex items-center justify-center ring-1 ring-success/20">
                 <Sparkles className="h-5 w-5 text-success animate-peaceful-glow" />
@@ -345,29 +357,31 @@ const RippleImpact = () => {
         </div>
 
         {/* Global Prayer Network */}
-        <Card className="bg-gradient-primary text-primary-foreground animate-gentle-fade border-0 shadow-glow">
+        <Card className="bg-gradient-primary text-primary-foreground animate-rise-in border-0 shadow-glow relative overflow-hidden">
+          <div className="absolute inset-0 bg-aurora opacity-30 mix-blend-overlay pointer-events-none" />
+          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/10 blur-3xl pointer-events-none" />
           <CardHeader className="text-center">
             <CardTitle className="font-playfair text-2xl">Global Prayer Community</CardTitle>
             <p className="text-primary-foreground/90">
               You are part of a worldwide community of prayer.
             </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div className="space-y-1">
-                <div className="text-2xl font-bold"><AnimatedNumber value={globalStats.totalPrayers} /></div>
+                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.totalPrayers} /></div>
                 <div className="text-sm opacity-90">Prayer Requests</div>
               </div>
               <div className="space-y-1">
-                <div className="text-2xl font-bold"><AnimatedNumber value={globalStats.activeRequests} /></div>
+                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.activeRequests} /></div>
                 <div className="text-sm opacity-90">Needing Prayer</div>
               </div>
               <div className="space-y-1">
-                <div className="text-2xl font-bold"><AnimatedNumber value={globalStats.churchesConnected} /></div>
+                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.churchesConnected} /></div>
                 <div className="text-sm opacity-90">Churches Connected</div>
               </div>
               <div className="space-y-1">
-                <div className="text-2xl font-bold"><AnimatedNumber value={globalStats.answeredPrayers} /></div>
+                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.answeredPrayers} /></div>
                 <div className="text-sm opacity-90">Answered Prayers</div>
               </div>
             </div>

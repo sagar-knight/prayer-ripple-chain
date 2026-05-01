@@ -68,28 +68,32 @@ const HomeDashboard = () => {
   const prayersReceived = stats?.total_prayers_received ?? 0;
 
   return (
-    <div className="min-h-screen bg-aurora pb-24 relative overflow-hidden">
+    <div className="min-h-screen bg-mesh pb-24 relative overflow-hidden">
       {/* Decorative floating orbs */}
-      <div className="pointer-events-none absolute -top-32 -left-24 w-72 h-72 rounded-full bg-primary/15 blur-3xl animate-float-slow" />
-      <div className="pointer-events-none absolute top-40 -right-24 w-80 h-80 rounded-full bg-success/15 blur-3xl animate-float-slow" style={{ animationDelay: "1.5s" }} />
+      <div className="pointer-events-none absolute -top-32 -left-24 w-80 h-80 rounded-full bg-primary/20 blur-3xl animate-float-slow" />
+      <div className="pointer-events-none absolute top-40 -right-24 w-96 h-96 rounded-full bg-success/20 blur-3xl animate-float-slow" style={{ animationDelay: "1.5s" }} />
+      <div className="pointer-events-none absolute bottom-20 left-1/3 w-72 h-72 rounded-full bg-accent/15 blur-3xl animate-float-slow" style={{ animationDelay: "3s" }} />
 
       <div className="page-container py-12 section-gap relative">
         {/* Welcome */}
-        <div className="page-header">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-sm border border-border/60 text-xs text-muted-foreground mb-4">
+        <div className="page-header animate-rise-in">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-md border border-border/60 text-xs text-muted-foreground mb-4 shadow-sm">
             <Sun className="h-3.5 w-3.5 text-accent" />
             {todayLabel}
           </div>
-          <h1 className="page-title">Welcome back</h1>
-          <p className="page-subtitle">
+          <h1 className="font-playfair text-4xl md:text-5xl font-bold tracking-tight mb-3">
+            Welcome <span className="text-gradient">back</span>
+          </h1>
+          <p className="page-subtitle text-base md:text-lg">
             Let's take a moment to pray.
           </p>
         </div>
 
         {/* Prayer Journey highlight card (grace-based, no streaks) */}
-        <Card className="border-0 overflow-hidden card-glass animate-gentle-fade">
+        <Card className="border-0 overflow-hidden card-glass animate-rise-in hover-glow">
           <div className="relative bg-gradient-primary p-6 sm:p-8 text-primary-foreground">
-            <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-aurora pointer-events-none" />
+            <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-aurora pointer-events-none" />
+            <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/15 blur-3xl pointer-events-none" />
             <div className="relative flex items-center justify-between gap-6 flex-wrap">
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider opacity-90">
