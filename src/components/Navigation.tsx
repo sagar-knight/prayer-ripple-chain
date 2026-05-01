@@ -31,6 +31,7 @@ import { useTestAccount } from "@/hooks/useTestAccount";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -138,6 +139,9 @@ const Navigation = () => {
             {/* Cart */}
             {isStorePage && <CartDrawer />}
 
+            {/* Theme toggle */}
+            <ThemeToggle />
+
             {/* Auth button */}
             {user ? (
               <div className="flex items-center space-x-1">
@@ -210,7 +214,9 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <div className="flex items-center gap-1 lg:hidden">
+            <ThemeToggle />
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="sm">
                 <Menu className="h-5 w-5" />
@@ -354,7 +360,8 @@ const Navigation = () => {
                 )}
               </div>
             </SheetContent>
-          </Sheet>
+            </Sheet>
+          </div>
         </div>
       </div>
     </nav>
