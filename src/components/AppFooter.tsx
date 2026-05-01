@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen, Users, Waves, HandHeart, Church } from "lucide-react";
-import logoImage from "@/assets/prayer-forward-icon.png";
+import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 
 const AppFooter = () => {
   return (
@@ -10,7 +10,7 @@ const AppFooter = () => {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src={logoImage} alt="PrayerForward" className="h-7 w-7 object-contain bg-background rounded-md p-0.5" />
+              <PrayerForwardLogo className="h-7 w-7" />
               <span className="font-playfair font-semibold">PrayerForward</span>
             </div>
             <p className="text-sm text-background/60 leading-relaxed">
