@@ -117,12 +117,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Profile Header */}
-        <Card className="mb-8 animate-gentle-fade">
-          <CardContent className="pt-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        {/* ===== Profile Header ===== */}
+        <Card className="animate-gentle-fade border-primary/10 shadow-[var(--shadow-card-hover)] overflow-hidden">
+          <div className="h-24 bg-gradient-primary" />
+          <CardContent className="pt-0 -mt-12">
             <div className="text-center">
-              <div className="w-24 h-24 mx-auto bg-gradient-primary rounded-full flex items-center justify-center mb-4">
+              <div className="w-24 h-24 mx-auto bg-gradient-primary rounded-full flex items-center justify-center mb-4 ring-4 ring-card shadow-[var(--shadow-peaceful)]">
                 <User className="h-12 w-12 text-primary-foreground" />
               </div>
               <h1 className="font-playfair text-2xl font-bold text-foreground mb-1">
@@ -147,7 +148,7 @@ const Profile = () => {
 
         {/* Country Banner */}
         {!countryCode && showCountryBanner && (
-          <Card className="mb-8 border-primary/20 animate-gentle-fade">
+          <Card className="border-primary/20 bg-primary/5 animate-gentle-fade">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
                 <Globe className="h-5 w-5 text-primary mt-0.5 shrink-0" />
@@ -173,9 +174,19 @@ const Profile = () => {
           </Card>
         )}
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="animate-gentle-fade">
+        {/* ===== Section: Your Prayer Journey ===== */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
+            <div>
+              <h2 className="font-playfair text-xl font-bold text-foreground">Your Prayer Journey</h2>
+              <p className="text-sm text-muted-foreground">A snapshot of your impact and consistency.</p>
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow">
             <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold text-primary">
                 {userProfile.prayersRequested}
@@ -185,7 +196,7 @@ const Profile = () => {
               </div>
             </CardContent>
           </Card>
-          <Card className="animate-gentle-fade" style={{ animationDelay: "100ms" }}>
+          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow" style={{ animationDelay: "100ms" }}>
             <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold text-primary">
                 {userProfile.prayersOffered}
@@ -195,7 +206,7 @@ const Profile = () => {
               </div>
             </CardContent>
           </Card>
-          <Card className="animate-gentle-fade" style={{ animationDelay: "200ms" }}>
+          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow" style={{ animationDelay: "200ms" }}>
             <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold text-primary">
                 {userProfile.rippleReach}
@@ -203,7 +214,7 @@ const Profile = () => {
               <div className="text-sm text-muted-foreground">Ripple Reach</div>
             </CardContent>
           </Card>
-          <Card className="animate-gentle-fade" style={{ animationDelay: "300ms" }}>
+          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow" style={{ animationDelay: "300ms" }}>
             <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold text-primary">
                 {userProfile.longestStreak}
@@ -213,10 +224,10 @@ const Profile = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
 
-        {/* Weekly Goal */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "400ms" }}>
+          {/* Weekly Goal */}
+          <Card className="animate-gentle-fade bg-gradient-soft-blue border-primary/10" style={{ animationDelay: "400ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Target className="h-5 w-5 text-primary" />
@@ -243,10 +254,10 @@ const Profile = () => {
               className="h-3"
             />
           </CardContent>
-        </Card>
+          </Card>
 
-        {/* Achievements */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "500ms" }}>
+          {/* Achievements */}
+          <Card className="animate-gentle-fade" style={{ animationDelay: "500ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Award className="h-5 w-5 text-primary" />
@@ -290,10 +301,21 @@ const Profile = () => {
               })}
             </div>
           </CardContent>
-        </Card>
+          </Card>
+        </section>
 
-        {/* Notification Preferences */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "600ms" }}>
+        {/* ===== Section: Preferences ===== */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
+            <div>
+              <h2 className="font-playfair text-xl font-bold text-foreground">Preferences</h2>
+              <p className="text-sm text-muted-foreground">Tune notifications, language, and how you pray.</p>
+            </div>
+          </div>
+
+          {/* Notification Preferences */}
+          <Card className="animate-gentle-fade" style={{ animationDelay: "600ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
@@ -340,15 +362,15 @@ const Profile = () => {
               </div>
             ))}
           </CardContent>
-        </Card>
+          </Card>
 
-        {/* Prayer Commitment Level */}
-        <div className="mb-8" style={{ animationDelay: "610ms" }}>
+          {/* Prayer Commitment Level */}
+          <div style={{ animationDelay: "610ms" }}>
           <CommitmentLevelSelector />
-        </div>
+          </div>
 
-        {/* Country & Timezone Settings */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "620ms" }}>
+          {/* Country & Timezone Settings */}
+          <Card className="animate-gentle-fade" style={{ animationDelay: "620ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Globe className="h-5 w-5 text-primary" />
@@ -375,10 +397,10 @@ const Profile = () => {
               </p>
             </div>
           </CardContent>
-        </Card>
+          </Card>
 
-        {/* Preferred Language */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "625ms" }}>
+          {/* Preferred Language */}
+          <Card className="animate-gentle-fade" style={{ animationDelay: "625ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Languages className="h-5 w-5 text-primary" />
@@ -401,10 +423,10 @@ const Profile = () => {
               </p>
             )}
           </CardContent>
-        </Card>
+          </Card>
 
-        {/* My Prayer Reminders */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "630ms" }}>
+          {/* My Prayer Reminders */}
+          <Card className="animate-gentle-fade" style={{ animationDelay: "630ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
@@ -422,10 +444,21 @@ const Profile = () => {
               </Link>
             </Button>
           </CardContent>
-        </Card>
+          </Card>
+        </section>
 
-        {/* Join Organization */}
-        <Card className="mb-8 animate-gentle-fade" style={{ animationDelay: "640ms" }}>
+        {/* ===== Section: Community & Support ===== */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
+            <div>
+              <h2 className="font-playfair text-xl font-bold text-foreground">Community & Support</h2>
+              <p className="text-sm text-muted-foreground">Pray with others and help keep PrayerForward free.</p>
+            </div>
+          </div>
+
+          {/* Join Organization */}
+          <Card className="animate-gentle-fade" style={{ animationDelay: "640ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
@@ -445,10 +478,10 @@ const Profile = () => {
               </Button>
             </div>
           </CardContent>
-        </Card>
+          </Card>
 
-        {/* Support the Mission */}
-        <Card className="mb-8 animate-gentle-fade border-primary/20" style={{ animationDelay: "650ms" }}>
+          {/* Support the Mission */}
+          <Card className="animate-gentle-fade border-primary/20 bg-gradient-soft-warm" style={{ animationDelay: "650ms" }}>
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <HandHeart className="h-5 w-5 text-primary" />
@@ -473,10 +506,19 @@ const Profile = () => {
               </Button>
             </div>
           </CardContent>
-        </Card>
+          </Card>
+        </section>
 
-        {/* Privacy */}
-        <Card className="bg-primary/5 border-primary/20 animate-gentle-fade">
+        {/* ===== Section: Privacy ===== */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
+            <div>
+              <h2 className="font-playfair text-xl font-bold text-foreground">Privacy & Security</h2>
+              <p className="text-sm text-muted-foreground">You stay in control of your data and visibility.</p>
+            </div>
+          </div>
+          <Card className="bg-primary/5 border-primary/20 animate-gentle-fade">
           <CardHeader>
             <CardTitle className="font-playfair flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
@@ -499,7 +541,8 @@ const Profile = () => {
               Manage Privacy Settings
             </Button>
           </CardContent>
-        </Card>
+          </Card>
+        </section>
       </div>
     </div>
   );
