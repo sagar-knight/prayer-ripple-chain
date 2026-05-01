@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Heart, BookOpen, Users, Waves, HandHeart, Church } from "lucide-react";
+import { BookOpen, Users, Waves, HandHeart, Church } from "lucide-react";
+import logoImage from "@/assets/prayer-forward-logo.png";
 
 const AppFooter = () => {
   return (
@@ -8,9 +9,8 @@ const AppFooter = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Heart className="h-5 w-5" />
-              <span className="font-playfair font-semibold">PrayerForward</span>
+            <div className="mb-4 inline-flex items-center bg-background/10 rounded-md p-2">
+              <img src={logoImage} alt="PrayerForward" className="h-8 w-auto object-contain" />
             </div>
             <p className="text-sm text-background/60 leading-relaxed">
               One prayer. Passed forward. Building a global community of compassion and hope.

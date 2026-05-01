@@ -28,6 +28,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { useTestAccount } from "@/hooks/useTestAccount";
+import logoImage from "@/assets/prayer-forward-logo.png";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
 import { Badge } from "@/components/ui/badge";
@@ -74,11 +75,8 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <Heart className="h-8 w-8 text-primary" />
-            <span className="font-playfair text-xl font-semibold text-foreground">
-              PrayerForward
-            </span>
+          <Link to="/" className="flex items-center" aria-label="PrayerForward home">
+            <img src={logoImage} alt="PrayerForward" className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
