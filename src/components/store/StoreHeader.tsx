@@ -13,6 +13,7 @@ import {
 import { Heart, Search, User, Menu, X, ChevronDown, LogOut, Home, BookOpen, Users, Calendar, Waves, Church, HandHeart } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
+import logoImage from "@/assets/prayer-forward-logo.png";
 
 const storeNavLinks = [
   { label: "New", href: "/store?collection=new" },
