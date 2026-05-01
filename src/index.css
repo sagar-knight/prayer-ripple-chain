@@ -54,6 +54,14 @@ All colors MUST be HSL.
     --gradient-peaceful: linear-gradient(180deg, hsl(220 14% 98%), hsl(220 14% 96%));
     --gradient-warm: linear-gradient(45deg, hsl(38 92% 50%), hsl(152 76% 67%));
 
+    /* Soft tinted backgrounds for emotional surfaces */
+    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 67% / 0.18), transparent 60%),
+                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.15), transparent 60%),
+                       linear-gradient(180deg, hsl(220 14% 99%), hsl(220 14% 97%));
+    --gradient-soft-green: linear-gradient(160deg, hsl(152 76% 95%), hsl(217 91% 97%));
+    --gradient-soft-blue: linear-gradient(160deg, hsl(217 91% 96%), hsl(220 14% 99%));
+    --gradient-soft-warm: linear-gradient(160deg, hsl(38 92% 95%), hsl(0 0% 100%));
+
     /* Shadows / glow (success glow rgba(34,197,94,0.25)) */
     --shadow-peaceful: 0 4px 20px -4px hsl(217 91% 60% / 0.20);
     --shadow-warm: 0 8px 30px -8px hsl(142 71% 45% / 0.25);
@@ -118,6 +126,12 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 65%));
     --gradient-peaceful: linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 12%));
     --gradient-warm: linear-gradient(45deg, hsl(38 92% 55%), hsl(152 76% 67%));
+    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 50% / 0.18), transparent 60%),
+                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.18), transparent 60%),
+                       linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 10%));
+    --gradient-soft-green: linear-gradient(160deg, hsl(152 30% 15%), hsl(217 30% 14%));
+    --gradient-soft-blue: linear-gradient(160deg, hsl(217 30% 16%), hsl(222 47% 12%));
+    --gradient-soft-warm: linear-gradient(160deg, hsl(38 30% 18%), hsl(222 47% 12%));
 
     --shadow-glow: 0 0 24px 0 hsl(142 71% 50% / 0.25);
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.2), 0 4px 14px -2px hsl(0 0% 0% / 0.25);
@@ -166,6 +180,29 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-card-hover);
   }
 
+  /* Glass-style card */
+  .card-glass {
+    @apply rounded-2xl border border-white/40 bg-white/70 backdrop-blur-md text-card-foreground;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-gentle);
+  }
+  .dark .card-glass {
+    @apply bg-white/5 border-white/10;
+  }
+  .card-glass:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Hover lift utility */
+  .lift-on-hover {
+    transition: var(--transition-gentle);
+  }
+  .lift-on-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
   /* Page header pattern */
   .page-header {
     @apply text-center mb-10 animate-gentle-fade;
@@ -192,4 +229,11 @@ All colors MUST be HSL.
   .card-gap {
     @apply space-y-6;
   }
+}
+
+@layer utilities {
+  .bg-aurora { background: var(--gradient-aurora); }
+  .bg-soft-green { background: var(--gradient-soft-green); }
+  .bg-soft-blue { background: var(--gradient-soft-blue); }
+  .bg-soft-warm { background: var(--gradient-soft-warm); }
 }
