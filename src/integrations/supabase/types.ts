@@ -854,7 +854,9 @@ export type Database = {
           origin_country_code: string | null
           origin_country_name: string | null
           prayer_count: number
+          short_code: string | null
           show_country: boolean
+          slug: string | null
           status: string
           title: string
           updated_at: string
@@ -872,7 +874,9 @@ export type Database = {
           origin_country_code?: string | null
           origin_country_name?: string | null
           prayer_count?: number
+          short_code?: string | null
           show_country?: boolean
+          slug?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -890,7 +894,9 @@ export type Database = {
           origin_country_code?: string | null
           origin_country_name?: string | null
           prayer_count?: number
+          short_code?: string | null
           show_country?: boolean
+          slug?: string | null
           status?: string
           title?: string
           updated_at?: string
@@ -1606,11 +1612,14 @@ export type Database = {
       }
     }
     Functions: {
+      generate_prayer_short_code: { Args: never; Returns: string }
+      generate_prayer_slug: { Args: { _title: string }; Returns: string }
       get_church_role: {
         Args: { _church_id: string; _user_id: string }
         Returns: string
       }
       get_invite_by_code: { Args: { _invite_code: string }; Returns: Json }
+      get_prayer_by_slug: { Args: { _slug: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1650,6 +1659,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      slugify_text: { Args: { _input: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

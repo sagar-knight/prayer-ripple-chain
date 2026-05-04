@@ -38,6 +38,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import InviteLanding from "./pages/InviteLanding";
+import SharedPrayer from "./pages/SharedPrayer";
 import ChurchJoin from "./pages/ChurchJoin";
 import ModerationDashboard from "./pages/ModerationDashboard";
 import ProductDetail from "./pages/ProductDetail";
@@ -143,6 +144,7 @@ const App = () => (
                 <Route path="/submit-prayer" element={<SubmitPrayer />} />
                 <Route path="/pray" element={<PrayForOthers />} />
                 <Route path="/invite/:inviteCode" element={<InviteLanding />} />
+                <Route path="/p/:slug" element={<SharedPrayer />} />
                 <Route path="/join/:slug" element={<ChurchJoin />} />
                 <Route path="/churches/:churchId" element={<ChurchDetail />} />
                 <Route path="/churches/:churchId/wall" element={<ChurchPrayerWall />} />

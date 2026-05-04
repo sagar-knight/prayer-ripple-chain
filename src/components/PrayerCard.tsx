@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, Clock, MapPin, Send, Sparkles } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
+import SharePrayerDialog from "./SharePrayerDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
 import PrayerReminderToggle from "./PrayerReminderToggle";
 import PrayerRequestCard from "./PrayerRequestCard";
@@ -33,6 +35,7 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
   const [hasPrayed, setHasPrayed] = useState(false);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
   const [showPassForward, setShowPassForward] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [passForwardComplete, setPassForwardComplete] = useState(false);
   const [encouragementMessage, setEncouragementMessage] = useState("");
   const { toast } = useToast();
@@ -177,6 +180,16 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
           </DialogContent>
         </Dialog>
       )}
+
+      <Button
+        variant="outline"
+        size="lg"
+        className="gap-2 w-full sm:w-auto"
+        onClick={() => setShowShare(true)}
+      >
+        <Share2 className="h-4 w-4" />
+        Share
+      </Button>
     </>
   );
 
@@ -214,6 +227,13 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
       <PassItForwardDialog
         open={showPassForward}
         onComplete={handlePassForwardComplete}
+      />
+
+      <SharePrayerDialog
+        open={showShare}
+        onOpenChange={setShowShare}
+        prayerId={request.id}
+        prayerTitle={request.title}
       />
     </>
   );
