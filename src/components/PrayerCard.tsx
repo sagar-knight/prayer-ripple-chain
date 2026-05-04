@@ -8,6 +8,7 @@ import { Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
 import SharePrayerDialog from "./SharePrayerDialog";
+import PrayerImpactDialog from "./PrayerImpactDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
 import PrayerReminderToggle from "./PrayerReminderToggle";
 import PrayerRequestCard from "./PrayerRequestCard";
@@ -28,14 +29,23 @@ interface PrayerRequest {
 interface PrayerCardProps {
   request: PrayerRequest;
   onPrayerOffered?: (id: string) => void;
+  /**
+   * When true, shows an emotional impact confirmation dialog immediately
+   * after the user prays (Thank you + reach + Pray-another / Share CTAs).
+   * Use this in browse / featured contexts. Leave off inside PrayerSession
+   * to preserve the existing Pass-It-Forward flow.
+   */
+  showImpactDialog?: boolean;
 }
 
-const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
+const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: PrayerCardProps) => {
   const [isPraying, setIsPraying] = useState(false);
   const [hasPrayed, setHasPrayed] = useState(false);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
   const [showPassForward, setShowPassForward] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showImpact, setShowImpact] = useState(false);
+  const [livePrayerCount, setLivePrayerCount] = useState(request.prayerCount);
   const [passForwardComplete, setPassForwardComplete] = useState(false);
   const [encouragementMessage, setEncouragementMessage] = useState("");
   const { toast } = useToast();
@@ -53,13 +63,16 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
     setTimeout(() => {
       setIsPraying(false);
       setHasPrayed(true);
+      setLivePrayerCount((c) => c + 1);
       onPrayerOffered?.(request.id);
       toast({
         title: "Prayer offered",
         description: "Thank you for praying. Would you like to pass this forward?",
         duration: 3000,
       });
-      if (!onPrayerOffered) {
+      if (showImpactDialog) {
+        setShowImpact(true);
+      } else if (!onPrayerOffered) {
         setShowPassForward(true);
       }
     }, 2000);
@@ -234,6 +247,22 @@ const PrayerCard = ({ request, onPrayerOffered }: PrayerCardProps) => {
         onOpenChange={setShowShare}
         prayerId={request.id}
         prayerTitle={request.title}
+      />
+
+      <PrayerImpactDialog
+        open={showImpact}
+        onOpenChange={setShowImpact}
+        prayerId={request.id}
+        prayerCount={livePrayerCount}
+        onPrayAnother={() => {
+          setShowImpact(false);
+          // Scroll to top so the next card in the browse list is visible.
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        onShare={() => {
+          setShowImpact(false);
+          setShowShare(true);
+        }}
       />
     </>
   );
