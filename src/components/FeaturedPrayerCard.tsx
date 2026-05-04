@@ -151,7 +151,11 @@ const FeaturedPrayerCard = () => {
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Heart className="h-4 w-4 text-primary" />
-              {prayer.prayer_count} {prayer.prayer_count === 1 ? "prayer" : "prayers"}
+              {prayer.prayer_count > 0
+                ? `${prayer.prayer_count} ${
+                    prayer.prayer_count === 1 ? "person has" : "people have"
+                  } joined this prayer`
+                : "Be the first to pray for this request"}
             </span>
             {countryCount !== null && countryCount > 0 && (
               <span className="flex items-center gap-1.5">
