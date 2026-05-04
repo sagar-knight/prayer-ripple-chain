@@ -16,6 +16,7 @@ import {
 import heroImage from "@/assets/hero-prayer.jpg";
 import DailyVerseCard from "@/components/DailyVerseCard";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
+import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
 
 const Home = () => {
   return (
@@ -31,81 +32,81 @@ const Home = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <div className="text-center space-y-6 animate-gentle-fade">
-            <h1 className="font-playfair text-4xl md:text-6xl font-bold text-foreground leading-tight">
-              PrayerForward
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+          <div className="text-center space-y-4 animate-gentle-fade mb-8">
+            <h1 className="font-playfair text-3xl md:text-5xl font-bold text-foreground leading-tight">
+              Someone needs your prayer today
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              One prayer. Passed forward.
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Pray for one request, encourage someone, and see how prayer moves forward.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button asChild variant="peaceful" size="lg" className="text-lg px-8 py-6">
-                <Link to="/pray">
-                  <Heart className="mr-2 h-5 w-5" />
-                  Get Started
-                </Link>
-              </Button>
-
-              <Button asChild variant="warm" size="lg" className="text-lg px-8 py-6">
-                <Link to="/login">
-                  Sign In
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-            </div>
-
-            {/* Feature CTAs */}
-            <div className="flex flex-wrap gap-3 justify-center mt-4">
-              <Button asChild variant="secondary" size="sm" className="gap-1.5">
-                <Link to="/submit-prayer">
-                  <BookOpen className="h-3.5 w-3.5" />
-                  Request Prayer
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="sm" className="gap-1.5">
-                <Link to="/ripple">
-                  <Waves className="h-3.5 w-3.5" />
-                  Explore Ripple
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="sm" className="gap-1.5">
-                <Link to="/scripture">
-                  <BookOpen className="h-3.5 w-3.5" />
-                  Scripture
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="sm" className="gap-1.5">
-                <Link to="/churches">
-                  <Church className="h-3.5 w-3.5" />
-                  Churches
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="sm" className="gap-1.5">
-                <Link to="/family">
-                  <Users className="h-3.5 w-3.5" />
-                  Family
-                </Link>
-              </Button>
-            </div>
           </div>
+
+          <FeaturedPrayerCard />
+
+          <p className="text-center text-xs text-muted-foreground mt-4">
+            Public requests are moderated for safety. Anonymous prayer is supported.
+          </p>
         </div>
       </section>
 
-      {/* What Is PrayerForward */}
-      <section className="py-16 bg-background">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-8">
-            What Is PrayerForward?
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            PrayerForward is a faith-based prayer app where you can receive
-            prayers, pray for others, and become part of a growing chain of
-            compassion. Every prayer you offer carries the potential to spark
-            another — creating a spiritual ripple of love, healing, and hope
-            across the globe.
-          </p>
+      {/* Secondary: Church + Family */}
+      <section className="py-12 bg-background">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-0 bg-card/70">
+            <CardHeader>
+              <CardTitle className="font-playfair text-xl flex items-center gap-2">
+                <Church className="h-5 w-5 text-primary" />
+                Bring PrayerForward to your church
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Connect a congregation, share prayer needs, and pray together as a community.
+              </p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/churches">Register / Join Church</Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card className="border-0 bg-card/70">
+            <CardHeader>
+              <CardTitle className="font-playfair text-xl flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                Create a private family prayer circle
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                A safe, invite-only space for your family to share requests and pray together.
+              </p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/family">Start Family Circle</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Daily Reminder Hook */}
+      <section className="py-8 bg-card/30">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="border-0 bg-background/60">
+            <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4 justify-between">
+              <div className="flex items-center gap-3">
+                <Bell className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">Want a daily prayer reminder?</p>
+                  <p className="text-sm text-muted-foreground">
+                    A gentle nudge once a day. No pressure.
+                  </p>
+                </div>
+              </div>
+              <Button asChild variant="peaceful" size="sm">
+                <Link to="/calendar">Set Prayer Reminder</Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
