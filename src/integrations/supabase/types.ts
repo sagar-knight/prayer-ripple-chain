@@ -843,6 +843,7 @@ export type Database = {
       }
       global_prayer_requests: {
         Row: {
+          allow_public_ripple_view: boolean
           anonymous: boolean
           answered_at: string | null
           category: string
@@ -863,6 +864,7 @@ export type Database = {
           visibility: string
         }
         Insert: {
+          allow_public_ripple_view?: boolean
           anonymous?: boolean
           answered_at?: string | null
           category?: string
@@ -883,6 +885,7 @@ export type Database = {
           visibility?: string
         }
         Update: {
+          allow_public_ripple_view?: boolean
           anonymous?: boolean
           answered_at?: string | null
           category?: string
@@ -1620,6 +1623,7 @@ export type Database = {
       }
       get_invite_by_code: { Args: { _invite_code: string }; Returns: Json }
       get_prayer_by_slug: { Args: { _slug: string }; Returns: Json }
+      get_public_ripple_by_slug: { Args: { _slug: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
