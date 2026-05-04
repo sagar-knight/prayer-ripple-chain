@@ -17,6 +17,7 @@ import heroImage from "@/assets/hero-prayer.jpg";
 import DailyVerseCard from "@/components/DailyVerseCard";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
+import ActivityPulse from "@/components/ActivityPulse";
 
 const Home = () => {
   return (
@@ -43,6 +44,10 @@ const Home = () => {
           </div>
 
           <FeaturedPrayerCard />
+
+          <div className="mt-5">
+            <ActivityPulse />
+          </div>
 
           <p className="text-center text-xs text-muted-foreground mt-4">
             Public requests are moderated for safety. Anonymous prayer is supported.
