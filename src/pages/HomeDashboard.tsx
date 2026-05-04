@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check, Sparkles, Sun } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
+import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -119,24 +120,10 @@ const HomeDashboard = () => {
           </div>
         </Card>
 
-        {/* Section 1 — Pray for Someone */}
-        <Card className="border-0 animate-gentle-fade lift-on-hover">
-          <CardContent className="pt-8 pb-8 text-center space-y-5">
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <Heart className="h-7 w-7 text-primary" />
-            </div>
-            <CardTitle className="section-title text-xl">Someone needs prayer</CardTitle>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto leading-relaxed">
-              Take a quiet moment to pray for someone who asked for support.
-            </p>
-            <Button asChild variant="peaceful" size="lg" className="px-10">
-              <Link to="/pray">
-                Start Praying
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Section 1 — Featured prayer (core loop: Pray → Impact → Share) */}
+        <div className="animate-gentle-fade">
+          <FeaturedPrayerCard />
+        </div>
 
         {/* Daily Prayer Focus */}
         <DailyPrayerFocus />
