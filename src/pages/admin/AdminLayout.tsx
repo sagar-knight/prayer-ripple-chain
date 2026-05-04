@@ -1,10 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, Shield, Users, Church, Flag, Cog, ScrollText, BookOpen, FlaskConical } from "lucide-react";
+import { LayoutDashboard, Shield, Users, Church, Flag, Cog, ScrollText, BookOpen, FlaskConical, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
   { to: "/admin/moderation", icon: Shield, label: "Moderation" },
+  { to: "/admin/global-reach", icon: Globe, label: "Global Reach" },
   { to: "/admin/users", icon: Users, label: "Users" },
   { to: "/admin/churches", icon: Church, label: "Churches" },
   { to: "/admin/reports", icon: Flag, label: "Reports" },

@@ -7,6 +7,7 @@ import { Heart, ArrowRight, Loader2, Sparkles, MapPin, Users, Share2, Waves, Glo
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
+import WorldRippleMap from "@/components/WorldRippleMap";
 
 interface PrayerData {
   id: string;
@@ -18,6 +19,7 @@ interface PrayerData {
   anonymous: boolean;
   prayer_count: number;
   country: string | null;
+  origin_country_code?: string | null;
   status: string;
   created_at: string;
 }
@@ -29,7 +31,13 @@ interface RippleStats {
   depth: number;
 }
 
-interface GeoEntry { country: string; count: number }
+interface GeoEntry {
+  country_code: string;
+  country: string;
+  prayers: number;
+  forwards: number;
+  participants: number;
+}
 interface ActivityEntry { created_at: string; action_type: string; message: string }
 
 interface PublicRipplePayload {
@@ -167,15 +175,20 @@ const SharedPrayer = () => {
             <CardContent className="pt-6 pb-6 space-y-3">
               <div className="flex items-center gap-2">
                 <Globe2 className="h-5 w-5 text-primary" />
-                <h3 className="font-playfair text-lg font-semibold text-foreground">Geography reach</h3>
+                <h3 className="font-playfair text-lg font-semibold text-foreground">Ripple Map</h3>
               </div>
               <p className="text-xs text-muted-foreground">
                 Prayers offered from {geography.length} {geography.length === 1 ? "country" : "countries"}.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {geography.map((g) => (
-                  <Badge key={g.country} variant="secondary" className="text-xs">
-                    {g.country} · {g.count}
+              <WorldRippleMap
+                data={geography}
+                metric="prayers"
+                originCode={prayer.origin_country_code ?? null}
+              />
+              <div className="flex flex-wrap gap-2 pt-1">
+                {geography.slice(0, 12).map((g) => (
+                  <Badge key={g.country_code} variant="secondary" className="text-xs">
+                    {g.country} · {g.prayers}
                   </Badge>
                 ))}
               </div>

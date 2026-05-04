@@ -54,6 +54,7 @@ import AdminAutomation from "./pages/admin/AdminAutomation";
 import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import AdminDocumentation from "./pages/admin/AdminDocumentation";
 import AdminUnitTesting from "./pages/admin/AdminUnitTesting";
+import AdminGlobalReach from "./pages/admin/AdminGlobalReach";
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
@@ -170,6 +171,7 @@ const App = () => (
                 <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                   <Route index element={<AdminDashboard />} />
                   <Route path="moderation" element={<AdminModeration />} />
+                  <Route path="global-reach" element={<AdminGlobalReach />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="churches" element={<AdminChurches />} />
                   <Route path="reports" element={<AdminReports />} />
