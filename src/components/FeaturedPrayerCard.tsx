@@ -8,6 +8,7 @@ import { Sparkles, Share2, Globe2, ShieldCheck, Heart, Loader2 } from "lucide-re
 import { useAuth } from "@/hooks/useAuth";
 import { usePrayerService } from "@/hooks/usePrayerService";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
+import PrayerImpactDialog from "@/components/PrayerImpactDialog";
 
 interface PublicPrayer {
   id: string;
@@ -43,6 +44,7 @@ const FeaturedPrayerCard = () => {
   const [prayed, setPrayed] = useState(false);
   const [countryCount, setCountryCount] = useState<number | null>(null);
   const [showShare, setShowShare] = useState(false);
+  const [showImpact, setShowImpact] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,6 +101,7 @@ const FeaturedPrayerCard = () => {
       await recordPrayed(prayer.id, "global");
       setPrayer((p) => (p ? { ...p, prayer_count: p.prayer_count + 1 } : p));
       setPrayed(true);
+      setShowImpact(true);
     } finally {
       setPraying(false);
     }
@@ -218,6 +221,21 @@ const FeaturedPrayerCard = () => {
         onOpenChange={setShowShare}
         prayerId={prayer.id}
         prayerTitle={prayer.title}
+      />
+
+      <PrayerImpactDialog
+        open={showImpact}
+        onOpenChange={setShowImpact}
+        prayerId={prayer.id}
+        prayerCount={prayer.prayer_count}
+        onPrayAnother={() => {
+          setShowImpact(false);
+          navigate("/pray");
+        }}
+        onShare={() => {
+          setShowImpact(false);
+          setShowShare(true);
+        }}
       />
     </>
   );
