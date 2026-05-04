@@ -232,6 +232,7 @@ const PrayForOthers = () => {
                 <PrayerCard
                   request={request}
                   onPrayerOffered={handlePrayerOffered}
+                  showImpactDialog
                 />
               </div>
             ))}
