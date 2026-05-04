@@ -5,6 +5,7 @@ import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check, Sparkles, Sun }
 import { getDailyVerse } from "@/data/verses";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
+import ActivityPulse from "@/components/ActivityPulse";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -123,6 +124,9 @@ const HomeDashboard = () => {
         {/* Section 1 — Featured prayer (core loop: Pray → Impact → Share) */}
         <div className="animate-gentle-fade">
           <FeaturedPrayerCard />
+          <div className="mt-5">
+            <ActivityPulse />
+          </div>
         </div>
 
         {/* Daily Prayer Focus */}
