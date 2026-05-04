@@ -13,6 +13,7 @@ import { Heart, Users, Share2, MessageCircle, ArrowRight, CheckCircle, Copy, Lin
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { buildShortPrayerUrl, getPrayerSlug } from "@/lib/prayerShare";
 
 interface PassItForwardDialogProps {
   open: boolean;
@@ -67,18 +68,18 @@ const PassItForwardDialog = ({ open, onComplete, prayerId, prayerTitle }: PassIt
 
     try {
       const code = generateInviteCode();
-      const { error } = await supabase.from("prayer_invites" as any).insert({
+      // Track the invite for analytics
+      await supabase.from("prayer_invites" as any).insert({
         prayer_id: prayerId,
         inviter_user_id: user?.id ?? "anonymous",
         invite_code: code,
         message: inviteMessage.trim() || null,
       });
 
-      if (error) {
-        console.error("Failed to create invite:", error);
-        // Fallback to simple link
-        const baseUrl = window.location.origin;
-        setInviteLink(`${baseUrl}/invite/${code}`);
+      // Prefer the short, public prayer URL if a slug exists
+      const slug = await getPrayerSlug(prayerId);
+      if (slug) {
+        setInviteLink(buildShortPrayerUrl(slug));
       } else {
         const baseUrl = window.location.origin;
         setInviteLink(`${baseUrl}/invite/${code}`);
