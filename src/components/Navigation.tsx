@@ -50,17 +50,17 @@ const Navigation = () => {
   const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/churches", label: "Churches", icon: Church },
     { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/support", label: "Support", icon: HandHeart },
+    { href: "/churches", label: "Churches", icon: Church },
   ];
 
   // "More" dropdown items
   const moreItems = [
-    { href: "/store", label: "Store", icon: Store },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
     { href: "/family", label: "Family", icon: Users },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
+    { href: "/store", label: "Store", icon: Store },
+    { href: "/support", label: "Support Mission", icon: HandHeart },
+    { href: "/calendar", label: "Calendar", icon: Calendar },
   ];
 
   const isActiveRoute = (href: string) => {

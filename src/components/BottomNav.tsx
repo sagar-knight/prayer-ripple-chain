@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, BookOpen, Calendar, Users, User, LogIn, Store } from "lucide-react";
+import { Home, Heart, BookOpen, Waves, User, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const BottomNav = () => {
@@ -11,7 +11,7 @@ const BottomNav = () => {
     { href: "/", label: "Home", icon: Home },
     { href: "/pray", label: "Pray", icon: Heart },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
-    { href: "/store", label: "Store", icon: Store },
+    { href: "/ripple", label: "Ripple", icon: Waves },
     { href: user ? "/profile" : "/login", label: user ? "Profile" : "Sign In", icon: user ? User : LogIn },
   ];
 
