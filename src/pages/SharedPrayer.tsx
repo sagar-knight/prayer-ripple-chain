@@ -217,12 +217,8 @@ const SharedPrayer = () => {
       <SharePrayerDialog
         open={shareOpen}
         onOpenChange={setShareOpen}
-        prayer={{
-          id: prayer.id,
-          slug: prayer.slug,
-          short_code: prayer.short_code,
-          title: prayer.title,
-        }}
+        prayerId={prayer.id}
+        prayerTitle={prayer.title}
       />
     </div>
   );
