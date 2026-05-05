@@ -46,8 +46,9 @@ const AppFooter = () => {
             <ul className="space-y-2 text-sm text-background/70">
               <li><Link to="/support" className="hover:text-background transition-colors flex items-center gap-1.5"><HandHeart className="h-3.5 w-3.5" />Support the Mission</Link></li>
               <li><Link to="/about" className="hover:text-background transition-colors">About</Link></li>
-              <li><Link to="/store/faq" className="hover:text-background transition-colors">FAQ</Link></li>
-              <li><Link to="/store/contact" className="hover:text-background transition-colors">Contact</Link></li>
+              <li><Link to="/guidelines" className="hover:text-background transition-colors">Community Guidelines</Link></li>
+              <li><Link to="/disclaimer" className="hover:text-background transition-colors">Disclaimer</Link></li>
+              <li><a href="mailto:support@prayerforward.com" className="hover:text-background transition-colors">support@prayerforward.com</a></li>
             </ul>
           </div>
         </div>
@@ -57,8 +58,10 @@ const AppFooter = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-background/50">
             <p>&copy; {new Date().getFullYear()} PrayerForward. All rights reserved.</p>
             <div className="flex gap-4">
-              <Link to="/store/terms" className="hover:text-background/80">Terms</Link>
-              <Link to="/store/privacy" className="hover:text-background/80">Privacy</Link>
+              <Link to="/terms" className="hover:text-background/80">Terms</Link>
+              <Link to="/privacy" className="hover:text-background/80">Privacy</Link>
+              <Link to="/guidelines" className="hover:text-background/80">Guidelines</Link>
+              <Link to="/disclaimer" className="hover:text-background/80">Disclaimer</Link>
               <Link to="/store/shipping" className="hover:text-background/80">Shipping</Link>
               <Link to="/store/returns" className="hover:text-background/80">Returns</Link>
               <Link to="/store/refund-policy" className="hover:text-background/80">Refunds</Link>
