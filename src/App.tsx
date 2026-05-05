@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
 import Navigation from "./components/Navigation";
@@ -10,65 +11,64 @@ import BottomNav from "./components/BottomNav";
 import AppFooter from "./components/AppFooter";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomeRouter from "./pages/HomeRouter";
-import SubmitPrayer from "./pages/SubmitPrayer";
-import PrayForOthers from "./pages/PrayForOthers";
-import Dashboard from "./pages/Dashboard";
-import Churches from "./pages/Churches";
-import ChurchDetail from "./pages/ChurchDetail";
-import ChurchPrayerWall from "./pages/ChurchPrayerWall";
-import ChurchSubmitPrayer from "./pages/ChurchSubmitPrayer";
-import ChurchAdmin from "./pages/ChurchAdmin";
-import RegisterChurch from "./pages/RegisterChurch";
-import RippleImpact from "./pages/RippleImpact";
-import About from "./pages/About";
-import PrayerCalendar from "./pages/PrayerCalendar";
-import Profile from "./pages/Profile";
-import SupportMission from "./pages/SupportMission";
-import Store from "./pages/Store";
-import Organizations from "./pages/Organizations";
-import CreateOrganization from "./pages/CreateOrganization";
-import OrganizationDetail from "./pages/OrganizationDetail";
-import Scripture from "./pages/Scripture";
-import MyCommitments from "./pages/MyCommitments";
-import FamilyRequests from "./pages/FamilyRequests";
-import MyPrayerReminders from "./pages/MyPrayerReminders";
+const SubmitPrayer = lazy(() => import("./pages/SubmitPrayer"));
+const PrayForOthers = lazy(() => import("./pages/PrayForOthers"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Churches = lazy(() => import("./pages/Churches"));
+const ChurchDetail = lazy(() => import("./pages/ChurchDetail"));
+const ChurchPrayerWall = lazy(() => import("./pages/ChurchPrayerWall"));
+const ChurchSubmitPrayer = lazy(() => import("./pages/ChurchSubmitPrayer"));
+const ChurchAdmin = lazy(() => import("./pages/ChurchAdmin"));
+const RegisterChurch = lazy(() => import("./pages/RegisterChurch"));
+const RippleImpact = lazy(() => import("./pages/RippleImpact"));
+const About = lazy(() => import("./pages/About"));
+const PrayerCalendar = lazy(() => import("./pages/PrayerCalendar"));
+const Profile = lazy(() => import("./pages/Profile"));
+const SupportMission = lazy(() => import("./pages/SupportMission"));
+const Store = lazy(() => import("./pages/Store"));
+const Organizations = lazy(() => import("./pages/Organizations"));
+const CreateOrganization = lazy(() => import("./pages/CreateOrganization"));
+const OrganizationDetail = lazy(() => import("./pages/OrganizationDetail"));
+const Scripture = lazy(() => import("./pages/Scripture"));
+const MyCommitments = lazy(() => import("./pages/MyCommitments"));
+const MyPrayerReminders = lazy(() => import("./pages/MyPrayerReminders"));
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
-import InviteLanding from "./pages/InviteLanding";
-import SharedPrayer from "./pages/SharedPrayer";
-import ChurchJoin from "./pages/ChurchJoin";
-import ModerationDashboard from "./pages/ModerationDashboard";
-import ProductDetail from "./pages/ProductDetail";
+const InviteLanding = lazy(() => import("./pages/InviteLanding"));
+const SharedPrayer = lazy(() => import("./pages/SharedPrayer"));
+const ChurchJoin = lazy(() => import("./pages/ChurchJoin"));
+const ModerationDashboard = lazy(() => import("./pages/ModerationDashboard"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 import AuthCallback from "./pages/AuthCallback";
 import AdminRoute from "./components/AdminRoute";
-import AdminLayout from "./pages/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminModeration from "./pages/admin/AdminModeration";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminChurches from "./pages/admin/AdminChurches";
-import AdminReports from "./pages/admin/AdminReports";
-import AdminAutomation from "./pages/admin/AdminAutomation";
-import AdminAuditLog from "./pages/admin/AdminAuditLog";
-import AdminDocumentation from "./pages/admin/AdminDocumentation";
-import AdminUnitTesting from "./pages/admin/AdminUnitTesting";
-import AdminGlobalReach from "./pages/admin/AdminGlobalReach";
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminModeration = lazy(() => import("./pages/admin/AdminModeration"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminChurches = lazy(() => import("./pages/admin/AdminChurches"));
+const AdminReports = lazy(() => import("./pages/admin/AdminReports"));
+const AdminAutomation = lazy(() => import("./pages/admin/AdminAutomation"));
+const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
+const AdminDocumentation = lazy(() => import("./pages/admin/AdminDocumentation"));
+const AdminUnitTesting = lazy(() => import("./pages/admin/AdminUnitTesting"));
+const AdminGlobalReach = lazy(() => import("./pages/admin/AdminGlobalReach"));
 import { useCartSync } from "./hooks/useCartSync";
 import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
 
-// Store pages
-import StoreAbout from "./pages/store/StoreAbout";
-import StoreTerms from "./pages/store/StoreTerms";
-import StorePrivacy from "./pages/store/StorePrivacy";
-import StoreRefundPolicy from "./pages/store/StoreRefundPolicy";
-import StoreShipping from "./pages/store/StoreShipping";
-import StoreReturns from "./pages/store/StoreReturns";
-import StoreFAQ from "./pages/store/StoreFAQ";
-import StoreContact from "./pages/store/StoreContact";
-import StoreOrderTracking from "./pages/store/StoreOrderTracking";
-import StoreOrders from "./pages/store/StoreOrders";
+// Store pages (lazy)
+const StoreAbout = lazy(() => import("./pages/store/StoreAbout"));
+const StoreTerms = lazy(() => import("./pages/store/StoreTerms"));
+const StorePrivacy = lazy(() => import("./pages/store/StorePrivacy"));
+const StoreRefundPolicy = lazy(() => import("./pages/store/StoreRefundPolicy"));
+const StoreShipping = lazy(() => import("./pages/store/StoreShipping"));
+const StoreReturns = lazy(() => import("./pages/store/StoreReturns"));
+const StoreFAQ = lazy(() => import("./pages/store/StoreFAQ"));
+const StoreContact = lazy(() => import("./pages/store/StoreContact"));
+const StoreOrderTracking = lazy(() => import("./pages/store/StoreOrderTracking"));
+const StoreOrders = lazy(() => import("./pages/store/StoreOrders"));
 
 const queryClient = new QueryClient();
 
@@ -113,6 +113,7 @@ const App = () => (
             <Navigation />
             <StoreSubNav />
             <main className="flex-1">
+              <Suspense fallback={<div className="min-h-[40vh]" aria-hidden />}>
               <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<HomeRouter />} />
@@ -184,6 +185,7 @@ const App = () => (
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
             </main>
             <AppFooter />
           </div>
