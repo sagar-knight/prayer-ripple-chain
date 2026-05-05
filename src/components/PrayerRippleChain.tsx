@@ -237,63 +237,34 @@ const RippleList = ({
             {/* Visual ripple flow */}
             <RippleFlow depth={chain.rippleDepth} unique={chain.uniquePeople} />
 
-            {/* Tiny stats row */}
-            <div className="grid grid-cols-3 gap-2 text-center max-w-sm mx-auto">
-              <div>
-                <div className="text-lg font-semibold text-foreground">{chain.uniquePeople}</div>
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">People prayed</div>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground">{chain.forwardCount}</div>
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Forwarded</div>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground">{chain.rippleDepth}</div>
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Ripple depth</div>
-              </div>
-            </div>
-
             {/* Single main line: people praying */}
             <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
               <Heart className="h-3.5 w-3.5 text-primary/60" />
               <span>
                 {chain.uniquePeople > 0
-                  ? `${chain.uniquePeople} ${
+                  ? `🙏 ${chain.uniquePeople} ${
                       chain.uniquePeople === 1 ? "person is" : "people are"
                     } praying with you`
                   : "Your request has been shared. People will pray for you soon."}
               </span>
             </div>
 
-            {/* Optional share metric (only if > 0) */}
-            {chain.forwardCount > 0 && (
-              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Share2 className="h-3 w-3 text-primary/60" />
-                <span>
-                  Shared {chain.forwardCount}{" "}
-                  {chain.forwardCount === 1 ? "time" : "times"}
-                </span>
-              </div>
-            )}
-
             {/* Calm recent activity hint */}
             {recentlyPrayed(chain.lastPrayedAt) && (
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Sparkles className="h-3 w-3 text-primary/60" />
-                <span>Someone prayed recently</span>
+                <span>✨ Someone prayed recently</span>
               </div>
             )}
 
-            {/* Milestone message */}
-            {chain.prayedCount >= 5 && (
-              <div className="bg-primary/5 rounded-lg p-3 text-center">
-                <p className="text-sm text-primary font-medium italic">
-                  {chain.prayedCount >= 25
-                    ? "Your request has been carried in prayer by many across the community."
-                    : chain.prayedCount >= 10
-                    ? "Several people have joined in prayer for this request."
-                    : "This prayer is being lifted up by the community."}
-                </p>
+            {/* Optional small ripple info (only if > 0) */}
+            {chain.forwardCount > 0 && (
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <Share2 className="h-3 w-3 text-primary/60" />
+                <span>
+                  🔁 Shared {chain.forwardCount}{" "}
+                  {chain.forwardCount === 1 ? "time" : "times"}
+                </span>
               </div>
             )}
 
