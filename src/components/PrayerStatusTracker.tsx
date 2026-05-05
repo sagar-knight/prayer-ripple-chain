@@ -82,15 +82,12 @@ const PrayerStatusTracker = () => {
   // Reassurance helper: format prayer activity message
   const getPrayerMessage = (count: number, uniquePeople: number) => {
     if (count === 0) {
-      return "Your request has been shared. People are being invited to pray.";
+      return "Be the first to pray 🙏";
     }
-    if (count === 1) {
-      return "Someone has prayed for you.";
-    }
-    if (uniquePeople > 1) {
-      return `${uniquePeople} people have been praying for your request.`;
-    }
-    return "People have been praying for your request.";
+    const people = Math.max(uniquePeople, 1);
+    return people === 1
+      ? "🙏 1 person is praying with you"
+      : `🙏 ${people} people are praying with you`;
   };
 
   if (!user) {
@@ -180,18 +177,13 @@ const PrayerStatusTracker = () => {
                 </p>
               </div>
 
-              {/* Prayer activity summary (no progress bars) */}
-              {request.prayerCount > 0 && (
-                <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Heart className="h-4 w-4 text-primary/60" />
-                    {request.uniquePeople} {request.uniquePeople === 1 ? "person" : "people"} prayed
+              {/* Optional share metric (only if > 0) */}
+              {request.passedForward > 0 && (
+                <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                  <span>
+                    Shared {request.passedForward}{" "}
+                    {request.passedForward === 1 ? "time" : "times"}
                   </span>
-                  {request.passedForward > 0 && (
-                    <span className="flex items-center gap-1">
-                      Passed forward {request.passedForward} {request.passedForward === 1 ? "time" : "times"}
-                    </span>
-                  )}
                 </div>
               )}
 

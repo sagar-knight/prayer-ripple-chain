@@ -1,7 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
-import { Badge } from "@/components/ui/badge";
-import { Heart, Users, Share2, Loader2 } from "lucide-react";
+import { Heart, Share2, Sparkles, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -18,6 +17,7 @@ interface PrayerChainData {
   prayedCount: number;
   uniquePeople: number;
   forwardCount: number;
+  lastPrayedAt: Date | null;
   chain: ChainNode[];
 }
 
@@ -62,7 +62,7 @@ const PrayerRippleChain = () => {
       // Fetch action counts for chain visualization
       const { data: actions } = await supabase
         .from("prayer_actions")
-        .select("prayer_id, action_type, user_id")
+        .select("prayer_id, action_type, user_id, created_at")
         .in("prayer_id", prayerIds);
 
       // Build chains
@@ -103,6 +103,10 @@ const PrayerRippleChain = () => {
           });
         });
 
+        const lastAction = reqActions
+          .map((a) => new Date(a.created_at as any))
+          .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
+
         return {
           prayerId: req.id,
           title: req.title,
@@ -110,6 +114,7 @@ const PrayerRippleChain = () => {
           prayedCount: coverage?.current_prayers ?? req.prayer_count,
           uniquePeople: coverage?.unique_people_prayed ?? 0,
           forwardCount: coverage?.passed_forward_count ?? 0,
+          lastPrayedAt: lastAction,
           chain,
         };
       });
@@ -136,6 +141,9 @@ const PrayerRippleChain = () => {
     );
   }
 
+  const recentlyPrayed = (date: Date | null) =>
+    !!date && Date.now() - date.getTime() < 24 * 60 * 60 * 1000;
+
   return (
     <div className="space-y-6">
       {chains.map((chain) => (
@@ -151,75 +159,34 @@ const PrayerRippleChain = () => {
             <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
               {chain.title}
             </p>
+            {/* Single main line: people praying */}
             <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
               <Heart className="h-3.5 w-3.5 text-primary/60" />
               <span>
                 {chain.uniquePeople > 0
-                  ? `${chain.uniquePeople} ${chain.uniquePeople === 1 ? "person has" : "people have"} prayed for this`
-                  : "Waiting for prayer"}
+                  ? `🙏 ${chain.uniquePeople} ${
+                      chain.uniquePeople === 1 ? "person is" : "people are"
+                    } praying with you`
+                  : "Be the first to pray 🙏"}
               </span>
             </div>
-            {/* Summary stats */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="bg-primary/5 rounded-lg p-3 text-center">
-                <p className="text-lg font-semibold text-foreground">{chain.prayedCount}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  Prayed {chain.prayedCount} {chain.prayedCount === 1 ? "time" : "times"}
-                </p>
-              </div>
-              <div className="bg-primary/5 rounded-lg p-3 text-center">
-                <p className="text-lg font-semibold text-foreground">{chain.uniquePeople}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {chain.uniquePeople} {chain.uniquePeople === 1 ? "person" : "people"} prayed
-                </p>
-              </div>
-              <div className="bg-primary/5 rounded-lg p-3 text-center">
-                <p className="text-lg font-semibold text-foreground">{chain.forwardCount}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  Passed forward {chain.forwardCount} {chain.forwardCount === 1 ? "time" : "times"}
-                </p>
-              </div>
-            </div>
 
-            {/* Visual chain */}
-            {chain.chain.length > 1 && (
-              <div className="space-y-0">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-                  Prayer Chain
-                </p>
-                <div className="space-y-0">
-                  {chain.chain.map((node, idx) => (
-                    <div key={idx} className="flex items-stretch">
-                      {/* Vertical line connector */}
-                      <div className="flex flex-col items-center mr-3 w-6">
-                        <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                            node.type === "requester"
-                              ? "bg-primary/20"
-                              : node.type === "shared"
-                              ? "bg-accent/20"
-                              : "bg-primary/10"
-                          }`}
-                        >
-                          {node.type === "requester" ? (
-                            <Heart className="h-3 w-3 text-primary" />
-                          ) : node.type === "shared" ? (
-                            <Share2 className="h-3 w-3 text-accent-foreground" />
-                          ) : (
-                            <Users className="h-3 w-3 text-primary" />
-                          )}
-                        </div>
-                        {idx < chain.chain.length - 1 && (
-                          <div className="w-px flex-1 bg-primary/15 min-h-[12px]" />
-                        )}
-                      </div>
-                      {/* Label */}
-                      <div className="pb-3 flex items-start">
-                        <p className="text-sm text-foreground/80 pt-0.5">{node.label}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            {/* Optional share metric (only if > 0) */}
+            {chain.forwardCount > 0 && (
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <Share2 className="h-3 w-3 text-primary/60" />
+                <span>
+                  Shared {chain.forwardCount}{" "}
+                  {chain.forwardCount === 1 ? "time" : "times"}
+                </span>
+              </div>
+            )}
+
+            {/* Calm recent activity hint */}
+            {recentlyPrayed(chain.lastPrayedAt) && (
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <Sparkles className="h-3 w-3 text-primary/60" />
+                <span>Someone prayed recently</span>
               </div>
             )}
 
