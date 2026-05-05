@@ -8,16 +8,31 @@ import {
   MessageCircle,
   PartyPopper,
   Loader2,
+  Sprout,
+  Send,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+type PrayerStatus = "open" | "progress" | "answered" | "archived";
 
 const PrayerStatusTracker = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [updateOpenFor, setUpdateOpenFor] = useState<string | null>(null);
+  const [updateMessage, setUpdateMessage] = useState("");
 
   // Fetch user's global prayer requests with coverage data
   const { data: myRequests, isLoading } = useQuery({
@@ -44,8 +59,25 @@ const PrayerStatusTracker = () => {
         (coverageData || []).map((c) => [c.prayer_id, c])
       );
 
+      // Fetch latest update per prayer
+      const { data: updatesData } = await supabase
+        .from("prayer_updates" as any)
+        .select("prayer_request_id, message, created_at")
+        .in("prayer_request_id", prayerIds)
+        .order("created_at", { ascending: false });
+      const latestUpdate = new Map<string, { message: string; created_at: string }>();
+      ((updatesData || []) as any[]).forEach((u) => {
+        if (!latestUpdate.has(u.prayer_request_id)) {
+          latestUpdate.set(u.prayer_request_id, {
+            message: u.message,
+            created_at: u.created_at,
+          });
+        }
+      });
+
       return requests.map((r) => {
         const coverage = coverageMap.get(r.id);
+        const upd = latestUpdate.get(r.id);
         return {
           id: r.id,
           title: r.title,
@@ -54,28 +86,60 @@ const PrayerStatusTracker = () => {
           uniquePeople: coverage?.unique_people_prayed ?? 0,
           passedForward: coverage?.passed_forward_count ?? 0,
           targetPrayers: coverage?.target_prayers ?? 3,
-          status: r.status as "open" | "answered",
+          status: r.status as PrayerStatus,
           createdAt: r.created_at,
+          latestUpdate: upd?.message ?? null,
+          latestUpdateAt: upd?.created_at ?? null,
         };
       });
     },
     enabled: !!user,
   });
 
-  const markAnswered = useMutation({
-    mutationFn: async (requestId: string) => {
+  const setStatus = useMutation({
+    mutationFn: async ({
+      requestId,
+      status,
+    }: {
+      requestId: string;
+      status: PrayerStatus;
+    }) => {
+      const patch: Record<string, any> = { status };
+      if (status === "answered") patch.answered_at = new Date().toISOString();
       const { error } = await supabase
         .from("global_prayer_requests")
-        .update({ status: "answered", answered_at: new Date().toISOString() })
+        .update(patch)
         .eq("id", requestId);
+      if (error) throw error;
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["my_prayer_requests"] });
+      const messages: Record<PrayerStatus, { title: string; description: string }> = {
+        open: { title: "Marked as still needing prayer", description: "Your request is active again." },
+        progress: { title: "Seeing progress", description: "Thank you for sharing the journey." },
+        answered: { title: "Prayer answered", description: "Praise God! Your testimony encourages others." },
+        archived: { title: "Archived", description: "Moved to your history." },
+      };
+      toast(messages[vars.status]);
+    },
+  });
+
+  const postUpdate = useMutation({
+    mutationFn: async ({ requestId, message }: { requestId: string; message: string }) => {
+      if (!user) throw new Error("Not signed in");
+      const { error } = await supabase.from("prayer_updates" as any).insert({
+        prayer_request_id: requestId,
+        author_user_id: user.id,
+        source_type: "global",
+        message,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my_prayer_requests"] });
-      toast({
-        title: "Prayer Answered",
-        description: "Praise God! Your testimony encourages others.",
-      });
+      toast({ title: "Update shared", description: "Your update is visible to those who prayed." });
+      setUpdateOpenFor(null);
+      setUpdateMessage("");
     },
   });
 
@@ -161,8 +225,17 @@ const PrayerStatusTracker = () => {
                 {request.status === "answered" && (
                   <Badge className="bg-primary text-primary-foreground gap-1">
                     <CheckCircle className="h-3 w-3" />
-                    Answered
+                    Prayer answered
                   </Badge>
+                )}
+                {request.status === "progress" && (
+                  <Badge variant="secondary" className="gap-1">
+                    <Sprout className="h-3 w-3" />
+                    Seeing progress
+                  </Badge>
+                )}
+                {request.status === "archived" && (
+                  <Badge variant="outline" className="text-xs">Archived</Badge>
                 )}
               </div>
             </CardHeader>
@@ -196,31 +269,110 @@ const PrayerStatusTracker = () => {
                 </p>
               </div>
 
-              {/* Action Buttons */}
-              {request.status === "open" && (
-                <div className="flex gap-2">
-                  <Button
-                    variant="peaceful"
-                    size="sm"
-                    className="flex-1 gap-2"
-                    onClick={() => markAnswered.mutate(request.id)}
-                    disabled={markAnswered.isPending}
-                  >
-                    <PartyPopper className="h-4 w-4" />
-                    Mark as Answered
-                  </Button>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <MessageCircle className="h-4 w-4" />
-                    Share Update
-                  </Button>
+              {/* Latest update preview */}
+              {request.latestUpdate && (
+                <div className="rounded-lg border bg-muted/30 p-3">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                    Latest update
+                  </p>
+                  <p className="text-sm text-foreground">{request.latestUpdate}</p>
                 </div>
               )}
 
-              {request.status === "answered" && (
-                <Button variant="warm" size="sm" className="w-full gap-2">
-                  <Heart className="h-4 w-4" />
-                  Share Testimony
-                </Button>
+              {/* Gentle update prompt for active prayers without recent updates */}
+              {request.status !== "archived" &&
+                !request.latestUpdate &&
+                Date.now() - new Date(request.createdAt).getTime() > 4 * 24 * 60 * 60 * 1000 && (
+                  <p className="text-xs text-muted-foreground italic text-center">
+                    Would you like to share an update?
+                  </p>
+                )}
+
+              {/* Status + update actions */}
+              {request.status !== "archived" && (
+                <div className="flex flex-wrap gap-2">
+                  {request.status !== "open" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setStatus.mutate({ requestId: request.id, status: "open" })}
+                      disabled={setStatus.isPending}
+                    >
+                      <Heart className="h-4 w-4" />
+                      Still need prayer
+                    </Button>
+                  )}
+                  {request.status !== "progress" && request.status !== "answered" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setStatus.mutate({ requestId: request.id, status: "progress" })}
+                      disabled={setStatus.isPending}
+                    >
+                      <Sprout className="h-4 w-4" />
+                      Seeing progress
+                    </Button>
+                  )}
+                  {request.status !== "answered" && (
+                    <Button
+                      variant="peaceful"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setStatus.mutate({ requestId: request.id, status: "answered" })}
+                      disabled={setStatus.isPending}
+                    >
+                      <PartyPopper className="h-4 w-4" />
+                      Prayer answered
+                    </Button>
+                  )}
+
+                  <Dialog
+                    open={updateOpenFor === request.id}
+                    onOpenChange={(o) => {
+                      setUpdateOpenFor(o ? request.id : null);
+                      if (!o) setUpdateMessage("");
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="gap-2">
+                        <MessageCircle className="h-4 w-4" />
+                        Share update
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="font-playfair">Share an update</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                          A short note for those praying with you.
+                        </p>
+                        <Textarea
+                          placeholder="Surgery went well. Thank you everyone..."
+                          value={updateMessage}
+                          onChange={(e) => setUpdateMessage(e.target.value)}
+                          maxLength={500}
+                          className="min-h-[100px]"
+                        />
+                        <Button
+                          className="w-full gap-2"
+                          disabled={!updateMessage.trim() || postUpdate.isPending}
+                          onClick={() =>
+                            postUpdate.mutate({
+                              requestId: request.id,
+                              message: updateMessage.trim(),
+                            })
+                          }
+                        >
+                          <Send className="h-4 w-4" />
+                          Post update
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               )}
             </CardContent>
           </Card>

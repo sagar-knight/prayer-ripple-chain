@@ -1287,6 +1287,33 @@ export type Database = {
         }
         Relationships: []
       }
+      prayer_updates: {
+        Row: {
+          author_user_id: string
+          created_at: string
+          id: string
+          message: string
+          prayer_request_id: string
+          source_type: string
+        }
+        Insert: {
+          author_user_id: string
+          created_at?: string
+          id?: string
+          message: string
+          prayer_request_id: string
+          source_type?: string
+        }
+        Update: {
+          author_user_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          prayer_request_id?: string
+          source_type?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1615,6 +1642,7 @@ export type Database = {
       }
     }
     Functions: {
+      auto_archive_stale_prayers: { Args: never; Returns: number }
       generate_prayer_short_code: { Args: never; Returns: string }
       generate_prayer_slug: { Args: { _title: string }; Returns: string }
       get_church_role: {
