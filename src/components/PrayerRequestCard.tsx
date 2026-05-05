@@ -66,10 +66,10 @@ const PrayerRequestCard = ({
     prayerCount === undefined
       ? null
       : prayerCount === 0
-        ? "Be the first to pray 🙏"
+        ? "Be the first to pray"
         : prayerCount === 1
-          ? "🙏 1 person is praying with you"
-          : `🙏 ${prayerCount} people are praying with you`;
+          ? "1 person is praying with you"
+          : `${prayerCount} people are praying with you`;
 
   return (
     <motion.div
