@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Waves, Heart, Users, Share2, Sparkles } from "lucide-react";
+import { Waves, Heart, Users, Share2, Sparkles, HandHeart, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerChainsDetail from "@/components/PrayerChainsDetail";
@@ -168,9 +168,10 @@ const RippleImpact = () => {
   const { data: globalData } = useQuery({
     queryKey: ["global_prayer_stats"],
     queryFn: async () => {
-      const [prayersRes, churchesRes] = await Promise.all([
+      const [prayersRes, churchesRes, actionsRes] = await Promise.all([
         supabase.from("global_prayer_requests").select("id, status", { count: "exact", head: false }),
         supabase.from("churches_public").select("id", { count: "exact", head: true }),
+        supabase.from("prayer_actions").select("id", { count: "exact", head: true }).eq("action_type", "prayed"),
       ]);
       const total = prayersRes.data?.length ?? 0;
       const answered = prayersRes.data?.filter((r) => r.status === "answered").length ?? 0;
@@ -180,6 +181,8 @@ const RippleImpact = () => {
         activeRequests: active,
         churchesConnected: churchesRes.count ?? 0,
         answeredPrayers: answered,
+        prayersOffered: actionsRes.count ?? 0,
+        peopleCovered: total,
       };
     },
   });
@@ -189,6 +192,8 @@ const RippleImpact = () => {
     activeRequests: 0,
     churchesConnected: 0,
     answeredPrayers: 0,
+    prayersOffered: 0,
+    peopleCovered: 0,
   };
 
   // Derived "lives reached" estimate: each prayer offered may ripple ~3 lives forward
@@ -364,28 +369,30 @@ const RippleImpact = () => {
           <div className="absolute inset-0 bg-aurora opacity-30 mix-blend-overlay pointer-events-none" />
           <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/10 blur-3xl pointer-events-none" />
           <CardHeader className="text-center">
-            <CardTitle className="font-playfair text-2xl">Global Prayer Community</CardTitle>
+            <CardTitle className="font-playfair text-2xl">Prayer in Action</CardTitle>
             <p className="text-primary-foreground/90">
-              You are part of a worldwide community of prayer.
+              See how prayers are spreading across the world
             </p>
           </CardHeader>
           <CardContent className="relative">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div className="space-y-1">
-                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.totalPrayers} /></div>
-                <div className="text-sm opacity-90">Prayer Requests</div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center max-w-3xl mx-auto">
+              <div className="space-y-2 flex flex-col items-center">
+                <HandHeart className="h-7 w-7 opacity-90" />
+                <div className="text-4xl font-bold tracking-tight"><AnimatedNumber value={globalStats.prayersOffered} /></div>
+                <div className="text-sm font-medium opacity-95">Prayers Offered</div>
+                <div className="text-xs opacity-75">Lifted up by this community</div>
               </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.activeRequests} /></div>
-                <div className="text-sm opacity-90">Needing Prayer</div>
+              <div className="space-y-2 flex flex-col items-center">
+                <User className="h-7 w-7 opacity-90" />
+                <div className="text-4xl font-bold tracking-tight"><AnimatedNumber value={globalStats.peopleCovered} /></div>
+                <div className="text-sm font-medium opacity-95">People Covered</div>
+                <div className="text-xs opacity-75">Receiving prayer right now</div>
               </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.churchesConnected} /></div>
-                <div className="text-sm opacity-90">Churches Connected</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-3xl font-bold"><AnimatedNumber value={globalStats.answeredPrayers} /></div>
-                <div className="text-sm opacity-90">Answered Prayers</div>
+              <div className="space-y-2 flex flex-col items-center">
+                <Sparkles className="h-7 w-7 opacity-90" />
+                <div className="text-4xl font-bold tracking-tight"><AnimatedNumber value={globalStats.answeredPrayers} /></div>
+                <div className="text-sm font-medium opacity-95">Answered Prayers</div>
+                <div className="text-xs opacity-75">Stories of God at work</div>
               </div>
             </div>
           </CardContent>
