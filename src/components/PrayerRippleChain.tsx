@@ -167,7 +167,7 @@ const PrayerRippleChain = () => {
                   ? `${chain.uniquePeople} ${
                       chain.uniquePeople === 1 ? "person is" : "people are"
                     } praying with you`
-                  : "Be the first to pray"}
+                  : "Your request has been shared. People will pray for you soon."}
               </span>
             </div>
 
