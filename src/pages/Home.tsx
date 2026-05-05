@@ -39,7 +39,7 @@ const Home = () => {
               Someone needs your prayer today
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Pray for one request, encourage someone, and see how prayer moves forward.
+              Pray for one request and encourage someone.
             </p>
           </div>
 
