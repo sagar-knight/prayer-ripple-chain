@@ -907,6 +907,36 @@ export type Database = {
         }
         Relationships: []
       }
+      go_live_plan_notes: {
+        Row: {
+          author: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          note_body: string | null
+          note_title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_body?: string | null
+          note_title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_body?: string | null
+          note_title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       moderation_queue: {
         Row: {
           admin_notes: string | null
