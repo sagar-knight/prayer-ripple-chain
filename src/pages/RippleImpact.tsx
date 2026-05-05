@@ -356,11 +356,8 @@ const RippleImpact = () => {
           })}
         </div>
 
-        {/* Prayer Ripple Chain Visualization */}
+        {/* Prayer Ripple Visualization */}
         <div>
-          <h2 className="section-title text-2xl mb-6">
-            Your Prayer Requests
-          </h2>
           <PrayerRippleChain />
         </div>
 
