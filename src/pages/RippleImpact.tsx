@@ -342,32 +342,7 @@ const RippleImpact = () => {
             </p>
           </div>
 
-          {/* Three core ripple metrics (max 3) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            <Card className="card-glass border-0 hover-glow">
-              <CardContent className="pt-6 pb-6 text-center space-y-2">
-                <Heart className="h-5 w-5 text-primary mx-auto" />
-                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={ripple.peoplePraying} /></p>
-                <p className="text-sm text-muted-foreground">people are praying with you</p>
-              </CardContent>
-            </Card>
-            <Card className="card-glass border-0 hover-glow">
-              <CardContent className="pt-6 pb-6 text-center space-y-2">
-                <Share2 className="h-5 w-5 text-accent mx-auto" />
-                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={ripple.shares} /></p>
-                <p className="text-sm text-muted-foreground">{ripple.shares === 1 ? "share" : "shares"}</p>
-              </CardContent>
-            </Card>
-            <Card className="card-glass border-0 hover-glow">
-              <CardContent className="pt-6 pb-6 text-center space-y-2">
-                <Globe2 className="h-5 w-5 text-success mx-auto" />
-                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={ripple.countries} /></p>
-                <p className="text-sm text-muted-foreground">{ripple.countries === 1 ? "country reached" : "countries reached"}</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Lifecycle counts */}
+          {/* Lifecycle counts (different data: status of your requests) */}
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
             <div className="card-glass rounded-xl p-4 text-center">
               <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.active} /></p>
@@ -415,40 +390,42 @@ const RippleImpact = () => {
             </CardContent>
           </Card>
 
-          {/* Ripple circle visualization (kept, smaller) */}
-          <Card className="card-glass border-0 overflow-hidden hover-glow max-w-md mx-auto">
-            <CardContent className="pt-6 pb-4">
+          {/* Ripple circle visualization with merged impact metrics */}
+          <Card className="card-glass border-0 overflow-hidden hover-glow max-w-xl mx-auto">
+            <CardContent className="pt-6 pb-6">
               <div className="text-center mb-3">
                 <h3 className="font-playfair text-xl font-semibold text-foreground">A picture of your ripple</h3>
                 <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
                   Each light is a person carried in prayer.
                 </p>
               </div>
-              <div className="scale-75 origin-top mx-auto">
+              <div className="scale-90 origin-top mx-auto">
                 <RippleVisualization
                   centerLabel="YOU"
                   layerCounts={layerCounts}
                   countryStats={ripple.countryStats}
                 />
               </div>
-              {/* Meaning text */}
-              <p className="text-center text-xs text-muted-foreground italic mt-2">
+              <p className="text-center text-xs text-muted-foreground italic mt-3">
                 Each light represents someone praying with you
               </p>
-              {/* Impact summary */}
-              <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5">
-                  <Heart className="h-3.5 w-3.5 text-primary" />
-                  {ripple.peoplePraying} praying with you
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Globe2 className="h-3.5 w-3.5 text-success" />
-                  Reached {ripple.countries} {ripple.countries === 1 ? "country" : "countries"}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Share2 className="h-3.5 w-3.5 text-accent" />
-                  Shared {ripple.shares} {ripple.shares === 1 ? "time" : "times"}
-                </span>
+              {/* Single source of truth for the three core metrics */}
+              <div className="mt-5 grid grid-cols-3 gap-3 max-w-md mx-auto">
+                <div className="text-center">
+                  <Heart className="h-4 w-4 text-primary mx-auto mb-1" />
+                  <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.peoplePraying} /></p>
+                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">praying with you</p>
+                </div>
+                <div className="text-center">
+                  <Share2 className="h-4 w-4 text-accent mx-auto mb-1" />
+                  <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.shares} /></p>
+                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{ripple.shares === 1 ? "share" : "shares"}</p>
+                </div>
+                <div className="text-center">
+                  <Globe2 className="h-4 w-4 text-success mx-auto mb-1" />
+                  <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.countries} /></p>
+                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{ripple.countries === 1 ? "country reached" : "countries reached"}</p>
+                </div>
               </div>
             </CardContent>
           </Card>
