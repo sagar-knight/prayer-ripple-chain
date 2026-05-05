@@ -33,6 +33,7 @@ const PrayerImpactDialog = ({
   onShare,
 }: PrayerImpactDialogProps) => {
   const [countryCount, setCountryCount] = useState<number | null>(null);
+  const [shareCount, setShareCount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -43,12 +44,17 @@ const PrayerImpactDialog = ({
       try {
         const { data } = await supabase
           .from("prayer_actions" as any)
-          .select("prayer_country_code")
-          .eq("prayer_id", prayerId)
-          .not("prayer_country_code", "is", null);
+          .select("prayer_country_code, action_type")
+          .eq("prayer_id", prayerId);
         if (cancelled) return;
-        const set = new Set(((data || []) as any[]).map((a) => a.prayer_country_code));
+        const rows = (data || []) as any[];
+        const set = new Set(
+          rows.filter((a) => a.prayer_country_code).map((a) => a.prayer_country_code)
+        );
         setCountryCount(set.size);
+        setShareCount(
+          rows.filter((a) => a.action_type === "shared" || a.action_type === "forwarded").length
+        );
       } catch {
         if (!cancelled) setCountryCount(null);
       } finally {
@@ -87,13 +93,24 @@ const PrayerImpactDialog = ({
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               Counting reach...
             </div>
-          ) : countryCount !== null && countryCount > 0 ? (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Globe2 className="h-4 w-4 text-primary" />
-              This prayer has reached {countryCount}{" "}
-              {countryCount === 1 ? "country" : "countries"}.
-            </div>
-          ) : null}
+          ) : (
+            <>
+              {shareCount > 0 && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Share2 className="h-4 w-4 text-accent" />
+                  This prayer has been shared {shareCount}{" "}
+                  {shareCount === 1 ? "time" : "times"}.
+                </div>
+              )}
+              {countryCount !== null && countryCount > 0 && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Globe2 className="h-4 w-4 text-primary" />
+                  It has reached {countryCount}{" "}
+                  {countryCount === 1 ? "country" : "countries"}.
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 pt-2">
