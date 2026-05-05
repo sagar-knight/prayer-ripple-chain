@@ -46,12 +46,12 @@ interface Props {
   originCode?: string | null;
 }
 
-const WorldRippleMap = ({ data, metric = "prayers", originCode }: Props) => {
+const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) => {
   const [hover, setHover] = useState<CountryStat | null>(null);
   const [selected, setSelected] = useState<CountryStat | null>(null);
 
   const points = useMemo(() => {
-    return data
+    return (data || [])
       .map((d) => ({
         ...d,
         coords: COUNTRY_CENTROIDS[d.country_code] || null,
