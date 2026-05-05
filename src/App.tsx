@@ -70,6 +70,12 @@ const StoreContact = lazy(() => import("./pages/store/StoreContact"));
 const StoreOrderTracking = lazy(() => import("./pages/store/StoreOrderTracking"));
 const StoreOrders = lazy(() => import("./pages/store/StoreOrders"));
 
+// Legal / policy pages (lazy)
+const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
+const TermsOfUse = lazy(() => import("./pages/legal/TermsOfUse"));
+const CommunityGuidelines = lazy(() => import("./pages/legal/CommunityGuidelines"));
+const Disclaimer = lazy(() => import("./pages/legal/Disclaimer"));
+
 const queryClient = new QueryClient();
 
 const AppContent = () => {
@@ -124,6 +130,12 @@ const App = () => (
                 <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/support" element={<SupportMission />} />
+
+                {/* Legal & policy */}
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfUse />} />
+                <Route path="/guidelines" element={<CommunityGuidelines />} />
+                <Route path="/disclaimer" element={<Disclaimer />} />
 
                 {/* Store routes */}
                 <Route path="/store" element={<Store />} />
