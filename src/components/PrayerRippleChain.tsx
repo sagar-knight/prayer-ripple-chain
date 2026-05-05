@@ -164,10 +164,10 @@ const PrayerRippleChain = () => {
               <Heart className="h-3.5 w-3.5 text-primary/60" />
               <span>
                 {chain.uniquePeople > 0
-                  ? `🙏 ${chain.uniquePeople} ${
+                  ? `${chain.uniquePeople} ${
                       chain.uniquePeople === 1 ? "person is" : "people are"
                     } praying with you`
-                  : "Be the first to pray 🙏"}
+                  : "Be the first to pray"}
               </span>
             </div>
 

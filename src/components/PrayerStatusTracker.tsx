@@ -82,12 +82,12 @@ const PrayerStatusTracker = () => {
   // Reassurance helper: format prayer activity message
   const getPrayerMessage = (count: number, uniquePeople: number) => {
     if (count === 0) {
-      return "Be the first to pray 🙏";
+      return "Be the first to pray";
     }
     const people = Math.max(uniquePeople, 1);
     return people === 1
-      ? "🙏 1 person is praying with you"
-      : `🙏 ${people} people are praying with you`;
+      ? "1 person is praying with you"
+      : `${people} people are praying with you`;
   };
 
   if (!user) {
