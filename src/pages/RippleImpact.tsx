@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Waves, Heart, Users, Share2, Sparkles, HandHeart, User } from "lucide-react";
+import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
-import PrayerChainsDetail from "@/components/PrayerChainsDetail";
-import PrayersReceivedDetail from "@/components/PrayersReceivedDetail";
 import PrayerRippleChain from "@/components/PrayerRippleChain";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -143,7 +141,7 @@ const RippleVisualization = ({
 const RippleImpact = () => {
   const { user } = useAuth();
 
-  // Fetch real stats
+  // Fetch real stats (your offered count)
   const { data: stats } = useQuery({
     queryKey: ["user_prayer_stats_ripple", user?.id],
     queryFn: async () => {
@@ -163,6 +161,46 @@ const RippleImpact = () => {
     prayersReceived: stats?.total_prayers_received ?? 0,
     chainStarted: stats?.total_chains_started ?? 0,
   };
+
+  // Fetch the user's OWN prayer requests + ripple metrics on them
+  const { data: myRipple } = useQuery({
+    queryKey: ["my_prayer_ripple", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data: requests } = await supabase
+        .from("global_prayer_requests")
+        .select("id, prayer_count, status")
+        .eq("created_by", user.id);
+      const ids = (requests || []).map((r) => r.id);
+      const peoplePraying = (requests || []).reduce((sum, r) => sum + (r.prayer_count || 0), 0);
+      const active = (requests || []).filter((r) => r.status !== "answered" && r.status !== "archived").length;
+      const answered = (requests || []).filter((r) => r.status === "answered").length;
+
+      let shares = 0;
+      const countries = new Set<string>();
+      if (ids.length > 0) {
+        const { data: actions } = await supabase
+          .from("prayer_actions")
+          .select("action_type, prayer_country_code")
+          .in("prayer_id", ids);
+        for (const a of (actions || []) as any[]) {
+          if (a.action_type === "shared" || a.action_type === "forwarded") shares++;
+          if (a.prayer_country_code) countries.add(a.prayer_country_code);
+        }
+      }
+      return {
+        peoplePraying,
+        shares,
+        countries: countries.size,
+        active,
+        answered,
+        totalRequests: ids.length,
+      };
+    },
+    enabled: !!user,
+  });
+
+  const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0 };
 
   // Fetch global stats from real data
   const { data: globalData } = useQuery({
@@ -196,19 +234,17 @@ const RippleImpact = () => {
     peopleCovered: 0,
   };
 
-  // Derived "lives reached" estimate: each prayer offered may ripple ~3 lives forward
-  const livesReached = userStats.prayersOffered * 3 + userStats.chainStarted * 5;
-  const rippleDepth = userStats.chainStarted > 0 ? Math.min(5, 2 + Math.floor(userStats.chainStarted / 3)) : userStats.prayersOffered > 0 ? 1 : 0;
-
   // Build visualization layers from real numbers (cap so it stays calm)
   const layerCounts = [
-    Math.min(8, Math.max(1, userStats.prayersOffered)),
-    Math.min(10, Math.max(0, Math.floor(userStats.prayersOffered * 1.5))),
-    Math.min(12, Math.max(0, userStats.chainStarted * 3)),
+    Math.min(8, Math.max(1, ripple.peoplePraying || 1)),
+    Math.min(10, Math.max(0, ripple.shares * 2)),
+    Math.min(12, Math.max(0, ripple.countries * 2)),
   ].filter((c, i) => i === 0 || c > 0);
 
   const handleShare = async () => {
-    const message = `Through prayer, ${livesReached} lives have been reached.`;
+    const message = ripple.peoplePraying > 0
+      ? `${ripple.peoplePraying} people are praying with me. Will you join in?`
+      : `Will you pray with me?`;
     try {
       if (navigator.share) {
         await navigator.share({ title: "Prayer Journey", text: message });
@@ -220,41 +256,6 @@ const RippleImpact = () => {
       // user cancelled or unsupported
     }
   };
-
-  const getEncouragingMessage = (count: number) => {
-    if (count === 0) return "Begin your journey by praying for someone today.";
-    if (count < 5) return "You have been praying for others. Thank you.";
-    if (count < 15) return "You've helped carry several requests in prayer.";
-    return "You are part of a growing circle of prayer.";
-  };
-
-  const metricCards = [
-    {
-      label: "Prayed for Others",
-      value: userStats.prayersOffered,
-      description: getEncouragingMessage(userStats.prayersOffered),
-      icon: Heart,
-      detail: "offered" as const,
-    },
-    {
-      label: "People Praying for You",
-      value: userStats.prayersReceived,
-      description: userStats.prayersReceived > 0
-        ? "People have been praying for your requests."
-        : "Share a request and others will pray with you.",
-      icon: Users,
-      detail: "received" as const,
-    },
-    {
-      label: "Prayers Passed Forward",
-      value: userStats.chainStarted,
-      description: userStats.chainStarted > 0
-        ? "Your prayers have been shared with others who joined in."
-        : "When you pass a prayer forward, more people join in.",
-      icon: Waves,
-      detail: "chains" as const,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-mesh py-12 pb-24 relative overflow-hidden">
@@ -270,139 +271,116 @@ const RippleImpact = () => {
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-md border border-primary/20 text-xs font-medium text-primary mb-5 shadow-sm">
               <Sparkles className="h-3.5 w-3.5" />
-              Your Ripple of Prayer
+              You are not alone
             </div>
             <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
-              Your prayers are <span className="text-gradient">moving</span>
+              People are <span className="text-gradient">praying with you</span>
               <span className="ml-2 relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-gradient-primary shadow-[0_0_24px_hsl(var(--success)/0.35)] animate-float-slow align-middle">
                 <Sparkles className="h-5 w-5 text-white" strokeWidth={2.25} />
               </span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Every prayer creates a ripple. See how yours have spread.
+              See how your prayer requests are being carried in prayer by others.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mt-8">
-              <div className="card-glass rounded-2xl p-5 text-center hover-glow animate-rise-in">
-                <p className="text-4xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-semibold">People prayed for</p>
-              </div>
-              <div className="card-glass rounded-2xl p-5 text-center hover-glow animate-rise-in" style={{ animationDelay: "120ms" }}>
-                <p className="text-4xl font-bold text-success"><AnimatedNumber value={livesReached} /></p>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-semibold">Lives reached</p>
-              </div>
-              <div className="card-glass rounded-2xl p-5 text-center hover-glow animate-rise-in" style={{ animationDelay: "240ms" }}>
-                <p className="text-4xl font-bold text-primary"><AnimatedNumber value={rippleDepth} /></p>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-semibold">Ripple layers</p>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Ripple Visualization */}
-        <Card className="card-glass border-0 overflow-hidden animate-rise-in hover-glow">
-          <CardContent className="pt-8 pb-6">
-            <div className="text-center mb-4">
-              <h2 className="font-playfair text-2xl font-semibold text-foreground">A picture of your prayer ripple</h2>
-              <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
-                Each light is a person carried in prayer. The circle grows as prayer is passed forward.
-              </p>
-            </div>
-            <RippleVisualization centerLabel="YOU" layerCounts={layerCounts} />
-          </CardContent>
-        </Card>
+        {/* ============ SECTION A — Your Prayer Requests (ripple lives here) ============ */}
+        <section className="space-y-6">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
+              <Heart className="h-5 w-5 text-primary" />
+              Your Prayer Requests
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1.5">
+              How your requests are being carried in prayer.
+            </p>
+          </div>
 
-        {/* Live Impact Card */}
-        {userStats.chainStarted > 0 && (
-          <Card className="card-glass border-success/20 animate-rise-in animate-glow-pulse">
-            <CardContent className="pt-6 pb-6 flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-success/15 flex items-center justify-center ring-1 ring-success/20">
-                <Sparkles className="h-5 w-5 text-success animate-peaceful-glow" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">Prayer is being passed forward</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-                  Someone you prayed for has been lifted up by others, continuing the chain you helped begin.
+          {/* Three core ripple metrics (max 3) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            <Card className="card-glass border-0 hover-glow">
+              <CardContent className="pt-6 pb-6 text-center space-y-2">
+                <Heart className="h-5 w-5 text-primary mx-auto" />
+                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={ripple.peoplePraying} /></p>
+                <p className="text-sm text-muted-foreground">people are praying with you</p>
+              </CardContent>
+            </Card>
+            <Card className="card-glass border-0 hover-glow">
+              <CardContent className="pt-6 pb-6 text-center space-y-2">
+                <Share2 className="h-5 w-5 text-accent mx-auto" />
+                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={ripple.shares} /></p>
+                <p className="text-sm text-muted-foreground">{ripple.shares === 1 ? "share" : "shares"}</p>
+              </CardContent>
+            </Card>
+            <Card className="card-glass border-0 hover-glow">
+              <CardContent className="pt-6 pb-6 text-center space-y-2">
+                <Globe2 className="h-5 w-5 text-success mx-auto" />
+                <p className="text-3xl font-bold text-foreground"><AnimatedNumber value={ripple.countries} /></p>
+                <p className="text-sm text-muted-foreground">{ripple.countries === 1 ? "country reached" : "countries reached"}</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Lifecycle counts */}
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="card-glass rounded-xl p-4 text-center">
+              <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.active} /></p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1 font-medium">Active requests</p>
+            </div>
+            <div className="card-glass rounded-xl p-4 text-center">
+              <p className="text-2xl font-semibold text-foreground flex items-center justify-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <AnimatedNumber value={ripple.answered} />
+              </p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1 font-medium">Answered prayers</p>
+            </div>
+          </div>
+
+          {/* Ripple visualization */}
+          <Card className="card-glass border-0 overflow-hidden hover-glow">
+            <CardContent className="pt-8 pb-6">
+              <div className="text-center mb-4">
+                <h3 className="font-playfair text-xl font-semibold text-foreground">A picture of your ripple</h3>
+                <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
+                  Each light is a person carried in prayer.
                 </p>
               </div>
+              <RippleVisualization centerLabel="YOU" layerCounts={layerCounts} />
             </CardContent>
           </Card>
-        )}
 
-        {/* Personal Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 animate-gentle-fade">
-          {metricCards.map((card, i) => {
-            const Icon = card.icon;
-            return (
-              <Card
-                key={card.label}
-                className="card-glass border-0 lift-on-hover animate-gentle-fade"
-                style={{ animationDelay: `${i * 80}ms` }}
-              >
-                <CardContent className="pt-7 text-center space-y-3">
-                  <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                    {card.label}
-                  </p>
-                  <p className="text-2xl font-semibold text-foreground">{card.value}</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{card.description}</p>
-                  {card.detail === "offered" && <PrayersOfferedDetail />}
-                  {card.detail === "received" && <PrayersReceivedDetail />}
-                  {card.detail === "chains" && <PrayerChainsDetail />}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Prayer Ripple Visualization */}
-        <div>
+          {/* Per-prayer ripple cards (existing component) */}
           <PrayerRippleChain />
-        </div>
+        </section>
 
-        {/* Global Prayer Network */}
-        <Card className="bg-gradient-primary text-primary-foreground animate-rise-in border-0 shadow-glow relative overflow-hidden rounded-xl">
-          <div className="absolute inset-0 bg-aurora opacity-30 mix-blend-overlay pointer-events-none" />
-          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-          <CardContent className="relative px-6 py-8 sm:px-8 sm:py-10 space-y-6">
-            <div className="text-center space-y-1.5">
-              <h3 className="font-playfair text-2xl flex items-center justify-center gap-2">
-                <Sparkles className="h-5 w-5 opacity-90" />
-                Prayer in Action
-              </h3>
-              <p className="text-sm text-primary-foreground/90">
-                See how prayers are spreading across the world
+        <Separator className="max-w-24 mx-auto bg-primary/20" />
+
+        {/* ============ SECTION B — You Prayed for Others (NO ripple here) ============ */}
+        <section className="space-y-6">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              You Prayed for Others
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1.5">
+              The quiet gift of carrying someone else in prayer.
+            </p>
+          </div>
+
+          <Card className="card-glass border-0 max-w-md mx-auto hover-glow">
+            <CardContent className="pt-7 pb-7 text-center space-y-3">
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
+                <HandHeart className="h-5 w-5 text-primary" />
+              </div>
+              <p className="text-4xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
+              <p className="text-sm text-muted-foreground">
+                You prayed for {userStats.prayersOffered} {userStats.prayersOffered === 1 ? "person" : "people"}.
               </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 text-center max-w-3xl mx-auto">
-              <div className="space-y-2 flex flex-col items-center">
-                <HandHeart className="h-6 w-6 opacity-90" />
-                <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
-                  <AnimatedNumber value={globalStats.prayersOffered} />
-                </div>
-                <div className="text-sm font-medium opacity-95">Prayers Given</div>
-                <div className="text-xs opacity-75">Total prayers offered</div>
-              </div>
-              <div className="space-y-2 flex flex-col items-center">
-                <User className="h-6 w-6 opacity-90" />
-                <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
-                  <AnimatedNumber value={globalStats.peopleCovered} />
-                </div>
-                <div className="text-sm font-medium opacity-95">People Prayed For</div>
-                <div className="text-xs opacity-75">Total people you've prayed for</div>
-              </div>
-              <div className="space-y-2 flex flex-col items-center">
-                <Sparkles className="h-6 w-6 opacity-90" />
-                <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
-                  <AnimatedNumber value={globalStats.answeredPrayers} />
-                </div>
-                <div className="text-sm font-medium opacity-95">Answered Prayers</div>
-                <div className="text-xs opacity-75">Prayers that have been answered</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <PrayersOfferedDetail />
+            </CardContent>
+          </Card>
+        </section>
 
         {/* Share reflection */}
         <Card className="card-glass border-0 animate-gentle-fade">
@@ -411,9 +389,9 @@ const RippleImpact = () => {
               <Share2 className="h-5 w-5 text-accent" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">Share a reflection</p>
+              <p className="text-sm font-semibold text-foreground">Invite someone to pray with you</p>
               <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
-                Invite a friend to join in prayer with you.
+                Share a request so the circle of prayer can grow.
               </p>
             </div>
             <Button variant="outline" onClick={handleShare} className="gap-2">
