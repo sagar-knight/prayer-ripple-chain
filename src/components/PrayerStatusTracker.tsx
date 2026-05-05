@@ -146,7 +146,7 @@ const PrayerStatusTracker = () => {
   // Reassurance helper: format prayer activity message
   const getPrayerMessage = (count: number, uniquePeople: number) => {
     if (count === 0) {
-      return "Be the first to pray";
+      return "Your request has been shared. People will pray for you soon.";
     }
     const people = Math.max(uniquePeople, 1);
     return people === 1
