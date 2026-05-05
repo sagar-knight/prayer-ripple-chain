@@ -28,6 +28,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { useTestAccount } from "@/hooks/useTestAccount";
+import { useUserPrayerCount } from "@/hooks/useUserPrayerCount";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
@@ -46,6 +47,10 @@ const Navigation = () => {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdminRole();
   const { isTestAccount } = useTestAccount();
+  const { count: userPrayerCount } = useUserPrayerCount();
+  // Trust protection: hide Store from authenticated users who haven't engaged
+  // with the core prayer experience yet. Signed-out visitors still see it.
+  const showStore = !user || userPrayerCount >= 3;
   // Main nav items - always visible to everyone
   const mainItems = [
     { href: "/pray", label: "Pray", icon: Users },
@@ -55,13 +60,16 @@ const Navigation = () => {
   ];
 
   // "More" dropdown items
-  const moreItems = [
+  const allMoreItems = [
     { href: "/family", label: "Family", icon: Users },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/store", label: "Store", icon: Store },
     { href: "/support", label: "Support Mission", icon: HandHeart },
     { href: "/calendar", label: "Calendar", icon: Calendar },
   ];
+  const moreItems = allMoreItems.filter(
+    (i) => i.href !== "/store" || showStore
+  );
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
