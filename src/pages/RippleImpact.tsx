@@ -202,38 +202,6 @@ const RippleImpact = () => {
 
   const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0 };
 
-  // Fetch global stats from real data
-  const { data: globalData } = useQuery({
-    queryKey: ["global_prayer_stats"],
-    queryFn: async () => {
-      const [prayersRes, churchesRes, actionsRes] = await Promise.all([
-        supabase.from("global_prayer_requests").select("id, status", { count: "exact", head: false }),
-        supabase.from("churches_public").select("id", { count: "exact", head: true }),
-        supabase.from("prayer_actions").select("id", { count: "exact", head: true }).eq("action_type", "prayed"),
-      ]);
-      const total = prayersRes.data?.length ?? 0;
-      const answered = prayersRes.data?.filter((r) => r.status === "answered").length ?? 0;
-      const active = total - answered;
-      return {
-        totalPrayers: total,
-        activeRequests: active,
-        churchesConnected: churchesRes.count ?? 0,
-        answeredPrayers: answered,
-        prayersOffered: actionsRes.count ?? 0,
-        peopleCovered: total,
-      };
-    },
-  });
-
-  const globalStats = globalData || {
-    totalPrayers: 0,
-    activeRequests: 0,
-    churchesConnected: 0,
-    answeredPrayers: 0,
-    prayersOffered: 0,
-    peopleCovered: 0,
-  };
-
   // Build visualization layers from real numbers (cap so it stays calm)
   const layerCounts = [
     Math.min(8, Math.max(1, ripple.peoplePraying || 1)),
