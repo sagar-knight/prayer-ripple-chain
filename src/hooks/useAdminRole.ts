@@ -5,11 +5,13 @@ import { useAuth } from "./useAuth";
 export function useAdminRole() {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isModerator, setIsModerator] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       setIsAdmin(false);
+      setIsModerator(false);
       setLoading(false);
       return;
     }
@@ -19,13 +21,14 @@ export function useAdminRole() {
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-      setIsAdmin(!!data);
+        .in("role", ["admin", "moderator"]);
+      const roles = (data ?? []).map((r: { role: string }) => r.role);
+      setIsAdmin(roles.includes("admin"));
+      setIsModerator(roles.includes("moderator"));
       setLoading(false);
     };
     check();
   }, [user]);
 
-  return { isAdmin, loading };
+  return { isAdmin, isModerator, isAdminOrModerator: isAdmin || isModerator, loading };
 }
