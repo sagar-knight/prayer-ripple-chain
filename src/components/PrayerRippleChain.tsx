@@ -242,7 +242,7 @@ const RippleList = ({
               <Heart className="h-3.5 w-3.5 text-primary/60" />
               <span>
                 {chain.uniquePeople > 0
-                  ? `🙏 ${chain.uniquePeople} ${
+                  ? `${chain.uniquePeople} ${
                       chain.uniquePeople === 1 ? "person is" : "people are"
                     } praying with you`
                   : "Your request has been shared. People will pray for you soon."}
@@ -253,7 +253,7 @@ const RippleList = ({
             {recentlyPrayed(chain.lastPrayedAt) && (
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Sparkles className="h-3 w-3 text-primary/60" />
-                <span>✨ Someone prayed recently</span>
+                <span>Someone prayed recently</span>
               </div>
             )}
 
@@ -262,7 +262,7 @@ const RippleList = ({
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Share2 className="h-3 w-3 text-primary/60" />
                 <span>
-                  🔁 Shared {chain.forwardCount}{" "}
+                  Shared {chain.forwardCount}{" "}
                   {chain.forwardCount === 1 ? "time" : "times"}
                 </span>
               </div>
