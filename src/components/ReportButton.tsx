@@ -53,19 +53,24 @@ const ReportButton = ({ entityId, entityType, className }: ReportButtonProps) =>
 
     setSubmitting(true);
     try {
-      await supabase.from("app_events").insert({
-        event_type: "content_reported",
-        actor_user_id: user?.id ?? "anonymous",
-        entity_type: entityType,
-        entity_id: entityId,
-        metadata_json: { reason: parsed.data.reason, details: parsed.data.details },
+      if (!user) {
+        toast({ title: "Please sign in to report content", variant: "destructive" });
+        return;
+      }
+      const { error } = await supabase.rpc("submit_content_report", {
+        _entity_type: entityType,
+        _entity_id: entityId,
+        _reason: parsed.data.reason,
+        _details: parsed.data.details ?? null,
       });
-      toast({ title: "Thank you for reporting", description: "We'll review this content." });
+      if (error) throw error;
+      toast({ title: "Thank you for reporting", description: "Our moderators will review this content." });
       setOpen(false);
       setReason("");
       setDetails("");
-    } catch {
-      toast({ title: "Something went wrong", variant: "destructive" });
+    } catch (err) {
+      console.error("Report submission failed", err);
+      toast({ title: "Something went wrong", description: "Please try again.", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
