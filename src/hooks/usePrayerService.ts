@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { getCurrentUserCountry } from "./useUserCountry";
+import { checkRateLimit } from "@/lib/validation";
 
 export interface BackendPrayer {
   prayer_id: string;
@@ -67,6 +68,8 @@ export function usePrayerService() {
   const recordPrayed = useCallback(
     async (prayerId: string, sourceType: string = "global") => {
       try {
+        const rl = checkRateLimit(`pray:${user?.id ?? "anon"}`, 30, 60_000);
+        if (!rl.allowed) return;
         const c = await getCurrentUserCountry(user?.id);
         await supabase.rpc("record_prayer_action", {
           _prayer_id: prayerId,
@@ -103,6 +106,8 @@ export function usePrayerService() {
   const recordShared = useCallback(
     async (prayerId: string, channel: string, sourceType: string = "global") => {
       try {
+        const rl = checkRateLimit(`share:${user?.id ?? "anon"}`, 20, 60_000);
+        if (!rl.allowed) return;
         const c = await getCurrentUserCountry(user?.id);
         await supabase.rpc("record_prayer_action", {
           _prayer_id: prayerId,
