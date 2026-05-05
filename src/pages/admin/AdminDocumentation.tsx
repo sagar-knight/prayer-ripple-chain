@@ -571,7 +571,7 @@ const AdminDocumentation = () => {
                             <div className="flex items-center gap-2">
                               {n.version_tag && <Badge variant="outline" className="text-[10px]">v{n.version_tag}</Badge>}
                               <span className="font-medium">{n.note_title}</span>
-                              <span className="text-muted-foreground text-xs">— {new Date(n.created_at).toLocaleDateString()}</span>
+                              <span className="text-muted-foreground text-xs">— {new Date(n.created_at).toLocaleString()}</span>
                             </div>
                             {n.note_body && <p className="text-muted-foreground text-xs mt-0.5">{n.note_body} • by {n.updated_by || "Admin"}</p>}
                           </div>
