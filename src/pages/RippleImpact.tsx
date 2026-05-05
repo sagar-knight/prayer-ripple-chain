@@ -322,16 +322,36 @@ const RippleImpact = () => {
             </div>
           </div>
 
-          {/* Ripple visualization */}
+          {/* World map ripple */}
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="pt-8 pb-6">
               <div className="text-center mb-4">
-                <h3 className="font-playfair text-xl font-semibold text-foreground">Where prayers are coming from</h3>
+                <h3 className="font-playfair text-xl font-semibold text-foreground flex items-center justify-center gap-2">
+                  <Globe2 className="h-5 w-5 text-success" />
+                  Your Prayer is Spreading
+                </h3>
                 <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
-                  Each highlighted country is a place someone prayed for you.
+                  See where people are praying and sharing.
                 </p>
               </div>
               <WorldRippleMap data={ripple.countryStats} metric="prayers" />
+              {ripple.countryStats.length > 0 && (
+                <div className="mt-4 text-center">
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                    Reached countries
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {ripple.countryStats.map((c) => (
+                      <span
+                        key={c.country_code}
+                        className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-foreground border border-primary/15"
+                      >
+                        {c.country}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 

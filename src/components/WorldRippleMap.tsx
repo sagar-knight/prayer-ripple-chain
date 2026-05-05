@@ -116,13 +116,11 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                 onClick={() => setSelected(p)}
                 style={{ default: { cursor: "pointer" } }}
               >
-                {isOrigin && (
-                  <circle
-                    r={r + 8}
-                    fill="hsl(var(--accent) / 0.25)"
-                    className="animate-ping"
-                  />
-                )}
+                <circle
+                  r={r + 6}
+                  fill={isOrigin ? "hsl(var(--accent) / 0.25)" : "hsl(var(--primary) / 0.2)"}
+                  className="animate-ping"
+                />
                 <circle
                   r={r}
                   fill="hsl(var(--primary) / 0.7)"
