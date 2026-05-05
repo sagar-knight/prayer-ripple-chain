@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,108 +25,157 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useToast } from "@/hooks/use-toast";
 import FamilyPrayerRequests, { type FamilyGroupPrayerRequest } from "@/components/family/FamilyPrayerRequests";
 import FamilyScriptures, { type SharedScripture } from "@/components/family/FamilyScriptures";
 import FamilyReminders from "@/components/family/FamilyReminders";
 import FamilyNotes, { type FamilyTestimony } from "@/components/family/FamilyNotes";
-
-interface FamilyGroup {
-  id: string;
-  name: string;
-  inviteCode: string;
-  createdAt: string;
-  members: FamilyMember[];
-}
-
-interface FamilyMember {
-  id: string;
-  name: string;
-  role: "admin" | "member";
-  status: "active" | "pending";
-}
-
-const generateCode = () => {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-};
+import { useAuth } from "@/hooks/useAuth";
+import {
+  useAddFamilyNote,
+  useAddFamilyScripture,
+  useAddFamilyRequest,
+  useCreateFamilyGroup,
+  useFamilyGroups,
+  useFamilyMembers,
+  useFamilyNotes,
+  useFamilyPrayerLogs,
+  useFamilyRequests,
+  useFamilyScriptures,
+  useJoinFamilyByCode,
+  useLogFamilyPrayer,
+  useUpdateFamilyRequest,
+} from "@/hooks/useFamily";
 
 const Organizations = () => {
-  const [groups, setGroups] = useLocalStorage<FamilyGroup[]>("pf-family-groups", []);
-  const [activeGroupId, setActiveGroupId] = useLocalStorage<string | null>("pf-active-family-group", null);
-  const [requests, setRequests] = useLocalStorage<FamilyGroupPrayerRequest[]>("pf-fg-requests", []);
-  const [scriptures, setScriptures] = useLocalStorage<SharedScripture[]>("pf-fg-scriptures", []);
-  const [notes, setNotes] = useLocalStorage<FamilyTestimony[]>("pf-fg-notes", []);
-  const [prayedDays, setPrayedDays] = useLocalStorage<Record<string, string[]>>("pf-fg-prayed-days", {});
+  const { user } = useAuth();
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
 
   const [showCreate, setShowCreate] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
   const [newName, setNewName] = useState("");
-  const [inviteName, setInviteName] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
-  const currentUser = "You";
+  const { data: groups = [], isLoading: groupsLoading } = useFamilyGroups();
   const activeGroup = groups.find((g) => g.id === activeGroupId) || null;
-  const groupRequests = requests.filter((r) => (r as any).groupId === activeGroupId);
-  const groupScriptures = scriptures.filter((s) => (s as any).groupId === activeGroupId);
-  const groupNotes = notes.filter((n) => (n as any).groupId === activeGroupId);
 
-  const handleCreateGroup = () => {
+  const { data: members = [] } = useFamilyMembers(activeGroupId);
+  const { data: dbRequests = [] } = useFamilyRequests(activeGroupId);
+  const { data: dbScriptures = [] } = useFamilyScriptures(activeGroupId);
+  const { data: dbNotes = [] } = useFamilyNotes(activeGroupId);
+  const requestIds = useMemo(() => dbRequests.map((r) => r.id), [dbRequests]);
+  const { data: prayerLogs = [] } = useFamilyPrayerLogs(activeGroupId, requestIds);
+
+  const createGroup = useCreateFamilyGroup();
+  const joinByCode = useJoinFamilyByCode();
+  const addRequest = useAddFamilyRequest(activeGroupId);
+  const logPrayer = useLogFamilyPrayer(activeGroupId);
+  const updateRequest = useUpdateFamilyRequest(activeGroupId);
+  const addScripture = useAddFamilyScripture(activeGroupId);
+  const addNote = useAddFamilyNote(activeGroupId);
+
+  const currentUserId = user?.id || "";
+  const currentUserName =
+    (user?.user_metadata as any)?.display_name ||
+    members.find((m) => m.user_id === currentUserId)?.display_name ||
+    "You";
+
+  const nameFor = (userId: string) => {
+    if (userId === currentUserId) return currentUserName;
+    const m = members.find((mm) => mm.user_id === userId);
+    return m?.display_name || "Family member";
+  };
+
+  // Map DB rows -> existing component types so the UI is unchanged
+  const groupRequests: FamilyGroupPrayerRequest[] = useMemo(() => {
+    return dbRequests.map((r) => {
+      const logs = prayerLogs.filter((l) => l.request_id === r.id);
+      const lastLog = logs.length > 0 ? logs.reduce((a, b) => (a.prayed_at > b.prayed_at ? a : b)) : null;
+      return {
+        id: r.id,
+        title: r.title,
+        description: r.description || "",
+        createdBy: nameFor(r.created_by),
+        status: r.status === "answered" ? "answered" : "active",
+        prayedCount: logs.length,
+        whoPrayed: Array.from(new Set(logs.map((l) => nameFor(l.user_id)))),
+        reminderEnabled: r.reminder_enabled,
+        createdAt: r.created_at,
+        lastPrayedAt: lastLog?.prayed_at || null,
+      };
+    });
+  }, [dbRequests, prayerLogs, members, currentUserId, currentUserName]);
+
+  const groupScriptures: SharedScripture[] = useMemo(
+    () =>
+      dbScriptures.map((s) => ({
+        id: s.id,
+        verseReference: s.verse_reference,
+        translation: s.translation,
+        verseText: s.verse_text,
+        note: s.note || "",
+        sharedBy: nameFor(s.shared_by),
+        createdAt: s.created_at,
+      })),
+    [dbScriptures, members, currentUserId, currentUserName]
+  );
+
+  const groupNotes: FamilyTestimony[] = useMemo(
+    () =>
+      dbNotes.map((n) => ({
+        id: n.id,
+        noteText: n.note_text,
+        createdBy: nameFor(n.created_by),
+        createdAt: n.created_at,
+      })),
+    [dbNotes, members, currentUserId, currentUserName]
+  );
+
+  // prayedDays for the Reminders tab: requestId -> [YYYY-MM-DD]
+  const prayedDays: Record<string, string[]> = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    prayerLogs
+      .filter((l) => l.user_id === currentUserId)
+      .forEach((l) => {
+        const d = l.prayed_at.slice(0, 10);
+        if (!map[l.request_id]) map[l.request_id] = [];
+        if (!map[l.request_id].includes(d)) map[l.request_id].push(d);
+      });
+    return map;
+  }, [prayerLogs, currentUserId]);
+
+  const handleCreateGroup = async () => {
     if (!newName.trim()) {
       toast({ title: "Please enter a family name", variant: "destructive" });
       return;
     }
-    const group: FamilyGroup = {
-      id: crypto.randomUUID(),
-      name: newName.trim(),
-      inviteCode: generateCode(),
-      createdAt: new Date().toISOString(),
-      members: [{ id: crypto.randomUUID(), name: currentUser, role: "admin", status: "active" }],
-    };
-    setGroups((prev) => [...prev, group]);
-    setActiveGroupId(group.id);
-    setNewName("");
-    setShowCreate(false);
-    toast({ title: `"${group.name}" created! 🏡` });
+    try {
+      const group = await createGroup.mutateAsync(newName.trim());
+      setActiveGroupId(group.id);
+      setNewName("");
+      setShowCreate(false);
+      toast({ title: `"${group.name}" created` });
+    } catch {}
   };
 
-  const handleInvite = () => {
-    if (!inviteName.trim() || !activeGroup) return;
-    const member: FamilyMember = {
-      id: crypto.randomUUID(),
-      name: inviteName.trim(),
-      role: "member",
-      status: "pending",
-    };
-    setGroups((prev) =>
-      prev.map((g) =>
-        g.id === activeGroupId ? { ...g, members: [...g.members, member] } : g
-      )
-    );
-    setInviteName("");
-    setShowInvite(false);
-    toast({ title: `Invited ${member.name} to the family` });
-  };
-
-  const handleJoin = () => {
-    const found = groups.find((g) => g.inviteCode === joinCode.trim());
-    if (found) {
-      setActiveGroupId(found.id);
+  const handleJoin = async () => {
+    const code = joinCode.trim().toUpperCase();
+    if (!code) return;
+    try {
+      const groupId = await joinByCode.mutateAsync(code);
       setJoinCode("");
       setShowJoin(false);
-      toast({ title: `Joined "${found.name}"!` });
-    } else {
-      toast({ title: "Code not found", variant: "destructive" });
-    }
+      setActiveGroupId(groupId);
+      toast({ title: "Joined family" });
+    } catch {}
   };
 
   const copyCode = () => {
     if (activeGroup) {
-      navigator.clipboard.writeText(activeGroup.inviteCode);
+      navigator.clipboard.writeText(activeGroup.invite_code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -147,7 +196,7 @@ const Organizations = () => {
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={copyCode}>
                 {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                {copied ? "Copied!" : activeGroup.inviteCode}
+                {copied ? "Copied!" : activeGroup.invite_code}
               </Button>
             </div>
           </div>
@@ -160,7 +209,7 @@ const Organizations = () => {
               {activeGroup.name}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {activeGroup.members.length} member{activeGroup.members.length !== 1 && "s"}
+              {members.length} member{members.length !== 1 && "s"}
             </p>
           </div>
 
@@ -180,26 +229,29 @@ const Organizations = () => {
                       <DialogTitle className="font-playfair">Invite Family Member</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <div className="space-y-1">
-                        <Label>Name</Label>
-                        <Input placeholder="e.g. Mom, Dad, Sarah" value={inviteName} onChange={(e) => setInviteName(e.target.value)} />
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Share your invite code <strong>{activeGroup.inviteCode}</strong> with them.
+                      <p className="text-sm text-muted-foreground">
+                        Share this invite code with your family. They can enter it on the Family Prayer Hub to join.
                       </p>
-                      <Button onClick={handleInvite} className="w-full" variant="peaceful" disabled={!inviteName.trim()}>
-                        Add to Family
+                      <div className="flex items-center gap-2">
+                        <Input readOnly value={activeGroup.invite_code} className="font-mono text-center tracking-widest" />
+                        <Button variant="outline" size="sm" onClick={copyCode} className="gap-1">
+                          {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                          {copied ? "Copied" : "Copy"}
+                        </Button>
+                      </div>
+                      <Button onClick={() => setShowInvite(false)} className="w-full" variant="peaceful">
+                        Done
                       </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
               </div>
               <div className="flex flex-wrap gap-2">
-                {activeGroup.members.map((m) => (
+                {members.map((m) => (
                   <Badge key={m.id} variant={m.status === "active" ? "default" : "secondary"} className="gap-1 text-xs">
-                    {m.name}
+                    {m.user_id === currentUserId ? currentUserName : (m.display_name || "Family member")}
                     {m.role === "admin" && <span className="opacity-60">· Admin</span>}
-                    {m.status === "pending" && <span className="opacity-60">· Pending</span>}
+                    {m.status !== "active" && <span className="opacity-60">· {m.status}</span>}
                   </Badge>
                 ))}
               </div>
@@ -226,37 +278,16 @@ const Organizations = () => {
             <TabsContent value="prayers" className="mt-4">
               <FamilyPrayerRequests
                 requests={groupRequests}
-                currentUser={currentUser}
-                onAddRequest={(req) => {
-                  const newReq: FamilyGroupPrayerRequest & { groupId: string } = {
-                    ...req,
-                    id: crypto.randomUUID(),
-                    prayedCount: 0,
-                    whoPrayed: [],
-                    createdAt: new Date().toISOString(),
-                    lastPrayedAt: null,
-                    groupId: activeGroupId!,
-                  };
-                  setRequests((prev) => [newReq as any, ...prev]);
+                currentUser={currentUserName}
+                onAddRequest={async (req) => {
+                  await addRequest.mutateAsync({ title: req.title, description: req.description });
                 }}
-                onPray={(id) => {
-                  setRequests((prev) =>
-                    prev.map((r) =>
-                      r.id === id
-                        ? { ...r, prayedCount: r.prayedCount + 1, lastPrayedAt: new Date().toISOString() }
-                        : r
-                    )
-                  );
-                  setPrayedDays((prev) => ({
-                    ...prev,
-                    [id]: [...(prev[id] || []).filter((d) => d !== today), today],
-                  }));
+                onPray={async (id) => {
+                  await logPrayer.mutateAsync(id);
                   toast({ title: "Prayer recorded", duration: 2000 });
                 }}
-                onMarkAnswered={(id) => {
-                  setRequests((prev) =>
-                    prev.map((r) => (r.id === id ? { ...r, status: "answered" as const } : r))
-                  );
+                onMarkAnswered={async (id) => {
+                  await updateRequest.mutateAsync({ id, updates: { status: "answered" } });
                   toast({ title: "Praise God! Prayer answered ✨" });
                 }}
               />
@@ -265,15 +296,14 @@ const Organizations = () => {
             <TabsContent value="scriptures" className="mt-4">
               <FamilyScriptures
                 scriptures={groupScriptures}
-                currentUser={currentUser}
-                onAdd={(s) => {
-                  const newS = {
-                    ...s,
-                    id: crypto.randomUUID(),
-                    createdAt: new Date().toISOString(),
-                    groupId: activeGroupId!,
-                  };
-                  setScriptures((prev) => [newS as any, ...prev]);
+                currentUser={currentUserName}
+                onAdd={async (s) => {
+                  await addScripture.mutateAsync({
+                    verse_reference: s.verseReference,
+                    translation: s.translation,
+                    verse_text: s.verseText,
+                    note: s.note,
+                  });
                 }}
               />
             </TabsContent>
@@ -282,25 +312,20 @@ const Organizations = () => {
               <FamilyReminders
                 requests={groupRequests}
                 prayedDays={prayedDays}
-                onToggleReminder={(id) => {
-                  setRequests((prev) =>
-                    prev.map((r) =>
-                      r.id === id ? { ...r, reminderEnabled: !r.reminderEnabled } : r
-                    )
-                  );
+                onToggleReminder={async (id) => {
+                  const req = dbRequests.find((r) => r.id === id);
+                  if (!req) return;
+                  if (req.created_by !== currentUserId) {
+                    toast({ title: "Only the creator can change this reminder", variant: "destructive" });
+                    return;
+                  }
+                  await updateRequest.mutateAsync({
+                    id,
+                    updates: { reminder_enabled: !req.reminder_enabled },
+                  });
                 }}
-                onMarkPrayed={(id) => {
-                  setRequests((prev) =>
-                    prev.map((r) =>
-                      r.id === id
-                        ? { ...r, prayedCount: r.prayedCount + 1, lastPrayedAt: new Date().toISOString() }
-                        : r
-                    )
-                  );
-                  setPrayedDays((prev) => ({
-                    ...prev,
-                    [id]: [...(prev[id] || []).filter((d) => d !== today), today],
-                  }));
+                onMarkPrayed={async (id) => {
+                  await logPrayer.mutateAsync(id);
                   toast({ title: "Prayed today ✓", duration: 2000 });
                 }}
               />
@@ -309,16 +334,9 @@ const Organizations = () => {
             <TabsContent value="notes" className="mt-4">
               <FamilyNotes
                 notes={groupNotes}
-                currentUser={currentUser}
-                onAdd={(text, by) => {
-                  const n = {
-                    id: crypto.randomUUID(),
-                    noteText: text,
-                    createdBy: by,
-                    createdAt: new Date().toISOString(),
-                    groupId: activeGroupId!,
-                  };
-                  setNotes((prev) => [n as any, ...prev]);
+                currentUser={currentUserName}
+                onAdd={async (text) => {
+                  await addNote.mutateAsync(text);
                 }}
               />
             </TabsContent>
@@ -362,8 +380,8 @@ const Organizations = () => {
                   <Label>Family name *</Label>
                   <Input placeholder="e.g. Johnson Family" value={newName} onChange={(e) => setNewName(e.target.value)} />
                 </div>
-                <Button onClick={handleCreateGroup} className="w-full" variant="peaceful" disabled={!newName.trim()}>
-                  Create Family Group
+                <Button onClick={handleCreateGroup} className="w-full" variant="peaceful" disabled={!newName.trim() || createGroup.isPending}>
+                  {createGroup.isPending ? "Creating…" : "Create Family Group"}
                 </Button>
               </div>
             </DialogContent>
@@ -388,8 +406,8 @@ const Organizations = () => {
                     onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                   />
                 </div>
-                <Button onClick={handleJoin} className="w-full" variant="peaceful" disabled={!joinCode.trim()}>
-                  Join Family
+                <Button onClick={handleJoin} className="w-full" variant="peaceful" disabled={!joinCode.trim() || joinByCode.isPending}>
+                  {joinByCode.isPending ? "Joining…" : "Join Family"}
                 </Button>
               </div>
             </DialogContent>
@@ -399,7 +417,13 @@ const Organizations = () => {
         <Separator className="my-8 bg-primary/10" />
 
         {/* Existing groups */}
-        {groups.length > 0 ? (
+        {groupsLoading ? (
+          <Card>
+            <CardContent className="py-12 text-center text-sm text-muted-foreground">
+              Loading your family groups…
+            </CardContent>
+          </Card>
+        ) : groups.length > 0 ? (
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-3">
               Your Family Groups
@@ -415,11 +439,11 @@ const Organizations = () => {
                     <div>
                       <h3 className="font-playfair font-semibold text-foreground text-lg">{g.name}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {g.members.length} member{g.members.length !== 1 && "s"} · Created {new Date(g.createdAt).toLocaleDateString()}
+                        Created {new Date(g.created_at).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">{g.inviteCode}</Badge>
+                      <Badge variant="secondary" className="text-xs font-mono">{g.invite_code}</Badge>
                       <Users className="h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
