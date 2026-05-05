@@ -24,7 +24,12 @@ import { reportSchema, checkRateLimit } from "@/lib/validation";
 
 interface ReportButtonProps {
   entityId: string;
-  entityType: "global_prayer" | "church_prayer" | "family_note" | "family_scripture";
+  entityType:
+    | "global_prayer"
+    | "church_prayer"
+    | "family_prayer"
+    | "family_note"
+    | "family_scripture";
   className?: string;
 }
 

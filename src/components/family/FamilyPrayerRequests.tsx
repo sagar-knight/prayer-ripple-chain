@@ -15,6 +15,7 @@ import {
 import { Plus, CheckCircle, Heart, Bell, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
+import ReportButton from "@/components/ReportButton";
 
 export interface FamilyGroupPrayerRequest {
   id: string;
@@ -151,7 +152,11 @@ const FamilyPrayerRequests = ({ requests, onAddRequest, onPray, onMarkAnswered, 
                   )}
                 </>
               }
-            />
+            >
+              <div className="flex justify-end">
+                <ReportButton entityId={req.id} entityType="family_prayer" />
+              </div>
+            </PrayerRequestCard>
           ))}
         </div>
       )}
