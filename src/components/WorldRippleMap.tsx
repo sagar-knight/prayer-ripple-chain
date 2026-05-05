@@ -67,9 +67,9 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
 
   if (points.length === 0) {
     return (
-      <div className="rounded-xl bg-muted/40 p-6 text-center">
+      <div className="rounded-xl bg-[#0b1220] border border-border/40 p-8 text-center">
         <p className="text-sm text-muted-foreground">
-          No country activity yet. Once people pray from around the world, they'll appear here.
+          As people begin praying around the world, lights will appear here.
         </p>
       </div>
     );
@@ -77,9 +77,23 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
 
   return (
     <div className="relative">
-      <div className="rounded-xl overflow-hidden bg-muted/30 border border-border">
+      <style>{`
+        @keyframes light-pulse {
+          0%, 100% { opacity: 0.55; transform: scale(1); }
+          50%      { opacity: 1;    transform: scale(1.25); }
+        }
+        @keyframes light-halo {
+          0%   { opacity: 0.45; transform: scale(0.9); }
+          100% { opacity: 0;    transform: scale(2.4); }
+        }
+        .prayer-light-core   { transform-origin: center; transform-box: fill-box; animation: light-pulse 3.2s ease-in-out infinite; }
+        .prayer-light-halo   { transform-origin: center; transform-box: fill-box; animation: light-halo  3.2s ease-out  infinite; }
+        .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
+      `}</style>
+
+      <div className="rounded-xl overflow-hidden bg-[#070d1a] border border-border/40">
         <ComposableMap
-          projectionConfig={{ scale: 140 }}
+          projectionConfig={{ scale: 145 }}
           width={800}
           height={400}
           style={{ width: "100%", height: "auto" }}
@@ -90,12 +104,12 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill="hsl(var(--muted))"
-                  stroke="hsl(var(--border))"
-                  strokeWidth={0.5}
+                  fill="#0f1a2e"
+                  stroke="#1c2942"
+                  strokeWidth={0.4}
                   style={{
                     default: { outline: "none" },
-                    hover: { outline: "none", fill: "hsl(var(--muted-foreground) / 0.2)" },
+                    hover:   { outline: "none", fill: "#142139" },
                     pressed: { outline: "none" },
                   }}
                 />
@@ -103,10 +117,11 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
             }
           </Geographies>
 
-          {points.map((p) => {
+          {points.map((p, idx) => {
             const value = Number(p[metric] || 0);
             const r = radius(value);
             const isOrigin = originCode && p.country_code === originCode;
+            const delay = `${(idx % 6) * 0.4}s`;
             return (
               <Marker
                 key={p.country_code}
@@ -117,15 +132,16 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                 style={{ default: { cursor: "pointer" } }}
               >
                 <circle
-                  r={r + 6}
-                  fill={isOrigin ? "hsl(var(--accent) / 0.25)" : "hsl(var(--primary) / 0.2)"}
-                  className="animate-ping"
+                  r={r + 4}
+                  fill={isOrigin ? "hsl(var(--accent) / 0.35)" : "hsl(var(--primary) / 0.3)"}
+                  className="prayer-light-halo"
+                  style={{ animationDelay: delay }}
                 />
                 <circle
                   r={r}
-                  fill="hsl(var(--primary) / 0.7)"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={1.2}
+                  fill={isOrigin ? "hsl(var(--accent))" : "hsl(var(--primary))"}
+                  className={`prayer-light-core ${isOrigin ? "prayer-light-origin" : ""}`}
+                  style={{ animationDelay: delay, filter: "drop-shadow(0 0 4px hsl(var(--primary) / 0.8))" }}
                 />
               </Marker>
             );
@@ -134,23 +150,21 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
       </div>
 
       {hover && (
-        <div className="absolute top-2 right-2 bg-background/95 border border-border rounded-md px-3 py-2 text-xs shadow-md pointer-events-none">
-          <p className="font-medium">{hover.country}</p>
-          <p className="text-muted-foreground">
-            {hover.prayers ?? 0} prayers · {hover.forwards ?? 0} forwards
+        <div className="absolute top-2 right-2 bg-background/95 border border-border rounded-md px-3 py-1.5 text-xs shadow-md pointer-events-none">
+          <p className="font-medium">
+            {(hover.prayers ?? 0).toLocaleString()} {hover.prayers === 1 ? "prayer" : "prayers"} from {hover.country}
           </p>
         </div>
       )}
 
       {selected && (
         <div className="mt-3 rounded-lg border border-border bg-card p-3 text-sm flex items-center justify-between">
-          <div>
-            <p className="font-medium">{selected.country}</p>
-            <p className="text-xs text-muted-foreground">
-              {selected.prayers ?? 0} prayers · {selected.forwards ?? 0} forwards
-              {selected.participants ? ` · ${selected.participants} participants` : ""}
-            </p>
-          </div>
+          <p>
+            <span className="font-medium">{(selected.prayers ?? 0).toLocaleString()}</span>{" "}
+            <span className="text-muted-foreground">
+              {selected.prayers === 1 ? "prayer" : "prayers"} from {selected.country}
+            </span>
+          </p>
           <button
             type="button"
             onClick={() => setSelected(null)}
