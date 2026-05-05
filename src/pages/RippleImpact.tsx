@@ -5,6 +5,7 @@ import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2 } from "lucide
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerRippleChain from "@/components/PrayerRippleChain";
+import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -178,14 +179,29 @@ const RippleImpact = () => {
 
       let shares = 0;
       const countries = new Set<string>();
+      const countryMap = new Map<string, CountryStat>();
       if (ids.length > 0) {
         const { data: actions } = await supabase
           .from("prayer_actions")
-          .select("action_type, prayer_country_code")
+          .select("action_type, prayer_country_code, prayer_country_name, user_id")
           .in("prayer_id", ids);
         for (const a of (actions || []) as any[]) {
           if (a.action_type === "shared" || a.action_type === "forwarded") shares++;
           if (a.prayer_country_code) countries.add(a.prayer_country_code);
+          const code = a.prayer_country_code;
+          if (code) {
+            const existing = countryMap.get(code) || {
+              country_code: code,
+              country: a.prayer_country_name || code,
+              prayers: 0,
+              forwards: 0,
+              participants: 0,
+            };
+            if (a.action_type === "prayed") existing.prayers = (existing.prayers || 0) + 1;
+            if (a.action_type === "shared" || a.action_type === "forwarded")
+              existing.forwards = (existing.forwards || 0) + 1;
+            countryMap.set(code, existing);
+          }
         }
       }
       return {
@@ -195,12 +211,13 @@ const RippleImpact = () => {
         active,
         answered,
         totalRequests: ids.length,
+        countryStats: Array.from(countryMap.values()),
       };
     },
     enabled: !!user,
   });
 
-  const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0 };
+  const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0, countryStats: [] as CountryStat[] };
 
   // Build visualization layers from real numbers (cap so it stays calm)
   const layerCounts = [
@@ -309,12 +326,27 @@ const RippleImpact = () => {
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="pt-8 pb-6">
               <div className="text-center mb-4">
+                <h3 className="font-playfair text-xl font-semibold text-foreground">Where prayers are coming from</h3>
+                <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
+                  Each highlighted country is a place someone prayed for you.
+                </p>
+              </div>
+              <WorldRippleMap data={ripple.countryStats} metric="prayers" />
+            </CardContent>
+          </Card>
+
+          {/* Ripple circle visualization (kept, smaller) */}
+          <Card className="card-glass border-0 overflow-hidden hover-glow max-w-md mx-auto">
+            <CardContent className="pt-6 pb-4">
+              <div className="text-center mb-3">
                 <h3 className="font-playfair text-xl font-semibold text-foreground">A picture of your ripple</h3>
                 <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
                   Each light is a person carried in prayer.
                 </p>
               </div>
-              <RippleVisualization centerLabel="YOU" layerCounts={layerCounts} />
+              <div className="scale-75 origin-top mx-auto">
+                <RippleVisualization centerLabel="YOU" layerCounts={layerCounts} />
+              </div>
             </CardContent>
           </Card>
 
