@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch, History } from "lucide-react";
+import { Search, Filter, FileText, Clock, Shield, Image, BookOpen, AlertTriangle, Info, Printer, Edit, Plus, Save, Upload, Trash2, X, GitBranch, History, Rocket } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import DocUserFlows from "@/components/admin/DocUserFlows";
 import ChangeLog from "@/components/admin/ChangeLog";
+import GoLivePlan from "@/components/admin/GoLivePlan";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type DocStatus = "active" | "draft" | "needs_review" | "updated";
@@ -319,9 +320,15 @@ const AdminDocumentation = () => {
           <TabsTrigger value="changelog" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <History className="w-4 h-4 mr-1.5" /> Change Log
           </TabsTrigger>
+          <TabsTrigger value="golive" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <Rocket className="w-4 h-4 mr-1.5" /> Go-Live Plan
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="changelog">
           <ChangeLog />
+        </TabsContent>
+        <TabsContent value="golive" className="mt-6">
+          <GoLivePlan />
         </TabsContent>
         <TabsContent value="modules" className="space-y-6 mt-6">
 
