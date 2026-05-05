@@ -357,60 +357,22 @@ const RippleImpact = () => {
             </div>
           </div>
 
-          {/* World map ripple */}
+          {/* Unified: impact metrics + world map + ripple circle */}
           <Card className="card-glass border-0 overflow-hidden hover-glow">
-            <CardContent className="pt-8 pb-6">
-              <div className="text-center mb-4">
-                <h3 className="font-playfair text-xl font-semibold text-foreground flex items-center justify-center gap-2">
+            <CardContent className="pt-8 pb-8 space-y-6">
+              {/* Title */}
+              <div className="text-center">
+                <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center justify-center gap-2">
                   <Globe2 className="h-5 w-5 text-success" />
-                  Your Prayer is Spreading
+                  Your prayer is spreading
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
-                  See where people are praying and sharing.
+                  From you, to many, across the world.
                 </p>
               </div>
-              <WorldRippleMap data={ripple.countryStats} metric="prayers" />
-              {ripple.countryStats.length > 0 && (
-                <div className="mt-4 text-center">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
-                    Reached countries
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {ripple.countryStats.map((c) => (
-                      <span
-                        key={c.country_code}
-                        className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-foreground border border-primary/15"
-                      >
-                        {c.country}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
-          {/* Ripple circle visualization with merged impact metrics */}
-          <Card className="card-glass border-0 overflow-hidden hover-glow max-w-xl mx-auto">
-            <CardContent className="pt-6 pb-6">
-              <div className="text-center mb-3">
-                <h3 className="font-playfair text-xl font-semibold text-foreground">A picture of your ripple</h3>
-                <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
-                  Each light is a person carried in prayer.
-                </p>
-              </div>
-              <div className="scale-90 origin-top mx-auto">
-                <RippleVisualization
-                  centerLabel="YOU"
-                  layerCounts={layerCounts}
-                  countryStats={ripple.countryStats}
-                />
-              </div>
-              <p className="text-center text-xs text-muted-foreground italic mt-3">
-                Each light represents someone praying with you
-              </p>
-              {/* Single source of truth for the three core metrics */}
-              <div className="mt-5 grid grid-cols-3 gap-3 max-w-md mx-auto">
+              {/* Top: three core metrics */}
+              <div className="grid grid-cols-3 gap-3 max-w-xl mx-auto">
                 <div className="text-center">
                   <Heart className="h-4 w-4 text-primary mx-auto mb-1" />
                   <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.peoplePraying} /></p>
@@ -426,6 +388,37 @@ const RippleImpact = () => {
                   <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.countries} /></p>
                   <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{ripple.countries === 1 ? "country reached" : "countries reached"}</p>
                 </div>
+              </div>
+
+              {/* Middle: world map */}
+              <div>
+                <WorldRippleMap data={ripple.countryStats} metric="prayers" />
+                {ripple.countryStats.length > 0 && (
+                  <div className="mt-3 flex flex-wrap justify-center gap-2">
+                    {ripple.countryStats.map((c) => (
+                      <span
+                        key={c.country_code}
+                        className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-foreground border border-primary/15"
+                      >
+                        {c.country}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom: ripple circle (smaller, personal connection) */}
+              <div>
+                <div className="scale-75 origin-top mx-auto">
+                  <RippleVisualization
+                    centerLabel="YOU"
+                    layerCounts={layerCounts}
+                    countryStats={ripple.countryStats}
+                  />
+                </div>
+                <p className="text-center text-xs text-muted-foreground italic">
+                  Each light represents someone praying with you
+                </p>
               </div>
             </CardContent>
           </Card>
