@@ -381,16 +381,16 @@ const RippleImpact = () => {
                 <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
                   <AnimatedNumber value={globalStats.prayersOffered} />
                 </div>
-                <div className="text-sm font-medium opacity-95">Prayers Offered</div>
-                <div className="text-xs opacity-75">Lifted up by this community</div>
+                <div className="text-sm font-medium opacity-95">Prayers Given</div>
+                <div className="text-xs opacity-75">Total prayers offered</div>
               </div>
               <div className="space-y-2 flex flex-col items-center">
                 <User className="h-6 w-6 opacity-90" />
                 <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
                   <AnimatedNumber value={globalStats.peopleCovered} />
                 </div>
-                <div className="text-sm font-medium opacity-95">People Covered</div>
-                <div className="text-xs opacity-75">Receiving prayer right now</div>
+                <div className="text-sm font-medium opacity-95">People Prayed For</div>
+                <div className="text-xs opacity-75">Total people you've prayed for</div>
               </div>
               <div className="space-y-2 flex flex-col items-center">
                 <Sparkles className="h-6 w-6 opacity-90" />
@@ -398,7 +398,7 @@ const RippleImpact = () => {
                   <AnimatedNumber value={globalStats.answeredPrayers} />
                 </div>
                 <div className="text-sm font-medium opacity-95">Answered Prayers</div>
-                <div className="text-xs opacity-75">Stories of God at work</div>
+                <div className="text-xs opacity-75">Prayers that have been answered</div>
               </div>
             </div>
           </CardContent>
