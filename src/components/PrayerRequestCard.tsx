@@ -1,11 +1,12 @@
 import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart } from "lucide-react";
+import { Heart, CheckCircle, Sprout } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReportButton from "@/components/ReportButton";
 import PrayerTranslateButton from "@/components/PrayerTranslateButton";
 import { getLanguageByCode } from "@/data/languages";
+import { Badge } from "@/components/ui/badge";
 
 interface PrayerRequestCardProps {
   /** Optional header text, defaults to "Someone asked for prayer" */
@@ -32,6 +33,10 @@ interface PrayerRequestCardProps {
     prayerId: string;
     sourceType?: "global" | "church";
   };
+  /** Optional lifecycle status to show a small label */
+  status?: "open" | "progress" | "answered" | "archived" | string;
+  /** Optional latest owner update message */
+  latestUpdate?: string | null;
 }
 
 const PrayerRequestCard = ({
@@ -46,6 +51,8 @@ const PrayerRequestCard = ({
   reportEntityType,
   title,
   translatable,
+  status,
+  latestUpdate,
 }: PrayerRequestCardProps) => {
   const [translation, setTranslation] = useState<{
     title: string | null;
@@ -88,6 +95,21 @@ const PrayerRequestCard = ({
         <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
           {header}
         </p>
+
+        {/* Lifecycle status */}
+        {(status === "answered" || status === "progress") && (
+          <div className="flex justify-center">
+            {status === "answered" ? (
+              <Badge className="bg-primary text-primary-foreground gap-1">
+                <CheckCircle className="h-3 w-3" /> Prayer answered
+              </Badge>
+            ) : (
+              <Badge variant="secondary" className="gap-1">
+                <Sprout className="h-3 w-3" /> Seeing progress
+              </Badge>
+            )}
+          </div>
+        )}
 
         {/* Prayer text */}
         <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
@@ -133,6 +155,16 @@ const PrayerRequestCard = ({
 
         {/* Extra content (scripture, reminders, etc.) */}
         {children}
+
+        {/* Latest update from the prayer owner */}
+        {latestUpdate && (
+          <div className="rounded-lg border bg-muted/30 p-3">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+              Latest update
+            </p>
+            <p className="text-sm text-foreground">{latestUpdate}</p>
+          </div>
+        )}
 
         {/* Actions */}
         {actions && (
