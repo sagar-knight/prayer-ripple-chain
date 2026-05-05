@@ -42,14 +42,17 @@ const AnimatedNumber = ({ value }: { value: number }) => {
 const RippleVisualization = ({
   centerLabel,
   layerCounts,
+  countryStats = [],
 }: {
   centerLabel: string;
   layerCounts: number[]; // people per layer, e.g. [4, 8, 12]
+  countryStats?: CountryStat[];
 }) => {
   const size = 360;
   const center = size / 2;
   const layers = layerCounts.length;
   const radii = Array.from({ length: layers }, (_, i) => 60 + i * 55);
+  const [tapped, setTapped] = useState<{ x: number; y: number; label: string } | null>(null);
 
   return (
     <div className="relative mx-auto" style={{ width: size, height: size }}>
@@ -64,17 +67,30 @@ const RippleVisualization = ({
           </radialGradient>
         </defs>
 
-        {/* Concentric pulse rings */}
+        {/* Concentric pulse rings — slow outward ripple waves */}
         {radii.map((r, i) => (
-          <circle
-            key={`ring-${i}`}
-            cx={center}
-            cy={center}
-            r={r}
-            fill="none"
-            stroke="hsl(var(--primary) / 0.18)"
-            strokeWidth={1}
-          />
+          <g key={`ring-${i}`}>
+            <circle
+              cx={center}
+              cy={center}
+              r={r}
+              fill="none"
+              stroke="hsl(var(--primary) / 0.18)"
+              strokeWidth={1}
+            />
+            <circle
+              cx={center}
+              cy={center}
+              r={r}
+              fill="none"
+              stroke="hsl(var(--primary) / 0.35)"
+              strokeWidth={1}
+              style={{
+                transformOrigin: `${center}px ${center}px`,
+                animation: `ripple-wave 4s ease-out ${i * 1.2}s infinite`,
+              }}
+            />
+          </g>
         ))}
 
         {/* Connecting lines and nodes per layer */}
@@ -84,6 +100,11 @@ const RippleVisualization = ({
             const angle = (i / count) * Math.PI * 2 + layerIdx * 0.3;
             const x = center + Math.cos(angle) * r;
             const y = center + Math.sin(angle) * r;
+            const country = countryStats[(layerIdx * 7 + i) % Math.max(1, countryStats.length)];
+            const label = country?.country
+              ? `Prayer from ${country.country}`
+              : "Someone prayed recently";
+            const delay = ((layerIdx * 13 + i * 7) % 100) / 50; // 0-2s
             return (
               <g key={`node-${layerIdx}-${i}`}>
                 <line
@@ -94,21 +115,30 @@ const RippleVisualization = ({
                   stroke="hsl(var(--primary) / 0.12)"
                   strokeWidth={0.6}
                 />
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={layerIdx === 0 ? 6 : 4}
-                  fill="hsl(var(--card))"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={1.5}
-                />
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={layerIdx === 0 ? 3 : 2}
-                  fill="hsl(var(--success))"
-                  opacity={0.85}
-                />
+                <g
+                  onClick={() => setTapped({ x, y, label })}
+                  style={{
+                    cursor: "pointer",
+                    transformOrigin: `${x}px ${y}px`,
+                    animation: `dot-pulse 3s ease-in-out ${delay}s infinite, dot-appear 0.6s ease-out both`,
+                  }}
+                >
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r={layerIdx === 0 ? 6 : 4}
+                    fill="hsl(var(--card))"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={1.5}
+                  />
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r={layerIdx === 0 ? 3 : 2}
+                    fill="hsl(var(--success))"
+                    opacity={0.85}
+                  />
+                </g>
               </g>
             );
           });
@@ -135,6 +165,36 @@ const RippleVisualization = ({
           {centerLabel}
         </span>
       </div>
+
+      {/* Tap tooltip */}
+      {tapped && (
+        <div
+          className="absolute bg-background/95 border border-border rounded-md px-2.5 py-1.5 text-xs shadow-md pointer-events-auto animate-fade-in"
+          style={{
+            left: `${(tapped.x / size) * 100}%`,
+            top: `${(tapped.y / size) * 100}%`,
+            transform: "translate(-50%, -130%)",
+          }}
+          onClick={() => setTapped(null)}
+        >
+          {tapped.label}
+        </div>
+      )}
+
+      <style>{`
+        @keyframes ripple-wave {
+          0% { transform: scale(0.6); opacity: 0.6; }
+          100% { transform: scale(1.25); opacity: 0; }
+        }
+        @keyframes dot-pulse {
+          0%, 100% { opacity: 0.85; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.15); }
+        }
+        @keyframes dot-appear {
+          0% { opacity: 0; transform: scale(0); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </div>
   );
 };
@@ -365,7 +425,30 @@ const RippleImpact = () => {
                 </p>
               </div>
               <div className="scale-75 origin-top mx-auto">
-                <RippleVisualization centerLabel="YOU" layerCounts={layerCounts} />
+                <RippleVisualization
+                  centerLabel="YOU"
+                  layerCounts={layerCounts}
+                  countryStats={ripple.countryStats}
+                />
+              </div>
+              {/* Meaning text */}
+              <p className="text-center text-xs text-muted-foreground italic mt-2">
+                Each light represents someone praying with you
+              </p>
+              {/* Impact summary */}
+              <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <Heart className="h-3.5 w-3.5 text-primary" />
+                  {ripple.peoplePraying} praying with you
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Globe2 className="h-3.5 w-3.5 text-success" />
+                  Reached {ripple.countries} {ripple.countries === 1 ? "country" : "countries"}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Share2 className="h-3.5 w-3.5 text-accent" />
+                  Shared {ripple.shares} {ripple.shares === 1 ? "time" : "times"}
+                </span>
               </div>
             </CardContent>
           </Card>
