@@ -45,6 +45,25 @@ keeping monetization away from sensitive prayer surfaces.
 - The 🙏 emoji remains retired per project convention; Sparkles (Lucide) is
   the action symbol throughout
 
+## Recent updates (post-launch)
+
+- **🙏 emoji fully retired**: Removed from remaining surfaces
+  (e.g. `PrayerRippleChain`). Sparkles (Lucide) is the only prayer-action
+  symbol across cards, dialogs, navigation, and the Ripple page.
+- **Unified Ripple Impact block** (`/ripple`): World map and personal ripple
+  visualization merged into one card titled "Your prayer is spreading".
+  Order: (1) three impact metrics — people praying with you, shares,
+  countries reached; (2) dark minimal world map with country-level pulses;
+  (3) smaller personal ripple circle. Duplicate metric tiles and the
+  standalone ripple section were removed.
+- **Country-only geography**: Reach is aggregated at the country level
+  only. `prayer_country_code` / `prayer_country_name` are the only geo
+  fields used; no state, region, city, GPS, or IP is stored or shown.
+  Protects anonymity and keeps the framing global ("reached X countries").
+- **Country pills under the map** render only when
+  `ripple.countryStats.length > 0`, so accounts with zero reach see the
+  map without a pill row.
+
 ## Test coverage
 
 Existing Playwright suites cover the affected flows:
