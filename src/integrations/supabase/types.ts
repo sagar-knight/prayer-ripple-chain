@@ -173,6 +173,7 @@ export type Database = {
           church_id: string
           created_at: string
           description: string
+          hidden_at: string | null
           id: string
           rejected_reason: string | null
           show_country: boolean
@@ -189,6 +190,7 @@ export type Database = {
           church_id: string
           created_at?: string
           description: string
+          hidden_at?: string | null
           id?: string
           rejected_reason?: string | null
           show_country?: boolean
@@ -205,6 +207,7 @@ export type Database = {
           church_id?: string
           created_at?: string
           description?: string
+          hidden_at?: string | null
           id?: string
           rejected_reason?: string | null
           show_country?: boolean
@@ -703,6 +706,7 @@ export type Database = {
           created_at: string
           created_by: string
           family_group_id: string
+          hidden_at: string | null
           id: string
           note_text: string
         }
@@ -710,6 +714,7 @@ export type Database = {
           created_at?: string
           created_by: string
           family_group_id: string
+          hidden_at?: string | null
           id?: string
           note_text: string
         }
@@ -717,6 +722,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           family_group_id?: string
+          hidden_at?: string | null
           id?: string
           note_text?: string
         }
@@ -765,6 +771,7 @@ export type Database = {
           created_by: string
           description: string | null
           family_group_id: string
+          hidden_at: string | null
           id: string
           reminder_enabled: boolean
           status: string
@@ -775,6 +782,7 @@ export type Database = {
           created_by: string
           description?: string | null
           family_group_id: string
+          hidden_at?: string | null
           id?: string
           reminder_enabled?: boolean
           status?: string
@@ -785,6 +793,7 @@ export type Database = {
           created_by?: string
           description?: string | null
           family_group_id?: string
+          hidden_at?: string | null
           id?: string
           reminder_enabled?: boolean
           status?: string
@@ -804,6 +813,7 @@ export type Database = {
         Row: {
           created_at: string
           family_group_id: string
+          hidden_at: string | null
           id: string
           note: string | null
           shared_by: string
@@ -814,6 +824,7 @@ export type Database = {
         Insert: {
           created_at?: string
           family_group_id: string
+          hidden_at?: string | null
           id?: string
           note?: string | null
           shared_by: string
@@ -824,6 +835,7 @@ export type Database = {
         Update: {
           created_at?: string
           family_group_id?: string
+          hidden_at?: string | null
           id?: string
           note?: string | null
           shared_by?: string
@@ -851,6 +863,7 @@ export type Database = {
           created_at: string
           created_by: string
           description: string
+          hidden_at: string | null
           id: string
           origin_country_code: string | null
           origin_country_name: string | null
@@ -872,6 +885,7 @@ export type Database = {
           created_at?: string
           created_by: string
           description: string
+          hidden_at?: string | null
           id?: string
           origin_country_code?: string | null
           origin_country_name?: string | null
@@ -893,6 +907,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           description?: string
+          hidden_at?: string | null
           id?: string
           origin_country_code?: string | null
           origin_country_name?: string | null
@@ -1672,6 +1687,10 @@ export type Database = {
       }
     }
     Functions: {
+      apply_moderation_decision: {
+        Args: { _new_status: string; _notes?: string; _queue_id: string }
+        Returns: undefined
+      }
       auto_archive_stale_prayers: { Args: never; Returns: number }
       generate_prayer_short_code: { Args: never; Returns: string }
       generate_prayer_slug: { Args: { _title: string }; Returns: string }
@@ -1723,6 +1742,15 @@ export type Database = {
         Returns: undefined
       }
       slugify_text: { Args: { _input: string }; Returns: string }
+      submit_content_report: {
+        Args: {
+          _details?: string
+          _entity_id: string
+          _entity_type: string
+          _reason: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

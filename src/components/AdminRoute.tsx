@@ -4,7 +4,7 @@ import { useAdminRole } from "@/hooks/useAdminRole";
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading: authLoading } = useAuth();
-  const { isAdmin, loading: roleLoading } = useAdminRole();
+  const { isAdminOrModerator, loading: roleLoading } = useAdminRole();
 
   if (authLoading || roleLoading) {
     return (
@@ -18,7 +18,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) return <Navigate to="/login" replace />;
-  if (!isAdmin) return <Navigate to="/" replace />;
+  if (!isAdminOrModerator) return <Navigate to="/" replace />;
 
   return <>{children}</>;
 };
