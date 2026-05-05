@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import TestingImpactPanel from "@/components/admin/TestingImpactPanel";
 import ChangeLog from "@/components/admin/ChangeLog";
+import LaunchReadinessDoc from "@/components/admin/LaunchReadinessDoc";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type TestStatus = "passed" | "failed" | "blocked" | "not_run" | "needs_review";
@@ -280,12 +281,16 @@ const AdminUnitTesting = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="cases" className="w-full">
+      <Tabs defaultValue="launch" className="w-full">
         <TabsList>
+          <TabsTrigger value="launch"><ShieldCheck className="w-4 h-4 mr-1" /> Launch Readiness</TabsTrigger>
           <TabsTrigger value="cases"><FlaskConical className="w-4 h-4 mr-1" /> Test Cases</TabsTrigger>
           <TabsTrigger value="impact"><Link2 className="w-4 h-4 mr-1" /> Update Impact</TabsTrigger>
           <TabsTrigger value="accounts"><KeyRound className="w-4 h-4 mr-1" /> Test Accounts</TabsTrigger>
         </TabsList>
+        <TabsContent value="launch">
+          <LaunchReadinessDoc />
+        </TabsContent>
         <TabsContent value="impact">
           <div className="space-y-4">
             <TestingImpactPanel />
