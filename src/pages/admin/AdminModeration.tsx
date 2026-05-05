@@ -58,21 +58,15 @@ const AdminModeration = () => {
   useEffect(() => { load(); }, []);
 
   const updateStatus = async (id: string, status: string) => {
-    await supabase.from("moderation_queue").update({
-      status,
-      reviewed_by: user?.id,
-      reviewed_at: new Date().toISOString(),
-      admin_notes: noteInput[id] || null,
-    }).eq("id", id);
-
-    await supabase.from("admin_audit_log").insert({
-      actor_id: user?.id || "unknown",
-      action: status === "approved" ? "approve" : status === "denied" ? "deny" : status,
-      target_type: "moderation_item",
-      target_id: id,
-      reason: noteInput[id] || null,
+    const { error } = await supabase.rpc("apply_moderation_decision", {
+      _queue_id: id,
+      _new_status: status,
+      _notes: noteInput[id] || null,
     });
-
+    if (error) {
+      toast({ title: "Action failed", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: `Item ${status}` });
     load();
   };
