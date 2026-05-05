@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
-import { Heart, Share2, Sparkles, Loader2 } from "lucide-react";
+import SharePrayerDialog from "@/components/SharePrayerDialog";
+import { Heart, Share2, Sparkles, Loader2, Waves } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -18,6 +22,8 @@ interface PrayerChainData {
   uniquePeople: number;
   forwardCount: number;
   lastPrayedAt: Date | null;
+  rippleDepth: number;
+  status: string;
   chain: ChainNode[];
 }
 
@@ -34,7 +40,7 @@ const PrayerRippleChain = () => {
         .from("global_prayer_requests")
         .select("*")
         .eq("created_by", user.id)
-        .eq("status", "open")
+        .in("status", ["open", "progress", "answered"])
         .order("created_at", { ascending: false })
         .limit(10);
 
@@ -52,12 +58,11 @@ const PrayerRippleChain = () => {
         (coverageData || []).map((c) => [c.prayer_id, c])
       );
 
-      // Fetch chain nodes for these prayers
+      // Fetch chain nodes for these prayers (used for ripple depth)
       const { data: chainNodes } = await supabase
         .from("prayer_chain_nodes")
-        .select("*")
-        .in("prayer_id", prayerIds)
-        .order("depth_level", { ascending: true });
+        .select("prayer_id, depth_level")
+        .in("prayer_id", prayerIds);
 
       // Fetch action counts for chain visualization
       const { data: actions } = await supabase
@@ -107,14 +112,21 @@ const PrayerRippleChain = () => {
           .map((a) => new Date(a.created_at as any))
           .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
 
+        const reqNodes = (chainNodes || []).filter((n) => n.prayer_id === req.id);
+        const maxDepth = reqNodes.reduce((m, n) => Math.max(m, n.depth_level ?? 0), 0);
+        const forwardCount = coverage?.passed_forward_count ?? 0;
+        const rippleDepth = Math.max(maxDepth, forwardCount > 0 ? 2 : (coverage?.unique_people_prayed ?? 0) > 0 ? 1 : 0);
+
         return {
           prayerId: req.id,
           title: req.title,
           category: req.category,
           prayedCount: coverage?.current_prayers ?? req.prayer_count,
           uniquePeople: coverage?.unique_people_prayed ?? 0,
-          forwardCount: coverage?.passed_forward_count ?? 0,
+          forwardCount,
           lastPrayedAt: lastAction,
+          rippleDepth,
+          status: req.status,
           chain,
         };
       });
@@ -144,9 +156,57 @@ const PrayerRippleChain = () => {
   const recentlyPrayed = (date: Date | null) =>
     !!date && Date.now() - date.getTime() < 24 * 60 * 60 * 1000;
 
+  return <RippleList chains={chains} recentlyPrayed={recentlyPrayed} />;
+};
+
+/** Builds the dotted ripple flow: ● → ○ → ○ … */
+const RippleFlow = ({ depth, unique }: { depth: number; unique: number }) => {
+  // Show "You" then up to 4 ripple layers based on depth
+  const layers = Math.min(4, Math.max(1, depth || (unique > 0 ? 1 : 0)));
+  return (
+    <div className="flex items-center justify-center gap-2 sm:gap-3 py-2 select-none">
+      <span
+        className="inline-flex h-3 w-3 rounded-full bg-primary shadow-[0_0_0_4px_hsl(var(--primary)/0.15)]"
+        aria-label="You"
+      />
+      {Array.from({ length: layers }).map((_, i) => (
+        <span key={i} className="flex items-center gap-2 sm:gap-3">
+          <span className="text-muted-foreground/60 text-xs">→</span>
+          <span
+            className="inline-flex h-3 w-3 rounded-full border border-primary/40"
+            style={{ opacity: 1 - i * 0.18 }}
+            aria-hidden
+          />
+        </span>
+      ))}
+    </div>
+  );
+};
+
+const RippleList = ({
+  chains,
+  recentlyPrayed,
+}: {
+  chains: PrayerChainData[];
+  recentlyPrayed: (d: Date | null) => boolean;
+}) => {
+  const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
+
   return (
     <div className="space-y-6">
-      {chains.map((chain) => (
+      <div className="text-center space-y-1.5">
+        <h3 className="font-playfair text-2xl flex items-center justify-center gap-2 text-foreground">
+          <Waves className="h-5 w-5 text-primary" />
+          Prayer Ripple
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Your prayer is reaching others and growing
+        </p>
+      </div>
+
+      {chains.map((chain) => {
+        const isGrowing = chain.status !== "answered";
+        return (
         <Card
           key={chain.prayerId}
           className="rounded-xl animate-gentle-fade"
@@ -159,6 +219,40 @@ const PrayerRippleChain = () => {
             <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
               {chain.title}
             </p>
+
+            {/* Status badge */}
+            <div className="flex justify-center">
+              <Badge
+                variant="outline"
+                className={
+                  isGrowing
+                    ? "border-primary/30 text-primary bg-primary/5"
+                    : "border-accent/40 text-accent bg-accent/5"
+                }
+              >
+                {isGrowing ? "Growing" : "Completed"}
+              </Badge>
+            </div>
+
+            {/* Visual ripple flow */}
+            <RippleFlow depth={chain.rippleDepth} unique={chain.uniquePeople} />
+
+            {/* Tiny stats row */}
+            <div className="grid grid-cols-3 gap-2 text-center max-w-sm mx-auto">
+              <div>
+                <div className="text-lg font-semibold text-foreground">{chain.uniquePeople}</div>
+                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">People prayed</div>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-foreground">{chain.forwardCount}</div>
+                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Forwarded</div>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-foreground">{chain.rippleDepth}</div>
+                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Ripple depth</div>
+              </div>
+            </div>
+
             {/* Single main line: people praying */}
             <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
               <Heart className="h-3.5 w-3.5 text-primary/60" />
@@ -202,9 +296,32 @@ const PrayerRippleChain = () => {
                 </p>
               </div>
             )}
+
+            {/* Forward button */}
+            <div className="flex justify-center pt-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
+              >
+                <Share2 className="h-4 w-4" />
+                Forward Prayer
+              </Button>
+            </div>
           </CardContent>
         </Card>
-      ))}
+        );
+      })}
+
+      {shareFor && (
+        <SharePrayerDialog
+          open={!!shareFor}
+          onOpenChange={(o) => !o && setShareFor(null)}
+          prayerId={shareFor.id}
+          prayerTitle={shareFor.title}
+        />
+      )}
     </div>
   );
 };
