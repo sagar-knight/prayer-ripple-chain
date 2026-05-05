@@ -362,32 +362,41 @@ const RippleImpact = () => {
         </div>
 
         {/* Global Prayer Network */}
-        <Card className="bg-gradient-primary text-primary-foreground animate-rise-in border-0 shadow-glow relative overflow-hidden">
+        <Card className="bg-gradient-primary text-primary-foreground animate-rise-in border-0 shadow-glow relative overflow-hidden rounded-xl">
           <div className="absolute inset-0 bg-aurora opacity-30 mix-blend-overlay pointer-events-none" />
           <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-          <CardHeader className="text-center">
-            <CardTitle className="font-playfair text-2xl">Prayer in Action</CardTitle>
-            <p className="text-primary-foreground/90">
-              See how prayers are spreading across the world
-            </p>
-          </CardHeader>
-          <CardContent className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center max-w-3xl mx-auto">
+          <CardContent className="relative px-6 py-8 sm:px-8 sm:py-10 space-y-6">
+            <div className="text-center space-y-1.5">
+              <h3 className="font-playfair text-2xl flex items-center justify-center gap-2">
+                <Sparkles className="h-5 w-5 opacity-90" />
+                Prayer in Action
+              </h3>
+              <p className="text-sm text-primary-foreground/90">
+                See how prayers are spreading across the world
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 text-center max-w-3xl mx-auto">
               <div className="space-y-2 flex flex-col items-center">
-                <HandHeart className="h-7 w-7 opacity-90" />
-                <div className="text-4xl font-bold tracking-tight"><AnimatedNumber value={globalStats.prayersOffered} /></div>
+                <HandHeart className="h-6 w-6 opacity-90" />
+                <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
+                  <AnimatedNumber value={globalStats.prayersOffered} />
+                </div>
                 <div className="text-sm font-medium opacity-95">Prayers Offered</div>
                 <div className="text-xs opacity-75">Lifted up by this community</div>
               </div>
               <div className="space-y-2 flex flex-col items-center">
-                <User className="h-7 w-7 opacity-90" />
-                <div className="text-4xl font-bold tracking-tight"><AnimatedNumber value={globalStats.peopleCovered} /></div>
+                <User className="h-6 w-6 opacity-90" />
+                <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
+                  <AnimatedNumber value={globalStats.peopleCovered} />
+                </div>
                 <div className="text-sm font-medium opacity-95">People Covered</div>
                 <div className="text-xs opacity-75">Receiving prayer right now</div>
               </div>
               <div className="space-y-2 flex flex-col items-center">
-                <Sparkles className="h-7 w-7 opacity-90" />
-                <div className="text-4xl font-bold tracking-tight"><AnimatedNumber value={globalStats.answeredPrayers} /></div>
+                <Sparkles className="h-6 w-6 opacity-90" />
+                <div className="text-3xl sm:text-4xl font-bold tracking-tight leading-none">
+                  <AnimatedNumber value={globalStats.answeredPrayers} />
+                </div>
                 <div className="text-sm font-medium opacity-95">Answered Prayers</div>
                 <div className="text-xs opacity-75">Stories of God at work</div>
               </div>
