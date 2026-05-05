@@ -65,16 +65,6 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
   );
   const radius = scaleSqrt().domain([0, max]).range([4, 22]);
 
-  if (points.length === 0) {
-    return (
-      <div className="rounded-xl bg-[#0b1220] border border-border/40 p-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          As people begin praying around the world, lights will appear here.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="relative">
       <style>{`
@@ -91,7 +81,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#070d1a] border border-border/40">
+      <div className="rounded-xl overflow-hidden bg-[#070d1a] border border-border/40 relative">
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
@@ -147,6 +137,13 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
             );
           })}
         </ComposableMap>
+        {points.length === 0 && (
+          <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
+            <p className="text-xs text-muted-foreground/80 bg-[#070d1a]/70 px-3 py-1.5 rounded-full">
+              As people begin praying around the world, lights will appear here.
+            </p>
+          </div>
+        )}
       </div>
 
       {hover && (
