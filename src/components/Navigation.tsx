@@ -168,11 +168,8 @@ const Navigation = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        isActiveRoute("/profile")
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                      }`}
+                      className="pf-navlink flex items-center space-x-1 px-3 py-2"
+                      data-active={isActiveRoute("/profile")}
                     >
                       <User className="h-4 w-4" />
                       <span>Profile</span>
@@ -219,9 +216,8 @@ const Navigation = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors"
+                className="pf-navlink-cta ml-2 flex items-center space-x-1"
               >
-                <LogIn className="h-4 w-4" />
                 <span>Sign In</span>
               </Link>
             )}
