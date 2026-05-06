@@ -237,24 +237,22 @@ All colors MUST be HSL.
   /* Animated mesh gradient for hero backgrounds */
   .bg-mesh {
     background:
-      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.18) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(var(--success) / 0.20) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(var(--primary-glow) / 0.18) 0px, transparent 50%),
-      radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsl(var(--primary) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 20% 20%, hsl(var(--foreground) / 0.06) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--foreground) / 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--foreground) / 0.04) 0px, transparent 50%),
       hsl(var(--background));
     background-size: 200% 200%;
-    animation: gradient-shift 12s ease infinite;
+    animation: gradient-shift 16s ease infinite;
   }
 
   /* Gradient text with shimmer */
   .text-gradient {
-    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--success)), hsl(var(--primary-glow)), hsl(var(--primary)));
+    background: linear-gradient(120deg, hsl(var(--foreground)), hsl(var(--muted-foreground)), hsl(var(--foreground)));
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 4s linear infinite;
+    animation: shimmer 6s linear infinite;
   }
 
   /* Animated gradient border */
@@ -269,7 +267,7 @@ All colors MUST be HSL.
     z-index: -1;
     margin: -1.5px;
     border-radius: inherit;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--success)), hsl(var(--primary-glow)));
+    background: linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--muted-foreground)), hsl(var(--foreground)));
     background-size: 200% 200%;
     animation: gradient-shift 6s ease infinite;
   }
@@ -279,7 +277,7 @@ All colors MUST be HSL.
     transition: var(--transition-gentle);
   }
   .hover-glow:hover {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 12px 40px -8px hsl(var(--primary) / 0.35);
+    box-shadow: 0 0 0 1px hsl(var(--foreground) / 0.2), 0 12px 40px -8px hsl(var(--foreground) / 0.25);
     transform: translateY(-3px);
   }
 }
