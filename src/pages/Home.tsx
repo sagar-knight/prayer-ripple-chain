@@ -21,24 +21,17 @@ import ActivityPulse from "@/components/ActivityPulse";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gradient-peaceful pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={heroImage}
-            alt="Peaceful prayer scene"
-            className="w-full h-full object-cover opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80" />
-        </div>
-
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="text-center space-y-4 animate-gentle-fade mb-8">
-            <h1 className="font-playfair text-3xl md:text-5xl font-bold text-foreground leading-tight">
+      <section className="relative" style={{ background: "hsl(var(--pf-secondary))" }}>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-[72px] md:pt-20">
+          <div className="text-center animate-gentle-fade mb-8">
+            <span className="pf-eyebrow">Pray it forward</span>
+            <span className="pf-rule-gold" aria-hidden />
+            <h1 className="font-playfair font-semibold text-foreground leading-[1.1]" style={{ fontSize: 42 }}>
               Someone needs your prayer today
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-4 mx-auto" style={{ fontSize: 14, lineHeight: 1.8, color: "hsl(var(--pf-mid))", fontWeight: 300, maxWidth: 560 }}>
               Pray for one request and encourage someone.
             </p>
           </div>
@@ -49,7 +42,7 @@ const Home = () => {
             <ActivityPulse />
           </div>
 
-          <p className="text-center text-xs text-muted-foreground mt-4">
+          <p className="text-center mt-4" style={{ fontSize: 11, color: "hsl(var(--pf-muted))" }}>
             Public requests are moderated for safety. Anonymous prayer is supported.
           </p>
         </div>
@@ -187,12 +180,14 @@ const Home = () => {
       <NewsletterSubscribe />
 
       {/* Final CTA */}
-      <section className="py-16 bg-gradient-primary text-primary-foreground">
+      <section className="py-16" style={{ background: "hsl(var(--pf-primary))", color: "hsl(var(--pf-secondary))" }}>
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-6">
+          <span className="pf-eyebrow" style={{ color: "hsl(var(--pf-accent))" }}>Pray it forward</span>
+          <span className="pf-rule-gold" aria-hidden />
+          <h2 className="font-playfair font-semibold mb-6" style={{ fontSize: 30 }}>
             Your One Prayer Can Change Everything.
           </h2>
-          <p className="text-lg mb-8 text-primary-foreground/90 max-w-3xl mx-auto">
+          <p className="mb-8 max-w-3xl mx-auto" style={{ fontSize: 14, lineHeight: 1.8, color: "hsl(var(--pf-secondary) / 0.85)" }}>
             Join a movement where every prayer leads to another, and every person
             feels seen, heard, and loved.
           </p>
