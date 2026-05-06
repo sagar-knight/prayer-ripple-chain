@@ -4,7 +4,7 @@ import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 
 const AppFooter = () => {
   return (
-    <footer className="bg-foreground text-background mt-auto">
+    <footer className="mt-auto" style={{ background: "hsl(var(--pf-dark))", color: "hsl(var(--pf-secondary))" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}

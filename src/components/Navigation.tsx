@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -38,6 +38,13 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const location = useLocation();
   const isStorePage =
     location.pathname.startsWith("/store") ||
@@ -79,13 +86,16 @@ const Navigation = () => {
   const isMoreActive = moreItems.some((item) => isActiveRoute(item.href));
 
   return (
-    <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav
+      className={`sticky top-0 z-50 transition-shadow ${scrolled ? "shadow-card" : ""}`}
+      style={{ background: "hsl(var(--pf-primary))" }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" aria-label="PrayerForward home">
             <PrayerForwardLogo className="h-9 w-9" />
-            <span className="font-playfair text-xl font-semibold text-foreground">
+            <span className="font-playfair font-semibold" style={{ fontSize: 17, color: "hsl(var(--pf-secondary))" }}>
               PrayerForward
             </span>
           </Link>
@@ -94,15 +104,13 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-1">
             {mainItems.map((item) => {
               const Icon = item.icon;
+              const active = isActiveRoute(item.href);
               return (
                 <Link
                   key={item.href + item.label}
                   to={item.href}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActiveRoute(item.href)
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                  }`}
+                  className="pf-navlink flex items-center space-x-1 px-3 py-2"
+                  data-active={active}
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
@@ -114,11 +122,8 @@ const Navigation = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isMoreActive
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                  }`}
+                  className="pf-navlink flex items-center space-x-1 px-3 py-2"
+                  data-active={isMoreActive}
                 >
                   <HelpCircle className="h-4 w-4" />
                   <span>More</span>
@@ -163,11 +168,8 @@ const Navigation = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        isActiveRoute("/profile")
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                      }`}
+                      className="pf-navlink flex items-center space-x-1 px-3 py-2"
+                      data-active={isActiveRoute("/profile")}
                     >
                       <User className="h-4 w-4" />
                       <span>Profile</span>
@@ -214,9 +216,8 @@ const Navigation = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors"
+                className="pf-navlink-cta ml-2 flex items-center space-x-1"
               >
-                <LogIn className="h-4 w-4" />
                 <span>Sign In</span>
               </Link>
             )}

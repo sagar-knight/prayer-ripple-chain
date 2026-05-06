@@ -8,71 +8,71 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Fresh, calm color palette: green → blue */
-    /* Background #F9FAFB */
-    --background: 220 14% 98%;
-    /* Text primary #111827 */
-    --foreground: 220 39% 11%;
+    /* PrayerForward brand: dark teal + warm gold, editorial */
+    /* PF tokens */
+    --pf-primary: 199 27% 18%;     /* #22333B */
+    --pf-secondary: 150 8% 95%;    /* #F2F4F3 */
+    --pf-accent: 38 46% 61%;       /* #C9A96E */
+    --pf-mid: 199 26% 32%;         /* #3D5A67 */
+    --pf-surface: 120 5% 92%;      /* #EAECEA */
+    --pf-dark: 196 30% 15%;        /* #1A2A30 */
+    --pf-body: 197 22% 22%;        /* #2C3E45 */
+    --pf-muted: 195 11% 47%;       /* #6B7F86 */
 
-    /* Cards #FFFFFF */
+    /* Surfaces */
+    --background: var(--pf-secondary);
+    --foreground: var(--pf-primary);
     --card: 0 0% 100%;
-    --card-foreground: 220 39% 11%;
-
+    --card-foreground: var(--pf-primary);
     --popover: 0 0% 100%;
-    --popover-foreground: 220 39% 11%;
+    --popover-foreground: var(--pf-primary);
 
-    /* Primary: sky blue #3B82F6 with green glow #6EE7B7 */
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 152 76% 67%;
+    /* Primary = dark teal */
+    --primary: var(--pf-primary);
+    --primary-foreground: var(--pf-secondary);
+    --primary-glow: var(--pf-accent);
 
-    /* Secondary: light neutral */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 39% 11%;
+    /* Secondary = light surface */
+    --secondary: var(--pf-surface);
+    --secondary-foreground: var(--pf-primary);
 
-    /* Muted: text secondary #6B7280 on near-white surface */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: var(--pf-surface);
+    --muted-foreground: var(--pf-muted);
 
-    /* Accent: focus/highlight #F59E0B */
-    --accent: 38 92% 50%;
-    --accent-foreground: 220 39% 11%;
+    /* Accent = gold */
+    --accent: var(--pf-accent);
+    --accent-foreground: var(--pf-primary);
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 60% 42%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --border: 120 5% 88%;
+    --input: 120 5% 88%;
+    --ring: var(--pf-accent);
 
-    /* Success / prayer action #22C55E */
-    --success: 142 71% 45%;
+    /* Success retained for answered-prayer flows, tuned to brand */
+    --success: 150 30% 35%;
     --success-foreground: 0 0% 100%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 60%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(220 14% 98%), hsl(220 14% 96%));
-    --gradient-warm: linear-gradient(45deg, hsl(38 92% 50%), hsl(152 76% 67%));
+    /* No gradients per spec — keep tokens but flatten */
+    --gradient-primary: hsl(var(--pf-primary));
+    --gradient-peaceful: hsl(var(--pf-secondary));
+    --gradient-warm: hsl(var(--pf-accent));
+    --gradient-aurora: hsl(var(--pf-secondary));
+    --gradient-soft-green: hsl(var(--pf-surface));
+    --gradient-soft-blue: hsl(var(--pf-surface));
+    --gradient-soft-warm: hsl(var(--pf-surface));
 
-    /* Soft tinted backgrounds for emotional surfaces */
-    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 67% / 0.18), transparent 60%),
-                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.15), transparent 60%),
-                       linear-gradient(180deg, hsl(220 14% 99%), hsl(220 14% 97%));
-    --gradient-soft-green: linear-gradient(160deg, hsl(152 76% 95%), hsl(217 91% 97%));
-    --gradient-soft-blue: linear-gradient(160deg, hsl(217 91% 96%), hsl(220 14% 99%));
-    --gradient-soft-warm: linear-gradient(160deg, hsl(38 92% 95%), hsl(0 0% 100%));
+    /* Shadows — only nav scrolled allowed; keep card subtle */
+    --shadow-peaceful: none;
+    --shadow-warm: none;
+    --shadow-glow: none;
+    --shadow-card: 0 2px 8px rgba(34,51,59,0.08);
+    --shadow-card-hover: 0 2px 8px rgba(34,51,59,0.08);
 
-    /* Shadows / glow (success glow rgba(34,197,94,0.25)) */
-    --shadow-peaceful: 0 4px 20px -4px hsl(217 91% 60% / 0.20);
-    --shadow-warm: 0 8px 30px -8px hsl(142 71% 45% / 0.25);
-    --shadow-glow: 0 0 24px 0 hsl(142 71% 45% / 0.25);
-    --shadow-card: 0 1px 3px 0 hsl(220 39% 11% / 0.04), 0 4px 14px -2px hsl(220 39% 11% / 0.06);
-    --shadow-card-hover: 0 2px 6px 0 hsl(220 39% 11% / 0.06), 0 8px 24px -4px hsl(220 39% 11% / 0.10);
+    --transition-gentle: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Smooth animations */
-    --transition-gentle: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-    --radius: 0.75rem;
+    --radius: 0.25rem; /* 4px max per spec */
 
     /* Spacing scale */
     --space-section: 3rem;
@@ -90,52 +90,50 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark mode aligned to green→blue palette */
-    --background: 222 47% 8%;
-    --foreground: 220 14% 96%;
+    /* Dark mode: PF dark surfaces + gold accent */
+    --background: var(--pf-dark);
+    --foreground: var(--pf-secondary);
 
-    --card: 222 47% 12%;
-    --card-foreground: 220 14% 96%;
+    --card: 199 27% 14%;
+    --card-foreground: var(--pf-secondary);
 
-    --popover: 222 47% 12%;
-    --popover-foreground: 220 14% 96%;
+    --popover: 199 27% 14%;
+    --popover-foreground: var(--pf-secondary);
 
-    --primary: 217 91% 65%;
-    --primary-foreground: 222 47% 8%;
-    --primary-glow: 152 76% 67%;
+    --primary: var(--pf-secondary);
+    --primary-foreground: var(--pf-primary);
+    --primary-glow: var(--pf-accent);
 
-    --secondary: 222 30% 18%;
-    --secondary-foreground: 220 14% 96%;
+    --secondary: 199 27% 22%;
+    --secondary-foreground: var(--pf-secondary);
 
-    --muted: 222 30% 16%;
-    --muted-foreground: 220 9% 65%;
+    --muted: 199 20% 22%;
+    --muted-foreground: 195 11% 65%;
 
-    --accent: 38 92% 55%;
-    --accent-foreground: 222 47% 8%;
+    --accent: var(--pf-accent);
+    --accent-foreground: var(--pf-primary);
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 60% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 20%;
-    --input: 222 30% 20%;
-    --ring: 217 91% 65%;
+    --border: 199 20% 24%;
+    --input: 199 20% 24%;
+    --ring: var(--pf-accent);
 
-    --success: 142 71% 50%;
+    --success: 150 30% 45%;
     --success-foreground: 0 0% 100%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 65%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 12%));
-    --gradient-warm: linear-gradient(45deg, hsl(38 92% 55%), hsl(152 76% 67%));
-    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 50% / 0.18), transparent 60%),
-                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.18), transparent 60%),
-                       linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 10%));
-    --gradient-soft-green: linear-gradient(160deg, hsl(152 30% 15%), hsl(217 30% 14%));
-    --gradient-soft-blue: linear-gradient(160deg, hsl(217 30% 16%), hsl(222 47% 12%));
-    --gradient-soft-warm: linear-gradient(160deg, hsl(38 30% 18%), hsl(222 47% 12%));
+    --gradient-primary: hsl(var(--pf-dark));
+    --gradient-peaceful: hsl(var(--pf-dark));
+    --gradient-warm: hsl(var(--pf-accent));
+    --gradient-aurora: hsl(var(--pf-dark));
+    --gradient-soft-green: hsl(199 27% 14%);
+    --gradient-soft-blue: hsl(199 27% 14%);
+    --gradient-soft-warm: hsl(199 27% 14%);
 
-    --shadow-glow: 0 0 24px 0 hsl(142 71% 50% / 0.25);
-    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.2), 0 4px 14px -2px hsl(0 0% 0% / 0.25);
-    --shadow-card-hover: 0 2px 6px 0 hsl(0 0% 0% / 0.25), 0 8px 24px -4px hsl(0 0% 0% / 0.3);
+    --shadow-glow: none;
+    --shadow-card: 0 2px 8px rgba(0,0,0,0.35);
+    --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.35);
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -155,7 +153,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Lato', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-playfair {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-scripture {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
   }
 
   /* Consistent page section spacing */
@@ -232,57 +239,136 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .bg-aurora { background: var(--gradient-aurora); }
-  .bg-soft-green { background: var(--gradient-soft-green); }
-  .bg-soft-blue { background: var(--gradient-soft-blue); }
-  .bg-soft-warm { background: var(--gradient-soft-warm); }
+  /* Brand-flat backgrounds (no gradients per design system) */
+  .bg-aurora { background: hsl(var(--pf-secondary)); }
+  .bg-soft-green { background: hsl(var(--pf-surface)); }
+  .bg-soft-blue { background: hsl(var(--pf-surface)); }
+  .bg-soft-warm { background: hsl(var(--pf-surface)); }
+  .bg-mesh { background: hsl(var(--pf-secondary)); }
 
-  /* Animated mesh gradient for hero backgrounds */
-  .bg-mesh {
-    background:
-      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.18) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(var(--success) / 0.20) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(var(--primary-glow) / 0.18) 0px, transparent 50%),
-      radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsl(var(--primary) / 0.15) 0px, transparent 50%),
-      hsl(var(--background));
-    background-size: 200% 200%;
-    animation: gradient-shift 12s ease infinite;
-  }
-
-  /* Gradient text with shimmer */
+  /* Solid brand text (gradient text disallowed) */
   .text-gradient {
-    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--success)), hsl(var(--primary-glow)), hsl(var(--primary)));
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 4s linear infinite;
+    color: hsl(var(--pf-accent));
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: currentColor;
+    background: none;
+    animation: none;
   }
 
-  /* Animated gradient border */
-  .border-gradient {
-    position: relative;
-    background-clip: padding-box;
+  /* Brand-accent border (no animated gradient) */
+  .border-gradient { border: 1px solid hsl(var(--pf-accent)); }
+  .border-gradient::before { content: none; }
+
+  /* Subtle hover lift, no glow shadow */
+  .hover-glow { transition: var(--transition-gentle); }
+  .hover-glow:hover { transform: translateY(-2px); }
+
+  /* PrayerForward editorial helpers */
+  .pf-eyebrow {
+    font-family: 'Lato', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--pf-accent));
   }
-  .border-gradient::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    margin: -1.5px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--success)), hsl(var(--primary-glow)));
-    background-size: 200% 200%;
-    animation: gradient-shift 6s ease infinite;
+  .pf-rule-gold {
+    display: block;
+    width: 48px;
+    height: 1px;
+    background: hsl(var(--pf-accent));
+    margin: 10px auto 16px;
+  }
+  .pf-rule-gold-left { margin-left: 0; margin-right: auto; }
+}
+
+@layer components {
+  /* Nav links on dark teal bar */
+  .pf-navlink {
+    font-family: 'Lato', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: hsl(var(--pf-secondary));
+    opacity: 0.65;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+  .pf-navlink:hover,
+  .pf-navlink[data-active="true"] {
+    opacity: 1;
+    border-bottom-color: hsl(var(--pf-accent));
+  }
+  .pf-navlink-cta {
+    background: hsl(var(--pf-secondary));
+    color: hsl(var(--pf-primary));
+    font-family: 'Lato', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 4px;
+    border: none;
+    box-shadow: none;
+    transition: opacity 0.2s ease;
+  }
+  .pf-navlink-cta:hover { opacity: 0.9; }
+
+  /* Editorial primary/secondary buttons */
+  .pf-btn-primary {
+    background: hsl(var(--pf-primary));
+    color: hsl(var(--pf-secondary));
+    font-family: 'Lato', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: 1.5px solid hsl(var(--pf-primary));
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s ease;
+  }
+  .pf-btn-primary:hover { opacity: 0.9; }
+  .pf-btn-secondary {
+    background: transparent;
+    color: hsl(var(--pf-primary));
+    font-family: 'Lato', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: 1.5px solid hsl(var(--pf-primary));
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .pf-btn-secondary:hover {
+    background: hsl(var(--pf-primary));
+    color: hsl(var(--pf-secondary));
   }
 
-  /* Soft glow ring on hover */
-  .hover-glow {
-    transition: var(--transition-gentle);
-  }
-  .hover-glow:hover {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 12px 40px -8px hsl(var(--primary) / 0.35);
-    transform: translateY(-3px);
+  /* Scripture pull-quote */
+  .pf-scripture {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: 14px;
+    color: hsl(var(--pf-mid));
+    line-height: 1.65;
+    border-left: 2px solid hsl(var(--pf-accent));
+    border-radius: 0;
+    padding-left: 14px;
+    max-width: 420px;
+    margin: 0 auto;
+    text-align: left;
   }
 }
