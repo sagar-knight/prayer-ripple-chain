@@ -13,7 +13,6 @@ import {
   Sparkles,
   HandHeart,
 } from "lucide-react";
-import heroImage from "@/assets/hero-prayer.jpg";
 import DailyVerseCard from "@/components/DailyVerseCard";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
