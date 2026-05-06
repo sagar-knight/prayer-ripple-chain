@@ -88,7 +88,8 @@ export default {
 			},
 			fontFamily: {
 				'inter': ['Inter', 'system-ui', 'sans-serif'],
-				'playfair': ['Playfair Display', 'serif']
+				'playfair': ['Playfair Display', 'serif'],
+				'display': ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif']
 			},
 			transitionTimingFunction: {
 				'gentle': 'var(--transition-gentle)'
