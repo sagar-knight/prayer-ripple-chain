@@ -239,57 +239,46 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .bg-aurora { background: var(--gradient-aurora); }
-  .bg-soft-green { background: var(--gradient-soft-green); }
-  .bg-soft-blue { background: var(--gradient-soft-blue); }
-  .bg-soft-warm { background: var(--gradient-soft-warm); }
+  /* Brand-flat backgrounds (no gradients per design system) */
+  .bg-aurora { background: hsl(var(--pf-secondary)); }
+  .bg-soft-green { background: hsl(var(--pf-surface)); }
+  .bg-soft-blue { background: hsl(var(--pf-surface)); }
+  .bg-soft-warm { background: hsl(var(--pf-surface)); }
+  .bg-mesh { background: hsl(var(--pf-secondary)); }
 
-  /* Animated mesh gradient for hero backgrounds */
-  .bg-mesh {
-    background:
-      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.18) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(var(--success) / 0.20) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(var(--primary-glow) / 0.18) 0px, transparent 50%),
-      radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsl(var(--primary) / 0.15) 0px, transparent 50%),
-      hsl(var(--background));
-    background-size: 200% 200%;
-    animation: gradient-shift 12s ease infinite;
-  }
-
-  /* Gradient text with shimmer */
+  /* Solid brand text (gradient text disallowed) */
   .text-gradient {
-    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--success)), hsl(var(--primary-glow)), hsl(var(--primary)));
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 4s linear infinite;
+    color: hsl(var(--pf-accent));
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: currentColor;
+    background: none;
+    animation: none;
   }
 
-  /* Animated gradient border */
-  .border-gradient {
-    position: relative;
-    background-clip: padding-box;
-  }
-  .border-gradient::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    margin: -1.5px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--success)), hsl(var(--primary-glow)));
-    background-size: 200% 200%;
-    animation: gradient-shift 6s ease infinite;
-  }
+  /* Brand-accent border (no animated gradient) */
+  .border-gradient { border: 1px solid hsl(var(--pf-accent)); }
+  .border-gradient::before { content: none; }
 
-  /* Soft glow ring on hover */
-  .hover-glow {
-    transition: var(--transition-gentle);
+  /* Subtle hover lift, no glow shadow */
+  .hover-glow { transition: var(--transition-gentle); }
+  .hover-glow:hover { transform: translateY(-2px); }
+
+  /* PrayerForward editorial helpers */
+  .pf-eyebrow {
+    font-family: 'Lato', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--pf-accent));
   }
-  .hover-glow:hover {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 12px 40px -8px hsl(var(--primary) / 0.35);
-    transform: translateY(-3px);
+  .pf-rule-gold {
+    display: block;
+    width: 48px;
+    height: 1px;
+    background: hsl(var(--pf-accent));
+    margin: 10px auto 16px;
   }
+  .pf-rule-gold-left { margin-left: 0; margin-right: auto; }
 }
