@@ -34,17 +34,17 @@ const Home = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
         </div>
-        {/* Soft gold glow */}
+        {/* Subtle white halo */}
         <div
-          className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[820px] rounded-full opacity-40 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(closest-side, hsl(var(--accent) / 0.35), transparent 70%)" }}
+          className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[820px] rounded-full opacity-20 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(closest-side, hsl(var(--foreground) / 0.18), transparent 70%)" }}
           aria-hidden
         />
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-24 pb-14 md:pb-20">
           <div className="text-center space-y-5 animate-gentle-fade mb-10">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 backdrop-blur px-4 py-1.5 text-xs font-medium text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-peaceful-glow" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 backdrop-blur px-4 py-1.5 text-xs font-medium tracking-wide uppercase text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-foreground animate-peaceful-glow" />
               Live prayer community
             </span>
             <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground leading-[1.05] tracking-tight">
