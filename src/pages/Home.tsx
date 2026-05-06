@@ -21,35 +21,48 @@ import ActivityPulse from "@/components/ActivityPulse";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gradient-peaceful pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
+        {/* Cinematic layered backdrop */}
+        <div className="absolute inset-0 bg-aurora" aria-hidden />
+        <div className="absolute inset-0" aria-hidden>
           <img
             src={heroImage}
-            alt="Peaceful prayer scene"
-            className="w-full h-full object-cover opacity-30"
+            alt=""
+            className="w-full h-full object-cover opacity-[0.18] mix-blend-luminosity"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
         </div>
+        {/* Soft gold glow */}
+        <div
+          className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[820px] rounded-full opacity-40 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(closest-side, hsl(var(--accent) / 0.35), transparent 70%)" }}
+          aria-hidden
+        />
 
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="text-center space-y-4 animate-gentle-fade mb-8">
-            <h1 className="font-playfair text-3xl md:text-5xl font-bold text-foreground leading-tight">
-              Someone needs your prayer today
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-24 pb-14 md:pb-20">
+          <div className="text-center space-y-5 animate-gentle-fade mb-10">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 backdrop-blur px-4 py-1.5 text-xs font-medium text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-peaceful-glow" />
+              Live prayer community
+            </span>
+            <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground leading-[1.05] tracking-tight">
+              Someone needs your{" "}
+              <span className="text-gradient">prayer</span> today
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Pray for one request and encourage someone.
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Pray for one request. Pass it forward. Watch the ripple reach the world.
             </p>
           </div>
 
           <FeaturedPrayerCard />
 
-          <div className="mt-5">
+          <div className="mt-6">
             <ActivityPulse />
           </div>
 
-          <p className="text-center text-xs text-muted-foreground mt-4">
+          <p className="text-center text-xs text-muted-foreground mt-6">
             Public requests are moderated for safety. Anonymous prayer is supported.
           </p>
         </div>
