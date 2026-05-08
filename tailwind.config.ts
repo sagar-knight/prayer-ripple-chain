@@ -87,10 +87,10 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				'inter': ['Inter', 'system-ui', 'sans-serif'],
+				'inter': ['Mulish', 'system-ui', 'sans-serif'],
 				'playfair': ['"Instrument Serif"', 'serif'],
 				'serif': ['"Instrument Serif"', 'serif'],
-				'display': ['Manrope', 'Inter', 'system-ui', 'sans-serif']
+				'display': ['Mulish', 'system-ui', 'sans-serif']
 			},
 			transitionTimingFunction: {
 				'gentle': 'var(--transition-gentle)'
