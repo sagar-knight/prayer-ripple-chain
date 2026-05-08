@@ -88,8 +88,8 @@ export default {
 			},
 			fontFamily: {
 				'inter': ['Mulish', 'system-ui', 'sans-serif'],
-				'playfair': ['"Instrument Serif"', 'serif'],
-				'serif': ['"Instrument Serif"', 'serif'],
+				'playfair': ['Mulish', 'system-ui', 'sans-serif'],
+				'serif': ['Mulish', 'system-ui', 'sans-serif'],
 				'display': ['Mulish', 'system-ui', 'sans-serif']
 			},
 			transitionTimingFunction: {
