@@ -239,12 +239,6 @@ const RippleList = ({
             )}
           </h3>
 
-          <p className="text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
-            {totalPeoplePraying > 0
-              ? `Across ${chains.length} active prayer ${chains.length === 1 ? "request" : "requests"}.`
-              : `Your ${chains.length === 1 ? "request has" : `${chains.length} requests have`} been shared with the community.`}
-          </p>
-
           {/* Live activity line */}
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <span className="relative flex h-1.5 w-1.5">
