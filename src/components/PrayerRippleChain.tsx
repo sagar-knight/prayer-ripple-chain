@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Sparkles, Loader2, Waves } from "lucide-react";
+import { Heart, Share2, Sparkles, Loader2, Waves, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -191,20 +191,54 @@ const RippleList = ({
   recentlyPrayed: (d: Date | null) => boolean;
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
+  const [expanded, setExpanded] = useState(false);
+
+  const totalPeoplePraying = chains.reduce((sum, c) => sum + (c.uniquePeople || 0), 0);
+  const growingCount = chains.filter((c) => c.status !== "answered").length;
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-1.5">
-        <h3 className="font-playfair text-2xl flex items-center justify-center gap-2 text-foreground">
-          <Waves className="h-5 w-5 text-primary" />
-          Prayer Ripple
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          Your prayer is reaching others and growing
-        </p>
-      </div>
+      {/* Single summary card (matches "You Prayed for Others" style) */}
+      <Card className="card-glass border-0 max-w-md mx-auto hover-glow">
+        <CardContent className="pt-7 pb-7 text-center space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
+            <Waves className="h-5 w-5 text-primary" />
+          </div>
+          <p className="text-4xl font-bold text-foreground">
+            {chains.length}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {chains.length === 1 ? "1 prayer request" : `${chains.length} prayer requests`} carried by{" "}
+            {totalPeoplePraying} {totalPeoplePraying === 1 ? "person" : "people"}.
+          </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-primary gap-1"
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded ? "Hide details" : "View details"}
+            <ChevronRight
+              className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`}
+            />
+          </Button>
+        </CardContent>
+      </Card>
 
-      {chains.map((chain) => {
+      {/* Collapsed list of individual prayer ripple cards */}
+      {expanded && (
+        <div className="space-y-6 animate-gentle-fade">
+          <div className="text-center space-y-1.5">
+            <h3 className="font-playfair text-xl flex items-center justify-center gap-2 text-foreground">
+              <Waves className="h-5 w-5 text-primary" />
+              Prayer Ripple
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Your prayer is reaching others and growing
+            </p>
+          </div>
+
+          {chains.map((chain) => {
         const isGrowing = chain.status !== "answered";
         return (
         <Card
@@ -283,7 +317,9 @@ const RippleList = ({
           </CardContent>
         </Card>
         );
-      })}
+          })}
+        </div>
+      )}
 
       {shareFor && (
         <SharePrayerDialog
