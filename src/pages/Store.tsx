@@ -232,24 +232,6 @@ const Store = () => {
           </>
         ) : isHome ? (
           <>
-            {/* Shop by Category */}
-            <section className="mb-12">
-              <h2 className="font-playfair text-xl font-semibold text-foreground mb-4">Shop by Category</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {shopCategories.map((cat) => (
-                  <button
-                    key={cat.label}
-                    onClick={() => navigate(`/store?category=${encodeURIComponent(cat.label)}`)}
-                    className="group p-6 rounded-lg border border-border bg-card hover:border-primary/30 hover:shadow-peaceful transition-all text-left"
-                  >
-                    <span className="text-2xl mb-2 block">{cat.icon}</span>
-                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{cat.label}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>
-                  </button>
-                ))}
-              </div>
-            </section>
-
             {/* Product rows */}
             <ProductRow title="New Arrivals" items={allProducts.slice(0, 4)} viewAllHref="/store?collection=new" />
           </>
