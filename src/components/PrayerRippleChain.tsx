@@ -4,12 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Sparkles, Loader2, Waves, ChevronDown } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Heart, Share2, Sparkles, Loader2, Waves } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -31,53 +26,6 @@ interface PrayerChainData {
   status: string;
   chain: ChainNode[];
 }
-
-interface MergedChain {
-  key: string;
-  title: string;
-  status: string;
-  uniquePeople: number;
-  forwardCount: number;
-  rippleDepth: number;
-  lastPrayedAt: Date | null;
-  variants: PrayerChainData[];
-  primary: PrayerChainData;
-}
-
-const mergeChains = (chains: PrayerChainData[]): MergedChain[] => {
-  const groups = new Map<string, PrayerChainData[]>();
-  for (const c of chains) {
-    const key = (c.title || "").trim().toLowerCase().replace(/\s+/g, " ");
-    const arr = groups.get(key) || [];
-    arr.push(c);
-    groups.set(key, arr);
-  }
-  return Array.from(groups.values()).map((variants) => {
-    const primary = variants[0];
-    const uniquePeople = variants.reduce((s, v) => s + (v.uniquePeople || 0), 0);
-    const forwardCount = variants.reduce((s, v) => s + (v.forwardCount || 0), 0);
-    const rippleDepth = variants.reduce((m, v) => Math.max(m, v.rippleDepth || 0), 0);
-    const lastPrayedAt = variants.reduce<Date | null>((latest, v) => {
-      if (!v.lastPrayedAt) return latest;
-      if (!latest || v.lastPrayedAt > latest) return v.lastPrayedAt;
-      return latest;
-    }, null);
-    const status = variants.some((v) => v.status === "answered" && variants.every((x) => x.status === "answered"))
-      ? "answered"
-      : variants.find((v) => v.status !== "answered")?.status ?? primary.status;
-    return {
-      key: primary.title.trim().toLowerCase(),
-      title: primary.title,
-      status,
-      uniquePeople,
-      forwardCount,
-      rippleDepth,
-      lastPrayedAt,
-      variants,
-      primary,
-    };
-  });
-};
 
 const PrayerRippleChain = () => {
   const { user } = useAuth();
@@ -208,8 +156,7 @@ const PrayerRippleChain = () => {
   const recentlyPrayed = (date: Date | null) =>
     !!date && Date.now() - date.getTime() < 24 * 60 * 60 * 1000;
 
-  const merged = mergeChains(chains);
-  return <RippleList groups={merged} recentlyPrayed={recentlyPrayed} />;
+  return <RippleList chains={chains} recentlyPrayed={recentlyPrayed} />;
 };
 
 /** Builds the dotted ripple flow: ● → ○ → ○ … */
@@ -237,17 +184,13 @@ const RippleFlow = ({ depth, unique }: { depth: number; unique: number }) => {
 };
 
 const RippleList = ({
-  groups,
+  chains,
   recentlyPrayed,
 }: {
-  groups: MergedChain[];
+  chains: PrayerChainData[];
   recentlyPrayed: (d: Date | null) => boolean;
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
-  const [expanded, setExpanded] = useState(false);
-  const INITIAL_VISIBLE = 3;
-  const visibleGroups = expanded ? groups : groups.slice(0, INITIAL_VISIBLE);
-  const hiddenCount = groups.length - visibleGroups.length;
 
   return (
     <div className="space-y-6">
@@ -261,12 +204,11 @@ const RippleList = ({
         </p>
       </div>
 
-      {visibleGroups.map((group) => {
-        const isGrowing = group.status !== "answered";
-        const hasVariants = group.variants.length > 1;
+      {chains.map((chain) => {
+        const isGrowing = chain.status !== "answered";
         return (
         <Card
-          key={group.primary.prayerId}
+          key={chain.prayerId}
           className="rounded-xl animate-gentle-fade"
         >
           {/* Calm card header */}
@@ -275,11 +217,11 @@ const RippleList = ({
               Your prayer request
             </p>
             <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
-              {group.title}
+              {chain.title}
             </p>
 
             {/* Status badge */}
-            <div className="flex justify-center gap-2 flex-wrap">
+            <div className="flex justify-center">
               <Badge
                 variant="outline"
                 className={
@@ -290,30 +232,25 @@ const RippleList = ({
               >
                 {isGrowing ? "Growing" : "Completed"}
               </Badge>
-              {hasVariants && (
-                <Badge variant="outline" className="border-border text-muted-foreground">
-                  {group.variants.length} entries
-                </Badge>
-              )}
             </div>
 
             {/* Visual ripple flow */}
-            <RippleFlow depth={group.rippleDepth} unique={group.uniquePeople} />
+            <RippleFlow depth={chain.rippleDepth} unique={chain.uniquePeople} />
 
             {/* Single main line: people praying */}
             <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
               <Heart className="h-3.5 w-3.5 text-primary/60" />
               <span>
-                {group.uniquePeople > 0
-                  ? `${group.uniquePeople} ${
-                      group.uniquePeople === 1 ? "person is" : "people are"
+                {chain.uniquePeople > 0
+                  ? `${chain.uniquePeople} ${
+                      chain.uniquePeople === 1 ? "person is" : "people are"
                     } praying with you`
                   : "Your request has been shared. People will pray for you soon."}
               </span>
             </div>
 
             {/* Calm recent activity hint */}
-            {recentlyPrayed(group.lastPrayedAt) && (
+            {recentlyPrayed(chain.lastPrayedAt) && (
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Sparkles className="h-3 w-3 text-primary/60" />
                 <span>Someone prayed recently</span>
@@ -321,12 +258,12 @@ const RippleList = ({
             )}
 
             {/* Optional small ripple info (only if > 0) */}
-            {group.forwardCount > 0 && (
+            {chain.forwardCount > 0 && (
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Share2 className="h-3 w-3 text-primary/60" />
                 <span>
-                  Shared {group.forwardCount}{" "}
-                  {group.forwardCount === 1 ? "time" : "times"}
+                  Shared {chain.forwardCount}{" "}
+                  {chain.forwardCount === 1 ? "time" : "times"}
                 </span>
               </div>
             )}
@@ -337,66 +274,16 @@ const RippleList = ({
                 variant="outline"
                 size="sm"
                 className="gap-2"
-                onClick={() => setShareFor({ id: group.primary.prayerId, title: group.title })}
+                onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
               >
                 <Share2 className="h-4 w-4" />
                 Forward Prayer
               </Button>
             </div>
-
-            {hasVariants && (
-              <Collapsible>
-                <div className="flex justify-center">
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-1.5 text-xs text-muted-foreground">
-                      View {group.variants.length} entries
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    </Button>
-                  </CollapsibleTrigger>
-                </div>
-                <CollapsibleContent className="mt-3 space-y-2">
-                  {group.variants.map((v) => (
-                    <div
-                      key={v.prayerId}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-background/40 px-3 py-2 text-xs"
-                    >
-                      <span className="text-muted-foreground truncate">
-                        {v.uniquePeople > 0
-                          ? `${v.uniquePeople} praying`
-                          : "Awaiting prayers"}
-                        {v.status === "answered" ? " · Answered" : ""}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => setShareFor({ id: v.prayerId, title: v.title })}
-                      >
-                        <Share2 className="h-3 w-3 mr-1" /> Forward
-                      </Button>
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            )}
           </CardContent>
         </Card>
         );
       })}
-
-      {groups.length > INITIAL_VISIBLE && (
-        <div className="flex justify-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setExpanded((v) => !v)}
-          >
-            {expanded
-              ? "Show fewer"
-              : `Show ${hiddenCount} more prayer ${hiddenCount === 1 ? "request" : "requests"}`}
-          </Button>
-        </div>
-      )}
 
       {shareFor && (
         <SharePrayerDialog
