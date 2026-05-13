@@ -193,19 +193,18 @@ const StoreHeader = () => {
                 </Link>
               ))}
 
-              {/* Apparel dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
-                    Apparel <ChevronDown className="h-3.5 w-3.5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="w-40">
-                  <DropdownMenuItem onClick={() => navigate("/store?category=Apparel")}>All Apparel</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Link to="/store?category=Apparel" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
+                Apparel
+              </Link>
+              <Link to="/store?category=Accessories" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
+                Accessories
+              </Link>
+              <Link to="/store?category=Wall%20Art" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
+                Wall Art
+              </Link>
+              <Link to="/store?category=Journals" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
+                Journals
+              </Link>
 
               <Link to="/store/about" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
                 About
