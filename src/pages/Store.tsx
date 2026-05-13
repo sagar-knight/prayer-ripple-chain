@@ -230,12 +230,7 @@ const Store = () => {
               ))}
             </div>
           </>
-        ) : isHome ? (
-          <>
-            {/* Product rows */}
-            <ProductRow title="New Arrivals" items={allProducts.slice(0, 4)} viewAllHref="/store?collection=new" />
-          </>
-        ) : (
+        ) : isHome ? null : (
           <>
             {/* Category/Search results */}
             <div className="mb-6">
