@@ -228,10 +228,10 @@ const RippleList = ({
           </p>
 
           {/* Human-centered headline */}
-          <h3 className="font-playfair text-2xl sm:text-[26px] font-semibold text-foreground leading-snug px-2">
+          <h3 className="text-xl sm:text-2xl font-semibold text-foreground leading-snug px-2 tracking-tight">
             {totalPeoplePraying > 0 ? (
               <>
-                <span className="text-gradient">{totalPeoplePraying}</span>{" "}
+                <span className="text-foreground font-semibold">{totalPeoplePraying}</span>{" "}
                 {totalPeoplePraying === 1 ? "person is" : "people are"} praying with you
               </>
             ) : (
