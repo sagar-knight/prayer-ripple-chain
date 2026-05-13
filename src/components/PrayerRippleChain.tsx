@@ -191,6 +191,10 @@ const RippleList = ({
   recentlyPrayed: (d: Date | null) => boolean;
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const INITIAL_VISIBLE = 3;
+  const visibleChains = expanded ? chains : chains.slice(0, INITIAL_VISIBLE);
+  const hiddenCount = chains.length - visibleChains.length;
 
   return (
     <div className="space-y-6">
@@ -204,7 +208,7 @@ const RippleList = ({
         </p>
       </div>
 
-      {chains.map((chain) => {
+      {visibleChains.map((chain) => {
         const isGrowing = chain.status !== "answered";
         return (
         <Card
@@ -284,6 +288,20 @@ const RippleList = ({
         </Card>
         );
       })}
+
+      {chains.length > INITIAL_VISIBLE && (
+        <div className="flex justify-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded
+              ? "Show fewer"
+              : `Show ${hiddenCount} more prayer ${hiddenCount === 1 ? "request" : "requests"}`}
+          </Button>
+        </div>
+      )}
 
       {shareFor && (
         <SharePrayerDialog
