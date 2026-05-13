@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -38,15 +38,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
   const isStorePage =
     location.pathname.startsWith("/store") ||
     location.pathname.startsWith("/product") ||
@@ -87,19 +79,13 @@ const Navigation = () => {
   const isMoreActive = moreItems.some((item) => isActiveRoute(item.href));
 
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-background/75 backdrop-blur-xl border-b border-border/60 shadow-[0_4px_24px_-12px_hsl(var(--foreground)/0.18)]"
-          : "bg-background/40 backdrop-blur-md border-b border-transparent"
-      }`}
-    >
+    <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-[68px]">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group" aria-label="PrayerForward home">
-            <PrayerForwardLogo className="h-9 w-9 transition-transform duration-500 group-hover:scale-105" />
-            <span className="font-display text-[1.05rem] font-semibold tracking-tight text-foreground">
+          <Link to="/" className="flex items-center gap-2" aria-label="PrayerForward home">
+            <PrayerForwardLogo className="h-9 w-9" />
+            <span className="font-playfair text-xl font-semibold text-foreground">
               PrayerForward
             </span>
           </Link>

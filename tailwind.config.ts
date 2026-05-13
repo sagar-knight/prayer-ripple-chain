@@ -87,10 +87,8 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				'inter': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-				'playfair': ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-				'serif': ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-				'display': ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif']
+				'inter': ['Inter', 'system-ui', 'sans-serif'],
+				'playfair': ['Playfair Display', 'serif']
 			},
 			transitionTimingFunction: {
 				'gentle': 'var(--transition-gentle)'
