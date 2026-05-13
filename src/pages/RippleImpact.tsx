@@ -408,34 +408,36 @@ const RippleImpact = () => {
             </CardContent>
           </Card>
 
-          {/* Side-by-side: ripple summary + prayed for others */}
-          <div className="grid md:grid-cols-2 gap-6 items-start">
-            <PrayerRippleChain />
+          {/* Per-prayer ripple cards (existing component) */}
+          <PrayerRippleChain />
+        </section>
 
-            <div className="space-y-4">
-              <div className="text-center">
-                <h2 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center justify-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  You Prayed for Others
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1.5">
-                  The quiet gift of carrying someone else in prayer.
-                </p>
-              </div>
-              <Card className="card-glass border-0 max-w-md mx-auto hover-glow">
-                <CardContent className="pt-7 pb-7 text-center space-y-3">
-                  <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
-                    <HandHeart className="h-5 w-5 text-primary" />
-                  </div>
-                  <p className="text-4xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
-                  <p className="text-sm text-muted-foreground">
-                    You prayed for {userStats.prayersOffered} {userStats.prayersOffered === 1 ? "person" : "people"}.
-                  </p>
-                  <PrayersOfferedDetail />
-                </CardContent>
-              </Card>
-            </div>
+        <Separator className="max-w-24 mx-auto bg-primary/20" />
+
+        {/* ============ SECTION B — You Prayed for Others (NO ripple here) ============ */}
+        <section className="space-y-6">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              You Prayed for Others
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1.5">
+              The quiet gift of carrying someone else in prayer.
+            </p>
           </div>
+
+          <Card className="card-glass border-0 max-w-md mx-auto hover-glow">
+            <CardContent className="pt-7 pb-7 text-center space-y-3">
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
+                <HandHeart className="h-5 w-5 text-primary" />
+              </div>
+              <p className="text-4xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
+              <p className="text-sm text-muted-foreground">
+                You prayed for {userStats.prayersOffered} {userStats.prayersOffered === 1 ? "person" : "people"}.
+              </p>
+              <PrayersOfferedDetail />
+            </CardContent>
+          </Card>
         </section>
 
         {/* Share reflection */}
