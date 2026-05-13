@@ -227,18 +227,6 @@ const RippleList = ({
             Your Prayer Ripple
           </p>
 
-          {/* Human-centered headline */}
-          <h3 className="text-xl sm:text-2xl font-semibold text-foreground leading-snug px-2 tracking-tight">
-            {totalPeoplePraying > 0 ? (
-              <>
-                <span className="text-foreground font-semibold">{totalPeoplePraying}</span>{" "}
-                {totalPeoplePraying === 1 ? "person is" : "people are"} praying with you
-              </>
-            ) : (
-              <>Hope is on the way</>
-            )}
-          </h3>
-
           {/* Live activity line */}
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <span className="relative flex h-1.5 w-1.5">
