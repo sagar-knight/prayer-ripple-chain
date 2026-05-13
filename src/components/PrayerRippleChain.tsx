@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Sparkles, Loader2, Waves } from "lucide-react";
+import { Heart, Share2, Sparkles, Loader2, Waves, CheckCircle2, Archive } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -40,9 +47,9 @@ const PrayerRippleChain = () => {
         .from("global_prayer_requests")
         .select("*")
         .eq("created_by", user.id)
-        .in("status", ["open", "progress", "answered"])
+        .in("status", ["open", "progress", "answered", "archived"])
         .order("created_at", { ascending: false })
-        .limit(10);
+        .limit(50);
 
       if (!requests?.length) return [];
 
