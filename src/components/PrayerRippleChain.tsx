@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Sparkles, Loader2, Waves, CheckCircle2, Archive } from "lucide-react";
+import { Heart, Share2, Sparkles, Loader2, Waves } from "lucide-react";
 import {
   Dialog,
   DialogContent,
