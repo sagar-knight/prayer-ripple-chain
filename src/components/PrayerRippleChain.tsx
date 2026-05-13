@@ -204,6 +204,9 @@ const RippleList = ({
           <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
             <Waves className="h-5 w-5 text-primary" />
           </div>
+          <h3 className="font-playfair text-xl font-semibold text-foreground">
+            Your Prayer Ripple
+          </h3>
           <p className="text-4xl font-bold text-foreground">
             {chains.length}
           </p>
