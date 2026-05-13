@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2, Users } from "lucide-react";
+import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerRippleChain from "@/components/PrayerRippleChain";
@@ -330,44 +330,30 @@ const RippleImpact = () => {
           </div>
         </div>
 
-        {/* ============ SECTION A — My Prayer Requests ============ */}
+        {/* ============ SECTION A — Your Prayer Requests (ripple lives here) ============ */}
         <section className="space-y-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
               <Heart className="h-5 w-5 text-primary" />
-              My Prayer Requests
+              Your Prayer Requests
             </h2>
             <p className="text-sm text-muted-foreground mt-1.5">
-              Track your prayers, support, and ripple impact.
+              How your requests are being carried in prayer.
             </p>
           </div>
 
-          {/* Compact summary row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
-            <div className="card-glass rounded-xl p-3 text-center">
-              <p className="text-xl font-semibold text-foreground"><AnimatedNumber value={ripple.active} /></p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1 font-medium">Active</p>
+          {/* Lifecycle counts (different data: status of your requests) */}
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="card-glass rounded-xl p-4 text-center">
+              <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.active} /></p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1 font-medium">Active requests</p>
             </div>
-            <div className="card-glass rounded-xl p-3 text-center">
-              <p className="text-xl font-semibold text-foreground flex items-center justify-center gap-1">
-                <Users className="h-3.5 w-3.5 text-primary/70" />
-                <AnimatedNumber value={ripple.peoplePraying} />
-              </p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1 font-medium">Praying</p>
-            </div>
-            <div className="card-glass rounded-xl p-3 text-center">
-              <p className="text-xl font-semibold text-foreground flex items-center justify-center gap-1">
-                <Share2 className="h-3.5 w-3.5 text-accent/70" />
-                <AnimatedNumber value={ripple.shares} />
-              </p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1 font-medium">Shared</p>
-            </div>
-            <div className="card-glass rounded-xl p-3 text-center">
-              <p className="text-xl font-semibold text-foreground flex items-center justify-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary/70" />
+            <div className="card-glass rounded-xl p-4 text-center">
+              <p className="text-2xl font-semibold text-foreground flex items-center justify-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
                 <AnimatedNumber value={ripple.answered} />
               </p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1 font-medium">Answered</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1 font-medium">Answered prayers</p>
             </div>
           </div>
 
