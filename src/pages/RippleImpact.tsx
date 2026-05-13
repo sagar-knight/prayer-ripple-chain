@@ -342,14 +342,6 @@ const RippleImpact = () => {
             </p>
           </div>
 
-          {/* Lifecycle count: active requests */}
-          <div className="max-w-xs mx-auto">
-            <div className="card-glass rounded-xl p-4 text-center">
-              <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.active} /></p>
-              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1 font-medium">Active requests</p>
-            </div>
-          </div>
-
           {/* Unified: impact metrics + world map + ripple circle */}
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="pt-8 pb-8 space-y-6">
