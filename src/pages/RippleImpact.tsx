@@ -318,10 +318,10 @@ const RippleImpact = () => {
               <Sparkles className="h-3.5 w-3.5" />
               You are not alone
             </div>
-            <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
-              People are <span className="text-gradient">praying with you</span>
-              <span className="ml-2 relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-gradient-primary shadow-[0_0_24px_hsl(var(--success)/0.35)] animate-float-slow align-middle">
-                <Sparkles className="h-5 w-5 text-white" strokeWidth={2.25} />
+            <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 tracking-tight leading-tight">
+              People are praying with you
+              <span className="ml-2 inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 align-middle">
+                <Sparkles className="h-4 w-4 text-primary" strokeWidth={2.25} />
               </span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
