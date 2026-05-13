@@ -289,15 +289,6 @@ const Store = () => {
               <p className="text-sm text-muted-foreground mt-1">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
             </div>
 
-            {/* Sub-category chips for Apparel */}
-            {urlCategory === "Apparel" && (
-              <div className="flex gap-2 mb-6">
-                <Button variant={!urlSubCategory ? "default" : "outline"} size="sm" onClick={() => navigate("/store?category=Apparel")}>All</Button>
-                <Button variant={urlSubCategory === "Men" ? "default" : "outline"} size="sm" onClick={() => navigate("/store?category=Apparel&sub=Men")}>Men</Button>
-                <Button variant={urlSubCategory === "Women" ? "default" : "outline"} size="sm" onClick={() => navigate("/store?category=Apparel&sub=Women")}>Women</Button>
-              </div>
-            )}
-
             {filtered.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {filtered.map((p, i) => (
