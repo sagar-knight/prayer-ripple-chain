@@ -207,9 +207,10 @@ const RippleList = ({
           <p className="text-4xl font-bold text-foreground">
             {chains.length}
           </p>
-          <p className="text-sm text-muted-foreground">
-            {chains.length === 1 ? "1 prayer request" : `${chains.length} prayer requests`} carried by{" "}
-            {totalPeoplePraying} {totalPeoplePraying === 1 ? "person" : "people"}.
+          <p className="text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
+            {totalPeoplePraying > 0
+              ? `${totalPeoplePraying} ${totalPeoplePraying === 1 ? "person is" : "people are"} praying with you across ${chains.length} ${chains.length === 1 ? "request" : "requests"}.`
+              : `Your ${chains.length === 1 ? "request has" : `${chains.length} requests have`} been shared. Others will pray for you soon.`}
           </p>
           <Button
             variant="ghost"
