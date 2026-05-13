@@ -27,9 +27,7 @@ interface PrayerChainData {
   chain: ChainNode[];
 }
 
-type PrayerRippleChainProps = { view?: "summary" | "list" | "all" };
-
-const PrayerRippleChain = ({ view = "all" }: PrayerRippleChainProps) => {
+const PrayerRippleChain = () => {
   const { user } = useAuth();
 
   const { data: chains, isLoading } = useQuery({
@@ -158,7 +156,7 @@ const PrayerRippleChain = ({ view = "all" }: PrayerRippleChainProps) => {
   const recentlyPrayed = (date: Date | null) =>
     !!date && Date.now() - date.getTime() < 24 * 60 * 60 * 1000;
 
-  return <RippleList chains={chains} recentlyPrayed={recentlyPrayed} view={view} />;
+  return <RippleList chains={chains} recentlyPrayed={recentlyPrayed} />;
 };
 
 /** Builds the dotted ripple flow: ● → ○ → ○ … */
@@ -188,14 +186,12 @@ const RippleFlow = ({ depth, unique }: { depth: number; unique: number }) => {
 const RippleList = ({
   chains,
   recentlyPrayed,
-  view,
 }: {
   chains: PrayerChainData[];
   recentlyPrayed: (d: Date | null) => boolean;
-  view: "summary" | "list" | "all";
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const totalPeoplePraying = chains.reduce((sum, c) => sum + (c.uniquePeople || 0), 0);
   const growingCount = chains.filter((c) => c.status !== "answered").length;
@@ -206,14 +202,9 @@ const RippleList = ({
       ? "Someone prayed for you recently"
       : "Your prayer ripple is growing";
 
-  const showSummary = view === "summary" || view === "all";
-  const showList = view === "list" || view === "all";
-  const visibleChains = showAll ? chains : chains.slice(0, 3);
-
   return (
     <div className="space-y-6">
-      {/* Live Ripple Card (Personal Support) */}
-      {showSummary && (
+      {/* Live Ripple Card */}
       <Card className="relative border-0 max-w-md mx-auto overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.35)] ring-1 ring-primary/15">
         {/* Soft glow */}
         <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/20 blur-3xl" />
@@ -264,15 +255,15 @@ const RippleList = ({
           </div>
 
           <Button
-            asChild
             variant="ghost"
             size="sm"
             className="text-primary gap-1.5 mt-1"
+            onClick={() => setExpanded((v) => !v)}
           >
-            <a href="#my-prayer-requests">
-              View Ripple Journey
-              <ChevronRight className="h-4 w-4" />
-            </a>
+            {expanded ? "Hide Ripple Journey" : "View Ripple Journey"}
+            <ChevronRight
+              className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`}
+            />
           </Button>
         </CardContent>
 
@@ -286,12 +277,21 @@ const RippleList = ({
           }
         `}</style>
       </Card>
-      )}
 
-      {/* List of individual prayer ripple cards */}
-      {showList && (
-        <div id="my-prayer-requests" className="space-y-6 animate-gentle-fade scroll-mt-24">
-          {visibleChains.map((chain) => {
+      {/* Collapsed list of individual prayer ripple cards */}
+      {expanded && (
+        <div className="space-y-6 animate-gentle-fade">
+          <div className="text-center space-y-1.5">
+            <h3 className="font-playfair text-xl flex items-center justify-center gap-2 text-foreground">
+              <Waves className="h-5 w-5 text-primary" />
+              Prayer Ripple
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Your prayer is reaching others and growing
+            </p>
+          </div>
+
+          {chains.map((chain) => {
         const isGrowing = chain.status !== "answered";
         return (
         <Card
@@ -371,19 +371,6 @@ const RippleList = ({
         </Card>
         );
           })}
-          {chains.length > 3 && (
-            <div className="flex justify-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1.5 text-primary"
-                onClick={() => setShowAll((v) => !v)}
-              >
-                {showAll ? "Show less" : `View All (${chains.length})`}
-                <ChevronRight className={`h-4 w-4 transition-transform ${showAll ? "rotate-90" : ""}`} />
-              </Button>
-            </div>
-          )}
         </div>
       )}
 

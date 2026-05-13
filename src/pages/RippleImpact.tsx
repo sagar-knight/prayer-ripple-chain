@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2, Flame, Users } from "lucide-react";
+import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
 import PrayerRippleChain from "@/components/PrayerRippleChain";
 import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
-import LiveRippleFeed from "@/components/LiveRippleFeed";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -335,54 +334,46 @@ const RippleImpact = () => {
         <section className="space-y-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
-              <Globe2 className="h-5 w-5 text-success" />
-              Global Ripple
+              <Heart className="h-5 w-5 text-primary" />
+              Your Prayer Requests
             </h2>
             <p className="text-sm text-muted-foreground mt-1.5">
-              Watch your prayer travel across the world.
+              How your requests are being carried in prayer.
             </p>
           </div>
 
-          {/* SECTION 1 — GLOBAL RIPPLE: world map + global metrics + share */}
+          {/* Unified: impact metrics + world map + ripple circle */}
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="pt-8 pb-8 space-y-6">
-              {/* Global metrics: shares + countries (no "praying with you" — that lives in Personal Support) */}
-              <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+              {/* Title */}
+              <div className="text-center">
+                <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center justify-center gap-2">
+                  <Globe2 className="h-5 w-5 text-success" />
+                  Your prayer is spreading
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
+                  From you, to many, across the world.
+                </p>
+              </div>
+
+              {/* Top: three core metrics */}
+              <div className="grid grid-cols-3 gap-3 max-w-xl mx-auto">
                 <div className="text-center">
-                  <Globe2 className="h-4 w-4 text-success mx-auto mb-1" />
-                  <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.countries} /></p>
-                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{ripple.countries === 1 ? "country reached" : "countries reached"}</p>
+                  <Heart className="h-4 w-4 text-primary mx-auto mb-1" />
+                  <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.peoplePraying} /></p>
+                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">praying with you</p>
                 </div>
                 <div className="text-center">
                   <Share2 className="h-4 w-4 text-accent mx-auto mb-1" />
                   <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.shares} /></p>
                   <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{ripple.shares === 1 ? "share" : "shares"}</p>
                 </div>
-              </div>
-
-              {/* Milestone badges */}
-              {(ripple.countries > 0 || ripple.shares > 0 || ripple.peoplePraying > 0) && (
-                <div className="flex flex-wrap justify-center gap-2">
-                  {ripple.countries >= 1 && (
-                    <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-success/10 text-success border border-success/20">
-                      <Globe2 className="h-3 w-3" />
-                      {ripple.countries === 1 ? "Reached your first country" : `Reached ${ripple.countries} countries`}
-                    </span>
-                  )}
-                  {ripple.shares >= 1 && (
-                    <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20">
-                      <Flame className="h-3 w-3" />
-                      Prayer is spreading
-                    </span>
-                  )}
-                  {ripple.peoplePraying >= 3 && (
-                    <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                      <Sparkles className="h-3 w-3" />
-                      Ripple growing
-                    </span>
-                  )}
+                <div className="text-center">
+                  <Globe2 className="h-4 w-4 text-success mx-auto mb-1" />
+                  <p className="text-2xl font-semibold text-foreground"><AnimatedNumber value={ripple.countries} /></p>
+                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{ripple.countries === 1 ? "country reached" : "countries reached"}</p>
                 </div>
-              )}
+              </div>
 
               {/* Middle: world map */}
               <div>
@@ -414,58 +405,16 @@ const RippleImpact = () => {
                   Each light represents someone praying with you
                 </p>
               </div>
-
-              {/* Share Your Ripple CTA */}
-              <div className="flex justify-center pt-2">
-                <Button onClick={handleShare} className="gap-2">
-                  <Share2 className="h-4 w-4" />
-                  Share Your Ripple
-                </Button>
-              </div>
             </CardContent>
           </Card>
+
+          {/* Per-prayer ripple cards (existing component) */}
+          <PrayerRippleChain />
         </section>
 
         <Separator className="max-w-24 mx-auto bg-primary/20" />
 
-        {/* ============ SECTION 2 — Personal Support Card ============ */}
-        <section className="space-y-6">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
-              <Users className="h-5 w-5 text-primary" />
-              You Are Not Alone
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1.5">
-              Real people are carrying your prayer right now.
-            </p>
-          </div>
-          <PrayerRippleChain view="summary" />
-        </section>
-
-        <Separator className="max-w-24 mx-auto bg-primary/20" />
-
-        {/* ============ SECTION 3 — My Prayer Requests ============ */}
-        <section className="space-y-6">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
-              <Heart className="h-5 w-5 text-primary" />
-              My Prayer Requests
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1.5">
-              Tap a request to share or follow its ripple.
-            </p>
-          </div>
-          <PrayerRippleChain view="list" />
-        </section>
-
-        <Separator className="max-w-24 mx-auto bg-primary/20" />
-
-        {/* ============ SECTION 4 — Live Ripple Feed ============ */}
-        <LiveRippleFeed />
-
-        <Separator className="max-w-24 mx-auto bg-primary/20" />
-
-        {/* ============ You Prayed for Others ============ */}
+        {/* ============ SECTION B — You Prayed for Others (NO ripple here) ============ */}
         <section className="space-y-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
