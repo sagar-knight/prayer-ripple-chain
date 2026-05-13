@@ -252,19 +252,6 @@ const Store = () => {
 
             {/* Product rows */}
             <ProductRow title="New Arrivals" items={allProducts.slice(0, 4)} viewAllHref="/store?collection=new" />
-            <ProductRow title="Best Sellers" items={allProducts.slice(0, 8).reverse().slice(0, 4)} viewAllHref="/store?collection=best-sellers" />
-
-            {/* All products */}
-            {allProducts.length > 0 && (
-              <section>
-                <h2 className="font-playfair text-xl font-semibold text-foreground mb-4">All Products</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                  {allProducts.map((p, i) => (
-                    <ProductCard key={p.node.id} product={p} index={i} />
-                  ))}
-                </div>
-              </section>
-            )}
           </>
         ) : (
           <>
