@@ -97,6 +97,9 @@ const StoreSubNav = () => {
           <a href="/store" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Shop All</a>
           <a href="/store?collection=new" className="text-muted-foreground hover:text-foreground font-medium transition-colors">New</a>
           <a href="/store?category=Apparel" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Apparel</a>
+          <a href="/store?category=Accessories" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Accessories</a>
+          <a href="/store?category=Wall%20Art" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Wall Art</a>
+          <a href="/store?category=Journals" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Journals</a>
         </nav>
         <span className="text-muted-foreground hidden sm:block">
           Every purchase supports the mission
