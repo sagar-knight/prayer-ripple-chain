@@ -290,15 +290,51 @@ const RippleImpact = () => {
     const message = ripple.peoplePraying > 0
       ? `${ripple.peoplePraying} people are praying with me. Will you join in?`
       : `Will you pray with me?`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "Prayer Journey", text: message });
-      } else {
-        await navigator.clipboard.writeText(message);
-        toast.success("Message copied to clipboard");
+    const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
+    const fullText = shareUrl ? `${message}\n${shareUrl}` : message;
+
+    // Try native share first (mobile/secure contexts)
+    if (typeof navigator !== "undefined" && (navigator as any).share) {
+      try {
+        await (navigator as any).share({
+          title: "Prayer Journey",
+          text: message,
+          url: shareUrl || undefined,
+        });
+        return;
+      } catch (err: any) {
+        // AbortError = user cancelled; anything else = fall through to clipboard
+        if (err?.name === "AbortError") return;
       }
+    }
+
+    // Clipboard fallback
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(fullText);
+        toast.success("Link copied to clipboard");
+        return;
+      }
+      throw new Error("Clipboard API unavailable");
     } catch {
-      // user cancelled or unsupported
+      // Last-resort fallback: legacy execCommand copy via a hidden textarea
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = fullText;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (ok) {
+          toast.success("Link copied to clipboard");
+          return;
+        }
+      } catch {
+        // fall through
+      }
+      toast.error("Sharing isn't available here. Try on your device.");
     }
   };
 
