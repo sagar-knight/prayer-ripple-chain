@@ -55,6 +55,10 @@ const SharedPrayer = () => {
   const [notFound, setNotFound] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
+  // Register this viewer in the prayer's live presence channel so the
+  // requester sees a real "praying with you" pulse the moment we open it.
+  usePrayerPresence(data?.prayer.id);
+
   useEffect(() => {
     const load = async () => {
       if (!slug) {
