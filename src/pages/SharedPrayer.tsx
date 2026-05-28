@@ -265,8 +265,15 @@ const SharedPrayer = () => {
               <h3 className="font-playfair text-lg font-semibold text-foreground">Recent activity</h3>
               <ul className="space-y-2.5">
                 {activity.map((a, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  <li
+                    key={`${a.created_at}-${idx}`}
+                    className="flex items-start gap-3 text-sm animate-gentle-fade"
+                  >
+                    <div
+                      className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${
+                        idx === 0 ? "bg-primary animate-pulse" : "bg-primary"
+                      }`}
+                    />
                     <div className="flex-1">
                       <p className="text-foreground">{a.message}</p>
                       <p className="text-xs text-muted-foreground">
