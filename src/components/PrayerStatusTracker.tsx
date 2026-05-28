@@ -18,6 +18,7 @@ import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import LivePrayerRipple from "@/components/LivePrayerRipple";
 import { usePrayerPresence } from "@/hooks/usePrayerPresence";
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -240,6 +241,32 @@ const PrayerRequestRow = ({
 }: PrayerRequestRowProps) => {
   // Live presence: counts others currently viewing this prayer (excludes self).
   const activeCount = usePrayerPresence(request.id);
+  const queryClient = useQueryClient();
+
+  // Live prayer count: when prayer_coverage updates for this prayer (someone
+  // just prayed anywhere in the world), refresh the list so the count and
+  // "last prayed" data update without a page refresh.
+  useEffect(() => {
+    if (!request.id) return;
+    const channel = supabase
+      .channel(`prayer-coverage:${request.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "prayer_coverage",
+          filter: `prayer_id=eq.${request.id}`,
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["my_prayer_requests"] });
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [request.id, queryClient]);
 
   return (
     <Card
