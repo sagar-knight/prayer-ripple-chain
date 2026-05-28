@@ -426,7 +426,9 @@ const RippleImpact = () => {
               {/* Emotional support line + CTA */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
                 <p className="text-sm text-muted-foreground italic text-center sm:text-left">
-                  Your ripple is growing across the world.
+                  {ripple.countries > 0
+                    ? "Your ripple is growing across the world."
+                    : "People are praying for you. The map will light up as prayers reach new places."}
                 </p>
                 <Button onClick={handleShare} size="sm" className="gap-2">
                   <Share2 className="h-4 w-4" />
