@@ -6,6 +6,7 @@ import PrayerCard from "./PrayerCard";
 import PassItForwardDialog from "./PassItForwardDialog";
 import { PrayerFocusMode } from "./PrayFocusSelector";
 import { usePrayerService, BackendPrayer } from "@/hooks/usePrayerService";
+import { usePrayerPresence } from "@/hooks/usePrayerPresence";
 import { isRescueCandidate, ScoredPrayerRequest } from "@/lib/prayerScoring";
 
 interface PrayerSessionProps {
@@ -63,6 +64,11 @@ const PrayerSession = ({
 
   const { fetchNextPrayer, recordPrayed } = usePrayerService();
   const isRescue = mode === "rescue";
+
+  // Register this viewer in the currently-displayed prayer's live presence
+  // channel so the requester sees a real "praying with you" pulse while
+  // someone is actively praying through this session.
+  usePrayerPresence(currentBackendPrayer?.prayer_id);
 
   const loadNext = useCallback(async (excludeIds: string[]) => {
     setFetchingNext(true);
