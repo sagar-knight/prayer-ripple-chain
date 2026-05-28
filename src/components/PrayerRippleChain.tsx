@@ -278,7 +278,6 @@ const RippleList = ({
         );
           })}
         </div>
-      )}
 
       {shareFor && (
         <SharePrayerDialog
