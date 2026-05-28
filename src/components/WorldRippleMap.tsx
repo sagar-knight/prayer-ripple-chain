@@ -81,7 +81,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#0a1428] border border-border/60 relative">
+      <div className="rounded-xl overflow-hidden bg-[#111b2e] border border-border/60 relative">
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
@@ -94,13 +94,13 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill="#27384f"
-                  stroke="#4a6280"
-                  strokeWidth={0.5}
+                  fill="#3d5878"
+                  stroke="#6a8cb0"
+                  strokeWidth={0.6}
                   style={{
                     default: { outline: "none", transition: "fill 0.2s ease" },
-                    hover:   { outline: "none", fill: "#3a567a", cursor: "pointer" },
-                    pressed: { outline: "none", fill: "#3a567a" },
+                    hover:   { outline: "none", fill: "#5b7fa8", cursor: "pointer" },
+                    pressed: { outline: "none", fill: "#5b7fa8" },
                   }}
                 />
               ))
