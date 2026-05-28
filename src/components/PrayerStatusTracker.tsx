@@ -241,32 +241,22 @@ const PrayerStatusTracker = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Reassurance-first display */}
-              <div className="rounded-lg p-4 text-center bg-[#dbeafe] border border-[#93c5fd]">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-[#1d4ed8]" />
-                </div>
-                <p className="text-sm font-medium text-[#1e3a8a]">
+              <div className="rounded-lg border border-primary/15 bg-primary/5 p-5 text-center">
+                <Users className="h-5 w-5 text-primary mx-auto mb-2" />
+                <p className="text-base font-medium text-foreground">
                   {getPrayerMessage(request.prayerCount, request.uniquePeople)}
                 </p>
-              </div>
-
-              {/* Optional share metric (only if > 0) */}
-              {request.passedForward > 0 && (
-                <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                  <span>
-                    Shared {request.passedForward}{" "}
-                    {request.passedForward === 1 ? "time" : "times"}
-                  </span>
-                </div>
-              )}
-
-              {/* Encouraging Message */}
-              <div className="bg-primary/5 rounded-lg p-3 text-center">
-                <p className="text-sm text-primary font-medium italic">
+                <p className="mt-1.5 text-sm text-muted-foreground">
                   {request.status === "answered"
                     ? "God answered your prayer. Share your testimony to encourage others."
                     : "You are not alone. People are praying for you."}
                 </p>
+                {request.passedForward > 0 && (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Shared {request.passedForward}{" "}
+                    {request.passedForward === 1 ? "time" : "times"}
+                  </p>
+                )}
               </div>
 
               {/* Latest update preview */}
