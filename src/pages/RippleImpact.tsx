@@ -374,7 +374,7 @@ const RippleImpact = () => {
               Your Prayer Requests
             </h2>
             <p className="text-sm text-muted-foreground mt-1.5">
-              See where your prayer is traveling.
+              How your requests are being carried in prayer.
             </p>
           </div>
 

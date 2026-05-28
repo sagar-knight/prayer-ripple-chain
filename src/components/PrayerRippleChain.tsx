@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Sparkles, Loader2 } from "lucide-react";
+import { Heart, Share2, Sparkles, Loader2, Waves, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -191,11 +191,87 @@ const RippleList = ({
   recentlyPrayed: (d: Date | null) => boolean;
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
+  const [expanded, setExpanded] = useState(false);
+
+  const totalPeoplePraying = chains.reduce((sum, c) => sum + (c.uniquePeople || 0), 0);
+  const growingCount = chains.filter((c) => c.status !== "answered").length;
+  const anyRecent = chains.some((c) => recentlyPrayed(c.lastPrayedAt));
+  const liveLine = totalPeoplePraying === 0
+    ? "Your prayer has been shared. Hope is on the way."
+    : anyRecent
+      ? "Someone prayed for you recently"
+      : "Your prayer ripple is growing";
 
   return (
     <div className="space-y-6">
-      {/* Individual prayer ripple cards */}
-      <div className="space-y-6 animate-gentle-fade">
+      {/* Live Ripple Card */}
+      <Card className="relative border-0 max-w-md mx-auto overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.35)] ring-1 ring-primary/15">
+        {/* Soft glow */}
+        <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -right-10 w-56 h-56 rounded-full bg-accent/10 blur-3xl" />
+
+        <CardContent className="relative pt-7 pb-6 px-6 text-center space-y-4">
+          {/* Animated ripple emblem */}
+          <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
+            <span className="absolute inset-0 rounded-full border border-primary/30 ripple-ring" />
+            <span className="absolute inset-0 rounded-full border border-primary/20 ripple-ring" style={{ animationDelay: "1s" }} />
+            <span className="absolute inset-0 rounded-full border border-primary/15 ripple-ring" style={{ animationDelay: "2s" }} />
+            <span className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 ring-1 ring-primary/30 flex items-center justify-center shadow-[0_0_24px_hsl(var(--primary)/0.4)]">
+              <Waves className="h-5 w-5 text-primary" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success animate-ping" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success" />
+            </span>
+          </div>
+
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-primary/80">
+            Your Prayer Ripple
+          </p>
+
+          {/* Live activity line */}
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-60 animate-ping" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success" />
+            </span>
+            <span className="italic">{liveLine}</span>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-primary gap-1.5 mt-1"
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded ? "Hide Ripple Journey" : "View Ripple Journey"}
+            <ChevronRight
+              className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`}
+            />
+          </Button>
+        </CardContent>
+
+        <style>{`
+          @keyframes ripple-ring {
+            0% { transform: scale(0.6); opacity: 0.7; }
+            100% { transform: scale(1.6); opacity: 0; }
+          }
+          .ripple-ring {
+            animation: ripple-ring 3s ease-out infinite;
+          }
+        `}</style>
+      </Card>
+
+      {/* Collapsed list of individual prayer ripple cards */}
+      {expanded && (
+        <div className="space-y-6 animate-gentle-fade">
+          <div className="text-center space-y-1.5">
+            <h3 className="font-playfair text-xl flex items-center justify-center gap-2 text-foreground">
+              <Waves className="h-5 w-5 text-primary" />
+              Prayer Ripple
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Your prayer is reaching others and growing
+            </p>
+          </div>
 
           {chains.map((chain) => {
         const isGrowing = chain.status !== "answered";
@@ -278,6 +354,7 @@ const RippleList = ({
         );
           })}
         </div>
+      )}
 
       {shareFor && (
         <SharePrayerDialog
