@@ -17,6 +17,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import LivePrayerRipple from "@/components/LivePrayerRipple";
+import { usePrayerPresence } from "@/hooks/usePrayerPresence";
 import {
   Dialog,
   DialogContent,
@@ -185,16 +186,69 @@ const PrayerStatusTracker = () => {
         </Card>
       ) : (
         myRequests.map((request, index) => (
-          <Card
+          <PrayerRequestRow
             key={request.id}
-            className={`animate-gentle-fade ${
-              request.status === "answered"
-                ? "bg-primary/5 border-primary/20"
-                : ""
-            }`}
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <CardHeader className="pb-3">
+            request={request}
+            index={index}
+            setStatus={setStatus}
+            postUpdate={postUpdate}
+            updateOpenFor={updateOpenFor}
+            setUpdateOpenFor={setUpdateOpenFor}
+            updateMessage={updateMessage}
+            setUpdateMessage={setUpdateMessage}
+          />
+        ))
+      )}
+    </div>
+  );
+};
+
+type RequestItem = {
+  id: string;
+  title: string;
+  category: string;
+  prayerCount: number;
+  uniquePeople: number;
+  passedForward: number;
+  targetPrayers: number;
+  status: PrayerStatus;
+  createdAt: string;
+  latestUpdate: string | null;
+  latestUpdateAt: string | null;
+};
+
+interface PrayerRequestRowProps {
+  request: RequestItem;
+  index: number;
+  setStatus: any;
+  postUpdate: any;
+  updateOpenFor: string | null;
+  setUpdateOpenFor: (v: string | null) => void;
+  updateMessage: string;
+  setUpdateMessage: (v: string) => void;
+}
+
+const PrayerRequestRow = ({
+  request,
+  index,
+  setStatus,
+  postUpdate,
+  updateOpenFor,
+  setUpdateOpenFor,
+  updateMessage,
+  setUpdateMessage,
+}: PrayerRequestRowProps) => {
+  // Live presence: counts others currently viewing this prayer (excludes self).
+  const activeCount = usePrayerPresence(request.id);
+
+  return (
+    <Card
+      className={`animate-gentle-fade ${
+        request.status === "answered" ? "bg-primary/5 border-primary/20" : ""
+      }`}
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="font-playfair text-lg">
@@ -229,10 +283,11 @@ const PrayerStatusTracker = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Compact Live Prayer Ripple. No live/active source exists yet,
-                  so activeCount stays 0 and we safely show historical wording. */}
+              {/* Compact Live Prayer Ripple.
+                  activeCount comes from Supabase Realtime presence — when 0
+                  the component safely falls back to historical wording. */}
               <LivePrayerRipple
-                activeCount={0}
+                activeCount={activeCount}
                 totalCount={request.prayerCount}
                 answered={request.status === "answered"}
               />
@@ -334,10 +389,7 @@ const PrayerStatusTracker = () => {
                 </div>
               )}
             </CardContent>
-          </Card>
-        ))
-      )}
-    </div>
+    </Card>
   );
 };
 
