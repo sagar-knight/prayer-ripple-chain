@@ -241,11 +241,11 @@ const PrayerStatusTracker = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Reassurance-first display */}
-              <div className="bg-gradient-warm rounded-lg p-4 text-center">
+              <div className="rounded-lg p-4 text-center bg-[#15233f] border border-[#2a3a5c]">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-accent-foreground" />
+                  <Users className="h-5 w-5 text-primary" />
                 </div>
-                <p className="text-sm text-accent-foreground/80">
+                <p className="text-sm text-foreground/80">
                   {getPrayerMessage(request.prayerCount, request.uniquePeople)}
                 </p>
               </div>
