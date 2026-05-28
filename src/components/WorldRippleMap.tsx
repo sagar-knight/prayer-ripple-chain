@@ -81,7 +81,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#070d1a] border border-border/40 relative">
+      <div className="rounded-xl overflow-hidden bg-[#0a1428] border border-border/60 relative">
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
@@ -94,13 +94,13 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill="#0f1a2e"
-                  stroke="#1c2942"
-                  strokeWidth={0.4}
+                  fill="#27384f"
+                  stroke="#4a6280"
+                  strokeWidth={0.5}
                   style={{
-                    default: { outline: "none" },
-                    hover:   { outline: "none", fill: "#142139" },
-                    pressed: { outline: "none" },
+                    default: { outline: "none", transition: "fill 0.2s ease" },
+                    hover:   { outline: "none", fill: "#3a567a", cursor: "pointer" },
+                    pressed: { outline: "none", fill: "#3a567a" },
                   }}
                 />
               ))
@@ -139,7 +139,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         </ComposableMap>
         {points.length === 0 && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-            <p className="text-xs text-muted-foreground/80 bg-[#070d1a]/70 px-3 py-1.5 rounded-full">
+            <p className="text-xs text-foreground/70 bg-[#0a1428]/80 px-3 py-1.5 rounded-full border border-border/40">
               As people begin praying around the world, lights will appear here.
             </p>
           </div>
