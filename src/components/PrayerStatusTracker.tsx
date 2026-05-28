@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import LivePrayerRipple from "@/components/LivePrayerRipple";
 import {
   Dialog,
   DialogContent,
@@ -240,24 +241,13 @@ const PrayerStatusTracker = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Reassurance-first display */}
-              <div className="rounded-lg border border-primary/15 bg-primary/5 p-5 text-center">
-                <Users className="h-5 w-5 text-primary mx-auto mb-2" />
-                <p className="text-base font-medium text-foreground">
-                  {getPrayerMessage(request.prayerCount, request.uniquePeople)}
-                </p>
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  {request.status === "answered"
-                    ? "God answered your prayer. Share your testimony to encourage others."
-                    : "You are not alone. People are praying for you."}
-                </p>
-                {request.passedForward > 0 && (
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    Shared {request.passedForward}{" "}
-                    {request.passedForward === 1 ? "time" : "times"}
-                  </p>
-                )}
-              </div>
+              {/* Compact Live Prayer Ripple. No live/active source exists yet,
+                  so activeCount stays 0 and we safely show historical wording. */}
+              <LivePrayerRipple
+                activeCount={0}
+                totalCount={request.prayerCount}
+                answered={request.status === "answered"}
+              />
 
               {/* Latest update preview */}
               {request.latestUpdate && (
@@ -268,15 +258,6 @@ const PrayerStatusTracker = () => {
                   <p className="text-sm text-foreground">{request.latestUpdate}</p>
                 </div>
               )}
-
-              {/* Gentle update prompt for active prayers without recent updates */}
-              {request.status !== "archived" &&
-                !request.latestUpdate &&
-                Date.now() - new Date(request.createdAt).getTime() > 4 * 24 * 60 * 60 * 1000 && (
-                  <p className="text-xs text-muted-foreground italic text-center">
-                    Would you like to share an update?
-                  </p>
-                )}
 
               {/* Status + update actions */}
               {request.status !== "archived" && (
