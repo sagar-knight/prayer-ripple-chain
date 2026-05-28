@@ -102,7 +102,7 @@ const SubmitPrayer = () => {
   // Post-submission reassurance + participation prompt
   if (showConfirmation) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+      <div className="min-h-screen bg-mesh py-12 pb-24">
         <div className="page-container card-gap">
           {/* Reassurance Card */}
           <Card className="border-0 animate-gentle-fade">
@@ -188,7 +188,7 @@ const SubmitPrayer = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
+    <div className="min-h-screen bg-mesh py-12 pb-24">
       <div className="page-container">
         <div className="page-header">
           <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
