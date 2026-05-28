@@ -59,6 +59,63 @@ const SharedPrayer = () => {
   // requester sees a real "praying with you" pulse the moment we open it.
   usePrayerPresence(data?.prayer.id);
 
+  // Live activity feed: when a new prayer_action lands for this prayer,
+  // prepend a friendly anonymous message to the activity list in real time.
+  useEffect(() => {
+    if (!data?.prayer.id) return;
+    const prayerId = data.prayer.id;
+    const channel = supabase
+      .channel(`prayer-activity:${prayerId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "prayer_actions",
+          filter: `prayer_id=eq.${prayerId}`,
+        },
+        (payload) => {
+          const row = payload.new as {
+            action_type: string;
+            created_at: string;
+            prayer_country_name: string | null;
+          };
+          if (row.action_type !== "prayed" && row.action_type !== "shared") return;
+          const where = row.prayer_country_name ? ` from ${row.prayer_country_name}` : "";
+          const message =
+            row.action_type === "prayed"
+              ? `Someone just prayed${where}`
+              : `Someone just forwarded this prayer${where}`;
+          setData((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  activity: [
+                    { created_at: row.created_at, action_type: row.action_type, message },
+                    ...prev.activity,
+                  ].slice(0, 30),
+                  ripple: {
+                    ...prev.ripple,
+                    total_prayers:
+                      row.action_type === "prayed"
+                        ? prev.ripple.total_prayers + 1
+                        : prev.ripple.total_prayers,
+                    forwards:
+                      row.action_type === "shared"
+                        ? prev.ripple.forwards + 1
+                        : prev.ripple.forwards,
+                  },
+                }
+              : prev
+          );
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [data?.prayer.id]);
+
   useEffect(() => {
     const load = async () => {
       if (!slug) {
