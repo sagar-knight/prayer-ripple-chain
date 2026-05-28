@@ -14,11 +14,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import LivePrayerRipple from "@/components/LivePrayerRipple";
 import { usePrayerPresence } from "@/hooks/usePrayerPresence";
-import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
