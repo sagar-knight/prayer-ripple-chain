@@ -139,7 +139,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         </ComposableMap>
         {points.length === 0 && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-            <p className="text-xs text-foreground/70 bg-[#0a1428]/80 px-3 py-1.5 rounded-full border border-border/40">
+            <p className="text-xs text-foreground/80 bg-[#111b2e]/90 px-3 py-1.5 rounded-full border border-border/50">
               As people begin praying around the world, lights will appear here.
             </p>
           </div>
