@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
 import WorldRippleMap from "@/components/WorldRippleMap";
+import { usePrayerPresence } from "@/hooks/usePrayerPresence";
 
 interface PrayerData {
   id: string;
