@@ -90,20 +90,22 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         >
           <Geographies geography={GEO_URL}>
             {({ geographies }) =>
-              geographies.map((geo) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill="#3d5878"
-                  stroke="#6a8cb0"
-                  strokeWidth={0.6}
-                  style={{
-                    default: { outline: "none", transition: "fill 0.2s ease" },
-                    hover:   { outline: "none", fill: "#5b7fa8", cursor: "pointer" },
-                    pressed: { outline: "none", fill: "#5b7fa8" },
-                  }}
-                />
-              ))
+              geographies
+                .filter((geo) => geo.properties?.name !== "Antarctica")
+                .map((geo) => (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill="#3d5878"
+                    stroke="#6a8cb0"
+                    strokeWidth={0.6}
+                    style={{
+                      default: { outline: "none", transition: "fill 0.2s ease" },
+                      hover:   { outline: "none", fill: "#5b7fa8", cursor: "pointer" },
+                      pressed: { outline: "none", fill: "#5b7fa8" },
+                    }}
+                  />
+                ))
             }
           </Geographies>
 
