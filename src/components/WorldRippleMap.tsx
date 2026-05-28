@@ -81,26 +81,39 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#15376b] border border-border/60 relative">
+      <div
+        className="rounded-xl overflow-hidden border border-white/10 relative shadow-[0_20px_60px_-20px_rgba(8,30,75,0.8)]"
+        style={{ background: "radial-gradient(120% 120% at 50% 0%, #1d4f9c 0%, #143a73 45%, #0c2552 100%)" }}
+      >
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
           height={400}
           style={{ width: "100%", height: "auto" }}
         >
+          <defs>
+            <linearGradient id="landGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#5b86c4" />
+              <stop offset="100%" stopColor="#3a5f9e" />
+            </linearGradient>
+            <filter id="landGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#0a1f47" floodOpacity="0.5" />
+            </filter>
+          </defs>
           <Geographies geography={GEO_URL}>
             {({ geographies }) =>
               geographies.map((geo) => (
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill="#3d5878"
-                  stroke="#6a8cb0"
-                  strokeWidth={0.6}
+                  fill="url(#landGradient)"
+                  stroke="#9bb8e0"
+                  strokeWidth={0.4}
+                  filter="url(#landGlow)"
                   style={{
-                    default: { outline: "none", transition: "fill 0.2s ease" },
-                    hover:   { outline: "none", fill: "#5b7fa8", cursor: "pointer" },
-                    pressed: { outline: "none", fill: "#5b7fa8" },
+                    default: { outline: "none", transition: "fill 0.25s ease" },
+                    hover:   { outline: "none", fill: "#7da0d8", cursor: "pointer" },
+                    pressed: { outline: "none", fill: "#7da0d8" },
                   }}
                 />
               ))
@@ -139,7 +152,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         </ComposableMap>
         {points.length === 0 && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-            <p className="text-xs text-foreground/80 bg-[#15376b]/90 px-3 py-1.5 rounded-full border border-border/50">
+            <p className="text-xs text-white/90 bg-[#0c2552]/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/15">
               As people begin praying around the world, lights will appear here.
             </p>
           </div>
