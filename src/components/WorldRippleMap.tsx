@@ -81,7 +81,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#111b2e] border border-border/60 relative">
+      <div className="rounded-xl overflow-hidden bg-[#15376b] border border-border/60 relative">
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
@@ -139,7 +139,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         </ComposableMap>
         {points.length === 0 && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-            <p className="text-xs text-foreground/80 bg-[#111b2e]/90 px-3 py-1.5 rounded-full border border-border/50">
+            <p className="text-xs text-foreground/80 bg-[#15376b]/90 px-3 py-1.5 rounded-full border border-border/50">
               As people begin praying around the world, lights will appear here.
             </p>
           </div>
