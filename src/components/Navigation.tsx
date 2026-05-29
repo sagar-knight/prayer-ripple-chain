@@ -24,6 +24,7 @@ import {
   LogIn,
   LogOut,
   ChevronDown,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminRole } from "@/hooks/useAdminRole";
@@ -190,6 +191,12 @@ const Navigation = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/commitments" className="flex items-center space-x-2 w-full">
                         <Calendar className="h-4 w-4" />
+                        <span>People You're Praying For</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="flex items-center space-x-2 w-full">
+                        <SettingsIcon className="h-4 w-4" />
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
@@ -326,6 +333,18 @@ const Navigation = () => {
                       }`}
                     >
                       <Calendar className="h-5 w-5" />
+                      <span>People You're Praying For</span>
+                    </Link>
+                    <Link
+                      to="/settings"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActiveRoute("/settings")
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
+                      }`}
+                    >
+                      <SettingsIcon className="h-5 w-5" />
                       <span>Settings</span>
                     </Link>
                     {isTestAccount && (
