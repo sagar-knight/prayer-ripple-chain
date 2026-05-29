@@ -2,19 +2,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import {
   User,
   Heart,
   Flame,
   TrendingUp,
-  Bell,
   BookOpen,
-  Settings,
   Award,
-  Shield,
   CheckCircle,
   Target,
   HandHeart,
@@ -25,20 +20,10 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
-import { getCountryByCode } from "@/data/countries";
-import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
 import { useUserCountry } from "@/hooks/useUserCountry";
-import LanguageSelect from "@/components/LanguageSelect";
-import { useUserLanguage } from "@/hooks/useUserLanguage";
-import { Languages } from "lucide-react";
 
 const Profile = () => {
   const { profileCountryCode, saveProfileCountry } = useUserCountry();
-  const {
-    profileLanguageCode,
-    browserLanguageCode,
-    savePreferredLanguage,
-  } = useUserLanguage();
   const [countryCode, setCountryCode] = useState<string | null>(null);
   const [showCountryBanner, setShowCountryBanner] = useState(true);
 
@@ -50,13 +35,6 @@ const Profile = () => {
     setCountryCode(code);
     void saveProfileCountry(code);
   };
-  const [notifications, setNotifications] = useState({
-    dailyReminder: true,
-    prayerAccepted: true,
-    prayerAnswered: true,
-    streakReminder: true,
-    
-  });
 
   const [userProfile] = useState({
     name: "Faithful Believer",
@@ -110,10 +88,6 @@ const Profile = () => {
       icon: BookOpen,
     },
   ];
-
-  const handleNotificationChange = (key: keyof typeof notifications) => {
-    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
@@ -304,149 +278,6 @@ const Profile = () => {
           </Card>
         </section>
 
-        {/* ===== Section: Preferences ===== */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
-            <div>
-              <h2 className="font-playfair text-xl font-bold text-foreground">Preferences</h2>
-              <p className="text-sm text-muted-foreground">Tune notifications, language, and how you pray.</p>
-            </div>
-          </div>
-
-          {/* Notification Preferences */}
-          <Card className="animate-gentle-fade" style={{ animationDelay: "600ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
-              Notification Preferences
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {[
-              {
-                key: "dailyReminder" as const,
-                label: "Daily Prayer Reminder",
-                desc: '"Did you pray today?" notification',
-              },
-              {
-                key: "prayerAccepted" as const,
-                label: "Prayer Accepted",
-                desc: "When someone starts praying for your request",
-              },
-              {
-                key: "prayerAnswered" as const,
-                label: "Prayer Answered",
-                desc: "When a prayer request is marked as answered",
-              },
-              {
-                key: "streakReminder" as const,
-                label: "Streak Reminder",
-                desc: '"You missed yesterday\'s prayer" alert',
-              },
-            ].map((item) => (
-              <div
-                key={item.key}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                <div>
-                  <Label className="text-base font-medium cursor-pointer">
-                    {item.label}
-                  </Label>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </div>
-                <Switch
-                  checked={notifications[item.key]}
-                  onCheckedChange={() => handleNotificationChange(item.key)}
-                />
-              </div>
-            ))}
-          </CardContent>
-          </Card>
-
-          {/* Prayer Commitment Level */}
-          <div style={{ animationDelay: "610ms" }}>
-          <CommitmentLevelSelector />
-          </div>
-
-          {/* Country & Timezone Settings */}
-          <Card className="animate-gentle-fade" style={{ animationDelay: "620ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
-              Location & Timezone
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label className="text-sm">Country (optional)</Label>
-              <CountrySelect value={countryCode} onChange={handleCountryChange} allowClear />
-              <p className="text-xs text-muted-foreground">
-                Used only for country-level prayer impact, not exact location.
-              </p>
-              {countryCode && (
-                <p className="text-xs text-muted-foreground">
-                  {getCountryByCode(countryCode)?.flag} {getCountryByCode(countryCode)?.name} selected
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm">Timezone</Label>
-              <p className="text-sm text-muted-foreground">
-                Detected: {Intl.DateTimeFormat().resolvedOptions().timeZone}
-              </p>
-            </div>
-          </CardContent>
-          </Card>
-
-          {/* Preferred Language */}
-          <Card className="animate-gentle-fade" style={{ animationDelay: "625ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Languages className="h-5 w-5 text-primary" />
-              Preferred Language
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Label className="text-sm">Language (optional)</Label>
-            <LanguageSelect
-              value={profileLanguageCode}
-              onChange={(code) => void savePreferredLanguage(code)}
-              allowClear
-            />
-            <p className="text-xs text-muted-foreground">
-              Used to translate prayer requests into your language.
-            </p>
-            {!profileLanguageCode && browserLanguageCode && (
-              <p className="text-xs text-muted-foreground">
-                Defaulting to browser language: {browserLanguageCode.toUpperCase()}
-              </p>
-            )}
-          </CardContent>
-          </Card>
-
-          {/* My Prayer Reminders */}
-          <Card className="animate-gentle-fade" style={{ animationDelay: "630ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
-              Prayer Reminders
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Manage your daily prayer reminders and track consistency.
-            </p>
-            <Button asChild variant="peaceful" className="gap-2">
-              <Link to="/prayer-reminders">
-                <Bell className="h-4 w-4" />
-                My Prayer Reminders
-              </Link>
-            </Button>
-          </CardContent>
-          </Card>
-        </section>
-
         {/* ===== Section: Community & Support ===== */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
@@ -509,40 +340,6 @@ const Profile = () => {
           </Card>
         </section>
 
-        {/* ===== Section: Privacy ===== */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
-            <div>
-              <h2 className="font-playfair text-xl font-bold text-foreground">Privacy & Security</h2>
-              <p className="text-sm text-muted-foreground">You stay in control of your data and visibility.</p>
-            </div>
-          </div>
-          <Card className="bg-primary/5 border-primary/20 animate-gentle-fade">
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              Privacy & Security
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>
-              • Your personal information is encrypted and never shared without
-              permission.
-            </p>
-            <p>
-              • Prayer requests can always be submitted anonymously.
-            </p>
-            <p>
-              • You control who sees your prayer activity and profile.
-            </p>
-            <Button variant="outline" className="mt-4 gap-2">
-              <Settings className="h-4 w-4" />
-              Manage Privacy Settings
-            </Button>
-          </CardContent>
-          </Card>
-        </section>
       </div>
     </div>
   );
