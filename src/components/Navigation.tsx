@@ -182,12 +182,6 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/dashboard" className="flex items-center space-x-2 w-full">
-                        <Heart className="h-4 w-4" />
-                        <span>My Activity</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link to="/settings" className="flex items-center space-x-2 w-full">
                         <SettingsIcon className="h-4 w-4" />
                         <span>Settings</span>
