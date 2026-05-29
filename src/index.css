@@ -158,6 +158,15 @@ All colors MUST be HSL.
     font-family: 'Inter', system-ui, sans-serif;
   }
 
+  .dark body {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 55% / 0.22), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, hsl(217 91% 65% / 0.20), transparent 60%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+
   /* Consistent page section spacing */
   .page-container {
     @apply max-w-3xl mx-auto px-4 sm:px-6 lg:px-8;
