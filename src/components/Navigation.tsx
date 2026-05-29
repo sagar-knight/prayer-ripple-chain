@@ -182,12 +182,6 @@ const Navigation = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/dashboard" className="flex items-center space-x-2 w-full">
-                        <Heart className="h-4 w-4" />
-                        <span>My Activity</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link to="/settings" className="flex items-center space-x-2 w-full">
                         <SettingsIcon className="h-4 w-4" />
                         <span>Settings</span>
@@ -303,18 +297,6 @@ const Navigation = () => {
                     >
                       <User className="h-5 w-5" />
                       <span>Profile</span>
-                    </Link>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActiveRoute("/dashboard")
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                      }`}
-                    >
-                      <Heart className="h-5 w-5" />
-                      <span>My Activity</span>
                     </Link>
                     <Link
                       to="/settings"
