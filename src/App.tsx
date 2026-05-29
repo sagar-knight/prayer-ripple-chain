@@ -170,7 +170,7 @@ const App = () => (
                 <Route path="/churches/:churchId/prayers" element={<ChurchPrayerWall />} />
 
                 {/* Protected routes - require sign-in */}
-                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
                 <Route path="/churches/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
                 <Route path="/churches/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
                 <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
