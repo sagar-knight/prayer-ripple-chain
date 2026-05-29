@@ -2,19 +2,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import {
   User,
   Heart,
   Flame,
   TrendingUp,
-  Bell,
   BookOpen,
-  Settings,
   Award,
-  Shield,
   CheckCircle,
   Target,
   HandHeart,
@@ -25,20 +20,10 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
-import { getCountryByCode } from "@/data/countries";
-import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
 import { useUserCountry } from "@/hooks/useUserCountry";
-import LanguageSelect from "@/components/LanguageSelect";
-import { useUserLanguage } from "@/hooks/useUserLanguage";
-import { Languages } from "lucide-react";
 
 const Profile = () => {
   const { profileCountryCode, saveProfileCountry } = useUserCountry();
-  const {
-    profileLanguageCode,
-    browserLanguageCode,
-    savePreferredLanguage,
-  } = useUserLanguage();
   const [countryCode, setCountryCode] = useState<string | null>(null);
   const [showCountryBanner, setShowCountryBanner] = useState(true);
 
@@ -50,13 +35,6 @@ const Profile = () => {
     setCountryCode(code);
     void saveProfileCountry(code);
   };
-  const [notifications, setNotifications] = useState({
-    dailyReminder: true,
-    prayerAccepted: true,
-    prayerAnswered: true,
-    streakReminder: true,
-    
-  });
 
   const [userProfile] = useState({
     name: "Faithful Believer",
@@ -110,10 +88,6 @@ const Profile = () => {
       icon: BookOpen,
     },
   ];
-
-  const handleNotificationChange = (key: keyof typeof notifications) => {
-    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
