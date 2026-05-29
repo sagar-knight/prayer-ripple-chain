@@ -2,23 +2,13 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   User,
   Heart,
   Flame,
-  TrendingUp,
-  BookOpen,
-  Award,
-  CheckCircle,
-  Target,
-  HandHeart,
-  CreditCard,
   Globe,
-  Users,
   X,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
 import { useUserCountry } from "@/hooks/useUserCountry";
 
@@ -49,45 +39,6 @@ const Profile = () => {
     weeklyGoal: 10,
     weeklyProgress: 7,
   });
-
-  const achievements = [
-    {
-      title: "First Prayer",
-      description: "Offered your first prayer",
-      unlocked: true,
-      icon: Heart,
-    },
-    {
-      title: "Chain Starter",
-      description: "Started 5 prayer chains",
-      unlocked: true,
-      icon: TrendingUp,
-    },
-    {
-      title: "Prayer Warrior",
-      description: "Prayed for 25+ people",
-      unlocked: true,
-      icon: Award,
-    },
-    {
-      title: "Faithful 7",
-      description: "Maintain 7-day streak",
-      unlocked: false,
-      icon: Flame,
-    },
-    {
-      title: "100 Lives",
-      description: "Ripple reach of 100+",
-      unlocked: true,
-      icon: Target,
-    },
-    {
-      title: "Testimony",
-      description: "Share an answered prayer",
-      unlocked: true,
-      icon: BookOpen,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
@@ -199,145 +150,6 @@ const Profile = () => {
             </CardContent>
           </Card>
           </div>
-
-          {/* Weekly Goal */}
-          <Card className="animate-gentle-fade bg-gradient-soft-blue border-primary/10" style={{ animationDelay: "400ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              Weekly Prayer Goal
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
-                {userProfile.weeklyProgress} of {userProfile.weeklyGoal} prayers
-                this week
-              </span>
-              <span className="text-sm font-medium text-primary">
-                {Math.round(
-                  (userProfile.weeklyProgress / userProfile.weeklyGoal) * 100
-                )}
-                %
-              </span>
-            </div>
-            <Progress
-              value={
-                (userProfile.weeklyProgress / userProfile.weeklyGoal) * 100
-              }
-              className="h-3"
-            />
-          </CardContent>
-          </Card>
-
-          {/* Achievements */}
-          <Card className="animate-gentle-fade" style={{ animationDelay: "500ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Award className="h-5 w-5 text-primary" />
-              Achievements
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {achievements.map((achievement) => {
-                const Icon = achievement.icon;
-                return (
-                  <div
-                    key={achievement.title}
-                    className={`p-4 rounded-lg border text-center transition-all ${
-                      achievement.unlocked
-                        ? "bg-primary/5 border-primary/20"
-                        : "bg-muted/20 border-muted/40 opacity-60"
-                    }`}
-                  >
-                    <Icon
-                      className={`h-6 w-6 mx-auto mb-2 ${
-                        achievement.unlocked
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                    <h4 className="font-semibold text-sm mb-1">
-                      {achievement.title}
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      {achievement.description}
-                    </p>
-                    {achievement.unlocked && (
-                      <Badge variant="secondary" className="mt-2 text-xs">
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Unlocked
-                      </Badge>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-          </Card>
-        </section>
-
-        {/* ===== Section: Community & Support ===== */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
-            <div>
-              <h2 className="font-playfair text-xl font-bold text-foreground">Community & Support</h2>
-              <p className="text-sm text-muted-foreground">Pray with others and help keep PrayerForward free.</p>
-            </div>
-          </div>
-
-          {/* Join Organization */}
-          <Card className="animate-gentle-fade" style={{ animationDelay: "640ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Users className="h-5 w-5 text-primary" />
-              Family
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Join a church, ministry, or group to pray together.
-            </p>
-            <div className="flex gap-2">
-              <Button asChild variant="peaceful" className="gap-2">
-                <Link to="/organizations">
-                  <Users className="h-4 w-4" />
-                  Browse Families
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-          </Card>
-
-          {/* Support the Mission */}
-          <Card className="animate-gentle-fade border-primary/20 bg-gradient-soft-warm" style={{ animationDelay: "650ms" }}>
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <HandHeart className="h-5 w-5 text-primary" />
-              Support the Mission
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              PrayerForward is free for everyone. Your optional support helps keep
-              us running.
-            </p>
-            <div className="flex gap-2">
-              <Button asChild variant="peaceful" className="gap-2">
-                <Link to="/support">
-                  <Heart className="h-4 w-4" />
-                  Support PrayerForward
-                </Link>
-              </Button>
-              <Button variant="outline" className="gap-2">
-                <CreditCard className="h-4 w-4" />
-                Manage Support
-              </Button>
-            </div>
-          </CardContent>
-          </Card>
         </section>
 
       </div>
