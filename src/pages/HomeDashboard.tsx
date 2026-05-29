@@ -92,30 +92,25 @@ const HomeDashboard = () => {
         </div>
 
         {/* Prayer Journey highlight card (grace-based, no streaks) */}
-        <Card className="border-0 overflow-hidden card-glass animate-rise-in hover-glow">
-          <div className="relative bg-gradient-primary p-6 sm:p-8 text-primary-foreground">
-            <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-aurora pointer-events-none" />
-            <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/15 blur-3xl pointer-events-none" />
+        <Card className="overflow-hidden animate-rise-in border-border/60 bg-card/80 backdrop-blur-sm">
+          <div className="relative p-6 sm:p-8">
             <div className="relative flex items-center justify-between gap-6 flex-wrap">
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider opacity-90">
-                  <Sparkles className="h-3.5 w-3.5" />
+                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
                   Your Prayer Journey
                 </div>
-                <p className="text-3xl sm:text-4xl font-playfair font-semibold leading-tight">
+                <p className="text-2xl sm:text-3xl font-playfair font-semibold leading-tight text-foreground">
                   {daysInPrayerThisMonth === 0
                     ? "A new day to begin"
                     : `${daysInPrayerThisMonth} ${daysInPrayerThisMonth === 1 ? "day" : "days"} in prayer this month`}
                 </p>
-                <p className="text-sm opacity-90 max-w-md leading-relaxed">
+                <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
                   Every prayer matters. There is no streak to keep, only grace to receive.
                 </p>
               </div>
-              <div className="relative shrink-0">
-                <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse-ring" />
-                <div className="relative w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                  <Heart className="h-9 w-9" />
-                </div>
+              <div className="shrink-0 w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                <Heart className="h-6 w-6 text-primary" />
               </div>
             </div>
           </div>
