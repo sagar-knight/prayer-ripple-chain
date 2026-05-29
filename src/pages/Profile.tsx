@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   User,
-  Heart,
-  Flame,
   Globe,
   X,
 } from "lucide-react";
@@ -29,15 +26,6 @@ const Profile = () => {
   const [userProfile] = useState({
     name: "Faithful Believer",
     joinedDate: "January 2026",
-    prayersRequested: 5,
-    prayersOffered: 47,
-    prayersAnswered: 3,
-    currentStreak: 5,
-    longestStreak: 12,
-    rippleReach: 127,
-    chainsStarted: 8,
-    weeklyGoal: 10,
-    weeklyProgress: 7,
   });
 
   return (
@@ -56,16 +44,6 @@ const Profile = () => {
               <p className="text-muted-foreground">
                 Member since {userProfile.joinedDate}
               </p>
-              <div className="flex justify-center gap-2 mt-3">
-                <Badge variant="secondary" className="gap-1">
-                  <Flame className="h-3 w-3" />
-                  {userProfile.currentStreak} day streak
-                </Badge>
-                <Badge className="bg-primary/10 text-primary gap-1">
-                  <Heart className="h-3 w-3" />
-                  {userProfile.prayersOffered} prayers
-                </Badge>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -97,49 +75,6 @@ const Profile = () => {
             </CardContent>
           </Card>
         )}
-
-        {/* ===== Section: Your Prayer Journey ===== */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
-            <div>
-              <h2 className="font-playfair text-xl font-bold text-foreground">Your Prayer Journey</h2>
-              <p className="text-sm text-muted-foreground">A snapshot of your impact and consistency.</p>
-            </div>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow">
-            <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold text-primary">
-                {userProfile.prayersRequested}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Prayers Requested
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow" style={{ animationDelay: "100ms" }}>
-            <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold text-primary">
-                {userProfile.prayersOffered}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Prayers Offered
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow" style={{ animationDelay: "200ms" }}>
-            <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold text-primary">
-                {userProfile.rippleReach}
-              </div>
-              <div className="text-sm text-muted-foreground">Ripple Reach</div>
-            </CardContent>
-          </Card>
-          </div>
-        </section>
 
       </div>
     </div>
