@@ -139,16 +139,6 @@ const Profile = () => {
               <div className="text-sm text-muted-foreground">Ripple Reach</div>
             </CardContent>
           </Card>
-          <Card className="animate-gentle-fade hover:shadow-[var(--shadow-card-hover)] transition-shadow" style={{ animationDelay: "300ms" }}>
-            <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold text-primary">
-                {userProfile.longestStreak}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Longest Streak
-              </div>
-            </CardContent>
-          </Card>
           </div>
         </section>
 
