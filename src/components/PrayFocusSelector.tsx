@@ -215,9 +215,6 @@ const PrayFocusSelector = ({
                 <h4 className="font-semibold text-sm text-foreground">
                   {rescueOption.title}
                 </h4>
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                  {rescueCount} {rescueCount === 1 ? "person" : "people"} waiting
-                </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
                 {rescueOption.description}
