@@ -32,6 +32,7 @@ const OrganizationDetail = lazy(() => import("./pages/OrganizationDetail"));
 const Scripture = lazy(() => import("./pages/Scripture"));
 const MyCommitments = lazy(() => import("./pages/MyCommitments"));
 const MyPrayerReminders = lazy(() => import("./pages/MyPrayerReminders"));
+const SettingsPage = lazy(() => import("./pages/Settings"));
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -179,6 +180,7 @@ const App = () => (
                 <Route path="/organizations/create" element={<ProtectedRoute><CreateOrganization /></ProtectedRoute>} />
                 <Route path="/organizations/:orgId" element={<ProtectedRoute><OrganizationDetail /></ProtectedRoute>} />
                 <Route path="/commitments" element={<ProtectedRoute><MyCommitments /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
                 <Route path="/family" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
                 <Route path="/prayer-reminders" element={<ProtectedRoute><MyPrayerReminders /></ProtectedRoute>} />
                 <Route path="/moderation" element={<ProtectedRoute><ModerationDashboard /></ProtectedRoute>} />
