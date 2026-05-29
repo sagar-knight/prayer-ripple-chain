@@ -45,8 +45,7 @@ const Profile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* ===== Profile Header ===== */}
         <Card className="animate-gentle-fade border-primary/10 shadow-[var(--shadow-card-hover)] overflow-hidden">
-          <div className="h-24 bg-gradient-primary" />
-          <CardContent className="pt-0 -mt-12">
+          <CardContent className="pt-6">
             <div className="text-center">
               <div className="w-24 h-24 mx-auto bg-gradient-primary rounded-full flex items-center justify-center mb-4 ring-4 ring-card shadow-[var(--shadow-peaceful)]">
                 <User className="h-12 w-12 text-primary-foreground" />
