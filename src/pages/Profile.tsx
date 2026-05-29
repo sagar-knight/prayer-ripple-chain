@@ -340,40 +340,6 @@ const Profile = () => {
           </Card>
         </section>
 
-        {/* ===== Section: Privacy ===== */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 rounded-full bg-gradient-primary" />
-            <div>
-              <h2 className="font-playfair text-xl font-bold text-foreground">Privacy & Security</h2>
-              <p className="text-sm text-muted-foreground">You stay in control of your data and visibility.</p>
-            </div>
-          </div>
-          <Card className="bg-primary/5 border-primary/20 animate-gentle-fade">
-          <CardHeader>
-            <CardTitle className="font-playfair flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              Privacy & Security
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>
-              • Your personal information is encrypted and never shared without
-              permission.
-            </p>
-            <p>
-              • Prayer requests can always be submitted anonymously.
-            </p>
-            <p>
-              • You control who sees your prayer activity and profile.
-            </p>
-            <Button variant="outline" className="mt-4 gap-2">
-              <Settings className="h-4 w-4" />
-              Manage Privacy Settings
-            </Button>
-          </CardContent>
-          </Card>
-        </section>
       </div>
     </div>
   );
