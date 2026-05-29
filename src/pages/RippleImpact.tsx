@@ -368,16 +368,6 @@ const RippleImpact = () => {
 
         {/* ============ SECTION A — Your Prayer Requests (ripple lives here) ============ */}
         <section className="space-y-6">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
-              <Heart className="h-5 w-5 text-primary" />
-              Your Prayer Requests
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1.5">
-              How your requests are being carried in prayer.
-            </p>
-          </div>
-
           {/* Unified compact ripple hero */}
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="p-5 sm:p-6 space-y-4">
