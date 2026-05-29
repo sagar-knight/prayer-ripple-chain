@@ -148,9 +148,9 @@ const Home = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: HandHeart, title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.", gradient: "bg-gradient-warm" },
+              { icon: HandHeart, title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.", gradient: "bg-gradient-primary text-primary-foreground" },
               { icon: Waves, title: "Ripple Reach Tracker", desc: "Visualize your impact — see how many lives your prayer has touched.", gradient: "bg-gradient-primary text-primary-foreground" },
-              { icon: Church, title: "Church Collaboration", desc: "Connect with churches, submit requests to them, or join their prayer groups.", gradient: "bg-gradient-warm" },
+              { icon: Church, title: "Church Collaboration", desc: "Connect with churches, submit requests to them, or join their prayer groups.", gradient: "bg-gradient-primary text-primary-foreground" },
               { icon: Calendar, title: "Calendar & Reminders", desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks.", gradient: "" },
               { icon: Bell, title: "Smart Notifications", desc: "\"Have you prayed today?\", \"Someone's waiting for your prayer.\"", gradient: "" },
               { icon: BookOpen, title: "Scripture & Encouragement", desc: "Receive curated Bible verses and reflections matched to your prayer needs.", gradient: "" },
