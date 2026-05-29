@@ -171,7 +171,6 @@ const Navigation = () => {
                       }`}
                     >
                       <User className="h-4 w-4" />
-                      <span>Profile</span>
                       <ChevronDown className="h-3 w-3" />
                     </button>
                   </DropdownMenuTrigger>
