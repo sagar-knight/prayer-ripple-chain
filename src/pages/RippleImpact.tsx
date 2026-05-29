@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Share2, Sparkles, HandHeart, Globe2, CheckCircle2 } from "lucide-react";
+import { Heart, Share2, Sparkles, Globe2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import PrayersOfferedDetail from "@/components/PrayersOfferedDetail";
+
 import PrayerRippleChain from "@/components/PrayerRippleChain";
 import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import { useAuth } from "@/hooks/useAuth";
