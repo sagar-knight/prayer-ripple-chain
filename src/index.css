@@ -232,13 +232,16 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .bg-aurora { background: var(--gradient-aurora); }
   .bg-soft-green { background: var(--gradient-soft-green); }
   .bg-soft-blue { background: var(--gradient-soft-blue); }
   .bg-soft-warm { background: var(--gradient-soft-warm); }
 
-  /* Animated mesh gradient for hero backgrounds */
-  .bg-mesh {
+  /* Unified app background — same look across all pages (matches Ripple).
+     bg-aurora, bg-gradient-peaceful are aliased to bg-mesh so every page
+     shares the same ambient gradient. */
+  .bg-mesh,
+  .bg-aurora,
+  .bg-gradient-peaceful {
     background:
       radial-gradient(at 20% 20%, hsl(var(--primary) / 0.18) 0px, transparent 50%),
       radial-gradient(at 80% 0%, hsl(var(--success) / 0.20) 0px, transparent 50%),
