@@ -103,6 +103,9 @@ const Profile = () => {
           </Card>
         )}
 
+        {/* ===== My Activity ===== */}
+        <h2 className="font-playfair text-xl font-semibold text-foreground">My Activity</h2>
+
         {/* ===== Recent Prayers & Encouragement ===== */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="animate-gentle-fade">
