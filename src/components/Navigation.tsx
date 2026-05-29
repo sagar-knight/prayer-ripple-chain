@@ -67,7 +67,6 @@ const Navigation = () => {
     { href: "/store", label: "Store", icon: Store },
     { href: "/support", label: "Support Mission", icon: HandHeart },
     { href: "/calendar", label: "Calendar", icon: Calendar },
-    { href: "/commitments", label: "Praying For Others", icon: Calendar },
   ];
   const moreItems = allMoreItems.filter(
     (i) => i.href !== "/store" || showStore
