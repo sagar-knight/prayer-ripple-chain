@@ -10,7 +10,7 @@ All colors MUST be HSL.
   :root {
     /* Fresh, calm color palette: green → blue */
     /* Background #F9FAFB */
-    --background: 217 50% 96%;
+    --background: 220 14% 98%;
     /* Text primary #111827 */
     --foreground: 220 39% 11%;
 
@@ -91,8 +91,8 @@ All colors MUST be HSL.
 
   .dark {
     /* Dark mode aligned to green→blue palette */
-    --background: 217 50% 96%;
-    --foreground: 220 39% 11%;
+    --background: 222 47% 8%;
+    --foreground: 220 14% 96%;
 
     --card: 222 47% 12%;
     --card-foreground: 220 14% 96%;
@@ -126,9 +126,9 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 65%));
     --gradient-peaceful: linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 12%));
     --gradient-warm: linear-gradient(45deg, hsl(38 92% 55%), hsl(152 76% 67%));
-    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 55% / 0.22), transparent 60%),
-                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 65% / 0.20), transparent 60%),
-                       linear-gradient(180deg, hsl(222 47% 11%), hsl(222 47% 14%));
+    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 50% / 0.18), transparent 60%),
+                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.18), transparent 60%),
+                       linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 10%));
     --gradient-soft-green: linear-gradient(160deg, hsl(152 30% 15%), hsl(217 30% 14%));
     --gradient-soft-blue: linear-gradient(160deg, hsl(217 30% 16%), hsl(222 47% 12%));
     --gradient-soft-warm: linear-gradient(160deg, hsl(38 30% 18%), hsl(222 47% 12%));
@@ -156,10 +156,6 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
-  }
-
-  .dark body {
-    background-color: hsl(var(--background));
   }
 
   /* Consistent page section spacing */
