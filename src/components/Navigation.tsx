@@ -67,6 +67,7 @@ const Navigation = () => {
     { href: "/store", label: "Store", icon: Store },
     { href: "/support", label: "Support Mission", icon: HandHeart },
     { href: "/calendar", label: "Calendar", icon: Calendar },
+    { href: "/commitments", label: "People You're Praying For", icon: Calendar },
   ];
   const moreItems = allMoreItems.filter(
     (i) => i.href !== "/store" || showStore
@@ -186,12 +187,6 @@ const Navigation = () => {
                       <Link to="/dashboard" className="flex items-center space-x-2 w-full">
                         <Heart className="h-4 w-4" />
                         <span>My Activity</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/commitments" className="flex items-center space-x-2 w-full">
-                        <Calendar className="h-4 w-4" />
-                        <span>People You're Praying For</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -322,18 +317,6 @@ const Navigation = () => {
                     >
                       <Heart className="h-5 w-5" />
                       <span>My Activity</span>
-                    </Link>
-                    <Link
-                      to="/commitments"
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActiveRoute("/commitments")
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-primary hover:bg-accent/50"
-                      }`}
-                    >
-                      <Calendar className="h-5 w-5" />
-                      <span>People You're Praying For</span>
                     </Link>
                     <Link
                       to="/settings"
