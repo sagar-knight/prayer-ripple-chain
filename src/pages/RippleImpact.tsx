@@ -202,26 +202,6 @@ const RippleVisualization = ({
 const RippleImpact = () => {
   const { user } = useAuth();
 
-  // Fetch real stats (your offered count)
-  const { data: stats } = useQuery({
-    queryKey: ["user_prayer_stats_ripple", user?.id],
-    queryFn: async () => {
-      if (!user) return { total_prayers_offered: 0, total_prayers_received: 0, total_chains_started: 0 };
-      const { data } = await supabase
-        .from("user_prayer_stats")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      return data || { total_prayers_offered: 0, total_prayers_received: 0, total_chains_started: 0 };
-    },
-    enabled: !!user,
-  });
-
-  const userStats = {
-    prayersOffered: stats?.total_prayers_offered ?? 0,
-    prayersReceived: stats?.total_prayers_received ?? 0,
-    chainStarted: stats?.total_chains_started ?? 0,
-  };
 
   // Fetch the user's OWN prayer requests + ripple metrics on them
   const { data: myRipple } = useQuery({
@@ -432,33 +412,6 @@ const RippleImpact = () => {
           <PrayerRippleChain />
         </section>
 
-        <Separator className="max-w-24 mx-auto bg-primary/20" />
-
-        {/* ============ SECTION B — You Prayed for Others (NO ripple here) ============ */}
-        <section className="space-y-6">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-playfair text-2xl sm:text-3xl font-semibold text-foreground flex items-center justify-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              You Prayed for Others
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1.5">
-              The quiet gift of carrying someone else in prayer.
-            </p>
-          </div>
-
-          <Card className="card-glass border-0 max-w-md mx-auto hover-glow">
-            <CardContent className="pt-7 pb-7 text-center space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
-                <HandHeart className="h-5 w-5 text-primary" />
-              </div>
-              <p className="text-4xl font-bold text-foreground"><AnimatedNumber value={userStats.prayersOffered} /></p>
-              <p className="text-sm text-muted-foreground">
-                You prayed for {userStats.prayersOffered} {userStats.prayersOffered === 1 ? "person" : "people"}.
-              </p>
-              <PrayersOfferedDetail />
-            </CardContent>
-          </Card>
-        </section>
 
         {/* Share reflection */}
         <Card className="card-glass border-0 animate-gentle-fade">
