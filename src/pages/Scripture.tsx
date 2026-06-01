@@ -3,24 +3,42 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Heart, Bookmark, ChevronRight, Library } from "lucide-react";
+import {
+  BookOpen,
+  Heart,
+  Bookmark,
+  ChevronRight,
+  Library,
+  ShieldCheck,
+  Feather,
+  HeartPulse,
+  Compass,
+  Users,
+  Briefcase,
+  HeartCrack,
+  Handshake,
+  Sun,
+  Mountain,
+  Cross,
+  type LucideIcon,
+} from "lucide-react";
 import { verseCategories, getVersesByCategory, type Verse, type VerseCategory } from "@/data/verses";
 import { useToast } from "@/hooks/use-toast";
 import BibleReader from "./BibleReader";
 
-const categoryEmojis: Record<string, string> = {
-  "Anxiety / Fear": "😰",
-  Peace: "🕊️",
-  Healing: "🩹",
-  Guidance: "🧭",
-  Family: "👨‍👩‍👧‍👦",
-  Work: "💼",
-  Grief: "💔",
-  Forgiveness: "🤝",
-  Gratitude: "✨",
-  Wisdom: "📖",
-  Strength: "💪",
-  Faith: "✝️",
+const categoryIcons: Record<string, LucideIcon> = {
+  "Anxiety / Fear": ShieldCheck,
+  Peace: Feather,
+  Healing: HeartPulse,
+  Guidance: Compass,
+  Family: Users,
+  Work: Briefcase,
+  Grief: HeartCrack,
+  Forgiveness: Handshake,
+  Gratitude: Sun,
+  Wisdom: BookOpen,
+  Strength: Mountain,
+  Faith: Cross,
 };
 
 const Scripture = () => {
