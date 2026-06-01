@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Heart, Bookmark, ChevronRight, Library } from "lucide-react";
-import { verseCategories, getVersesByCategory, verseBank, type Verse, type VerseCategory } from "@/data/verses";
+import { verseCategories, getVersesByCategory, type Verse, type VerseCategory } from "@/data/verses";
 import { useToast } from "@/hooks/use-toast";
 import BibleReader from "./BibleReader";
 
@@ -25,23 +25,9 @@ const categoryEmojis: Record<string, string> = {
 
 const Scripture = () => {
   const [selectedCategory, setSelectedCategory] = useState<VerseCategory | null>(null);
-  const [savedVerses, setSavedVerses] = useState<Set<string>>(() => {
-    try {
-      const raw = localStorage.getItem("scripture.savedVerses");
-      return raw ? new Set(JSON.parse(raw)) : new Set();
-    } catch {
-      return new Set();
-    }
-  });
-  const [showSaved, setShowSaved] = useState(false);
+  const [savedVerses, setSavedVerses] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("library");
   const { toast } = useToast();
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("scripture.savedVerses", JSON.stringify(Array.from(savedVerses)));
-    } catch {}
-  }, [savedVerses]);
 
   const toggleSave = (verseId: string) => {
     setSavedVerses((prev) => {
@@ -93,37 +79,15 @@ const Scripture = () => {
             {/* Saved filter */}
             {savedVerses.size > 0 && !selectedCategory && (
               <div className="text-center mb-2">
-                <Button
-                  variant={showSaved ? "default" : "secondary"}
-                  size="sm"
-                  className="gap-1 text-sm px-4 py-1.5 rounded-full"
-                  onClick={() => setShowSaved((s) => !s)}
-                >
+                <Badge variant="secondary" className="gap-1 text-sm px-4 py-1.5">
                   <Bookmark className="h-3 w-3" />
-                  {showSaved ? "Hide" : "View"} {savedVerses.size} saved verse{savedVerses.size > 1 ? "s" : ""}
-                </Button>
+                  {savedVerses.size} verse{savedVerses.size > 1 ? "s" : ""} saved
+                </Badge>
               </div>
             )}
 
-            {/* Saved verses view */}
-            {showSaved && !selectedCategory ? (
-              <div className="space-y-4">
-                <h2 className="font-playfair text-2xl font-bold flex items-center gap-2">
-                  <Bookmark className="h-5 w-5 text-primary" /> Saved Verses
-                </h2>
-                {verseBank
-                  .filter((v) => savedVerses.has(v.id))
-                  .map((verse) => (
-                    <VerseCard
-                      key={verse.id}
-                      verse={verse}
-                      isSaved={true}
-                      onToggleSave={() => toggleSave(verse.id)}
-                    />
-                  ))}
-              </div>
-            ) : /* Category grid or verse list */
-            !selectedCategory ? (
+            {/* Category grid or verse list */}
+            {!selectedCategory ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {verseCategories.map((cat, i) => (
                   <Card
