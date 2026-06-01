@@ -141,7 +141,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
           </Geographies>
 
           {points.length === 0 && (
-            <g>
+            <g style={{ pointerEvents: "none" }}>
               <circle cx={400} cy={200} r={70} fill="url(#centerSoftGlow)"
                 style={{ transformOrigin: "400px 200px", animation: "center-glow 4s ease-in-out infinite" }} />
             </g>
@@ -166,14 +166,14 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                   fill={isOrigin ? "hsl(24 88% 72% / 0.30)" : "#5D8AA8"}
                   fillOpacity={isOrigin ? undefined : 0.18}
                   className="prayer-light-halo-2"
-                  style={{ animationDelay: delay }}
+                  style={{ animationDelay: delay, pointerEvents: "none" }}
                 />
                 <circle
                   r={r + 4}
                   fill={isOrigin ? "hsl(24 88% 72% / 0.35)" : "#5D8AA8"}
                   fillOpacity={isOrigin ? undefined : 0.28}
                   className="prayer-light-halo"
-                  style={{ animationDelay: delay }}
+                  style={{ animationDelay: delay, pointerEvents: "none" }}
                 />
                 <circle
                   r={r}
