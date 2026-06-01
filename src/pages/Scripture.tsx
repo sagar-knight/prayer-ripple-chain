@@ -93,15 +93,37 @@ const Scripture = () => {
             {/* Saved filter */}
             {savedVerses.size > 0 && !selectedCategory && (
               <div className="text-center mb-2">
-                <Badge variant="secondary" className="gap-1 text-sm px-4 py-1.5">
+                <Button
+                  variant={showSaved ? "default" : "secondary"}
+                  size="sm"
+                  className="gap-1 text-sm px-4 py-1.5 rounded-full"
+                  onClick={() => setShowSaved((s) => !s)}
+                >
                   <Bookmark className="h-3 w-3" />
-                  {savedVerses.size} verse{savedVerses.size > 1 ? "s" : ""} saved
-                </Badge>
+                  {showSaved ? "Hide" : "View"} {savedVerses.size} saved verse{savedVerses.size > 1 ? "s" : ""}
+                </Button>
               </div>
             )}
 
-            {/* Category grid or verse list */}
-            {!selectedCategory ? (
+            {/* Saved verses view */}
+            {showSaved && !selectedCategory ? (
+              <div className="space-y-4">
+                <h2 className="font-playfair text-2xl font-bold flex items-center gap-2">
+                  <Bookmark className="h-5 w-5 text-primary" /> Saved Verses
+                </h2>
+                {verseBank
+                  .filter((v) => savedVerses.has(v.id))
+                  .map((verse) => (
+                    <VerseCard
+                      key={verse.id}
+                      verse={verse}
+                      isSaved={true}
+                      onToggleSave={() => toggleSave(verse.id)}
+                    />
+                  ))}
+              </div>
+            ) : /* Category grid or verse list */
+            !selectedCategory ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {verseCategories.map((cat, i) => (
                   <Card
