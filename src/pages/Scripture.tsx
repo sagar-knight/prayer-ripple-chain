@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Heart, Bookmark, ChevronRight, Library } from "lucide-react";
-import { verseCategories, getVersesByCategory, type Verse, type VerseCategory } from "@/data/verses";
+import { verseCategories, getVersesByCategory, allVerses, type Verse, type VerseCategory } from "@/data/verses";
 import { useToast } from "@/hooks/use-toast";
 import BibleReader from "./BibleReader";
 
@@ -25,9 +25,23 @@ const categoryEmojis: Record<string, string> = {
 
 const Scripture = () => {
   const [selectedCategory, setSelectedCategory] = useState<VerseCategory | null>(null);
-  const [savedVerses, setSavedVerses] = useState<Set<string>>(new Set());
+  const [savedVerses, setSavedVerses] = useState<Set<string>>(() => {
+    try {
+      const raw = localStorage.getItem("scripture.savedVerses");
+      return raw ? new Set(JSON.parse(raw)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+  const [showSaved, setShowSaved] = useState(false);
   const [activeTab, setActiveTab] = useState("library");
   const { toast } = useToast();
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("scripture.savedVerses", JSON.stringify(Array.from(savedVerses)));
+    } catch {}
+  }, [savedVerses]);
 
   const toggleSave = (verseId: string) => {
     setSavedVerses((prev) => {
