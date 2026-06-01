@@ -107,7 +107,9 @@ const Scripture = () => {
             {/* Category grid or verse list */}
             {!selectedCategory ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {verseCategories.map((cat, i) => (
+                {verseCategories.map((cat, i) => {
+                  const Icon = categoryIcons[cat] || BookOpen;
+                  return (
                   <Card
                     key={cat}
                     className="cursor-pointer hover:shadow-peaceful transition-all group animate-gentle-fade"
@@ -115,7 +117,9 @@ const Scripture = () => {
                     onClick={() => setSelectedCategory(cat)}
                   >
                     <CardContent className="pt-6 text-center space-y-2">
-                      <span className="text-3xl">{categoryEmojis[cat] || "📖"}</span>
+                      <span className="mx-auto inline-flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 ring-1 ring-primary/15">
+                        <Icon className="h-6 w-6 text-primary" strokeWidth={1.75} />
+                      </span>
                       <h3 className="font-playfair font-semibold text-foreground group-hover:text-primary transition-colors">
                         {cat}
                       </h3>
@@ -124,7 +128,8 @@ const Scripture = () => {
                       </p>
                     </CardContent>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="space-y-4">
@@ -137,7 +142,11 @@ const Scripture = () => {
                   ← All Categories
                 </Button>
                 <h2 className="font-playfair text-2xl font-bold flex items-center gap-2">
-                  {categoryEmojis[selectedCategory]} {selectedCategory}
+                  {(() => {
+                    const Icon = categoryIcons[selectedCategory] || BookOpen;
+                    return <Icon className="h-6 w-6 text-primary" strokeWidth={1.75} />;
+                  })()}
+                  {selectedCategory}
                 </h2>
                 {verses.map((verse) => (
                   <VerseCard
