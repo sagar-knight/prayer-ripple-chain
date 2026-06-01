@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Share2, Sparkles, Globe2 } from "lucide-react";
+import { Heart, Share2, Globe2, Users, HandHeart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 import PrayerRippleChain from "@/components/PrayerRippleChain";
@@ -331,13 +331,13 @@ const RippleImpact = () => {
           <div className="absolute inset-x-20 -top-10 h-40 bg-gradient-primary opacity-30 blur-3xl rounded-full pointer-events-none" />
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-md border border-primary/20 text-xs font-medium text-primary mb-5 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5" />
+              <Users className="h-3.5 w-3.5" />
               You are not alone
             </div>
             <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 tracking-tight leading-tight">
               People are praying with you
               <span className="ml-2 inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 align-middle">
-                <Sparkles className="h-4 w-4 text-primary" strokeWidth={2.25} />
+                <HandHeart className="h-4 w-4 text-primary" strokeWidth={1.75} />
               </span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
