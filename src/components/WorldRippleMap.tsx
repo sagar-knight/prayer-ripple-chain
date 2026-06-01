@@ -76,38 +76,76 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
           0%   { opacity: 0.45; transform: scale(0.9); }
           100% { opacity: 0;    transform: scale(2.4); }
         }
+        @keyframes light-halo-soft {
+          0%   { opacity: 0.35; transform: scale(0.8); }
+          100% { opacity: 0;    transform: scale(2.8); }
+        }
+        @keyframes center-glow {
+          0%, 100% { opacity: 0.35; transform: scale(1); }
+          50%      { opacity: 0.6;  transform: scale(1.15); }
+        }
         .prayer-light-core   { transform-origin: center; transform-box: fill-box; animation: light-pulse 3.2s ease-in-out infinite; }
-        .prayer-light-halo   { transform-origin: center; transform-box: fill-box; animation: light-halo  3.2s ease-out  infinite; }
-        .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
+        .prayer-light-halo   { transform-origin: center; transform-box: fill-box; animation: light-halo  3.6s ease-out  infinite; }
+        .prayer-light-halo-2 { transform-origin: center; transform-box: fill-box; animation: light-halo-soft 4.8s ease-out infinite; }
+        .prayer-light-origin { filter: drop-shadow(0 0 8px hsl(24 88% 72% / 0.7)); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#15376b] border border-border/60 relative">
+      <div className="rounded-2xl overflow-hidden border border-[#D9E1E8] relative shadow-sm"
+           style={{
+             background:
+               "radial-gradient(ellipse at 50% 40%, #EAF1F7 0%, #DCE6EF 55%, #C9D6E2 100%)",
+           }}>
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
           height={400}
           style={{ width: "100%", height: "auto" }}
         >
+          <defs>
+            <radialGradient id="centerSoftGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#5D8AA8" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="#5D8AA8" stopOpacity="0" />
+            </radialGradient>
+          </defs>
           <Geographies geography={GEO_URL}>
-            {({ geographies }) =>
-              geographies
+            {({ geographies }) => {
+              const reached = new Set(points.map((p) => p.country_code));
+              return geographies
                 .filter((geo) => geo.properties?.name !== "Antarctica")
-                .map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill="#3d5878"
-                    stroke="#6a8cb0"
-                    strokeWidth={0.6}
-                    style={{
-                      default: { outline: "none", transition: "fill 0.2s ease" },
-                      hover:   { outline: "none", fill: "#5b7fa8", cursor: "pointer" },
-                      pressed: { outline: "none", fill: "#5b7fa8" },
-                    }}
-                  />
-                ))
-            }
+                .map((geo) => {
+                  const code = geo.properties?.iso_a2 || geo.id;
+                  const isReached = reached.has(code);
+                  const fill = isReached ? "#5D8AA8" : "#B8C5D1";
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={fill}
+                      stroke="#FFFFFF"
+                      strokeWidth={0.5}
+                      style={{
+                        default: {
+                          outline: "none",
+                          transition: "fill 0.3s ease",
+                          filter: isReached
+                            ? "drop-shadow(0 0 4px rgba(93, 138, 168, 0.55))"
+                            : "none",
+                        },
+                        hover:   { outline: "none", fill: "#7BA3BF", cursor: "pointer" },
+                        pressed: { outline: "none", fill: "#7BA3BF" },
+                      }}
+                    />
+                  );
+                });
+            }}
           </Geographies>
+
+          {points.length === 0 && (
+            <g>
+              <circle cx={400} cy={200} r={70} fill="url(#centerSoftGlow)"
+                style={{ transformOrigin: "400px 200px", animation: "center-glow 4s ease-in-out infinite" }} />
+            </g>
+          )}
 
           {points.map((p, idx) => {
             const value = Number(p[metric] || 0);
@@ -124,16 +162,24 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                 style={{ default: { cursor: "pointer" } }}
               >
                 <circle
+                  r={r + 8}
+                  fill={isOrigin ? "hsl(24 88% 72% / 0.30)" : "#5D8AA8"}
+                  fillOpacity={isOrigin ? undefined : 0.18}
+                  className="prayer-light-halo-2"
+                  style={{ animationDelay: delay }}
+                />
+                <circle
                   r={r + 4}
-                  fill={isOrigin ? "hsl(var(--accent) / 0.35)" : "hsl(var(--primary) / 0.3)"}
+                  fill={isOrigin ? "hsl(24 88% 72% / 0.35)" : "#5D8AA8"}
+                  fillOpacity={isOrigin ? undefined : 0.28}
                   className="prayer-light-halo"
                   style={{ animationDelay: delay }}
                 />
                 <circle
                   r={r}
-                  fill={isOrigin ? "hsl(var(--accent))" : "hsl(var(--primary))"}
+                  fill={isOrigin ? "hsl(24 88% 72%)" : "#5D8AA8"}
                   className={`prayer-light-core ${isOrigin ? "prayer-light-origin" : ""}`}
-                  style={{ animationDelay: delay, filter: "drop-shadow(0 0 4px hsl(var(--primary) / 0.8))" }}
+                  style={{ animationDelay: delay, filter: "drop-shadow(0 0 6px rgba(93, 138, 168, 0.85))" }}
                 />
               </Marker>
             );
@@ -141,33 +187,33 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         </ComposableMap>
         {points.length === 0 && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-            <p className="text-xs text-foreground/80 bg-[#15376b]/90 px-3 py-1.5 rounded-full border border-border/50">
-              As prayers spread across more places, lights will appear on the map.
+            <p className="text-xs text-[#2B3A4A] bg-white/85 backdrop-blur px-3 py-1.5 rounded-full border border-[#D9E1E8] shadow-sm">
+              As prayers spread, this map will begin to glow.
             </p>
           </div>
         )}
       </div>
 
       {hover && (
-        <div className="absolute top-2 right-2 bg-background/95 border border-border rounded-md px-3 py-1.5 text-xs shadow-md pointer-events-none">
-          <p className="font-medium">
-            {(hover.prayers ?? 0).toLocaleString()} {hover.prayers === 1 ? "prayer" : "prayers"} from {hover.country}
+        <div className="absolute top-2 right-2 bg-white/95 border border-[#D9E1E8] rounded-lg px-3 py-1.5 text-xs shadow-md pointer-events-none">
+          <p className="font-medium text-[#2B3A4A]">
+            {(hover.prayers ?? 0).toLocaleString()} {hover.prayers === 1 ? "person praying" : "people praying"} from {hover.country}
           </p>
         </div>
       )}
 
       {selected && (
-        <div className="mt-3 rounded-lg border border-border bg-card p-3 text-sm flex items-center justify-between">
-          <p>
+        <div className="mt-3 rounded-lg border border-[#D9E1E8] bg-white p-3 text-sm flex items-center justify-between shadow-sm">
+          <p className="text-[#2B3A4A]">
             <span className="font-medium">{(selected.prayers ?? 0).toLocaleString()}</span>{" "}
-            <span className="text-muted-foreground">
-              {selected.prayers === 1 ? "prayer" : "prayers"} from {selected.country}
+            <span className="text-[#44505D]">
+              {selected.prayers === 1 ? "person praying" : "people praying"} from {selected.country}
             </span>
           </p>
           <button
             type="button"
             onClick={() => setSelected(null)}
-            className="text-xs text-muted-foreground hover:text-foreground"
+            className="text-xs text-[#5D8AA8] hover:text-[#2B3A4A]"
           >
             Close
           </button>
