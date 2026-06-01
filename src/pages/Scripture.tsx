@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Heart, Bookmark, ChevronRight, Library } from "lucide-react";
-import { verseCategories, getVersesByCategory, allVerses, type Verse, type VerseCategory } from "@/data/verses";
+import { verseCategories, getVersesByCategory, verseBank, type Verse, type VerseCategory } from "@/data/verses";
 import { useToast } from "@/hooks/use-toast";
 import BibleReader from "./BibleReader";
 
