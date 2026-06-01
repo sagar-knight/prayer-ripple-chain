@@ -187,23 +187,23 @@ const Home = () => {
       <NewsletterSubscribe />
 
       {/* Final CTA */}
-      <section className="py-16 bg-gradient-primary text-primary-foreground">
+      <section className="py-16 bg-gradient-to-br from-secondary via-card to-background text-foreground border-y border-border/40">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-6 text-foreground">
             Your One Prayer Can Change Everything.
           </h2>
-          <p className="text-lg mb-8 text-primary-foreground/90 max-w-3xl mx-auto">
+          <p className="text-lg mb-8 text-muted-foreground max-w-3xl mx-auto">
             Join a movement where every prayer leads to another, and every person
             feels seen, heard, and loved.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild variant="secondary" size="lg" className="text-lg px-10 py-4">
+            <Button asChild size="lg" className="text-lg px-10 py-4">
               <Link to="/pray">
                 <Heart className="mr-2 h-5 w-5" />
                 Start Praying
               </Link>
             </Button>
-            <Button asChild variant="secondary" size="lg" className="text-lg px-10 py-4">
+            <Button asChild variant="outline" size="lg" className="text-lg px-10 py-4">
               <Link to="/submit-prayer">
                 Request Prayer
                 <BookOpen className="ml-2 h-5 w-5" />
