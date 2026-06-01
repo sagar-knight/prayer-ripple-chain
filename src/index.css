@@ -8,58 +8,66 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Indigo Dusk palette — light variant
-       #ffffff white, #676f9d indigo-light, #424c79 indigo-mid,
-       #2d3253 indigo-deep, #f9b17a peach accent */
-    --background: 0 0% 100%;
-    --foreground: 231 30% 25%;
+    /* Fresh, calm color palette: green → blue */
+    /* Background #F9FAFB */
+    --background: 220 14% 98%;
+    /* Text primary #111827 */
+    --foreground: 220 39% 11%;
 
+    /* Cards #FFFFFF */
     --card: 0 0% 100%;
-    --card-foreground: 231 30% 25%;
+    --card-foreground: 220 39% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 231 30% 25%;
+    --popover-foreground: 220 39% 11%;
 
-    --primary: 231 30% 25%;
+    /* Primary: sky blue #3B82F6 with green glow #6EE7B7 */
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 230 22% 51%;
+    --primary-glow: 152 76% 67%;
 
-    --secondary: 230 22% 92%;
-    --secondary-foreground: 231 30% 25%;
+    /* Secondary: light neutral */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 39% 11%;
 
-    --muted: 230 22% 95%;
-    --muted-foreground: 230 18% 45%;
+    /* Muted: text secondary #6B7280 on near-white surface */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 24 92% 73%;
-    --accent-foreground: 231 30% 20%;
+    /* Accent: focus/highlight #F59E0B */
+    --accent: 38 92% 50%;
+    --accent-foreground: 220 39% 11%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 230 22% 88%;
-    --input: 230 22% 88%;
-    --ring: 24 92% 73%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
 
-    --success: 24 92% 73%;
-    --success-foreground: 231 30% 20%;
+    /* Success / prayer action #22C55E */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(231 30% 25%), hsl(230 22% 51%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(0 0% 100%), hsl(230 22% 95%));
-    --gradient-warm: linear-gradient(45deg, hsl(24 92% 73%), hsl(230 22% 51%));
+    --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 60%));
+    --gradient-peaceful: linear-gradient(180deg, hsl(220 14% 98%), hsl(220 14% 96%));
+    --gradient-warm: linear-gradient(45deg, hsl(38 92% 50%), hsl(152 76% 67%));
 
-    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(231 30% 25% / 0.18), transparent 60%),
-                       radial-gradient(900px 500px at 100% 10%, hsl(24 92% 73% / 0.18), transparent 60%),
-                       linear-gradient(180deg, hsl(0 0% 100%), hsl(230 22% 96%));
-    --gradient-soft-green: linear-gradient(160deg, hsl(230 22% 95%), hsl(0 0% 100%));
-    --gradient-soft-blue: linear-gradient(160deg, hsl(230 22% 90%), hsl(0 0% 100%));
-    --gradient-soft-warm: linear-gradient(160deg, hsl(24 92% 90%), hsl(0 0% 100%));
+    /* Soft tinted backgrounds for emotional surfaces */
+    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 67% / 0.18), transparent 60%),
+                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.15), transparent 60%),
+                       linear-gradient(180deg, hsl(220 14% 99%), hsl(220 14% 97%));
+    --gradient-soft-green: linear-gradient(160deg, hsl(152 76% 95%), hsl(217 91% 97%));
+    --gradient-soft-blue: linear-gradient(160deg, hsl(217 91% 96%), hsl(220 14% 99%));
+    --gradient-soft-warm: linear-gradient(160deg, hsl(38 92% 95%), hsl(0 0% 100%));
 
-    --shadow-peaceful: 0 4px 20px -4px hsl(231 30% 25% / 0.20);
-    --shadow-warm: 0 8px 30px -8px hsl(24 92% 73% / 0.35);
-    --shadow-glow: 0 0 24px 0 hsl(24 92% 73% / 0.35);
-    --shadow-card: 0 1px 3px 0 hsl(231 30% 25% / 0.06), 0 4px 14px -2px hsl(231 30% 25% / 0.08);
-    --shadow-card-hover: 0 2px 6px 0 hsl(231 30% 25% / 0.08), 0 8px 24px -4px hsl(231 30% 25% / 0.14);
+    /* Shadows / glow (success glow rgba(34,197,94,0.25)) */
+    --shadow-peaceful: 0 4px 20px -4px hsl(217 91% 60% / 0.20);
+    --shadow-warm: 0 8px 30px -8px hsl(142 71% 45% / 0.25);
+    --shadow-glow: 0 0 24px 0 hsl(142 71% 45% / 0.25);
+    --shadow-card: 0 1px 3px 0 hsl(220 39% 11% / 0.04), 0 4px 14px -2px hsl(220 39% 11% / 0.06);
+    --shadow-card-hover: 0 2px 6px 0 hsl(220 39% 11% / 0.06), 0 8px 24px -4px hsl(220 39% 11% / 0.10);
 
     /* Smooth animations */
     --transition-gentle: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,52 +90,52 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Indigo Dusk palette — dark cinematic */
-    --background: 231 35% 15%;
-    --foreground: 0 0% 100%;
+    /* Dark mode aligned to green→blue palette */
+    --background: 222 47% 8%;
+    --foreground: 220 14% 96%;
 
-    --card: 231 30% 25%;
-    --card-foreground: 0 0% 100%;
+    --card: 222 47% 12%;
+    --card-foreground: 220 14% 96%;
 
-    --popover: 231 30% 25%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 222 47% 12%;
+    --popover-foreground: 220 14% 96%;
 
-    --primary: 24 92% 73%;
-    --primary-foreground: 231 35% 15%;
-    --primary-glow: 230 22% 51%;
+    --primary: 217 91% 65%;
+    --primary-foreground: 222 47% 8%;
+    --primary-glow: 152 76% 67%;
 
-    --secondary: 228 30% 32%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 222 30% 18%;
+    --secondary-foreground: 220 14% 96%;
 
-    --muted: 231 30% 22%;
-    --muted-foreground: 230 22% 70%;
+    --muted: 222 30% 16%;
+    --muted-foreground: 220 9% 65%;
 
-    --accent: 24 92% 73%;
-    --accent-foreground: 231 35% 15%;
+    --accent: 38 92% 55%;
+    --accent-foreground: 222 47% 8%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 228 25% 30%;
-    --input: 228 25% 30%;
-    --ring: 24 92% 73%;
+    --border: 222 30% 20%;
+    --input: 222 30% 20%;
+    --ring: 217 91% 65%;
 
-    --success: 24 92% 73%;
-    --success-foreground: 231 35% 15%;
+    --success: 142 71% 50%;
+    --success-foreground: 0 0% 100%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(231 30% 25%), hsl(24 92% 73%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(231 35% 15%), hsl(231 30% 22%));
-    --gradient-warm: linear-gradient(45deg, hsl(24 92% 73%), hsl(230 22% 51%));
-    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(230 22% 51% / 0.30), transparent 60%),
-                       radial-gradient(900px 500px at 100% 10%, hsl(24 92% 73% / 0.22), transparent 60%),
-                       linear-gradient(180deg, hsl(231 35% 13%), hsl(231 35% 10%));
-    --gradient-soft-green: linear-gradient(160deg, hsl(231 30% 25%), hsl(231 35% 18%));
-    --gradient-soft-blue: linear-gradient(160deg, hsl(228 30% 30%), hsl(231 35% 16%));
-    --gradient-soft-warm: linear-gradient(160deg, hsl(24 50% 30%), hsl(231 35% 16%));
+    --gradient-primary: linear-gradient(135deg, hsl(152 76% 67%), hsl(217 91% 65%));
+    --gradient-peaceful: linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 12%));
+    --gradient-warm: linear-gradient(45deg, hsl(38 92% 55%), hsl(152 76% 67%));
+    --gradient-aurora: radial-gradient(1200px 600px at 10% -10%, hsl(152 76% 50% / 0.18), transparent 60%),
+                       radial-gradient(900px 500px at 100% 10%, hsl(217 91% 60% / 0.18), transparent 60%),
+                       linear-gradient(180deg, hsl(222 47% 8%), hsl(222 47% 10%));
+    --gradient-soft-green: linear-gradient(160deg, hsl(152 30% 15%), hsl(217 30% 14%));
+    --gradient-soft-blue: linear-gradient(160deg, hsl(217 30% 16%), hsl(222 47% 12%));
+    --gradient-soft-warm: linear-gradient(160deg, hsl(38 30% 18%), hsl(222 47% 12%));
 
-    --shadow-glow: 0 0 24px 0 hsl(24 92% 73% / 0.40);
-    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 4px 14px -2px hsl(0 0% 0% / 0.35);
-    --shadow-card-hover: 0 2px 6px 0 hsl(0 0% 0% / 0.35), 0 8px 24px -4px hsl(0 0% 0% / 0.45);
+    --shadow-glow: 0 0 24px 0 hsl(142 71% 50% / 0.25);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.2), 0 4px 14px -2px hsl(0 0% 0% / 0.25);
+    --shadow-card-hover: 0 2px 6px 0 hsl(0 0% 0% / 0.25), 0 8px 24px -4px hsl(0 0% 0% / 0.3);
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -149,10 +157,11 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
     background:
-      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.25) 0px, transparent 55%),
-      radial-gradient(at 80% 0%, hsl(var(--card) / 0.45) 0px, transparent 55%),
-      radial-gradient(at 0% 80%, hsl(var(--primary-glow) / 0.18) 0px, transparent 55%),
-      radial-gradient(at 80% 80%, hsl(var(--primary) / 0.20) 0px, transparent 55%),
+      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.18) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--success) / 0.20) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--primary-glow) / 0.18) 0px, transparent 50%),
+      radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--primary) / 0.15) 0px, transparent 50%),
       hsl(var(--background));
     background-attachment: fixed;
   }
@@ -242,10 +251,11 @@ All colors MUST be HSL.
   .bg-aurora,
   .bg-gradient-peaceful {
     background:
-      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.25) 0px, transparent 55%),
-      radial-gradient(at 80% 0%, hsl(var(--card) / 0.45) 0px, transparent 55%),
-      radial-gradient(at 0% 80%, hsl(var(--primary-glow) / 0.18) 0px, transparent 55%),
-      radial-gradient(at 80% 80%, hsl(var(--primary) / 0.20) 0px, transparent 55%),
+      radial-gradient(at 20% 20%, hsl(var(--primary) / 0.18) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--success) / 0.20) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--primary-glow) / 0.18) 0px, transparent 50%),
+      radial-gradient(at 80% 80%, hsl(var(--accent) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--primary) / 0.15) 0px, transparent 50%),
       hsl(var(--background));
     background-size: 200% 200%;
     animation: gradient-shift 12s ease infinite;
