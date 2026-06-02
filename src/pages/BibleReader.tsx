@@ -19,7 +19,7 @@ import {
   BookOpen,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
+  Star,
   StickyNote,
   Lightbulb,
   Loader2,
@@ -76,7 +76,7 @@ const BibleReader = () => {
     };
     setNotes((prev) => [note, ...prev]);
     setNewNote("");
-    toast({ title: "Note saved 📝", duration: 2000 });
+    toast({ title: "Note saved", duration: 2000 });
   };
 
   const handleAiHelp = async () => {
@@ -281,7 +281,7 @@ const BibleReader = () => {
             {aiLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Sparkles className="h-4 w-4" />
+              <Star className="h-4 w-4" />
             )}
             {aiLoading ? "Understanding passage..." : "AI Help me understand"}
           </Button>
@@ -289,7 +289,7 @@ const BibleReader = () => {
           {aiExplanation && (
             <div className="bg-muted/50 rounded-lg p-4 space-y-2 animate-gentle-fade">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="h-4 w-4 text-primary" />
+                <Star className="h-4 w-4 text-primary" />
                 <span className="text-xs font-semibold text-primary uppercase tracking-wide">
                   Bible-based encouragement
                 </span>

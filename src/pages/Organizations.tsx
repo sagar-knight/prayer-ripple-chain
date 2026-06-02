@@ -288,7 +288,7 @@ const Organizations = () => {
                 }}
                 onMarkAnswered={async (id) => {
                   await updateRequest.mutateAsync({ id, updates: { status: "answered" } });
-                  toast({ title: "Praise God! Prayer answered ✨" });
+                  toast({ title: "Praise God! Prayer answered" });
                 }}
               />
             </TabsContent>

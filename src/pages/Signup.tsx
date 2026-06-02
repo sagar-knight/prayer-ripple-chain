@@ -41,7 +41,7 @@ const Signup = () => {
       toast({ title: "Sign up failed", description: error.message, variant: "destructive" });
     } else {
       setSuccess(true);
-      toast({ title: "Check your email 📧", description: "We sent a confirmation link to verify your account." });
+      toast({ title: "Check your email", description: "We sent a confirmation link to verify your account." });
     }
   };
 
@@ -61,7 +61,7 @@ const Signup = () => {
     if (error) {
       toast({ title: "Could not resend", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Email resent 📧", description: "Check your inbox for the new confirmation link." });
+      toast({ title: "Email resent", description: "Check your inbox for the new confirmation link." });
       setResendCooldown(60);
       const interval = setInterval(() => {
         setResendCooldown((prev) => {

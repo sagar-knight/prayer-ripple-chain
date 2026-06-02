@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowRight, Loader2, Sparkles, MapPin, Users, Share2, Waves, Globe2 } from "lucide-react";
+import { Heart, ArrowRight, Loader2, Star, MapPin, Users, Share2, Waves, Globe2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
@@ -177,7 +177,7 @@ const SharedPrayer = () => {
           <CardContent className="pt-8 pb-8 space-y-5">
             <div className="text-center space-y-2">
               <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
-                <Sparkles className="h-8 w-8 text-primary" />
+                <Star className="h-8 w-8 text-primary" />
               </div>
               <h1 className="font-playfair text-2xl font-bold text-foreground">
                 Someone asked for prayer
@@ -205,7 +205,7 @@ const SharedPrayer = () => {
         <div className="space-y-3 animate-gentle-fade">
           <Button asChild variant="peaceful" size="lg" className="w-full gap-2">
             <Link to="/pray">
-              <Sparkles className="h-5 w-5" />
+              <Star className="h-5 w-5" />
               Pray Now
             </Link>
           </Button>

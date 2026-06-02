@@ -114,7 +114,7 @@ const FamilyRequests = () => {
         return { ...r, prayerLog: [...r.prayerLog, today] };
       })
     );
-    toast({ title: "Marked as prayed today ✨", duration: 2000 });
+    toast({ title: "Marked as prayed today", duration: 2000 });
   };
 
   const archiveRequest = (id: string) => {

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Clock, MapPin, Send, Sparkles } from "lucide-react";
+import { Heart, Clock, MapPin, Send, Star } from "lucide-react";
 import { Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
@@ -132,12 +132,12 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
           </span>
         ) : hasPrayed ? (
           <span className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />
+            <Star className="h-4 w-4" />
             Prayed
           </span>
         ) : (
           <span className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />
+            <Star className="h-4 w-4" />
             I Prayed
           </span>
         )}

@@ -61,7 +61,7 @@ const FamilyScriptures = ({ scriptures, onAdd, currentUser }: Props) => {
     setVerseText("");
     setNote("");
     setShowAdd(false);
-    toast({ title: "Scripture shared with family ✨" });
+    toast({ title: "Scripture shared with family" });
   };
 
   return (

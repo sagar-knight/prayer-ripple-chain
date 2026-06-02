@@ -10,7 +10,7 @@ import {
   Church,
   Calendar,
   Bell,
-  Sparkles,
+  Star,
   HandHeart,
 } from "lucide-react";
 import heroImage from "@/assets/hero-prayer.jpg";

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, TrendingUp, Sparkles, Share2 } from "lucide-react";
+import { Globe, TrendingUp, Star, Share2 } from "lucide-react";
 import WorldRippleMap, { CountryStat } from "@/components/WorldRippleMap";
 import { getCountryByCode } from "@/data/countries";
 
@@ -83,7 +83,7 @@ const AdminGlobalReach = () => {
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <Stat icon={Globe} label="Countries reached" value={data.total_countries_reached} />
-            <Stat icon={Sparkles} label="Prayers offered" value={sum(data.top_prayers_by_country, "prayers")} />
+            <Stat icon={Star} label="Prayers offered" value={sum(data.top_prayers_by_country, "prayers")} />
             <Stat icon={Share2} label="Forwards" value={sum(data.forwards_by_country, "forwards")} />
             <Stat icon={TrendingUp} label="Requests created" value={sum(data.requests_by_country, "requests")} />
           </div>
@@ -168,7 +168,7 @@ const RankingCard = ({
             return (
               <div key={r.country_code} className="flex items-center justify-between text-sm py-1">
                 <span className="flex items-center gap-2">
-                  <span>{c?.flag || "🏳️"}</span>
+                  <span>{c?.flag || ""}</span>
                   <span>{c?.name || r.country || r.country_code}</span>
                 </span>
                 <span className="font-medium tabular-nums">{r[valueKey]}</span>

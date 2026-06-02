@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check, Sparkles, Sun } from "lucide-react";
+import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check, Star, Sun } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
@@ -97,7 +97,7 @@ const HomeDashboard = () => {
             <div className="relative flex items-center justify-between gap-6 flex-wrap">
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  <Star className="h-3.5 w-3.5 text-primary" />
                   Your Prayer Journey
                 </div>
                 <p className="text-2xl sm:text-3xl font-playfair font-semibold leading-tight text-foreground">
