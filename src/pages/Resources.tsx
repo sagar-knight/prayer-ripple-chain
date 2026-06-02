@@ -10,6 +10,10 @@ import {
   ExternalLink,
   Star,
   Gift,
+  Notebook,
+  Music,
+  Cross,
+  Layers,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -25,7 +29,7 @@ const Resources = () => {
         "A beautifully designed 90-day prayer journal with scripture prompts, gratitude sections, and space for personal reflections.",
       price: "$14.99",
       rating: 4.8,
-      image: "",
+      icon: Notebook,
       affiliate: true,
     },
     {
@@ -36,7 +40,7 @@ const Resources = () => {
         "Comprehensive study Bible with detailed notes, maps, and cross-references. Perfect for deeper understanding of Scripture.",
       price: "$29.99",
       rating: 4.9,
-      image: "",
+      icon: BookOpen,
       affiliate: true,
     },
     {
@@ -47,7 +51,7 @@ const Resources = () => {
         "Transform your prayer life with this 30-day guided devotional. Each day includes a Bible verse, reflection, and prayer prompt.",
       price: "$9.99",
       rating: 4.7,
-      image: "️",
+      icon: Heart,
       affiliate: true,
     },
     {
@@ -58,7 +62,7 @@ const Resources = () => {
         "An encouraging resource exploring God's promises of healing through Scripture, testimonies, and practical faith steps.",
       price: "$12.99",
       rating: 4.6,
-      image: "",
+      icon: Cross,
       affiliate: true,
     },
     {
@@ -69,7 +73,7 @@ const Resources = () => {
         "50 beautifully designed cards featuring key Bible verses for memorization, prayer, and daily encouragement.",
       price: "$7.99",
       rating: 4.8,
-      image: "🃏",
+      icon: Layers,
       affiliate: false,
     },
     {
@@ -80,7 +84,7 @@ const Resources = () => {
         "A curated guide of worship songs organized by prayer themes — healing, gratitude, surrender, and more.",
       price: "Free",
       rating: 4.5,
-      image: "",
+      icon: Music,
       affiliate: false,
     },
   ];
@@ -155,7 +159,9 @@ const Resources = () => {
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div className="text-4xl mb-2">{resource.image}</div>
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                      <resource.icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
+                    </div>
                     {resource.affiliate && (
                       <Badge variant="outline" className="text-xs">
                         Affiliate
