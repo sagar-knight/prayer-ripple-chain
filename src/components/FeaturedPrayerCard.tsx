@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Share2, Globe2, ShieldCheck, Heart, Loader2 } from "lucide-react";
+import { Star, Share2, Globe2, ShieldCheck, Heart, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePrayerService } from "@/hooks/usePrayerService";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
@@ -177,7 +177,7 @@ const FeaturedPrayerCard = () => {
                 {praying ? (
                   <Loader2 className="h-5 w-5 animate-spin mr-2" />
                 ) : (
-                  <Sparkles className="h-5 w-5 mr-2" />
+                  <Star className="h-5 w-5 mr-2" />
                 )}
                 Pray Now
               </Button>
@@ -210,7 +210,7 @@ const FeaturedPrayerCard = () => {
                 </Button>
                 <Button asChild variant="outline" className="flex-1">
                   <Link to="/pray">
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Star className="h-4 w-4 mr-2" />
                     Pray for another
                   </Link>
                 </Button>

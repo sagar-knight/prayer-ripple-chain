@@ -1,4 +1,4 @@
-import { CheckCircle2, AlertTriangle, ShieldCheck, Smartphone, Zap, Users, Church, Heart, Share2, Globe2, Lock, FlaskConical, Sparkles, ClipboardCheck } from "lucide-react";
+import { CheckCircle2, AlertTriangle, ShieldCheck, Smartphone, Zap, Users, Church, Heart, Share2, Globe2, Lock, FlaskConical, Star, ClipboardCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -58,7 +58,7 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    key: "pray", letter: "C", title: "Pray Flow", icon: Sparkles,
+    key: "pray", letter: "C", title: "Pray Flow", icon: Star,
     cases: [
       { id: "PRAY-001", scenario: "Pray Now button works", steps: ["From home, tap Pray Now"], expected: "Authenticated users enter the prayer session; guests are routed to /login.", actual: "Behaves as expected.", status: "Pass" },
       { id: "PRAY-002", scenario: "Prayer count updates correctly", steps: ["Complete a prayer for a request"], expected: "prayer_count and unique_people_prayed increase, last_prayed_at updates.", actual: "Counts increment; rate limit prevents abuse.", status: "Pass" },

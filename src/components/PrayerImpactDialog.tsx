@@ -7,7 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Share2, Heart, Globe2, Loader2 } from "lucide-react";
+import { Star, Share2, Heart, Globe2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PrayerImpactDialogProps {
@@ -71,7 +71,7 @@ const PrayerImpactDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-playfair text-xl flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Star className="h-5 w-5 text-primary" />
             Thank you for praying
           </DialogTitle>
           <DialogDescription>
@@ -119,7 +119,7 @@ const PrayerImpactDialog = ({
             className="flex-1 gap-2"
             onClick={onPrayAnother}
           >
-            <Sparkles className="h-4 w-4" />
+            <Star className="h-4 w-4" />
             Pray for another request
           </Button>
           <Button

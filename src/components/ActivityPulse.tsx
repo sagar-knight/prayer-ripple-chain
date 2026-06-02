@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Sparkles, Users, Clock } from "lucide-react";
+import { Star, Users, Clock } from "lucide-react";
 
 interface Stats {
   prayedToday: number;
@@ -86,11 +86,11 @@ const ActivityPulse = () => {
     stats?.lastPrayedAt &&
     Date.now() - stats.lastPrayedAt.getTime() < 6 * 60 * 60 * 1000;
 
-  const items: { icon: typeof Sparkles; label: string }[] = [];
+  const items: { icon: typeof Star; label: string }[] = [];
 
   if (recent && stats?.lastPrayedAt) {
     items.push({
-      icon: Sparkles,
+      icon: Star,
       label: `Someone prayed ${timeAgo(stats.lastPrayedAt)}`,
     });
   }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Sparkles, Loader2, Waves, ChevronRight } from "lucide-react";
+import { Heart, Share2, Star, Loader2, Waves, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -321,7 +321,7 @@ const RippleList = ({
             {/* Calm recent activity hint */}
             {recentlyPrayed(chain.lastPrayedAt) && (
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Sparkles className="h-3 w-3 text-primary/60" />
+                <Star className="h-3 w-3 text-primary/60" />
                 <span>Someone prayed recently</span>
               </div>
             )}
