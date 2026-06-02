@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Share2, Globe2, Users, HandHeart } from "lucide-react";
+import { Heart, Share2, Sparkles, Globe2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 import PrayerRippleChain from "@/components/PrayerRippleChain";
@@ -331,13 +331,13 @@ const RippleImpact = () => {
           <div className="absolute inset-x-20 -top-10 h-40 bg-gradient-primary opacity-30 blur-3xl rounded-full pointer-events-none" />
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/70 backdrop-blur-md border border-primary/20 text-xs font-medium text-primary mb-5 shadow-sm">
-              <Users className="h-3.5 w-3.5" />
+              <Sparkles className="h-3.5 w-3.5" />
               You are not alone
             </div>
             <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 tracking-tight leading-tight">
               People are praying with you
               <span className="ml-2 inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 align-middle">
-                <HandHeart className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                <Sparkles className="h-4 w-4 text-primary" strokeWidth={2.25} />
               </span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
@@ -349,58 +349,42 @@ const RippleImpact = () => {
         {/* ============ SECTION A — Your Prayer Requests (ripple lives here) ============ */}
         <section className="space-y-6">
           {/* Unified compact ripple hero */}
-          <Card className="border border-[#D9E1E8] bg-[#F7F9FA] shadow-sm overflow-hidden">
-            <CardContent className="p-5 sm:p-7 space-y-5">
-              {/* Title */}
-              <div>
-                <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-[#2B3A4A] flex items-center gap-2">
-                  <Globe2 className="h-5 w-5 text-[#5D8AA8]" />
-                  Your prayer is spreading
-                </h3>
-              </div>
-
-              {/* Mini stat cards */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                <div className="rounded-xl bg-white border border-[#D9E1E8] px-3 py-3 sm:py-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-[#5D8AA8] mb-1">
-                    <Heart className="h-3.5 w-3.5" />
-                  </div>
-                  <div className="text-xl sm:text-2xl font-semibold text-[#2B3A4A] leading-none">
-                    <AnimatedNumber value={ripple.peoplePraying} />
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#44505D] mt-1">Praying</div>
+          <Card className="card-glass border-0 overflow-hidden hover-glow">
+            <CardContent className="p-5 sm:p-6 space-y-4">
+              {/* Title + inline stat pills */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center gap-2">
+                    <Globe2 className="h-5 w-5 text-success" />
+                    Your prayer is spreading
+                  </h3>
                 </div>
-                <div className="rounded-xl bg-white border border-[#D9E1E8] px-3 py-3 sm:py-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-[#E89A6B] mb-1">
-                    <Share2 className="h-3.5 w-3.5" />
-                  </div>
-                  <div className="text-xl sm:text-2xl font-semibold text-[#2B3A4A] leading-none">
-                    <AnimatedNumber value={ripple.shares} />
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#44505D] mt-1">{ripple.shares === 1 ? "Share" : "Shares"}</div>
-                </div>
-                <div className="rounded-xl bg-white border border-[#D9E1E8] px-3 py-3 sm:py-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-[#5D8AA8] mb-1">
-                    <Globe2 className="h-3.5 w-3.5" />
-                  </div>
-                  <div className="text-xl sm:text-2xl font-semibold text-[#2B3A4A] leading-none">
-                    <AnimatedNumber value={ripple.countries} />
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#44505D] mt-1">{ripple.countries === 1 ? "Country" : "Countries"}</div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-foreground">
+                    <Heart className="h-3.5 w-3.5 text-primary" />
+                    <AnimatedNumber value={ripple.peoplePraying} /> praying
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-foreground">
+                    <Share2 className="h-3.5 w-3.5 text-accent" />
+                    <AnimatedNumber value={ripple.shares} /> {ripple.shares === 1 ? "share" : "shares"}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-foreground">
+                    <Globe2 className="h-3.5 w-3.5 text-success" />
+                    <AnimatedNumber value={ripple.countries} /> {ripple.countries === 1 ? "country" : "countries"}
+                  </span>
                 </div>
               </div>
 
-              {/* Unified ripple map */}
+              {/* Unified ripple map (compact hero visual) */}
               <div className="relative mx-auto max-w-3xl">
-                <div className="[&_svg]:h-[220px] sm:[&_svg]:h-auto">
-                  <WorldRippleMap data={ripple.countryStats} metric="prayers" />
-                </div>
+                <div className="absolute inset-0 -z-10 bg-gradient-primary opacity-20 blur-3xl rounded-full pointer-events-none" />
+                <WorldRippleMap data={ripple.countryStats} metric="prayers" />
                 {ripple.countryStats.length > 0 && (
                   <div className="mt-3 flex flex-wrap justify-center gap-2">
                     {ripple.countryStats.map((c) => (
                       <span
                         key={c.country_code}
-                        className="text-xs px-2.5 py-1 rounded-full bg-white text-[#2B3A4A] border border-[#D9E1E8]"
+                        className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-foreground border border-primary/15"
                       >
                         {c.country}
                       </span>
@@ -409,15 +393,14 @@ const RippleImpact = () => {
                 )}
               </div>
 
-              {/* Message + CTA */}
+              {/* Emotional support line + CTA */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-                <p className="text-sm text-[#44505D] text-center sm:text-left">
-                  Your prayer is reaching hearts across the world.
+                <p className="text-sm text-muted-foreground italic text-center sm:text-left">
+                  {ripple.countries > 0
+                    ? "Your ripple is growing across the world."
+                    : "People are praying for you. The map will light up as prayers reach new places."}
                 </p>
-                <Button
-                  onClick={handleShare}
-                  className="w-full sm:w-auto rounded-full px-6 gap-2 bg-[#5D8AA8] hover:bg-[#4E7894] text-white border-0 shadow-sm"
-                >
+                <Button onClick={handleShare} size="sm" className="gap-2">
                   <Share2 className="h-4 w-4" />
                   Share Ripple
                 </Button>

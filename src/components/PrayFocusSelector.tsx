@@ -4,13 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import {
   Heart,
   Globe,
+  Sparkles,
   Clock,
   Shuffle,
   ArrowRight,
   List,
   LifeBuoy,
-  HeartHandshake,
-  Sun,
 } from "lucide-react";
 
 export type PrayerFocusMode =
@@ -56,7 +55,7 @@ const secondaryOptions: FocusOption[] = [
   },
   {
     id: "interests",
-    icon: HeartHandshake,
+    icon: Sparkles,
     title: "Based on your heart",
     description: "Matched to the categories close to you.",
     surface: "bg-soft-warm",
@@ -107,8 +106,8 @@ const PrayFocusSelector = ({
         <div className="relative">
           <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3 tracking-tight inline-flex items-center justify-center gap-3 flex-wrap">
             <span>Take a moment to pray</span>
-            <span className="relative inline-flex items-center justify-center h-11 w-11 rounded-full bg-primary/10 ring-1 ring-primary/20 animate-float-slow">
-              <Sun className="h-5 w-5 text-primary" strokeWidth={1.75} />
+            <span className="relative inline-flex items-center justify-center h-11 w-11 rounded-full bg-gradient-primary shadow-[0_0_24px_hsl(var(--success)/0.35)] animate-float-slow">
+              <Sparkles className="h-5 w-5 text-white" strokeWidth={2.25} />
             </span>
           </h2>
           <p className="text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
