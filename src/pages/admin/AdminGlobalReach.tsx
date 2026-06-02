@@ -168,7 +168,7 @@ const RankingCard = ({
             return (
               <div key={r.country_code} className="flex items-center justify-between text-sm py-1">
                 <span className="flex items-center gap-2">
-                  <span>{c?.flag || "🏳️"}</span>
+                  <span>{c?.flag || ""}</span>
                   <span>{c?.name || r.country || r.country_code}</span>
                 </span>
                 <span className="font-medium tabular-nums">{r[valueKey]}</span>

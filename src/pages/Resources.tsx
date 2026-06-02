@@ -25,7 +25,7 @@ const Resources = () => {
         "A beautifully designed 90-day prayer journal with scripture prompts, gratitude sections, and space for personal reflections.",
       price: "$14.99",
       rating: 4.8,
-      image: "📓",
+      image: "",
       affiliate: true,
     },
     {
@@ -36,7 +36,7 @@ const Resources = () => {
         "Comprehensive study Bible with detailed notes, maps, and cross-references. Perfect for deeper understanding of Scripture.",
       price: "$29.99",
       rating: 4.9,
-      image: "📖",
+      image: "",
       affiliate: true,
     },
     {
@@ -47,7 +47,7 @@ const Resources = () => {
         "Transform your prayer life with this 30-day guided devotional. Each day includes a Bible verse, reflection, and prayer prompt.",
       price: "$9.99",
       rating: 4.7,
-      image: "🕊️",
+      image: "️",
       affiliate: true,
     },
     {
@@ -58,7 +58,7 @@ const Resources = () => {
         "An encouraging resource exploring God's promises of healing through Scripture, testimonies, and practical faith steps.",
       price: "$12.99",
       rating: 4.6,
-      image: "✝️",
+      image: "",
       affiliate: true,
     },
     {
@@ -80,7 +80,7 @@ const Resources = () => {
         "A curated guide of worship songs organized by prayer themes — healing, gratitude, surrender, and more.",
       price: "Free",
       rating: 4.5,
-      image: "🎵",
+      image: "",
       affiliate: false,
     },
   ];

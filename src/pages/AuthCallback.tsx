@@ -68,7 +68,7 @@ const AuthCallback = () => {
           {status === "success" && (
             <>
               <CheckCircle className="h-12 w-12 text-green-600 mx-auto" />
-              <h2 className="font-playfair text-2xl font-bold">Email Verified! 🎉</h2>
+              <h2 className="font-playfair text-2xl font-bold">Email Verified!</h2>
               <p className="text-muted-foreground">Your account is confirmed. Redirecting you now...</p>
             </>
           )}

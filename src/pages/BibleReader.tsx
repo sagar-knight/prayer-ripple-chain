@@ -76,7 +76,7 @@ const BibleReader = () => {
     };
     setNotes((prev) => [note, ...prev]);
     setNewNote("");
-    toast({ title: "Note saved 📝", duration: 2000 });
+    toast({ title: "Note saved", duration: 2000 });
   };
 
   const handleAiHelp = async () => {

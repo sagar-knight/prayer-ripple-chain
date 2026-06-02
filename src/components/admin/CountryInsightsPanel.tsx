@@ -57,7 +57,7 @@ const CountryInsightsPanel = () => {
               className="flex items-center justify-between text-sm py-1"
             >
               <span className="flex items-center gap-2">
-                <span>{country?.flag || "🏳️"}</span>
+                <span>{country?.flag || ""}</span>
                 <span>{country?.name || r.country_code}</span>
               </span>
               <span className="font-medium tabular-nums">{r.count}</span>

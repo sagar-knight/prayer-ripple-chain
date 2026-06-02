@@ -30,19 +30,19 @@ const LivePrayerRipple = ({
   let sub: string;
 
   if (answered) {
-    main = `🙏 ${totalCount} ${totalCount === 1 ? "prayer" : "prayers"} offered`;
+    main = `${totalCount} ${totalCount === 1 ? "prayer" : "prayers"} offered`;
     sub = "God answered. Share your testimony to encourage others.";
   } else if (isLive && totalCount > 0) {
-    main = `🙏 ${activeCount} praying with you`;
+    main = `${activeCount} praying with you`;
     sub = `${totalCount} ${totalCount === 1 ? "prayer" : "prayers"} offered`;
   } else if (isLive) {
-    main = "🙏 Someone is praying now";
+    main = "Someone is praying now";
     sub = "You’re being prayed for";
   } else if (totalCount > 0) {
-    main = `🙏 ${totalCount} ${totalCount === 1 ? "prayer" : "prayers"} offered`;
+    main = `${totalCount} ${totalCount === 1 ? "prayer" : "prayers"} offered`;
     sub = "People have prayed for this";
   } else {
-    main = "🙏 Your request has been shared";
+    main = "Your request has been shared";
     sub = "People will pray for you soon";
   }
 

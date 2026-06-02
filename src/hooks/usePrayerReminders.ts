@@ -142,7 +142,7 @@ export function usePrayerReminders() {
         { onConflict: "prayer_reminder_id,date_local" }
       );
     if (!error) {
-      toast({ title: "Prayed today ✅", description: "No more reminders for this request today." });
+      toast({ title: "Prayed today", description: "No more reminders for this request today." });
       await fetchLogs(reminders.map((r) => r.id));
     }
   };

@@ -37,10 +37,10 @@ const categoryCollectionHandles: Record<string, string> = {
 };
 
 const shopCategories = [
-  { label: "Apparel", icon: "👕", description: "Faith-inspired clothing" },
-  { label: "Accessories", icon: "🎒", description: "Everyday essentials" },
-  { label: "Wall Art", icon: "🖼️", description: "Scripture for your walls" },
-  { label: "Journals", icon: "📓", description: "Prayer & devotional" },
+  { label: "Apparel", icon: "", description: "Faith-inspired clothing" },
+  { label: "Accessories", icon: "", description: "Everyday essentials" },
+  { label: "Wall Art", icon: "", description: "Scripture for your walls" },
+  { label: "Journals", icon: "", description: "Prayer & devotional" },
 ];
 
 const Store = () => {

@@ -78,7 +78,7 @@ const PrayerCalendar = () => {
       )
     );
     toast({
-      title: "Prayer Marked ✅",
+      title: "Prayer Marked",
       description: "You committed to pray for someone today",
     });
   };
@@ -223,7 +223,7 @@ const PrayerCalendar = () => {
                           </div>
                         )}
                         <div className="flex items-center gap-1">
-                          <span>🔥 {prayer.daysStreak} day streak</span>
+                          <span>{prayer.daysStreak} day streak</span>
                         </div>
                       </div>
 
@@ -250,7 +250,7 @@ const PrayerCalendar = () => {
                       {prayer.prayedToday ? (
                         <Button variant="secondary" disabled className="gap-2">
                           <CheckCircle className="h-4 w-4" />
-                          Prayed Today ✅
+                          Prayed Today
                         </Button>
                       ) : (
                         <Button
