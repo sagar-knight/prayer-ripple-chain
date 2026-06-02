@@ -93,7 +93,7 @@ export function usePrayerReminders() {
       timezone: tz,
     });
     if (!error) {
-      toast({ title: "Reminder enabled 🔔", description: `Daily reminder set for ${time}` });
+      toast({ title: "Reminder enabled", description: `Daily reminder set for ${time}` });
       await fetchReminders();
     }
   };
