@@ -205,7 +205,6 @@ const SharedPrayer = () => {
         <div className="space-y-3 animate-gentle-fade">
           <Button asChild variant="peaceful" size="lg" className="w-full gap-2">
             <Link to="/pray">
-              <Star className="h-5 w-5" />
               Pray Now
             </Link>
           </Button>
