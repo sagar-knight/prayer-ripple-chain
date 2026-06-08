@@ -168,7 +168,7 @@ const PrayerRequestCard = ({
 
         {/* Actions */}
         {actions && (
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-3 pt-2">
             {actions}
           </div>
         )}
