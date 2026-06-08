@@ -175,13 +175,6 @@ const Churches = () => {
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {church.denomination && <Badge variant="secondary" className="text-xs">{church.denomination}</Badge>}
-                      <Badge variant="outline" className="text-xs">
-                        Prayer Wall: {church.privacy === "public" ? "Public" : "Members Only"}
-                      </Badge>
-                    </div>
-
                     <div className="flex gap-3">
                       <Button asChild variant="default" size="sm" className="flex-1">
                         <Link to={`/churches/${church.id}`}>Community Page</Link>
