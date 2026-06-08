@@ -164,15 +164,15 @@ const App = () => (
                 <Route path="/invite/:inviteCode" element={<InviteLanding />} />
                 <Route path="/p/:slug" element={<SharedPrayer />} />
                 <Route path="/join/:slug" element={<CommunityJoin />} />
-                <Route path="/communities/:communityId" element={<CommunityDetail />} />
-                <Route path="/communities/:communityId/wall" element={<CommunityPrayerWall />} />
-                <Route path="/communities/:communityId/submit" element={<CommunitySubmitPrayer />} />
-                <Route path="/communities/:communityId/prayers" element={<CommunityPrayerWall />} />
+                <Route path="/communities/:churchId" element={<CommunityDetail />} />
+                <Route path="/communities/:churchId/wall" element={<CommunityPrayerWall />} />
+                <Route path="/communities/:churchId/submit" element={<CommunitySubmitPrayer />} />
+                <Route path="/communities/:churchId/prayers" element={<CommunityPrayerWall />} />
 
                 {/* Protected routes - require sign-in */}
                 <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
                 <Route path="/communities/register" element={<ProtectedRoute><RegisterCommunity /></ProtectedRoute>} />
-                <Route path="/communities/:communityId/admin" element={<ProtectedRoute><CommunityAdmin /></ProtectedRoute>} />
+                <Route path="/communities/:churchId/admin" element={<ProtectedRoute><CommunityAdmin /></ProtectedRoute>} />
                 <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
                 <Route path="/calendar" element={<ProtectedRoute><PrayerCalendar /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
