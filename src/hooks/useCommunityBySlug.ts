@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Church } from "./useChurch";
+import type { Church } from "./useCommunity";
 
 /** Public community info (safe for unauthenticated contexts) */
 export type PublicChurch = {
