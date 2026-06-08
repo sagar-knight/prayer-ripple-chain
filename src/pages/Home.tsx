@@ -55,22 +55,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Secondary: Church + Family */}
+      {/* Secondary: Communities + Family */}
       <section className="py-12 bg-background">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="border-0 bg-card/70">
             <CardHeader>
               <CardTitle className="font-playfair text-xl flex items-center gap-2">
                 <Church className="h-5 w-5 text-primary" />
-                Bring PrayerForward to your church
+                Bring PrayerForward to your community
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Connect a congregation, share prayer needs, and pray together as a community.
+                Connect your people, share prayer needs, and pray together as a community.
               </p>
               <Button asChild variant="outline" size="sm">
-                <Link to="/churches">Register / Join Church</Link>
+                <Link to="/communities">Register / Join Community</Link>
               </Button>
             </CardContent>
           </Card>
@@ -125,7 +125,7 @@ const Home = () => {
             {[
               { step: 1, title: "Create Your Profile", desc: "Choose to receive or offer prayers — or both. Stay anonymous or share your journey." },
               { step: 2, title: "Submit or Accept", desc: "Post your prayer needs or browse the Prayer Wall to lift others in prayer." },
-              { step: 3, title: "Track Your Ripple", desc: "See how your prayers have traveled — through individuals, churches, and beyond." },
+              { step: 3, title: "Track Your Ripple", desc: "See how your prayers have traveled through individuals, communities, and beyond." },
               { step: 4, title: "Pray It Forward", desc: "After praying, pass the blessing on. The ripple begins with you." },
             ].map((item) => (
               <div key={item.step} className="text-center space-y-4">
@@ -150,7 +150,7 @@ const Home = () => {
             {[
               { icon: HandHeart, title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.", gradient: "bg-gradient-primary text-primary-foreground" },
               { icon: Waves, title: "Ripple Reach Tracker", desc: "Visualize your impact — see how many lives your prayer has touched.", gradient: "bg-gradient-primary text-primary-foreground" },
-              { icon: Church, title: "Church Collaboration", desc: "Connect with churches, submit requests to them, or join their prayer groups.", gradient: "bg-gradient-primary text-primary-foreground" },
+              { icon: Church, title: "Community Prayer", desc: "Connect with communities, submit requests, or join a shared prayer group.", gradient: "bg-gradient-primary text-primary-foreground" },
               { icon: Calendar, title: "Calendar & Reminders", desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks.", gradient: "" },
               { icon: Bell, title: "Smart Notifications", desc: "\"Have you prayed today?\", \"Someone's waiting for your prayer.\"", gradient: "" },
               { icon: BookOpen, title: "Scripture & Encouragement", desc: "Receive curated Bible verses and reflections matched to your prayer needs.", gradient: "" },
