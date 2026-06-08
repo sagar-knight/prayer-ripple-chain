@@ -359,6 +359,10 @@ const RippleImpact = () => {
                     <Globe2 className="h-5 w-5 text-success" />
                     Your prayer is spreading
                   </h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Combined ripple across all {ripple.totalRequests || 0}{" "}
+                    {ripple.totalRequests === 1 ? "request" : "requests"} you've shared.
+                  </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-foreground">
