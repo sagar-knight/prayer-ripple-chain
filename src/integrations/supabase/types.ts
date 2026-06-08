@@ -1797,6 +1797,10 @@ export type Database = {
         Returns: undefined
       }
       auto_archive_stale_prayers: { Args: never; Returns: number }
+      cancel_community_join_request: {
+        Args: { _request_id: string }
+        Returns: undefined
+      }
       generate_prayer_short_code: { Args: never; Returns: string }
       generate_prayer_slug: { Args: { _title: string }; Returns: string }
       get_church_role: {
@@ -1839,6 +1843,7 @@ export type Database = {
         Returns: boolean
       }
       join_family_by_invite: { Args: { _invite_code: string }; Returns: string }
+      leave_community: { Args: { _community_id: string }; Returns: undefined }
       log_public_event: {
         Args: {
           _entity_id?: string
