@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
-import WorldRippleMap, { CountryStat } from "@/components/WorldRippleMap";
+import type { CountryStat } from "@/components/WorldRippleMap";
+import PrayerLocationsMap from "@/components/PrayerLocationsMap";
 import { Loader2 } from "lucide-react";
 
 interface Props {
@@ -59,7 +60,7 @@ const PrayerLocationsSheet = ({ open, onOpenChange, prayerId, sourceType = "glob
             </div>
           ) : (
             <>
-              <WorldRippleMap data={data} metric="participants" originCode={originCountryCode || undefined} />
+              <PrayerLocationsMap data={data} metric="participants" />
               {data.length > 0 ? (
                 <p className="text-sm text-muted-foreground text-center">
                   {totalPeople.toLocaleString()} {totalPeople === 1 ? "person" : "people"} praying
