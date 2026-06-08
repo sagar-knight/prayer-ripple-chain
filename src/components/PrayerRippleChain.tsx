@@ -289,22 +289,16 @@ const RippleList = ({
               {chain.title}
             </p>
 
-            {/* Status badge */}
-            <div className="flex justify-center">
-              <Badge
-                variant="outline"
-                className={
-                  isGrowing
-                    ? "border-primary/30 text-primary bg-primary/5"
-                    : "border-accent/40 text-accent bg-accent/5"
-                }
-              >
-                {isGrowing ? "Growing" : "Completed"}
-              </Badge>
-            </div>
-
-            {/* Visual ripple flow */}
-            <RippleFlow depth={chain.rippleDepth} unique={chain.uniquePeople} />
+            {!isGrowing && (
+              <div className="flex justify-center">
+                <Badge
+                  variant="outline"
+                  className="border-accent/40 text-accent bg-accent/5"
+                >
+                  Completed
+                </Badge>
+              </div>
+            )}
 
             {/* Single main line: people praying */}
             <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
