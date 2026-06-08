@@ -9,7 +9,7 @@ import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import PrayersYouAreCarrying from "@/components/PrayersYouAreCarrying";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 /** Smoothly counts up from 0 to `value` over ~1.2s. */
@@ -202,10 +202,11 @@ const RippleVisualization = ({
 
 const RippleImpact = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
 
   // Fetch the user's OWN prayer requests + ripple metrics on them
-  const { data: myRipple } = useQuery({
+  const { data: myRipple, isLoading: rippleLoading, error: rippleError } = useQuery({
     queryKey: ["my_prayer_ripple", user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -259,6 +260,35 @@ const RippleImpact = () => {
   });
 
   const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0, countryStats: [] as CountryStat[] };
+
+  // Live updates: when prayer actions, counts, or ripple locations change anywhere,
+  // refresh this user's ripple data. Falls back gracefully if realtime is unavailable.
+  useEffect(() => {
+    if (!user) return;
+    const invalidate = () => {
+      queryClient.invalidateQueries({ queryKey: ["my_prayer_ripple", user.id] });
+    };
+    let pollId: ReturnType<typeof setInterval> | null = null;
+    const channel = supabase
+      .channel(`ripple-live-${user.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "prayer_actions" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "global_prayer_requests" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "prayer_coverage" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "prayer_ripple_locations" }, invalidate)
+      .subscribe((status) => {
+        // Fallback to slow polling only if realtime can't connect
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          if (!pollId) pollId = setInterval(invalidate, 30000);
+        } else if (status === "SUBSCRIBED" && pollId) {
+          clearInterval(pollId);
+          pollId = null;
+        }
+      });
+    return () => {
+      if (pollId) clearInterval(pollId);
+      supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
 
   // Build visualization layers from real numbers (cap so it stays calm)
   const layerCounts = [
@@ -383,7 +413,12 @@ const RippleImpact = () => {
               {/* Unified ripple map (compact hero visual) */}
               <div className="relative mx-auto max-w-3xl">
                 <div className="absolute inset-0 -z-10 bg-gradient-primary opacity-20 blur-3xl rounded-full pointer-events-none" />
-                <WorldRippleMap data={ripple.countryStats} metric="prayers" />
+                <WorldRippleMap
+                  data={ripple.countryStats}
+                  metric="prayers"
+                  isLoading={rippleLoading && !myRipple}
+                  error={rippleError as Error | null}
+                />
                 {ripple.countryStats.length > 0 && (
                   <div className="mt-3 flex flex-wrap justify-center gap-2">
                     {ripple.countryStats.map((c) => (
