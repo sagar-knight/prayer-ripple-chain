@@ -15,6 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 const DESCRIPTION_LIMIT = 500;
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 const RegisterChurch = () => {
   const { user } = useAuth();
