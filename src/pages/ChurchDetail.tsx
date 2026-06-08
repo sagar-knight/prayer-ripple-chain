@@ -87,7 +87,7 @@ const ChurchDetail = () => {
           {!isMember && user && (
             <Button onClick={() => joinChurch.mutate(church.id)} disabled={joinChurch.isPending} className="w-full">
               <Users className="h-4 w-4 mr-2" />
-              {joinChurch.isPending ? "Joining..." : "Join Church"}
+              {joinChurch.isPending ? "Joining..." : "Join Community"}
             </Button>
           )}
           {!user && (

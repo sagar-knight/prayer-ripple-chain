@@ -61,7 +61,7 @@ const ChurchAdmin = () => {
   const approved = approvedReqs || [];
   const memberCount = members?.length || 0;
 
-  // Estimate "needing prayer" as approved requests (proxy until we have per-church coverage)
+  // Estimate "needing prayer" as approved requests.
   const needingPrayer = approved.length;
 
   const handleApprove = (requestId: string) => {
@@ -292,7 +292,7 @@ const ChurchAdmin = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Church Invite Tools */}
+        {/* Community Invite Tools */}
         {isAdmin && (
           <div className="mt-8">
             <ChurchInviteTools

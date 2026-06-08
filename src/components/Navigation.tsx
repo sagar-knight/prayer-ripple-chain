@@ -15,7 +15,6 @@ import {
   Users,
   Waves,
   HelpCircle,
-  Church,
   Calendar,
   BookOpen,
   User,

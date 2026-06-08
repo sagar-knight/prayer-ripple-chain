@@ -7,12 +7,12 @@ import {
   BookOpen,
   Users,
   Waves,
-  Church,
   Calendar,
   Bell,
   Star,
   HandHeart,
 } from "lucide-react";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import heroImage from "@/assets/hero-prayer.jpg";
 import DailyVerseCard from "@/components/DailyVerseCard";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
@@ -61,7 +61,7 @@ const Home = () => {
           <Card className="border-0 bg-card/70">
             <CardHeader>
               <CardTitle className="font-playfair text-xl flex items-center gap-2">
-                <Church className="h-5 w-5 text-primary" />
+                <CommunityIcon className="h-5 w-5 text-primary" />
                 Bring PrayerForward to your community
               </CardTitle>
             </CardHeader>
@@ -150,7 +150,7 @@ const Home = () => {
             {[
               { icon: HandHeart, title: "Prayer Wall", desc: "Browse real-time prayer requests. Accept a prayer tile and mark it once you've prayed.", gradient: "bg-gradient-primary text-primary-foreground" },
               { icon: Waves, title: "Ripple Reach Tracker", desc: "Visualize your impact — see how many lives your prayer has touched.", gradient: "bg-gradient-primary text-primary-foreground" },
-              { icon: Church, title: "Community Prayer", desc: "Connect with communities, submit requests, or join a shared prayer group.", gradient: "bg-gradient-primary text-primary-foreground" },
+              { icon: CommunityIcon, title: "Community Prayer", desc: "Connect with communities, submit requests, or join a shared prayer group.", gradient: "bg-gradient-primary text-primary-foreground" },
               { icon: Calendar, title: "Calendar & Reminders", desc: "Track accepted prayers, set daily reminders, and maintain prayer streaks.", gradient: "" },
               { icon: Bell, title: "Smart Notifications", desc: "\"Have you prayed today?\", \"Someone's waiting for your prayer.\"", gradient: "" },
               { icon: BookOpen, title: "Scripture & Encouragement", desc: "Receive curated Bible verses and reflections matched to your prayer needs.", gradient: "" },
