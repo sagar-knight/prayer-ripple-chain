@@ -131,13 +131,13 @@ const Churches = () => {
                     )}
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex gap-3">
-                      <Button asChild variant="default" size="sm" className="flex-1">
-                        <Link to={`/communities/${church.id}`}>Community Page</Link>
+                    <div className="grid grid-cols-2 gap-2 w-full">
+                      <Button asChild variant="default" size="sm" className="w-full min-w-0 px-2 truncate">
+                        <Link to={`/communities/${church.id}`} className="truncate">Community</Link>
                       </Button>
-                      <Button asChild variant="outline" size="sm" className="flex-1">
-                        <Link to={`/communities/${church.id}/wall`}>
-                          <Heart className="h-3 w-3 mr-1" />Prayer Wall
+                      <Button asChild variant="outline" size="sm" className="w-full min-w-0 px-2 truncate">
+                        <Link to={`/communities/${church.id}/wall`} className="truncate">
+                          <Heart className="h-3 w-3 mr-1 shrink-0" />Prayer Wall
                         </Link>
                       </Button>
                     </div>
