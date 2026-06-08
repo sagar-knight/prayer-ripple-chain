@@ -143,7 +143,7 @@ const PrayersYouAreCarrying = () => {
               </div>
             );
             return p.slug ? (
-              <Link key={p.prayerId} to={`/ripple/${p.slug}`} className="block">
+              <Link key={p.prayerId} to={`/p/${p.slug}`} className="block">
                 {inner}
               </Link>
             ) : (
