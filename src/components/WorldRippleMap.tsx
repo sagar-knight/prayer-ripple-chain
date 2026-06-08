@@ -44,9 +44,12 @@ interface Props {
   data: CountryStat[];
   metric?: "prayers" | "forwards" | "participants";
   originCode?: string | null;
+  isLoading?: boolean;
+  error?: Error | null;
+  emptyMessage?: string;
 }
 
-const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) => {
+const WorldRippleMap = ({ data = [], metric = "prayers", originCode, isLoading = false, error = null, emptyMessage }: Props) => {
   const [hover, setHover] = useState<CountryStat | null>(null);
   const [selected, setSelected] = useState<CountryStat | null>(null);
 
@@ -124,6 +127,21 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
       `}</style>
 
       <div className="rounded-xl overflow-hidden bg-[#15376b] border border-border/60 relative">
+        {isLoading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#15376b]/70 backdrop-blur-sm pointer-events-none">
+            <div className="flex items-center gap-2 text-xs text-white/90 bg-[#15376b]/80 px-3 py-1.5 rounded-full border border-white/20">
+              <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
+              Loading prayer map...
+            </div>
+          </div>
+        )}
+        {error && !isLoading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#15376b]/80 backdrop-blur-sm pointer-events-none px-4">
+            <p className="text-xs text-white/90 text-center max-w-xs">
+              We couldn't load the live map right now. It will reconnect on its own.
+            </p>
+          </div>
+        )}
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
@@ -217,10 +235,10 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
             );
           })}
         </ComposableMap>
-        {points.length === 0 && (
+        {points.length === 0 && !isLoading && !error && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
             <p className="text-xs text-foreground/80 bg-[#15376b]/90 px-3 py-1.5 rounded-full border border-border/50">
-              As prayers spread across more places, lights will appear on the map.
+              {emptyMessage ?? "As prayers spread across more places, lights will appear on the map."}
             </p>
           </div>
         )}
