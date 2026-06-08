@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { getPendingChurchJoin, clearPendingChurchJoin } from "@/pages/ChurchJoin";
+import { getPendingChurchJoin, clearPendingChurchJoin } from "@/pages/CommunityJoin";
 import { supabase } from "@/integrations/supabase/client";
 
 /**

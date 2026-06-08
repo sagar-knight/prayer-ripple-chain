@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Send } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useChurch, useChurchMembership, useSubmitChurchPrayer } from "@/hooks/useChurch";
+import { useChurch, useChurchMembership, useSubmitChurchPrayer } from "@/hooks/useCommunity";
 import { useContentModeration } from "@/hooks/useContentModeration";
 import { churchPrayerSchema } from "@/lib/validation";
 

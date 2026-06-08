@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Globe, Phone, Mail, Shield, Users, Heart } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
-import { useChurch, useChurchMembership, useChurchMembers, useJoinChurch } from "@/hooks/useChurch";
+import { useChurch, useChurchMembership, useChurchMembers, useJoinChurch } from "@/hooks/useCommunity";
 
 const ChurchDetail = () => {
   const { churchId } = useParams<{ churchId: string }>();

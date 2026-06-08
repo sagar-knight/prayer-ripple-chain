@@ -9,12 +9,12 @@ import {
   ArrowLeft, Shield, CheckCircle, XCircle, Clock, Users,
   Heart, TrendingUp, BarChart3, AlertCircle,
 } from "lucide-react";
-import ChurchInviteTools from "@/components/ChurchInviteTools";
+import ChurchInviteTools from "@/components/CommunityInviteTools";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useChurch, useChurchMembership, useChurchMembers,
   useChurchPrayerRequests, useModerateRequest, useSubmitChurchPrayer,
-} from "@/hooks/useChurch";
+} from "@/hooks/useCommunity";
 import { format, subDays, isAfter } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 

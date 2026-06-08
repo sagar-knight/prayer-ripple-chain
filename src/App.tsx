@@ -57,7 +57,7 @@ const AdminDocumentation = lazy(() => import("./pages/admin/AdminDocumentation")
 const AdminUnitTesting = lazy(() => import("./pages/admin/AdminUnitTesting"));
 const AdminGlobalReach = lazy(() => import("./pages/admin/AdminGlobalReach"));
 import { useCartSync } from "./hooks/useCartSync";
-import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
+import { useAutoJoinChurch } from "./hooks/useAutoJoinCommunity";
 
 // Store pages (lazy)
 const StoreAbout = lazy(() => import("./pages/store/StoreAbout"));
