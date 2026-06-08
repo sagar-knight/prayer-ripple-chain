@@ -7,7 +7,7 @@ const navItems = [
   { to: "/admin/moderation", icon: Shield, label: "Moderation" },
   { to: "/admin/global-reach", icon: Globe, label: "Global Reach" },
   { to: "/admin/users", icon: Users, label: "Users" },
-  { to: "/admin/churches", icon: Church, label: "Churches" },
+  { to: "/admin/communities", icon: Church, label: "Communities" },
   { to: "/admin/reports", icon: Flag, label: "Reports" },
   { to: "/admin/automation", icon: Cog, label: "Automation" },
   { to: "/admin/audit", icon: ScrollText, label: "Audit Log" },

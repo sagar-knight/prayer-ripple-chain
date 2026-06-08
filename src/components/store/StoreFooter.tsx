@@ -97,7 +97,7 @@ const StoreFooter = () => {
               <Link to="/" className="block hover:text-background transition-colors">
                 ← Back to PrayerForward
               </Link>
-              <Link to="/churches" className="block hover:text-background transition-colors">
+              <Link to="/communities" className="block hover:text-background transition-colors">
                 Find a Church
               </Link>
               <Link to="/support" className="block hover:text-background transition-colors">

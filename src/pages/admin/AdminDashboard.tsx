@@ -46,7 +46,7 @@ const AdminDashboard = () => {
     { label: "Pending Review", value: stats.pendingModeration, icon: Shield, color: "text-yellow-600", link: "/admin/moderation" },
     { label: "Flagged Content", value: stats.flaggedContent, icon: AlertTriangle, color: "text-orange-600", link: "/admin/moderation" },
     { label: "Reports", value: stats.reportedContent, icon: Flag, color: "text-red-600", link: "/admin/reports" },
-    { label: "Churches", value: stats.pendingChurches, icon: Church, color: "text-blue-600", link: "/admin/churches" },
+    { label: "Communities", value: stats.pendingChurches, icon: Church, color: "text-blue-600", link: "/admin/communities" },
     { label: "Auto-Approved Today", value: stats.autoApprovedToday, icon: CheckCircle, color: "text-green-600", link: "/admin/moderation" },
     { label: "Auto-Denied Today", value: stats.autoDeniedToday, icon: XCircle, color: "text-red-500", link: "/admin/moderation" },
   ];
