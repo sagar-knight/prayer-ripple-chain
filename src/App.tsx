@@ -82,22 +82,6 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   useCartSync();
   useAutoJoinChurch();
-
-  // If a Supabase password-recovery link lands on any route other than
-  // /reset-password (e.g. the published Site URL fallback `/`), redirect
-  // to /reset-password while preserving the hash so the recovery token
-  // can be exchanged and the user is prompted to set a new password
-  // instead of being silently signed in.
-  if (typeof window !== "undefined") {
-    const hash = window.location.hash || "";
-    const isRecovery =
-      hash.includes("type=recovery") ||
-      new URLSearchParams(window.location.search).get("type") === "recovery";
-    if (isRecovery && window.location.pathname !== "/reset-password") {
-      window.location.replace(`/reset-password${window.location.search}${hash}`);
-    }
-  }
-
   return null;
 };
 

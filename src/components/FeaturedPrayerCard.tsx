@@ -174,10 +174,8 @@ const FeaturedPrayerCard = () => {
                 onClick={handlePray}
                 disabled={praying}
               >
-                {praying ? (
+                {praying && (
                   <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                ) : (
-                  <Star className="h-5 w-5 mr-2" />
                 )}
                 Pray Now
               </Button>
