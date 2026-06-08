@@ -147,6 +147,9 @@ export function usePrayerService() {
       show_country?: boolean;
       country?: string;
     }) => {
+      if (!user?.id) {
+        throw new Error("You must be signed in to submit a prayer request.");
+      }
       const c = await getCurrentUserCountry(user?.id);
       const { error } = await (supabase.from as any)("global_prayer_requests").insert({
         title: data.title,
@@ -157,7 +160,7 @@ export function usePrayerService() {
         country: data.country ?? null,
         origin_country_code: c.code,
         origin_country_name: c.name,
-        created_by: user?.id ?? "anonymous",
+        created_by: user.id,
         visibility: "public",
         status: "open",
       });

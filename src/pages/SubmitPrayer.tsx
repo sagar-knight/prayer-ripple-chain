@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +20,13 @@ import { prayerRequestSchema } from "@/lib/validation";
 
 const SubmitPrayer = () => {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth?redirect=/submit-prayer", { replace: true });
+    }
+  }, [authLoading, user, navigate]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -31,6 +40,16 @@ const SubmitPrayer = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to share a prayer request.",
+        variant: "destructive",
+      });
+      navigate("/auth?redirect=/submit-prayer");
+      return;
+    }
 
     // Validate input
     const parsed = prayerRequestSchema.safeParse({
