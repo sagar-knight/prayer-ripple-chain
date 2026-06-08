@@ -65,6 +65,48 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
   );
   const radius = scaleSqrt().domain([0, max]).range([4, 22]);
 
+  // Map ISO-2 country codes from data → metric value, used to highlight regions.
+  const valueByCode = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const d of data || []) {
+      const v = Number((d as any)[metric] || 0);
+      if (d.country_code) m[d.country_code.toUpperCase()] = v;
+    }
+    return m;
+  }, [data, metric]);
+
+  const nameByCode = useMemo(() => {
+    const m: Record<string, string> = {};
+    for (const d of data || []) {
+      if (d.country_code) m[d.country_code.toUpperCase()] = d.country;
+    }
+    return m;
+  }, [data]);
+
+  // World-atlas topojson uses numeric ISO-3166-1 ids — map to ISO-2 for lookup.
+  const NUM_TO_ISO2: Record<string, string> = {
+    "004":"AF","008":"AL","012":"DZ","032":"AR","036":"AU","040":"AT","050":"BD","056":"BE","068":"BO","076":"BR",
+    "100":"BG","124":"CA","152":"CL","156":"CN","158":"TW","170":"CO","188":"CR","191":"HR","196":"CY","203":"CZ",
+    "208":"DK","214":"DO","218":"EC","222":"SV","231":"ET","233":"EE","246":"FI","250":"FR","268":"GE","276":"DE",
+    "288":"GH","300":"GR","320":"GT","328":"GY","332":"HT","340":"HN","344":"HK","348":"HU","352":"IS","356":"IN",
+    "360":"ID","364":"IR","368":"IQ","372":"IE","376":"IL","380":"IT","388":"JM","392":"JP","398":"KZ","400":"JO",
+    "404":"KE","410":"KR","414":"KW","417":"KG","418":"LA","422":"LB","428":"LV","434":"LY","440":"LT","442":"LU",
+    "450":"MG","454":"MW","458":"MY","466":"ML","478":"MR","484":"MX","504":"MA","508":"MZ","512":"OM","516":"NA",
+    "524":"NP","528":"NL","554":"NZ","558":"NI","562":"NE","566":"NG","578":"NO","586":"PK","591":"PA","598":"PG",
+    "600":"PY","604":"PE","608":"PH","616":"PL","620":"PT","624":"GW","630":"PR","634":"QA","642":"RO","643":"RU",
+    "646":"RW","682":"SA","686":"SN","688":"RS","694":"SL","702":"SG","703":"SK","704":"VN","705":"SI","706":"SO",
+    "710":"ZA","716":"ZW","724":"ES","728":"SS","729":"SD","736":"SD","748":"SZ","752":"SE","756":"CH","760":"SY",
+    "762":"TJ","764":"TH","768":"TG","780":"TT","788":"TN","792":"TR","795":"TM","800":"UG","804":"UA","818":"EG",
+    "826":"GB","834":"TZ","840":"US","854":"BF","858":"UY","860":"UZ","862":"VE","887":"YE","894":"ZM",
+  };
+
+  const getGeoIso2 = (geo: any): string | null => {
+    const id = geo?.id != null ? String(geo.id).padStart(3, "0") : null;
+    if (id && NUM_TO_ISO2[id]) return NUM_TO_ISO2[id];
+    const p = geo?.properties || {};
+    return (p.iso_a2 || p.ISO_A2 || p.ISO_A2_EH || null);
+  };
+
   return (
     <div className="relative">
       <style>{`
@@ -92,20 +134,45 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
             {({ geographies }) =>
               geographies
                 .filter((geo) => geo.properties?.name !== "Antarctica")
-                .map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill="#3d5878"
-                    stroke="#6a8cb0"
-                    strokeWidth={0.6}
-                    style={{
-                      default: { outline: "none", transition: "fill 0.2s ease" },
-                      hover:   { outline: "none", fill: "#5b7fa8", cursor: "pointer" },
-                      pressed: { outline: "none", fill: "#5b7fa8" },
-                    }}
-                  />
-                ))
+                .map((geo) => {
+                  const iso2 = getGeoIso2(geo);
+                  const value = iso2 ? (valueByCode[iso2] || 0) : 0;
+                  const isOrigin = !!(originCode && iso2 === originCode.toUpperCase());
+                  const hasData = value > 0;
+                  const fill = isOrigin
+                    ? "#f59e0b"
+                    : hasData
+                      ? "#7aa7d8"
+                      : "#3d5878";
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={fill}
+                      stroke="#6a8cb0"
+                      strokeWidth={hasData ? 0.9 : 0.6}
+                      onMouseEnter={() => {
+                        if (!iso2) return;
+                        const country = nameByCode[iso2] || geo.properties?.name || iso2;
+                        if (hasData) {
+                          setHover({
+                            country_code: iso2,
+                            country,
+                            prayers: metric === "prayers" ? value : undefined,
+                            forwards: metric === "forwards" ? value : undefined,
+                            participants: metric === "participants" ? value : undefined,
+                          });
+                        }
+                      }}
+                      onMouseLeave={() => setHover(null)}
+                      style={{
+                        default: { outline: "none", transition: "fill 0.2s ease" },
+                        hover:   { outline: "none", fill: hasData ? "#a8c8e8" : "#5b7fa8", cursor: hasData ? "pointer" : "default" },
+                        pressed: { outline: "none", fill: "#5b7fa8" },
+                      }}
+                    />
+                  );
+                })
             }
           </Geographies>
 
@@ -150,20 +217,38 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
 
       {hover && (
         <div className="absolute top-2 right-2 bg-background/95 border border-border rounded-md px-3 py-1.5 text-xs shadow-md pointer-events-none">
-          <p className="font-medium">
-            {(hover.prayers ?? 0).toLocaleString()} {hover.prayers === 1 ? "prayer" : "prayers"} from {hover.country}
-          </p>
+          {(() => {
+            const v = Number((hover as any)[metric] || 0);
+            const noun = metric === "forwards"
+              ? (v === 1 ? "share" : "shares")
+              : metric === "participants"
+                ? (v === 1 ? "person praying" : "people praying")
+                : (v === 1 ? "prayer" : "prayers");
+            return (
+              <p className="font-medium">
+                {v.toLocaleString()} {noun} from {hover.country}
+              </p>
+            );
+          })()}
         </div>
       )}
 
       {selected && (
         <div className="mt-3 rounded-lg border border-border bg-card p-3 text-sm flex items-center justify-between">
-          <p>
-            <span className="font-medium">{(selected.prayers ?? 0).toLocaleString()}</span>{" "}
-            <span className="text-muted-foreground">
-              {selected.prayers === 1 ? "prayer" : "prayers"} from {selected.country}
-            </span>
-          </p>
+          {(() => {
+            const v = Number((selected as any)[metric] || 0);
+            const noun = metric === "forwards"
+              ? (v === 1 ? "share" : "shares")
+              : metric === "participants"
+                ? (v === 1 ? "person praying" : "people praying")
+                : (v === 1 ? "prayer" : "prayers");
+            return (
+              <p>
+                <span className="font-medium">{v.toLocaleString()}</span>{" "}
+                <span className="text-muted-foreground">{noun} from {selected.country}</span>
+              </p>
+            );
+          })()}
           <button
             type="button"
             onClick={() => setSelected(null)}
