@@ -30,6 +30,11 @@ const Settings = () => {
     prayerAccepted: true,
     prayerAnswered: true,
     streakReminder: true,
+    friendRequests: true,
+    praiseReports: true,
+    sharedPrayers: true,
+    taggedPrayers: true,
+    communityInvite: true,
   });
 
   const handleNotificationChange = (key: keyof typeof notifications) => {
@@ -61,8 +66,13 @@ const Settings = () => {
           <CardContent className="space-y-4">
             {[
               { key: "dailyReminder" as const, label: "Daily Prayer Reminder", desc: '"Did you pray today?" notification' },
+            { key: "friendRequests" as const, label: "Friend Requests", desc: "You have received a friend request" },
               { key: "prayerAccepted" as const, label: "Prayer Accepted", desc: "When someone starts praying for your request" },
               { key: "prayerAnswered" as const, label: "Prayer Answered", desc: "When a prayer request is marked as answered" },
+            { key: "praiseReports" as const, label: "Praise Reports", desc: "A prayer that you are praying for has a new praise report" },
+            { key: "sharedPrayers" as const, label: "Shared Prayers", desc: "A friend shares a prayer with you" },
+            { key: "taggedPrayers" as const, label: "Tagged Prayers", desc: "Someone has tagged you in a prayer request" },
+            { key: "communityInvite" as const, label: "Community Invite", desc: "A friend has invited you to join a community" },
               { key: "streakReminder" as const, label: "Streak Reminder", desc: '"You missed yesterday\'s prayer" alert' },
             ].map((item) => (
               <div key={item.key} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
