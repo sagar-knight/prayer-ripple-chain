@@ -417,6 +417,11 @@ const RippleImpact = () => {
           <PrayerRippleChain />
         </section>
 
+        {/* ============ SECTION B — Prayers you're carrying for others ============ */}
+        <section className="space-y-6">
+          <PrayersYouAreCarrying />
+        </section>
+
 
         {/* Share reflection */}
         <Card className="card-glass border-0 animate-gentle-fade">
