@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Church, ArrowLeft } from "lucide-react";
+import { Heart, ArrowLeft } from "lucide-react";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useChurch, useChurchPrayerRequests, useChurchMembership } from "@/hooks/useChurch";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
@@ -29,10 +30,10 @@ const ChurchPrayerWall = () => {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12">
         <div className="max-w-2xl mx-auto px-4 text-center">
-          <Church className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <CommunityIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h2 className="font-playfair text-xl font-bold mb-2">Members Only</h2>
-          <p className="text-muted-foreground mb-4">This prayer wall is only visible to church members.</p>
-          <Button asChild><Link to={`/churches/${churchId}`}>View Church Page</Link></Button>
+          <p className="text-muted-foreground mb-4">This prayer wall is only visible to community members.</p>
+          <Button asChild><Link to={`/communities/${churchId}`}>View Community Page</Link></Button>
         </div>
       </div>
     );
@@ -43,7 +44,7 @@ const ChurchPrayerWall = () => {
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <Button asChild variant="ghost" size="sm">
-            <Link to={`/churches/${churchId}`}><ArrowLeft className="h-4 w-4 mr-1" />Back to Church</Link>
+            <Link to={`/communities/${churchId}`}><ArrowLeft className="h-4 w-4 mr-1" />Back to Community</Link>
           </Button>
         </div>
 
@@ -56,7 +57,7 @@ const ChurchPrayerWall = () => {
         {isMember && (
           <div className="text-center mb-8">
             <Button asChild size="sm" variant="peaceful">
-              <Link to={`/churches/${churchId}/submit`}>Share a Prayer Request</Link>
+              <Link to={`/communities/${churchId}/submit`}>Share a Prayer Request</Link>
             </Button>
           </div>
         )}
@@ -81,7 +82,7 @@ const ChurchPrayerWall = () => {
                 reportEntityType="church_prayer"
                 subtitle={
                   <span className="text-xs text-muted-foreground">
-                    {req.anonymous ? "Anonymous" : "A church member"} · {format(new Date(req.created_at), "MMM d, yyyy")}
+                    {req.anonymous ? "Anonymous" : "A community member"} · {format(new Date(req.created_at), "MMM d, yyyy")}
                   </span>
                 }
               />

@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Church, Upload, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreateChurch } from "@/hooks/useChurch";
 import { Link } from "react-router-dom";
@@ -98,14 +99,14 @@ const RegisterChurch = () => {
       privacy: form.privacy,
       logo_url,
     });
-    navigate(`/churches/${result.id}`);
+    navigate(`/communities/${result.id}`);
   };
 
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12">
         <div className="max-w-lg mx-auto px-4 text-center">
-          <Church className="h-12 w-12 text-primary mx-auto mb-4" />
+          <CommunityIcon className="h-12 w-12 text-primary mx-auto mb-4" />
           <h1 className="font-playfair text-2xl font-bold text-foreground mb-4">Sign in to register your community</h1>
           <Button asChild variant="default">
             <Link to="/login">Sign In</Link>
@@ -119,7 +120,7 @@ const RegisterChurch = () => {
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-2xl mx-auto px-4">
         <div className="text-center mb-8">
-          <Church className="h-12 w-12 text-primary mx-auto mb-4" />
+          <CommunityIcon className="h-12 w-12 text-primary mx-auto mb-4" />
           <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">Register Your Community</h1>
           <p className="text-muted-foreground">Create a community profile and prayer space on PrayerForward.</p>
         </div>
@@ -137,7 +138,7 @@ const RegisterChurch = () => {
                     {logoPreview ? (
                       <img src={logoPreview} alt="Logo preview" className="h-full w-full object-cover" />
                     ) : (
-                      <Church className="h-8 w-8 text-muted-foreground" />
+                      <CommunityIcon className="h-8 w-8 text-muted-foreground" />
                     )}
                   </div>
                   <div className="flex-1 space-y-2">
