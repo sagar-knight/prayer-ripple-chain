@@ -24,7 +24,7 @@ const AppFooter = () => {
             <ul className="space-y-2 text-sm text-background/70">
               <li><Link to="/pray" className="hover:text-background transition-colors flex items-center gap-1.5"><Users className="h-3.5 w-3.5" />Pray</Link></li>
               <li><Link to="/submit-prayer" className="hover:text-background transition-colors flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5" />Request Prayer</Link></li>
-              <li><Link to="/churches" className="hover:text-background transition-colors flex items-center gap-1.5"><Church className="h-3.5 w-3.5" />Churches</Link></li>
+              <li><Link to="/churches" className="hover:text-background transition-colors flex items-center gap-1.5"><Church className="h-3.5 w-3.5" />Communities</Link></li>
               <li><Link to="/ripple" className="hover:text-background transition-colors flex items-center gap-1.5"><Waves className="h-3.5 w-3.5" />Ripple Impact</Link></li>
             </ul>
           </div>
