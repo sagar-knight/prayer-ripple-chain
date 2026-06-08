@@ -49,10 +49,10 @@ const Churches = () => {
       <div className="page-container-wide section-gap">
         {/* Header */}
         <div className="page-header">
-          <Church className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h1 className="page-title">Church Communities</h1>
+          <Users className="h-12 w-12 text-primary mx-auto mb-4" />
+          <h1 className="page-title">Communities</h1>
           <p className="page-subtitle">
-            Connect with churches and their prayer communities
+            Connect with communities to pray together
           </p>
         </div>
 
@@ -63,15 +63,15 @@ const Churches = () => {
             className="w-full h-14 text-base tracking-wide font-semibold"
             onClick={() => setShowBrowse((v) => !v)}
           >
-            {showBrowse ? "HIDE CHURCH LIST" : "JOIN A CHURCH"}
+            {showBrowse ? "HIDE COMMUNITY LIST" : "JOIN A COMMUNITY"}
           </Button>
           {user ? (
             <Button asChild size="lg" variant="secondary" className="w-full h-14 text-base tracking-wide font-semibold">
-              <Link to="/churches/register">REGISTER A NEW CHURCH</Link>
+              <Link to="/churches/register">CREATE A NEW COMMUNITY</Link>
             </Button>
           ) : (
             <Button asChild size="lg" variant="secondary" className="w-full h-14 text-base tracking-wide font-semibold">
-              <Link to="/login">SIGN IN TO REGISTER</Link>
+              <Link to="/login">SIGN IN TO CREATE</Link>
             </Button>
           )}
         </div>
@@ -96,7 +96,7 @@ const Churches = () => {
                   <CardContent className="space-y-4">
                     <div className="flex gap-3">
                       <Button asChild variant="default" size="sm" className="flex-1">
-                        <Link to={`/churches/${church.id}`}>Church Page</Link>
+                        <Link to={`/churches/${church.id}`}>Community Page</Link>
                       </Button>
                       <Button asChild variant="outline" size="sm" className="flex-1">
                         <Link to={`/churches/${church.id}/wall`}>
@@ -111,13 +111,13 @@ const Churches = () => {
           </div>
         )}
 
-        {/* Empty state (no joined churches) */}
+        {/* Empty state (no joined communities) */}
         {!showBrowse && (!user || (!loadingMine && (myChurches?.length ?? 0) === 0)) && (
           <div className="text-center py-12 animate-gentle-fade">
             <Users className="h-14 w-14 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No churches yet</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-2">No communities yet</h3>
             <p className="text-muted-foreground max-w-sm mx-auto">
-              Join a church to pray together or register one to get started.
+              Join a community to pray together or create one to get started.
             </p>
           </div>
         )}
@@ -130,7 +130,7 @@ const Churches = () => {
                 <div className="relative max-w-md mx-auto">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search by name, location, or denomination..."
+                    placeholder="Search by name or location..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -140,7 +140,7 @@ const Churches = () => {
             </Card>
 
             {isLoading && (
-              <p className="text-center text-muted-foreground py-12">Loading churches...</p>
+              <p className="text-center text-muted-foreground py-12">Loading communities...</p>
             )}
 
             {!isLoading && filteredChurches.length > 0 ? (
@@ -184,7 +184,7 @@ const Churches = () => {
 
                     <div className="flex gap-3">
                       <Button asChild variant="default" size="sm" className="flex-1">
-                        <Link to={`/churches/${church.id}`}>Church Page</Link>
+                        <Link to={`/churches/${church.id}`}>Community Page</Link>
                       </Button>
                       <Button asChild variant="outline" size="sm" className="flex-1">
                         <Link to={`/churches/${church.id}/wall`}>
@@ -200,10 +200,10 @@ const Churches = () => {
         ) : !isLoading ? (
           <Card className="text-center py-12 animate-gentle-fade">
             <CardContent>
-              <Church className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">No churches found</h3>
+              <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">No communities found</h3>
               <p className="text-muted-foreground">
-                {searchTerm ? "Try adjusting your search." : "Be the first to register your church!"}
+                {searchTerm ? "Try adjusting your search." : "Be the first to create a community!"}
               </p>
             </CardContent>
           </Card>
