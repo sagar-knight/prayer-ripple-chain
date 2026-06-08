@@ -1,6 +1,6 @@
 import * as React from "react";
 
-// Custom church icon with a slightly larger cross on top
+// Custom community icon with a prominent cross on top
 export const CommunityIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
   ({ className, ...props }, ref) => (
     <svg

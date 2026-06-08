@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Church, MapPin, Heart, Search, Shield, Plus, Users } from "lucide-react";
+import { MapPin, Heart, Search, Shield, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurches } from "@/hooks/useChurch";
@@ -67,7 +67,7 @@ const Churches = () => {
           </Button>
           {user ? (
             <Button asChild size="lg" variant="secondary" className="w-full h-14 text-base tracking-wide font-semibold">
-              <Link to="/churches/register">CREATE A NEW COMMUNITY</Link>
+              <Link to="/communities/register">CREATE A NEW COMMUNITY</Link>
             </Button>
           ) : (
             <Button asChild size="lg" variant="secondary" className="w-full h-14 text-base tracking-wide font-semibold">
@@ -96,10 +96,10 @@ const Churches = () => {
                   <CardContent className="space-y-4">
                     <div className="flex gap-3">
                       <Button asChild variant="default" size="sm" className="flex-1">
-                        <Link to={`/churches/${church.id}`}>Community Page</Link>
+                        <Link to={`/communities/${church.id}`}>Community Page</Link>
                       </Button>
                       <Button asChild variant="outline" size="sm" className="flex-1">
-                        <Link to={`/churches/${church.id}/wall`}>
+                        <Link to={`/communities/${church.id}/wall`}>
                           <Heart className="h-3 w-3 mr-1" />Prayer Wall
                         </Link>
                       </Button>
@@ -177,10 +177,10 @@ const Churches = () => {
                   <CardContent className="space-y-4">
                     <div className="flex gap-3">
                       <Button asChild variant="default" size="sm" className="flex-1">
-                        <Link to={`/churches/${church.id}`}>Community Page</Link>
+                        <Link to={`/communities/${church.id}`}>Community Page</Link>
                       </Button>
                       <Button asChild variant="outline" size="sm" className="flex-1">
-                        <Link to={`/churches/${church.id}/wall`}>
+                        <Link to={`/communities/${church.id}/wall`}>
                           <Heart className="h-3 w-3 mr-1" />Prayer Wall
                         </Link>
                       </Button>

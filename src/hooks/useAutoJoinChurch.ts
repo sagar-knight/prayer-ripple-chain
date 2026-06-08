@@ -5,7 +5,7 @@ import { getPendingChurchJoin, clearPendingChurchJoin } from "@/pages/ChurchJoin
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Checks on auth state change if there's a pending church join.
+ * Checks on auth state change if there's a pending community join.
  * If so, auto-joins and redirects.
  */
 export function useAutoJoinChurch() {
@@ -49,7 +49,7 @@ export function useAutoJoinChurch() {
         }
 
         clearPendingChurchJoin();
-        navigate(`/churches/${pending.churchId}/wall`);
+        navigate(`/communities/${pending.churchId}/wall`);
       } catch {
         clearPendingChurchJoin();
       }

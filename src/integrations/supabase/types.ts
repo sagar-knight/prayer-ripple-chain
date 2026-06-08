@@ -1772,6 +1772,10 @@ export type Database = {
         Args: { _church_id: string; _user_id: string }
         Returns: boolean
       }
+      is_community_wall_public: {
+        Args: { _church_id: string }
+        Returns: boolean
+      }
       is_family_member: {
         Args: { _family_group_id: string; _user_id: string }
         Returns: boolean

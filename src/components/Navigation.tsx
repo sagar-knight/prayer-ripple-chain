@@ -15,7 +15,6 @@ import {
   Users,
   Waves,
   HelpCircle,
-  Church,
   Calendar,
   BookOpen,
   User,
@@ -59,7 +58,7 @@ const Navigation = () => {
     { href: "/pray", label: "Pray", icon: Users },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/churches", label: "Communities", icon: CommunityIcon },
+    { href: "/communities", label: "Communities", icon: CommunityIcon },
   ];
 
   // "More" dropdown items

@@ -8,6 +8,7 @@ export interface Church {
   id: string;
   name: string;
   slug: string | null;
+  description: string | null;
   denomination: string | null;
   city: string | null;
   state: string | null;
@@ -59,7 +60,7 @@ export function useChurches() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      // churches_public excludes contact_email/phone/address/website by design
+      // communities_public view excludes private contact fields by design
       return (data || []) as unknown as Church[];
     },
   });
@@ -161,7 +162,7 @@ export function useCreateChurch() {
       const baseSlug = slugify(church.name);
       const slug = baseSlug + "-" + Math.random().toString(36).slice(2, 8);
 
-      // Create church
+      // Create community profile
       const { data: churchData, error: churchError } = await supabase
         .from("churches")
         .insert({
@@ -173,7 +174,7 @@ export function useCreateChurch() {
         .single();
       if (churchError) throw churchError;
 
-      // Add creator as admin
+      // Add creator as community admin
       const { error: memberError } = await supabase
         .from("church_memberships")
         .insert({
@@ -188,7 +189,7 @@ export function useCreateChurch() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["churches"] });
-      toast({ title: "Church registered", description: "Your church has been created successfully." });
+      toast({ title: "Community registered", description: "Your community has been created successfully." });
     },
     onError: (err: any) => {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -214,7 +215,7 @@ export function useJoinChurch() {
     onSuccess: (_, churchId) => {
       queryClient.invalidateQueries({ queryKey: ["church-membership", churchId] });
       queryClient.invalidateQueries({ queryKey: ["church-members", churchId] });
-      toast({ title: "Joined!", description: "You are now a member of this church." });
+      toast({ title: "Joined", description: "You are now a member of this community." });
     },
     onError: (err: any) => {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -244,7 +245,7 @@ export function useSubmitChurchPrayer() {
     },
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["church-prayer-requests", vars.church_id] });
-      toast({ title: "Request submitted", description: "Your prayer request was sent to the church admin for approval." });
+      toast({ title: "Request submitted", description: "Your prayer request was sent to a community admin for approval." });
     },
     onError: (err: any) => {
       toast({ title: "Error", description: err.message, variant: "destructive" });

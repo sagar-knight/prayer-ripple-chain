@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Church, MapPin, Users, Heart, Shield, CheckCircle } from "lucide-react";
+import { MapPin, Users, Heart, Shield, CheckCircle } from "lucide-react";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurchBySlug } from "@/hooks/useChurchBySlug";
 import { useChurchMembership, useJoinChurch } from "@/hooks/useChurch";
@@ -62,7 +63,7 @@ const ChurchJoin = () => {
 
     // Already a member
     if (membership) {
-      navigate(`/churches/${church.id}/wall`);
+      navigate(`/communities/${church.id}/wall`);
       return;
     }
 
@@ -77,7 +78,7 @@ const ChurchJoin = () => {
       actor_user_id: user.id,
     });
 
-    navigate(`/churches/${church.id}/wall`);
+    navigate(`/communities/${church.id}/wall`);
   };
 
   if (isLoading) {
@@ -85,7 +86,7 @@ const ChurchJoin = () => {
       <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center">
         <div className="text-center space-y-3">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-muted-foreground">Loading church...</p>
+          <p className="text-sm text-muted-foreground">Loading community...</p>
         </div>
       </div>
     );
@@ -95,11 +96,11 @@ const ChurchJoin = () => {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12">
         <div className="max-w-lg mx-auto px-4 text-center">
-          <Church className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h1 className="font-playfair text-2xl font-bold text-foreground mb-2">Church not found</h1>
-          <p className="text-muted-foreground mb-6">This join link may be invalid or the church is no longer active.</p>
+          <CommunityIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h1 className="font-playfair text-2xl font-bold text-foreground mb-2">Community not found</h1>
+          <p className="text-muted-foreground mb-6">This join link may be invalid or the community is no longer active.</p>
           <Button asChild variant="outline">
-            <Link to="/churches">Browse Churches</Link>
+            <Link to="/communities">Browse Communities</Link>
           </Button>
         </div>
       </div>
@@ -118,7 +119,7 @@ const ChurchJoin = () => {
             <img src={church.logo_url} alt={church.name} className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-2 border-primary/20" />
           ) : (
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Church className="h-10 w-10 text-primary" />
+              <CommunityIcon className="h-10 w-10 text-primary" />
             </div>
           )}
           <h1 className="font-playfair text-2xl sm:text-3xl font-bold text-foreground mb-2">
@@ -146,7 +147,7 @@ const ChurchJoin = () => {
           <CardContent className="pt-6 text-center space-y-4">
             <Heart className="h-8 w-8 text-primary mx-auto" />
             <h2 className="font-playfair text-xl font-semibold text-foreground">
-              Join your church in prayer
+              Join your community in prayer
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Pray together, support one another, and grow in faith as a community. 
@@ -163,12 +164,12 @@ const ChurchJoin = () => {
                 <CardContent className="pt-4 pb-4 flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-foreground">You are already a member of this church.</p>
+                    <p className="text-sm font-medium text-foreground">You are already a member of this community.</p>
                     <p className="text-xs text-muted-foreground">Role: {membership?.role}</p>
                   </div>
                 </CardContent>
               </Card>
-              <Button onClick={() => navigate(`/churches/${church.id}/wall`)} className="w-full" size="lg">
+              <Button onClick={() => navigate(`/communities/${church.id}/wall`)} className="w-full" size="lg">
                 <Heart className="h-4 w-4 mr-2" />Go to Prayer Wall
               </Button>
             </>
@@ -181,7 +182,7 @@ const ChurchJoin = () => {
                 size="lg"
               >
                 <Users className="h-4 w-4 mr-2" />
-                {joinChurch.isPending ? "Joining..." : "Join Church Prayer"}
+                {joinChurch.isPending ? "Joining..." : "Join Community Prayer"}
               </Button>
               {!user && (
                 <p className="text-center text-xs text-muted-foreground">
@@ -197,7 +198,7 @@ const ChurchJoin = () => {
             className="w-full"
             size="sm"
           >
-            <Link to={`/churches/${church.id}`}>View church details</Link>
+            <Link to={`/communities/${church.id}`}>View community details</Link>
           </Button>
         </div>
       </div>

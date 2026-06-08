@@ -33,8 +33,8 @@ const ChurchSubmitPrayer = () => {
       <div className="min-h-screen bg-gradient-peaceful py-12">
         <div className="max-w-lg mx-auto px-4 text-center">
           <h2 className="font-playfair text-xl font-bold mb-2">Members Only</h2>
-          <p className="text-muted-foreground mb-4">You must be a member to submit prayer requests.</p>
-          <Button asChild><Link to={`/churches/${churchId}`}>Back to Church</Link></Button>
+          <p className="text-muted-foreground mb-4">You must be a community member to submit prayer requests.</p>
+          <Button asChild><Link to={`/communities/${churchId}`}>Back to Community</Link></Button>
         </div>
       </div>
     );
@@ -51,8 +51,8 @@ const ChurchSubmitPrayer = () => {
 
     const modResult = await moderate(
       `${parsed.data.title} ${parsed.data.description}`,
-      "church prayer request",
-      "submit_church_prayer"
+      "community prayer request",
+      "submit_community_prayer"
     );
     if (!modResult.allowed) return;
 
@@ -63,7 +63,7 @@ const ChurchSubmitPrayer = () => {
       category: parsed.data.category.toLowerCase(),
       anonymous: parsed.data.anonymous,
     });
-    navigate(`/churches/${churchId}`);
+    navigate(`/communities/${churchId}`);
   };
 
   return (
@@ -71,14 +71,14 @@ const ChurchSubmitPrayer = () => {
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <Button asChild variant="ghost" size="sm">
-            <Link to={`/churches/${churchId}`}><ArrowLeft className="h-4 w-4 mr-1" />Back to Church</Link>
+            <Link to={`/communities/${churchId}`}><ArrowLeft className="h-4 w-4 mr-1" />Back to Community</Link>
           </Button>
         </div>
 
         <div className="text-center mb-8">
           <Send className="h-10 w-10 text-primary mx-auto mb-3" />
           <h1 className="font-playfair text-2xl font-bold text-foreground mb-1">Submit Prayer Request</h1>
-          <p className="text-muted-foreground text-sm">{church?.name || "Church"}</p>
+          <p className="text-muted-foreground text-sm">{church?.name || "Community"}</p>
         </div>
 
         <Card>
@@ -108,10 +108,10 @@ const ChurchSubmitPrayer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="anonymous" checked={anonymous} onCheckedChange={(c) => setAnonymous(!!c)} />
-                <Label htmlFor="anonymous" className="text-sm text-muted-foreground">Submit anonymously within the church</Label>
+                <Label htmlFor="anonymous" className="text-sm text-muted-foreground">Submit anonymously within the community</Label>
               </div>
               <p className="text-xs text-muted-foreground">
-                Your request will be reviewed by a church admin before appearing on the Prayer Wall.
+                Your request will be reviewed by a community admin before appearing on the Prayer Wall.
               </p>
               <Button type="submit" className="w-full" disabled={submitPrayer.isPending || checking || !title || !description}>
                 {submitPrayer.isPending ? "Submitting..." : "Submit for Review"}

@@ -2,7 +2,8 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Church, MapPin, Globe, Phone, Mail, Shield, Users, Heart } from "lucide-react";
+import { MapPin, Globe, Phone, Mail, Shield, Users, Heart } from "lucide-react";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurch, useChurchMembership, useChurchMembers, useJoinChurch } from "@/hooks/useChurch";
 
@@ -26,9 +27,9 @@ const ChurchDetail = () => {
     return (
       <div className="min-h-screen bg-gradient-peaceful py-12">
         <div className="max-w-2xl mx-auto px-4 text-center">
-          <Church className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h1 className="font-playfair text-2xl font-bold text-foreground mb-2">Church not found</h1>
-          <Button asChild variant="outline"><Link to="/churches">Back to Churches</Link></Button>
+          <CommunityIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h1 className="font-playfair text-2xl font-bold text-foreground mb-2">Community not found</h1>
+          <Button asChild variant="outline"><Link to="/communities">Back to Communities</Link></Button>
         </div>
       </div>
     );
@@ -44,7 +45,7 @@ const ChurchDetail = () => {
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <Church className="h-12 w-12 text-primary mx-auto mb-4" />
+          <CommunityIcon className="h-12 w-12 text-primary mx-auto mb-4" />
           <h1 className="font-playfair text-3xl font-bold text-foreground mb-2">{church.name}</h1>
           <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
             <MapPin className="h-4 w-4" />
@@ -86,7 +87,7 @@ const ChurchDetail = () => {
           {!isMember && user && (
             <Button onClick={() => joinChurch.mutate(church.id)} disabled={joinChurch.isPending} className="w-full">
               <Users className="h-4 w-4 mr-2" />
-              {joinChurch.isPending ? "Joining..." : "Join Church"}
+              {joinChurch.isPending ? "Joining..." : "Join Community"}
             </Button>
           )}
           {!user && (
@@ -96,14 +97,14 @@ const ChurchDetail = () => {
           )}
 
           <Button asChild variant="outline" className="w-full">
-            <Link to={`/churches/${church.id}/wall`}>
+              <Link to={`/communities/${church.id}/wall`}>
               <Heart className="h-4 w-4 mr-2" />Prayer Wall
             </Link>
           </Button>
 
           {isMember && (
             <Button asChild variant="outline" className="w-full">
-              <Link to={`/churches/${church.id}/submit`}>
+              <Link to={`/communities/${church.id}/submit`}>
                 Submit Prayer Request
               </Link>
             </Button>
@@ -111,7 +112,7 @@ const ChurchDetail = () => {
 
           {(isAdmin || isMod) && (
             <Button asChild variant="outline" className="w-full">
-              <Link to={`/churches/${church.id}/admin`}>
+              <Link to={`/communities/${church.id}/admin`}>
                 <Shield className="h-4 w-4 mr-2" />Admin Dashboard
               </Link>
             </Button>
@@ -120,7 +121,7 @@ const ChurchDetail = () => {
 
         {isMember && (
           <p className="text-center text-sm text-muted-foreground">
-            You are a {membership?.role} of this church.
+            You are a {membership?.role} of this community.
           </p>
         )}
       </div>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Church } from "./useChurch";
 
-/** Public church info (safe for unauthenticated contexts) */
+/** Public community info (safe for unauthenticated contexts) */
 export type PublicChurch = {
   id: string;
   name: string | null;
@@ -19,7 +19,7 @@ export type PublicChurch = {
 };
 
 /**
- * Fetch church by slug. Uses churches_public view (safe for anon)
+ * Fetch community by slug. Uses churches_public view (safe for anon)
  * so unauthenticated visitors on join pages can see basic info.
  */
 export function useChurchBySlug(slug: string) {
@@ -32,7 +32,7 @@ export function useChurchBySlug(slug: string) {
         .eq("slug", slug)
         .maybeSingle();
       if (error) throw error;
-      if (!data) throw new Error("Church not found");
+      if (!data) throw new Error("Community not found");
       return data as PublicChurch;
     },
     enabled: !!slug,

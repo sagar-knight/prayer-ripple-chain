@@ -19,11 +19,11 @@ const ChurchInviteTools = ({ churchId, churchSlug, churchName, userId }: ChurchI
 
   const joinUrl = churchSlug
     ? `${window.location.origin}/join/${churchSlug}`
-    : `${window.location.origin}/churches/${churchId}`;
+    : `${window.location.origin}/communities/${churchId}`;
 
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(joinUrl);
-    toast({ title: "Link copied!", description: "Share it with your church community." });
+    toast({ title: "Link copied", description: "Share it with your community." });
   }, [joinUrl]);
 
   const handleDownloadQR = useCallback(async () => {
@@ -48,7 +48,7 @@ const ChurchInviteTools = ({ churchId, churchSlug, churchName, userId }: ChurchI
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, size, size);
 
-      // Add church name below
+      // Add community name below
       ctx.fillStyle = "#1a1a1a";
       ctx.font = "bold 18px sans-serif";
       ctx.textAlign = "center";
@@ -75,7 +75,7 @@ const ChurchInviteTools = ({ churchId, churchSlug, churchName, userId }: ChurchI
       actor_user_id: userId || null,
     });
 
-    toast({ title: "QR Code downloaded", description: "Print it for your bulletins or slides." });
+    toast({ title: "QR Code downloaded", description: "Share it anywhere your community gathers." });
   }, [churchId, churchName, userId]);
 
   return (
@@ -83,16 +83,16 @@ const ChurchInviteTools = ({ churchId, churchSlug, churchName, userId }: ChurchI
       <CardHeader className="pb-3">
         <CardTitle className="font-playfair text-lg flex items-center gap-2">
           <QrCode className="h-5 w-5 text-primary" />
-          Church Invite Tools
+          Community Invite Tools
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Share this link or QR code with your church so members can join instantly.
+          Share this link or QR code so members can join instantly.
         </p>
       </CardHeader>
       <CardContent className="space-y-5">
         {/* Join link */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Church Join Link</label>
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Community Join Link</label>
           <div className="flex gap-2">
             <Input value={joinUrl} readOnly className="text-sm bg-muted/50" />
             <Button variant="outline" size="sm" onClick={handleCopy}>

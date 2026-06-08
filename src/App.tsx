@@ -155,7 +155,8 @@ const App = () => (
                 <Route path="/store/order-tracking" element={<StoreOrderTracking />} />
                 <Route path="/store/orders" element={<StoreOrders />} />
 
-                <Route path="/churches" element={<Churches />} />
+                <Route path="/communities" element={<Churches />} />
+                <Route path="/churches" element={<Navigate to="/communities" replace />} />
 
                 {/* Public routes - accessible to all visitors */}
                 <Route path="/scripture" element={<Scripture />} />
@@ -164,6 +165,10 @@ const App = () => (
                 <Route path="/invite/:inviteCode" element={<InviteLanding />} />
                 <Route path="/p/:slug" element={<SharedPrayer />} />
                 <Route path="/join/:slug" element={<ChurchJoin />} />
+                <Route path="/communities/:churchId" element={<ChurchDetail />} />
+                <Route path="/communities/:churchId/wall" element={<ChurchPrayerWall />} />
+                <Route path="/communities/:churchId/submit" element={<ChurchSubmitPrayer />} />
+                <Route path="/communities/:churchId/prayers" element={<ChurchPrayerWall />} />
                 <Route path="/churches/:churchId" element={<ChurchDetail />} />
                 <Route path="/churches/:churchId/wall" element={<ChurchPrayerWall />} />
                 <Route path="/churches/:churchId/submit" element={<ChurchSubmitPrayer />} />
@@ -171,7 +176,9 @@ const App = () => (
 
                 {/* Protected routes - require sign-in */}
                 <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
-                <Route path="/churches/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
+                <Route path="/communities/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
+                <Route path="/communities/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
+                <Route path="/churches/register" element={<Navigate to="/communities/register" replace />} />
                 <Route path="/churches/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
                 <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
                 <Route path="/calendar" element={<ProtectedRoute><PrayerCalendar /></ProtectedRoute>} />
