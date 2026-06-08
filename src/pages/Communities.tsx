@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Heart, Search, Shield, Users, Clock, Check } from "lucide-react";
+import { MapPin, Heart, Search, Shield, Users, Clock, Check, Plus, Settings } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurches } from "@/hooks/useCommunity";
@@ -181,84 +181,99 @@ const Churches = () => {
             )}
 
             {!isLoading && filteredChurches.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChurches.map((church, index) => {
+          <Card className="overflow-hidden divide-y divide-border animate-gentle-fade">
+            {filteredChurches.map((church) => {
               const location = [church.city, church.state, church.country].filter(Boolean).join(", ");
               const role = myMembershipsMap?.[church.id];
               const isMember = !!role;
               const isAdmin = role === "admin" || role === "moderator";
               const isOwner = !!user && (church as any).created_by === user.id;
               const isPending = myPendingRequests?.has(church.id) ?? false;
-              return (
-                <Card
-                  key={church.id}
-                  className="group animate-gentle-fade"
-                  style={{ animationDelay: `${index * 80}ms` }}
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="font-playfair text-lg group-hover:text-primary transition-colors">
-                        {church.name}
-                      </CardTitle>
-                      <div className="flex gap-1 shrink-0">
-                        {church.verified && (
-                          <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                            <Shield className="h-3 w-3 mr-0.5" />Verified
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    {location && (
-                      <div className="flex items-center text-muted-foreground text-sm">
-                        <MapPin className="h-4 w-4 mr-1 shrink-0" />
-                        {location}
-                      </div>
-                    )}
-                    {(church as any).description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
-                        {(church as any).description}
-                      </p>
-                    )}
-                  </CardHeader>
+              const logo = (church as any).logo_url as string | null | undefined;
+              const description = (church as any).description as string | null | undefined;
 
-                  <CardContent className="space-y-4">
-                    <div className="flex gap-2">
-                      <Button asChild variant="outline" size="sm" className="flex-1">
-                        <Link to={`/communities/${church.id}`}>View</Link>
-                      </Button>
-                      {isOwner || isAdmin ? (
-                        <Button asChild size="sm" className="flex-1">
-                          <Link to={`/communities/${church.id}/admin`}>
-                            <Shield className="h-3 w-3 mr-1" />Manage
-                          </Link>
-                        </Button>
-                      ) : isMember ? (
-                        <Button size="sm" className="flex-1" variant="secondary" disabled>
-                          <Check className="h-3 w-3 mr-1" />Member
-                        </Button>
-                      ) : isPending ? (
-                        <Button size="sm" className="flex-1" variant="secondary" disabled>
-                          <Clock className="h-3 w-3 mr-1" />Pending
-                        </Button>
-                      ) : !user ? (
-                        <Button size="sm" className="flex-1" onClick={() => navigate("/login")}>
-                          Request to Join
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          className="flex-1"
-                          onClick={() => setRequestTarget({ id: church.id, name: church.name })}
-                        >
-                          Request to Join
-                        </Button>
+              const handleAction = () => {
+                if (isOwner || isAdmin) {
+                  navigate(`/communities/${church.id}/admin`);
+                } else if (!user) {
+                  navigate("/login");
+                } else if (!isMember && !isPending) {
+                  setRequestTarget({ id: church.id, name: church.name });
+                }
+              };
+
+              const actionDisabled = isMember || isPending;
+              const ActionIcon = isOwner || isAdmin
+                ? Settings
+                : isMember
+                ? Check
+                : isPending
+                ? Clock
+                : Plus;
+              const actionLabel = isOwner || isAdmin
+                ? "Manage community"
+                : isMember
+                ? "You are a member"
+                : isPending
+                ? "Request pending"
+                : "Request to join";
+
+              return (
+                <div key={church.id} className="flex items-stretch gap-3 p-3 sm:p-4 hover:bg-muted/30 transition-colors">
+                  {/* Thumbnail */}
+                  <Link
+                    to={`/communities/${church.id}`}
+                    className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-muted flex items-center justify-center"
+                  >
+                    {logo ? (
+                      <img src={logo} alt={church.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Users className="h-8 w-8 text-muted-foreground" />
+                    )}
+                  </Link>
+
+                  {/* Body */}
+                  <Link
+                    to={`/communities/${church.id}`}
+                    className="flex-1 min-w-0 flex flex-col justify-center"
+                  >
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-playfair text-base sm:text-lg font-semibold text-foreground truncate">
+                        {church.name}
+                      </h3>
+                      {church.verified && (
+                        <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] py-0 px-1.5">
+                          <Shield className="h-2.5 w-2.5 mr-0.5" />Verified
+                        </Badge>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
+                    {location && (
+                      <p className="text-xs sm:text-sm text-foreground/80 mt-0.5 flex items-center gap-1 truncate">
+                        <MapPin className="h-3 w-3 shrink-0" />{location}
+                      </p>
+                    )}
+                    {description && (
+                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mt-1">
+                        {description}
+                      </p>
+                    )}
+                  </Link>
+
+                  {/* Action */}
+                  <button
+                    type="button"
+                    aria-label={actionLabel}
+                    title={actionLabel}
+                    onClick={handleAction}
+                    disabled={actionDisabled}
+                    className="shrink-0 self-stretch w-12 sm:w-14 rounded-lg bg-muted hover:bg-muted-foreground/20 text-foreground flex items-center justify-center transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <ActionIcon className="h-5 w-5" strokeWidth={2.5} />
+                  </button>
+                </div>
               );
             })}
-          </div>
+          </Card>
         ) : !isLoading ? (
           <Card className="text-center py-12 animate-gentle-fade">
             <CardContent>
