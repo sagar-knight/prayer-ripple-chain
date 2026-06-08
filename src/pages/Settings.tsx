@@ -7,7 +7,6 @@ import { Bell, Globe, Languages, Shield, Settings as SettingsIcon } from "lucide
 import { Link } from "react-router-dom";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryByCode } from "@/data/countries";
-import CommitmentLevelSelector from "@/components/CommitmentLevelSelector";
 import { useUserCountry } from "@/hooks/useUserCountry";
 import LanguageSelect from "@/components/LanguageSelect";
 import { useUserLanguage } from "@/hooks/useUserLanguage";
@@ -79,9 +78,6 @@ const Settings = () => {
             ))}
           </CardContent>
         </Card>
-
-        {/* Commitment Level */}
-        <CommitmentLevelSelector />
 
         {/* Location & Timezone */}
         <Card className="animate-gentle-fade">
