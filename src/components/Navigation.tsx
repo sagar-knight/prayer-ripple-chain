@@ -31,6 +31,7 @@ import { useAdminRole } from "@/hooks/useAdminRole";
 import { useTestAccount } from "@/hooks/useTestAccount";
 import { useUserPrayerCount } from "@/hooks/useUserPrayerCount";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
 import UserNotificationBell from "@/components/UserNotificationBell";
