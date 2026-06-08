@@ -219,14 +219,11 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
         <div className="absolute top-2 right-2 bg-background/95 border border-border rounded-md px-3 py-1.5 text-xs shadow-md pointer-events-none">
           {(() => {
             const v = Number((hover as any)[metric] || 0);
-            const label = metric === "forwards"
+            const noun = metric === "forwards"
               ? (v === 1 ? "share" : "shares")
               : metric === "participants"
-                ? (v === 1 ? person => person : "")
+                ? (v === 1 ? "person praying" : "people praying")
                 : (v === 1 ? "prayer" : "prayers");
-            const noun = metric === "participants"
-              ? (v === 1 ? "person praying" : "people praying")
-              : label;
             return (
               <p className="font-medium">
                 {v.toLocaleString()} {noun} from {hover.country}
