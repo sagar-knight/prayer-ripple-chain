@@ -1404,6 +1404,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          city: string | null
           commitment_level: string
           country_code: string | null
           country_name: string | null
@@ -1418,11 +1419,13 @@ export type Database = {
           last_login_country_name: string | null
           preferred_language_code: string | null
           preferred_language_name: string | null
+          state: string | null
           test_role_label: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
+          city?: string | null
           commitment_level?: string
           country_code?: string | null
           country_name?: string | null
@@ -1437,11 +1440,13 @@ export type Database = {
           last_login_country_name?: string | null
           preferred_language_code?: string | null
           preferred_language_name?: string | null
+          state?: string | null
           test_role_label?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
+          city?: string | null
           commitment_level?: string
           country_code?: string | null
           country_name?: string | null
@@ -1456,6 +1461,7 @@ export type Database = {
           last_login_country_name?: string | null
           preferred_language_code?: string | null
           preferred_language_name?: string | null
+          state?: string | null
           test_role_label?: string | null
           updated_at?: string
         }
