@@ -9,7 +9,6 @@ import {
   Waves,
   Calendar,
   Bell,
-  Star,
   HandHeart,
 } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
