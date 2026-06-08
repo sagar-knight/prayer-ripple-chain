@@ -1,11 +1,18 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Globe, Phone, Mail, Shield, Users, Heart } from "lucide-react";
+import { MapPin, Globe, Phone, Mail, Shield, Users, Heart, Clock } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
-import { useChurch, useChurchMembership, useChurchMembers, useJoinChurch } from "@/hooks/useCommunity";
+import {
+  useChurch,
+  useChurchMembership,
+  useChurchMembers,
+  useMyCommunityJoinRequest,
+} from "@/hooks/useCommunity";
+import RequestJoinCommunityDialog from "@/components/RequestJoinCommunityDialog";
 
 const ChurchDetail = () => {
   const { churchId } = useParams<{ churchId: string }>();
@@ -13,7 +20,8 @@ const ChurchDetail = () => {
   const { data: church, isLoading } = useChurch(churchId || "");
   const { data: membership } = useChurchMembership(churchId || "");
   const { data: members } = useChurchMembers(churchId || "");
-  const joinChurch = useJoinChurch();
+  const { data: joinRequest } = useMyCommunityJoinRequest(churchId || "");
+  const [requestOpen, setRequestOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -38,6 +46,8 @@ const ChurchDetail = () => {
   const isAdmin = membership?.role === "admin";
   const isMod = membership?.role === "moderator";
   const isMember = !!membership;
+  const isOwner = !!user && church.created_by === user.id;
+  const hasPendingRequest = joinRequest?.status === "pending";
   const location = [church.city, church.state, church.country].filter(Boolean).join(", ");
 
   return (
@@ -84,15 +94,20 @@ const ChurchDetail = () => {
 
         {/* Action buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          {!isMember && user && (
-            <Button onClick={() => joinChurch.mutate(church.id)} disabled={joinChurch.isPending} className="w-full">
-              <Users className="h-4 w-4 mr-2" />
-              {joinChurch.isPending ? "Joining..." : "Join Community"}
-            </Button>
+          {!isMember && !isOwner && user && (
+            hasPendingRequest ? (
+              <Button disabled className="w-full" variant="secondary">
+                <Clock className="h-4 w-4 mr-2" />Request Pending
+              </Button>
+            ) : (
+              <Button onClick={() => setRequestOpen(true)} className="w-full">
+                <Users className="h-4 w-4 mr-2" />Request to Join
+              </Button>
+            )
           )}
           {!user && (
             <Button asChild>
-              <Link to="/login"><Users className="h-4 w-4 mr-2" />Sign in to Join</Link>
+              <Link to="/login"><Users className="h-4 w-4 mr-2" />Sign in to Request</Link>
             </Button>
           )}
 
@@ -110,7 +125,7 @@ const ChurchDetail = () => {
             </Button>
           )}
 
-          {(isAdmin || isMod) && (
+          {(isAdmin || isMod || isOwner) && (
             <Button asChild variant="outline" className="w-full">
               <Link to={`/communities/${church.id}/admin`}>
                 <Shield className="h-4 w-4 mr-2" />Admin Dashboard
@@ -124,6 +139,13 @@ const ChurchDetail = () => {
             You are a {membership?.role} of this community.
           </p>
         )}
+
+        <RequestJoinCommunityDialog
+          open={requestOpen}
+          onOpenChange={setRequestOpen}
+          communityId={church.id}
+          communityName={church.name}
+        />
       </div>
     </div>
   );
