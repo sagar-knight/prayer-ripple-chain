@@ -15,6 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 const DESCRIPTION_LIMIT = 500;
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 const RegisterChurch = () => {
   const { user } = useAuth();
@@ -46,12 +48,14 @@ const RegisterChurch = () => {
   const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast({ title: "Invalid file", description: "Please upload an image.", variant: "destructive" });
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      toast({ title: "Invalid file type", description: "Please upload a PNG, JPG, WebP, or GIF image.", variant: "destructive" });
+      e.target.value = "";
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE) {
       toast({ title: "File too large", description: "Image must be under 2MB.", variant: "destructive" });
+      e.target.value = "";
       return;
     }
     setLogoFile(file);
@@ -142,7 +146,7 @@ const RegisterChurch = () => {
                         <label className="cursor-pointer">
                           <Upload className="h-4 w-4 mr-2" />
                           {logoFile ? "Replace" : "Upload Image"}
-                          <input type="file" accept="image/*" className="hidden" onChange={handleLogoSelect} />
+                          <input type="file" accept="image/png, image/jpeg, image/webp, image/gif" className="hidden" onChange={handleLogoSelect} />
                         </label>
                       </Button>
                       {logoFile && (
@@ -151,7 +155,7 @@ const RegisterChurch = () => {
                         </Button>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">PNG or JPG, up to 2MB. Square images work best.</p>
+                    <p className="text-xs text-muted-foreground">PNG, JPG, WebP, or GIF — up to 2MB. Square images work best.</p>
                   </div>
                 </div>
               </div>
