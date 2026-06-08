@@ -13,6 +13,7 @@ import ScriptureEncouragement from "./ScriptureEncouragement";
 import PrayerReminderToggle from "./PrayerReminderToggle";
 import PrayerRequestCard from "./PrayerRequestCard";
 import PrayerLocationsSheet from "./PrayerLocationsSheet";
+import PrayerLocationPrompt from "./PrayerLocationPrompt";
 import { usePrayerReminders } from "@/hooks/usePrayerReminders";
 
 interface PrayerRequest {
@@ -47,6 +48,7 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
   const [showShare, setShowShare] = useState(false);
   const [showImpact, setShowImpact] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
   const [livePrayerCount, setLivePrayerCount] = useState(request.prayerCount);
   const [passForwardComplete, setPassForwardComplete] = useState(false);
   const [encouragementMessage, setEncouragementMessage] = useState("");
@@ -77,6 +79,9 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
       } else if (!onPrayerOffered) {
         setShowPassForward(true);
       }
+      // Optional, non-blocking: invite the user to share an approximate
+      // location. Prayer is already counted regardless of outcome.
+      setShowLocationPrompt(true);
     }, 2000);
   };
 
@@ -201,9 +206,11 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         size="lg"
         className="gap-2 w-full sm:w-auto"
         onClick={() => setShowLocations(true)}
+        aria-label="Prayer locations"
+        title="Prayer locations"
       >
         <MapIcon className="h-4 w-4" />
-        Where people are praying
+        Prayer locations
       </Button>
 
       <Button
@@ -280,7 +287,14 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
       <PrayerLocationsSheet
         open={showLocations}
         onOpenChange={setShowLocations}
-        prayerId={request.id}
+        prayerRequestId={request.id}
+        sourceType={request.churchName ? "church" : "global"}
+      />
+
+      <PrayerLocationPrompt
+        open={showLocationPrompt}
+        onOpenChange={setShowLocationPrompt}
+        prayerRequestId={request.id}
         sourceType={request.churchName ? "church" : "global"}
       />
     </>
