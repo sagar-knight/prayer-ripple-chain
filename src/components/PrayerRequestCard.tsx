@@ -60,6 +60,7 @@ const PrayerRequestCard = ({
     sourceLang: string | null;
     targetLang: string;
   } | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   const showingTranslation = !!translation;
   const displayedDescription =
@@ -68,15 +69,16 @@ const PrayerRequestCard = ({
     translation?.sourceLang
       ? getLanguageByCode(translation.sourceLang)?.name || translation.sourceLang
       : null;
+  const isLong = (displayedDescription?.length ?? 0) > 220;
 
   const prayerMessage =
     prayerCount === undefined
       ? null
         : prayerCount === 0
-        ? "Be the first to pray"
+        ? "🙏 Be the first to pray"
         : prayerCount === 1
-          ? "1 person is praying with you"
-          : `${prayerCount} people are praying with you`;
+          ? "🙏 1 Person Praying"
+          : `🙏 ${prayerCount.toLocaleString()} People Praying`;
 
   return (
     <motion.div
@@ -111,10 +113,26 @@ const PrayerRequestCard = ({
           </div>
         )}
 
-        {/* Prayer text */}
-        <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
-          {displayedDescription}
-        </p>
+        {/* Prayer text — clamp to ~4 lines, with Read More */}
+        <div className="text-center">
+          <p
+            className={cn(
+              "text-base sm:text-lg text-foreground leading-relaxed font-serif",
+              !expanded && isLong && "line-clamp-4",
+            )}
+          >
+            {displayedDescription}
+          </p>
+          {isLong && (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              className="mt-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {expanded ? "Show less" : "Read more"}
+            </button>
+          )}
+        </div>
 
         {/* Translation badge */}
         {showingTranslation && (
@@ -145,11 +163,10 @@ const PrayerRequestCard = ({
           </div>
         )}
 
-        {/* Prayer count encouragement */}
+        {/* Prayer count + reach (social proof) */}
         {prayerMessage && (
-          <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
-            <Heart className="h-3.5 w-3.5 text-primary/60" />
-            <span>{prayerMessage}</span>
+          <div className="text-center">
+            <p className="text-sm font-medium text-foreground">{prayerMessage}</p>
           </div>
         )}
 
