@@ -24,7 +24,7 @@ const storeNavLinks = [
 const appNavLinks = [
   { label: "Home", href: "/", icon: Home },
   { label: "Pray", href: "/pray", icon: Heart, protected: true },
-  { label: "Churches", href: "/churches", icon: Church },
+  { label: "Communities", href: "/communities", icon: Church },
   { label: "Calendar", href: "/calendar", icon: Calendar, protected: true },
   { label: "Family", href: "/family", icon: Users, protected: true },
   { label: "Scripture", href: "/scripture", icon: BookOpen, protected: true },

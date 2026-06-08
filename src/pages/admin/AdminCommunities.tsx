@@ -19,7 +19,7 @@ interface ChurchRow {
   slug: string | null;
 }
 
-const AdminChurches = () => {
+const AdminCommunities = () => {
   const { user } = useAuth();
   const [churches, setChurches] = useState<ChurchRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,4 +113,4 @@ const AdminChurches = () => {
   );
 };
 
-export default AdminChurches;
+export default AdminCommunities;

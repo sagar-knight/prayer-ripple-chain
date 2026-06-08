@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, ArrowLeft } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
-import { useChurch, useChurchPrayerRequests, useChurchMembership } from "@/hooks/useChurch";
+import { useChurch, useChurchPrayerRequests, useChurchMembership } from "@/hooks/useCommunity";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import PrayerRequestCard from "@/components/PrayerRequestCard";

@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { getPendingChurchJoin, clearPendingChurchJoin } from "@/pages/ChurchJoin";
+import { getPendingChurchJoin, clearPendingChurchJoin } from "@/pages/CommunityJoin";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Checks on auth state change if there's a pending community join.
  * If so, auto-joins and redirects.
  */
-export function useAutoJoinChurch() {
+export function useAutoJoinCommunity() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const processed = useRef(false);

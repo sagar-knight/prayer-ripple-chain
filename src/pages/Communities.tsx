@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Heart, Search, Shield, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useChurches } from "@/hooks/useChurch";
+import { useChurches } from "@/hooks/useCommunity";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 

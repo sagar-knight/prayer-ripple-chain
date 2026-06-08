@@ -104,7 +104,7 @@ const AdminNotificationBell = () => {
         id: `church-${c.id}`,
         type: "church",
         message: `New church registered: ${c.name}`,
-        link: "/admin/churches",
+        link: "/admin/communities",
         created_at: c.created_at,
       });
     });

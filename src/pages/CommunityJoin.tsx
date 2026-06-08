@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Heart, Shield, CheckCircle } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
-import { useChurchBySlug } from "@/hooks/useChurchBySlug";
-import { useChurchMembership, useJoinChurch } from "@/hooks/useChurch";
+import { useChurchBySlug } from "@/hooks/useCommunityBySlug";
+import { useChurchMembership, useJoinChurch } from "@/hooks/useCommunity";
 import { supabase } from "@/integrations/supabase/client";
 
 const PENDING_JOIN_KEY = "pf_pending_church_join";

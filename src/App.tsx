@@ -14,12 +14,12 @@ import HomeRouter from "./pages/HomeRouter";
 const SubmitPrayer = lazy(() => import("./pages/SubmitPrayer"));
 const PrayForOthers = lazy(() => import("./pages/PrayForOthers"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Churches = lazy(() => import("./pages/Churches"));
-const ChurchDetail = lazy(() => import("./pages/ChurchDetail"));
-const ChurchPrayerWall = lazy(() => import("./pages/ChurchPrayerWall"));
-const ChurchSubmitPrayer = lazy(() => import("./pages/ChurchSubmitPrayer"));
-const ChurchAdmin = lazy(() => import("./pages/ChurchAdmin"));
-const RegisterChurch = lazy(() => import("./pages/RegisterChurch"));
+const Communities = lazy(() => import("./pages/Communities"));
+const CommunityDetail = lazy(() => import("./pages/CommunityDetail"));
+const CommunityPrayerWall = lazy(() => import("./pages/CommunityPrayerWall"));
+const CommunitySubmitPrayer = lazy(() => import("./pages/CommunitySubmitPrayer"));
+const CommunityAdmin = lazy(() => import("./pages/CommunityAdmin"));
+const RegisterCommunity = lazy(() => import("./pages/RegisterCommunity"));
 const RippleImpact = lazy(() => import("./pages/RippleImpact"));
 const About = lazy(() => import("./pages/About"));
 const PrayerCalendar = lazy(() => import("./pages/PrayerCalendar"));
@@ -40,7 +40,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 const InviteLanding = lazy(() => import("./pages/InviteLanding"));
 const SharedPrayer = lazy(() => import("./pages/SharedPrayer"));
-const ChurchJoin = lazy(() => import("./pages/ChurchJoin"));
+const CommunityJoin = lazy(() => import("./pages/CommunityJoin"));
 const ModerationDashboard = lazy(() => import("./pages/ModerationDashboard"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 import AuthCallback from "./pages/AuthCallback";
@@ -49,7 +49,7 @@ const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminModeration = lazy(() => import("./pages/admin/AdminModeration"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
-const AdminChurches = lazy(() => import("./pages/admin/AdminChurches"));
+const AdminCommunities = lazy(() => import("./pages/admin/AdminCommunities"));
 const AdminReports = lazy(() => import("./pages/admin/AdminReports"));
 const AdminAutomation = lazy(() => import("./pages/admin/AdminAutomation"));
 const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
@@ -57,7 +57,7 @@ const AdminDocumentation = lazy(() => import("./pages/admin/AdminDocumentation")
 const AdminUnitTesting = lazy(() => import("./pages/admin/AdminUnitTesting"));
 const AdminGlobalReach = lazy(() => import("./pages/admin/AdminGlobalReach"));
 import { useCartSync } from "./hooks/useCartSync";
-import { useAutoJoinChurch } from "./hooks/useAutoJoinChurch";
+import { useAutoJoinCommunity } from "./hooks/useAutoJoinCommunity";
 
 // Store pages (lazy)
 const StoreAbout = lazy(() => import("./pages/store/StoreAbout"));
@@ -81,7 +81,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
-  useAutoJoinChurch();
+  useAutoJoinCommunity();
   return null;
 };
 
@@ -155,8 +155,7 @@ const App = () => (
                 <Route path="/store/order-tracking" element={<StoreOrderTracking />} />
                 <Route path="/store/orders" element={<StoreOrders />} />
 
-                <Route path="/communities" element={<Churches />} />
-                <Route path="/churches" element={<Navigate to="/communities" replace />} />
+                <Route path="/communities" element={<Communities />} />
 
                 {/* Public routes - accessible to all visitors */}
                 <Route path="/scripture" element={<Scripture />} />
@@ -164,22 +163,16 @@ const App = () => (
                 <Route path="/pray" element={<PrayForOthers />} />
                 <Route path="/invite/:inviteCode" element={<InviteLanding />} />
                 <Route path="/p/:slug" element={<SharedPrayer />} />
-                <Route path="/join/:slug" element={<ChurchJoin />} />
-                <Route path="/communities/:churchId" element={<ChurchDetail />} />
-                <Route path="/communities/:churchId/wall" element={<ChurchPrayerWall />} />
-                <Route path="/communities/:churchId/submit" element={<ChurchSubmitPrayer />} />
-                <Route path="/communities/:churchId/prayers" element={<ChurchPrayerWall />} />
-                <Route path="/churches/:churchId" element={<ChurchDetail />} />
-                <Route path="/churches/:churchId/wall" element={<ChurchPrayerWall />} />
-                <Route path="/churches/:churchId/submit" element={<ChurchSubmitPrayer />} />
-                <Route path="/churches/:churchId/prayers" element={<ChurchPrayerWall />} />
+                <Route path="/join/:slug" element={<CommunityJoin />} />
+                <Route path="/communities/:churchId" element={<CommunityDetail />} />
+                <Route path="/communities/:churchId/wall" element={<CommunityPrayerWall />} />
+                <Route path="/communities/:churchId/submit" element={<CommunitySubmitPrayer />} />
+                <Route path="/communities/:churchId/prayers" element={<CommunityPrayerWall />} />
 
                 {/* Protected routes - require sign-in */}
                 <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
-                <Route path="/communities/register" element={<ProtectedRoute><RegisterChurch /></ProtectedRoute>} />
-                <Route path="/communities/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
-                <Route path="/churches/register" element={<Navigate to="/communities/register" replace />} />
-                <Route path="/churches/:churchId/admin" element={<ProtectedRoute><ChurchAdmin /></ProtectedRoute>} />
+                <Route path="/communities/register" element={<ProtectedRoute><RegisterCommunity /></ProtectedRoute>} />
+                <Route path="/communities/:churchId/admin" element={<ProtectedRoute><CommunityAdmin /></ProtectedRoute>} />
                 <Route path="/ripple" element={<ProtectedRoute><RippleImpact /></ProtectedRoute>} />
                 <Route path="/calendar" element={<ProtectedRoute><PrayerCalendar /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
@@ -198,7 +191,7 @@ const App = () => (
                   <Route path="moderation" element={<AdminModeration />} />
                   <Route path="global-reach" element={<AdminGlobalReach />} />
                   <Route path="users" element={<AdminUsers />} />
-                  <Route path="churches" element={<AdminChurches />} />
+                  <Route path="communities" element={<AdminCommunities />} />
                   <Route path="reports" element={<AdminReports />} />
                   <Route path="automation" element={<AdminAutomation />} />
                   <Route path="audit" element={<AdminAuditLog />} />

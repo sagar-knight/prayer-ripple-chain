@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload, X } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
-import { useCreateChurch } from "@/hooks/useChurch";
+import { useCreateChurch } from "@/hooks/useCommunity";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
