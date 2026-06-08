@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, CheckCircle, Sprout } from "lucide-react";
+import { CheckCircle, Sprout } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReportButton from "@/components/ReportButton";
 import PrayerTranslateButton from "@/components/PrayerTranslateButton";
