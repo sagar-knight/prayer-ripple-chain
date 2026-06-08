@@ -1701,6 +1701,10 @@ export type Database = {
       get_global_reach_analytics: { Args: { _days?: number }; Returns: Json }
       get_invite_by_code: { Args: { _invite_code: string }; Returns: Json }
       get_prayer_by_slug: { Args: { _slug: string }; Returns: Json }
+      get_prayer_geography: {
+        Args: { _prayer_id: string; _source_type?: string }
+        Returns: Json
+      }
       get_public_ripple_by_slug: { Args: { _slug: string }; Returns: Json }
       has_role: {
         Args: {

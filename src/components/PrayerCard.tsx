@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Clock, MapPin, Send, Star } from "lucide-react";
+import { Heart, Clock, MapPin, Send, Star, Map as MapIcon } from "lucide-react";
 import { Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
@@ -12,6 +12,7 @@ import PrayerImpactDialog from "./PrayerImpactDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
 import PrayerReminderToggle from "./PrayerReminderToggle";
 import PrayerRequestCard from "./PrayerRequestCard";
+import PrayerLocationsSheet from "./PrayerLocationsSheet";
 import { usePrayerReminders } from "@/hooks/usePrayerReminders";
 
 interface PrayerRequest {
@@ -45,6 +46,7 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
   const [showPassForward, setShowPassForward] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [showImpact, setShowImpact] = useState(false);
+  const [showLocations, setShowLocations] = useState(false);
   const [livePrayerCount, setLivePrayerCount] = useState(request.prayerCount);
   const [passForwardComplete, setPassForwardComplete] = useState(false);
   const [encouragementMessage, setEncouragementMessage] = useState("");
@@ -198,6 +200,16 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         variant="outline"
         size="lg"
         className="gap-2 w-full sm:w-auto"
+        onClick={() => setShowLocations(true)}
+      >
+        <MapIcon className="h-4 w-4" />
+        Where people are praying
+      </Button>
+
+      <Button
+        variant="outline"
+        size="lg"
+        className="gap-2 w-full sm:w-auto"
         onClick={() => setShowShare(true)}
       >
         <Share2 className="h-4 w-4" />
@@ -263,6 +275,13 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
           setShowImpact(false);
           setShowShare(true);
         }}
+      />
+
+      <PrayerLocationsSheet
+        open={showLocations}
+        onOpenChange={setShowLocations}
+        prayerId={request.id}
+        sourceType={request.churchName ? "church" : "global"}
       />
     </>
   );
