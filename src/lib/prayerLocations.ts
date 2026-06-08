@@ -67,6 +67,77 @@ export function computeStats(rows: RippleLocationRow[]): RippleStats {
   return { total: rows.length, countries: countries.size, regions: regions.size };
 }
 
+export interface CountryTally {
+  country: string;
+  count: number;
+}
+export interface CityTally {
+  city: string;
+  country: string | null;
+  count: number;
+}
+
+export function topCountries(rows: RippleLocationRow[], limit = 10): CountryTally[] {
+  const map = new Map<string, number>();
+  for (const r of rows) {
+    if (!r.country) continue;
+    map.set(r.country, (map.get(r.country) ?? 0) + 1);
+  }
+  return Array.from(map.entries())
+    .map(([country, count]) => ({ country, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+}
+
+export function topCities(rows: RippleLocationRow[], limit = 6): CityTally[] {
+  const map = new Map<string, { count: number; country: string | null }>();
+  for (const r of rows) {
+    if (!r.city) continue;
+    const key = r.city;
+    const existing = map.get(key);
+    if (existing) existing.count += 1;
+    else map.set(key, { count: 1, country: r.country });
+  }
+  return Array.from(map.entries())
+    .map(([city, v]) => ({ city, country: v.country, count: v.count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+}
+
+/** Best-effort country-name → flag emoji for common countries.
+ *  Falls back to 🌐 when unknown so the UI always renders something. */
+const COUNTRY_FLAGS: Record<string, string> = {
+  "United States": "🇺🇸", USA: "🇺🇸", US: "🇺🇸",
+  India: "🇮🇳", Canada: "🇨🇦",
+  "United Kingdom": "🇬🇧", UK: "🇬🇧",
+  Australia: "🇦🇺", Nigeria: "🇳🇬", Kenya: "🇰🇪",
+  Germany: "🇩🇪", France: "🇫🇷", Brazil: "🇧🇷",
+  Mexico: "🇲🇽", "South Africa": "🇿🇦", Philippines: "🇵🇭",
+  Indonesia: "🇮🇩", Japan: "🇯🇵", China: "🇨🇳", Korea: "🇰🇷",
+  Italy: "🇮🇹", Spain: "🇪🇸", Netherlands: "🇳🇱",
+  Sweden: "🇸🇪", Norway: "🇳🇴", Denmark: "🇩🇰",
+  Ireland: "🇮🇪", "New Zealand": "🇳🇿", Singapore: "🇸🇬",
+  Ghana: "🇬🇭", Uganda: "🇺🇬", Pakistan: "🇵🇰",
+};
+export function flagFor(country: string | null | undefined): string {
+  if (!country) return "🌐";
+  return COUNTRY_FLAGS[country] ?? "🌐";
+}
+
+export async function getShareCount(
+  prayerId: string,
+  sourceType: "global" | "church" | "family" = "global",
+): Promise<number> {
+  const { count, error } = await (supabase as any)
+    .from("prayer_actions")
+    .select("id", { count: "exact", head: true })
+    .eq("prayer_id", prayerId)
+    .eq("source_type", sourceType)
+    .eq("action_type", "shared");
+  if (error) return 0;
+  return count ?? 0;
+}
+
 export function hasLocallySharedLocation(prayerId: string): boolean {
   try {
     return !!localStorage.getItem(LS_KEY(prayerId));
