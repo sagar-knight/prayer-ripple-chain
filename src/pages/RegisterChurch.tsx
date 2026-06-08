@@ -48,12 +48,14 @@ const RegisterChurch = () => {
   const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast({ title: "Invalid file", description: "Please upload an image.", variant: "destructive" });
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      toast({ title: "Invalid file type", description: "Please upload a PNG, JPG, WebP, or GIF image.", variant: "destructive" });
+      e.target.value = "";
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE) {
       toast({ title: "File too large", description: "Image must be under 2MB.", variant: "destructive" });
+      e.target.value = "";
       return;
     }
     setLogoFile(file);
