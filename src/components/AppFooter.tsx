@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { BookOpen, Users, Waves, HandHeart, Church } from "lucide-react";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
+import { useAdminRole } from "@/hooks/useAdminRole";
 
 const AppFooter = () => {
+  const { isAdmin } = useAdminRole();
   return (
     <footer className="bg-foreground text-background mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -44,7 +46,9 @@ const AppFooter = () => {
           <div>
             <h4 className="font-semibold text-sm mb-4 uppercase tracking-wider">Support</h4>
             <ul className="space-y-2 text-sm text-background/70">
-              <li><Link to="/support" className="hover:text-background transition-colors flex items-center gap-1.5"><HandHeart className="h-3.5 w-3.5" />Support the Mission</Link></li>
+              {isAdmin && (
+                <li><Link to="/support" className="hover:text-background transition-colors flex items-center gap-1.5"><HandHeart className="h-3.5 w-3.5" />Support the Mission</Link></li>
+              )}
               <li><Link to="/about" className="hover:text-background transition-colors">About</Link></li>
               <li><Link to="/guidelines" className="hover:text-background transition-colors">Community Guidelines</Link></li>
               <li><Link to="/disclaimer" className="hover:text-background transition-colors">Disclaimer</Link></li>
