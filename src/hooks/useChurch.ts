@@ -152,6 +152,8 @@ export function useCreateChurch() {
       phone?: string;
       contact_email: string;
       privacy: string;
+      description?: string;
+      logo_url?: string;
     }) => {
       if (!user) throw new Error("Must be logged in");
 
