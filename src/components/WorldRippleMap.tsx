@@ -178,9 +178,10 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
 
           {points.map((p, idx) => {
             const value = Number(p[metric] || 0);
-            const r = radius(value);
+            const r = Math.max(radius(value), 11);
             const isOrigin = originCode && p.country_code === originCode;
             const delay = `${(idx % 6) * 0.4}s`;
+            const label = value > 999 ? `${Math.floor(value / 1000)}k+` : String(value);
             return (
               <Marker
                 key={p.country_code}
@@ -202,6 +203,16 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode }: Props) =>
                   className={`prayer-light-core ${isOrigin ? "prayer-light-origin" : ""}`}
                   style={{ animationDelay: delay, filter: "drop-shadow(0 0 4px hsl(var(--primary) / 0.8))" }}
                 />
+                <text
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize={Math.max(9, Math.min(13, r * 0.95))}
+                  fontWeight={700}
+                  fill="#ffffff"
+                  style={{ pointerEvents: "none", fontFamily: "Inter, system-ui, sans-serif" }}
+                >
+                  {label}
+                </text>
               </Marker>
             );
           })}
