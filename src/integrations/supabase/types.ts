@@ -1293,6 +1293,48 @@ export type Database = {
         }
         Relationships: []
       }
+      prayer_ripple_locations: {
+        Row: {
+          approximate_lat: number
+          approximate_lng: number
+          city: string | null
+          country: string | null
+          created_at: string
+          id: string
+          prayer_request_id: string
+          region: string | null
+          source: string
+          source_type: string
+          user_id: string | null
+        }
+        Insert: {
+          approximate_lat: number
+          approximate_lng: number
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          prayer_request_id: string
+          region?: string | null
+          source?: string
+          source_type?: string
+          user_id?: string | null
+        }
+        Update: {
+          approximate_lat?: number
+          approximate_lng?: number
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          prayer_request_id?: string
+          region?: string | null
+          source?: string
+          source_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       prayer_translations: {
         Row: {
           created_at: string
