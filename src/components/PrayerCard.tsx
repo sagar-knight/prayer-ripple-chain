@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Clock, MapPin, Send, Star, Map as MapIcon } from "lucide-react";
-import { Share2 } from "lucide-react";
+import { Heart, Clock, MapPin, Send, Map as MapIcon, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PassItForwardDialog from "./PassItForwardDialog";
 import SharePrayerDialog from "./SharePrayerDialog";
@@ -123,31 +122,46 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
 
   const reminder = getReminderForPrayer(request.id);
 
+  const prayLabel =
+    livePrayerCount === 0 ? "Be First" :
+    livePrayerCount === 1 ? "1 Prayer" :
+    `${livePrayerCount.toLocaleString()} Prayers`;
+
   const actions = (
     <>
       <Button
         variant={hasPrayed ? "secondary" : "peaceful"}
         size="lg"
-        className="gap-2 w-full sm:w-auto min-w-[160px]"
+        className="gap-2 flex-1 sm:flex-none sm:min-w-[140px]"
         onClick={handlePrayerOffered}
         disabled={isPraying || hasPrayed}
+        aria-label={hasPrayed ? "Prayed" : "Pray for this request"}
       >
-        {isPraying ? (
-          <span className="flex items-center gap-2">
-            <Heart className="h-4 w-4 animate-pulse" />
-            Praying...
-          </span>
-        ) : hasPrayed ? (
-          <span className="flex items-center gap-2">
-            <Star className="h-4 w-4" />
-            Prayed
-          </span>
-        ) : (
-          <span className="flex items-center gap-2">
-            <Star className="h-4 w-4" />
-            I Prayed
-          </span>
-        )}
+        <Heart className={`h-4 w-4 ${isPraying ? "animate-pulse" : ""}`} />
+        <span>{isPraying ? "Praying..." : hasPrayed ? `${livePrayerCount.toLocaleString()} 🙏` : prayLabel}</span>
+      </Button>
+
+      <Button
+        variant="outline"
+        size="lg"
+        className="gap-2 flex-1 sm:flex-none"
+        onClick={() => setShowLocations(true)}
+        aria-label="Prayer map"
+        title="Prayer map"
+      >
+        <MapIcon className="h-4 w-4" />
+        <span>Map</span>
+      </Button>
+
+      <Button
+        variant="outline"
+        size="lg"
+        className="gap-2 flex-1 sm:flex-none"
+        onClick={() => setShowShare(true)}
+        aria-label="Share prayer"
+      >
+        <Share2 className="h-4 w-4" />
+        <span>Share</span>
       </Button>
 
       {hasPrayed && passForwardComplete && (
@@ -200,28 +214,6 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
           </DialogContent>
         </Dialog>
       )}
-
-      <Button
-        variant="outline"
-        size="lg"
-        className="gap-2 w-full sm:w-auto"
-        onClick={() => setShowLocations(true)}
-        aria-label="Prayer locations"
-        title="Prayer locations"
-      >
-        <MapIcon className="h-4 w-4" />
-        Prayer locations
-      </Button>
-
-      <Button
-        variant="outline"
-        size="lg"
-        className="gap-2 w-full sm:w-auto"
-        onClick={() => setShowShare(true)}
-      >
-        <Share2 className="h-4 w-4" />
-        Share
-      </Button>
     </>
   );
 
@@ -232,7 +224,7 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         description={request.description}
         title={request.title}
         subtitle={subtitle}
-        prayerCount={request.prayerCount}
+        prayerCount={livePrayerCount}
         actions={actions}
         reportEntityId={request.id}
         reportEntityType={request.churchName ? "church_prayer" : "global_prayer"}
@@ -289,6 +281,7 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         onOpenChange={setShowLocations}
         prayerRequestId={request.id}
         sourceType={request.churchName ? "church" : "global"}
+        prayerCount={livePrayerCount}
       />
 
       <PrayerLocationPrompt
