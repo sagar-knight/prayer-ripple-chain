@@ -65,12 +65,14 @@ const Navigation = () => {
     { href: "/family", label: "Family", icon: Users },
     { href: "/scripture", label: "Scripture", icon: BookOpen },
     { href: "/store", label: "Store", icon: Store },
-    { href: "/support", label: "Support Mission", icon: HandHeart },
+    { href: "/support", label: "Support Mission", icon: HandHeart, adminOnly: true },
     { href: "/calendar", label: "Calendar", icon: Calendar },
   ];
-  const moreItems = allMoreItems.filter(
-    (i) => i.href !== "/store" || showStore
-  );
+  const moreItems = allMoreItems.filter((i) => {
+    if (i.href === "/store" && !showStore) return false;
+    if ((i as any).adminOnly && !isAdmin) return false;
+    return true;
+  });
 
   const isActiveRoute = (href: string) => {
     if (href === "/") return location.pathname === "/";
