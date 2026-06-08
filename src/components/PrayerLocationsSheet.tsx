@@ -1,80 +1,101 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { supabase } from "@/integrations/supabase/client";
-import type { CountryStat } from "@/components/WorldRippleMap";
-import PrayerLocationsMap from "@/components/PrayerLocationsMap";
 import { Loader2 } from "lucide-react";
+import PrayerRippleMap from "@/components/PrayerRippleMap";
+import PrayerRippleStats from "@/components/PrayerRippleStats";
+import { useMapboxToken } from "@/hooks/useMapboxToken";
+import {
+  computeStats,
+  getPrayerRippleLocations,
+  type RippleLocationRow,
+} from "@/lib/prayerLocations";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  prayerId: string;
-  sourceType?: "global" | "church";
+  /** Accepts both prop names so any existing callsite keeps working. */
+  prayerId?: string;
+  prayerRequestId?: string;
+  sourceType?: "global" | "church" | "family";
   originCountryCode?: string | null;
 }
 
-const PrayerLocationsSheet = ({ open, onOpenChange, prayerId, sourceType = "global", originCountryCode }: Props) => {
+/**
+ * Bottom-sheet that shows approximate prayer locations on a Mapbox map.
+ * Replaces the legacy Leaflet-based locations sheet.
+ */
+const PrayerLocationsSheet = ({ open, onOpenChange, prayerId, prayerRequestId }: Props) => {
+  const id = prayerRequestId ?? prayerId ?? "";
+  const { token, loading: tokenLoading, error: tokenError } = useMapboxToken();
+  const [locations, setLocations] = useState<RippleLocationRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<CountryStat[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open || !prayerId) return;
+    if (!open || !id) return;
     let cancelled = false;
     setLoading(true);
-    (async () => {
-      const { data: rows, error } = await (supabase as any).rpc("get_prayer_geography", {
-        _prayer_id: prayerId,
-        _source_type: sourceType,
+    setLoadError(null);
+    getPrayerRippleLocations(id)
+      .then((rows) => {
+        if (!cancelled) setLocations(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError("load");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
-      if (cancelled) return;
-      if (!error && Array.isArray(rows)) {
-        setData(rows as CountryStat[]);
-      } else {
-        setData([]);
-      }
-      setLoading(false);
-    })();
     return () => {
       cancelled = true;
     };
-  }, [open, prayerId, sourceType]);
+  }, [open, id]);
 
-  const totalPeople = data.reduce((sum, d) => sum + (d.participants || 0), 0);
-  const countryCount = data.filter((d) => d.country_code !== "XX").length;
+  const stats = useMemo(() => computeStats(locations), [locations]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto">
-        <SheetHeader className="text-left">
-          <SheetTitle className="font-serif text-xl">Where people are praying</SheetTitle>
-          <SheetDescription>
-            Locations are shown approximately, at the country level, to protect privacy.
-          </SheetDescription>
-        </SheetHeader>
+      <SheetContent
+        side="bottom"
+        className="max-h-[90vh] sm:max-w-2xl sm:mx-auto rounded-t-2xl p-0 overflow-hidden"
+      >
+        <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-muted-foreground/30" aria-hidden />
+        <div className="px-5 pt-3 pb-4 space-y-4 overflow-y-auto max-h-[calc(90vh-1.5rem)]">
+          <SheetHeader className="text-left space-y-1">
+            <SheetTitle className="font-serif text-xl">Where people are praying</SheetTitle>
+            <SheetDescription>
+              See the approximate places where people joined this prayer.
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="mt-4 space-y-4">
-          {loading ? (
-            <div className="h-64 flex items-center justify-center text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />
-              Loading map
-            </div>
-          ) : (
-            <>
-              <PrayerLocationsMap data={data} metric="participants" />
-              {data.length > 0 ? (
-                <p className="text-sm text-muted-foreground text-center">
-                  {totalPeople.toLocaleString()} {totalPeople === 1 ? "person" : "people"} praying
-                  {countryCount > 0 && (
-                    <> from {countryCount} {countryCount === 1 ? "country" : "countries"}</>
-                  )}
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground text-center">
-                  Be the first to pray. When people share their location while praying, lights will appear here.
-                </p>
-              )}
-            </>
-          )}
+          {stats.total > 0 && <PrayerRippleStats stats={stats} />}
+
+          <div className="h-[55vh] min-h-[320px] w-full rounded-xl border bg-muted/30 overflow-hidden relative">
+            {tokenLoading || loading ? (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Loading prayer locations...
+              </div>
+            ) : tokenError || !token ? (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
+                Map is unavailable right now.
+              </div>
+            ) : loadError ? (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
+                We couldn't load prayer locations right now.
+              </div>
+            ) : locations.length === 0 ? (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
+                No prayer locations yet. Be the first to pray and share your approximate location.
+              </div>
+            ) : (
+              <PrayerRippleMap token={token} locations={locations} />
+            )}
+          </div>
+
+          <p className="text-xs text-muted-foreground text-center leading-relaxed">
+            Only users who share their location when praying will appear on the map. Locations are shown approximately for privacy.
+          </p>
         </div>
       </SheetContent>
     </Sheet>
