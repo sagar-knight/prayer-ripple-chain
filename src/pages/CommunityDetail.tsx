@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Globe, Phone, Mail, Shield, Users, Heart, Clock } from "lucide-react";
+import { MapPin, Globe, Phone, Mail, Shield, Users, Heart, Clock, LogOut, CheckCircle2, X, BellRing } from "lucide-react";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -11,8 +11,21 @@ import {
   useChurchMembership,
   useChurchMembers,
   useMyCommunityJoinRequest,
+  useCancelCommunityJoinRequest,
+  useLeaveCommunity,
 } from "@/hooks/useCommunity";
 import RequestJoinCommunityDialog from "@/components/RequestJoinCommunityDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const ChurchDetail = () => {
   const { churchId } = useParams<{ churchId: string }>();
@@ -22,6 +35,8 @@ const ChurchDetail = () => {
   const { data: members } = useChurchMembers(churchId || "");
   const { data: joinRequest } = useMyCommunityJoinRequest(churchId || "");
   const [requestOpen, setRequestOpen] = useState(false);
+  const cancelRequest = useCancelCommunityJoinRequest();
+  const leaveCommunity = useLeaveCommunity();
 
   if (isLoading) {
     return (
@@ -48,6 +63,7 @@ const ChurchDetail = () => {
   const isMember = !!membership;
   const isOwner = !!user && church.created_by === user.id;
   const hasPendingRequest = joinRequest?.status === "pending";
+  const wasRejected = joinRequest?.status === "rejected";
   const location = [church.city, church.state, church.country].filter(Boolean).join(", ");
 
   return (
@@ -92,6 +108,58 @@ const ChurchDetail = () => {
           </CardContent>
         </Card>
 
+        {/* Pending request banner */}
+        {hasPendingRequest && !isMember && (
+          <Card className="mb-6 border-primary/30 bg-primary/5 animate-gentle-fade">
+            <CardContent className="pt-6 flex items-start gap-3">
+              <BellRing className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+              <div className="flex-1">
+                <p className="font-semibold text-foreground">Awaiting approval</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Your request to join is with the community leader. You'll see new options here once they approve you.
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => joinRequest && cancelRequest.mutate({ requestId: joinRequest.id, communityId: church.id })}
+                disabled={cancelRequest.isPending}
+              >
+                <X className="h-4 w-4 mr-1" />Cancel
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {wasRejected && !isMember && (
+          <Card className="mb-6 border-destructive/30 bg-destructive/5 animate-gentle-fade">
+            <CardContent className="pt-6 text-sm text-muted-foreground">
+              Your previous request wasn't approved. You're welcome to send a new request when you're ready.
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Member welcome panel */}
+        {isMember && (
+          <Card className="mb-6 border-primary/20 bg-primary/5 animate-gentle-fade">
+            <CardHeader>
+              <CardTitle className="font-playfair text-lg flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-primary" />
+                You're a member
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground space-y-2">
+              <p>As a member of <span className="font-semibold text-foreground">{church.name}</span> you can:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>View and pray over the community Prayer Wall</li>
+                <li>Submit your own prayer requests for the community</li>
+                <li>See who else is praying alongside you</li>
+                {(isAdmin || isMod || isOwner) && <li>Review join requests and moderate prayers</li>}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Action buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {!isMember && !isOwner && user && (
@@ -134,9 +202,38 @@ const ChurchDetail = () => {
           )}
         </div>
 
-        {isMember && (
+        {isMember && !isOwner && (
+          <div className="text-center">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
+                  <LogOut className="h-4 w-4 mr-2" />Leave community
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Leave {church.name}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You'll stop seeing this community's prayer wall and won't be able to submit requests until you rejoin. You can request to join again anytime.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Stay</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => leaveCommunity.mutate(church.id)}
+                    disabled={leaveCommunity.isPending}
+                  >
+                    Yes, leave
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
+
+        {isOwner && (
           <p className="text-center text-sm text-muted-foreground">
-            You are a {membership?.role} of this community.
+            You are the owner of this community.
           </p>
         )}
 
