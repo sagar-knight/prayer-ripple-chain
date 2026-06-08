@@ -191,7 +191,7 @@ const RippleList = ({
   recentlyPrayed: (d: Date | null) => boolean;
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const totalPeoplePraying = chains.reduce((sum, c) => sum + (c.uniquePeople || 0), 0);
   const growingCount = chains.filter((c) => c.status !== "answered").length;
