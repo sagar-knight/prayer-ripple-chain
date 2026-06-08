@@ -3,17 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Heart, Search, Shield, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MapPin, Heart, Search, Shield, Users, Clock, Check } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useChurches } from "@/hooks/useCommunity";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import RequestJoinCommunityDialog from "@/components/RequestJoinCommunityDialog";
 
 const Churches = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showBrowse, setShowBrowse] = useState(false);
+  const [requestTarget, setRequestTarget] = useState<{ id: string; name: string } | null>(null);
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { data: churches, isLoading } = useChurches();
 
   const { data: myChurches, isLoading: loadingMine } = useQuery({
@@ -34,6 +37,40 @@ const Churches = () => {
         .in("id", ids);
       if (e2) throw e2;
       return cs || [];
+    },
+  });
+
+  // Build a map of communityId -> membership role for status buttons
+  const { data: myMembershipsMap } = useQuery({
+    queryKey: ["my-memberships-map", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("church_memberships")
+        .select("church_id, role")
+        .eq("user_id", user!.id)
+        .eq("status", "active");
+      if (error) throw error;
+      const map: Record<string, string> = {};
+      (data || []).forEach((m: any) => { map[m.church_id] = m.role; });
+      return map;
+    },
+  });
+
+  // Build a map of communityId -> pending request id for status buttons
+  const { data: myPendingRequests } = useQuery({
+    queryKey: ["my-pending-community-requests", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("community_join_requests")
+        .select("community_id, status")
+        .eq("user_id", user!.id)
+        .eq("status", "pending");
+      if (error) throw error;
+      const set = new Set<string>();
+      (data || []).forEach((r: any) => set.add(r.community_id));
+      return set;
     },
   });
 
@@ -147,6 +184,11 @@ const Churches = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredChurches.map((church, index) => {
               const location = [church.city, church.state, church.country].filter(Boolean).join(", ");
+              const role = myMembershipsMap?.[church.id];
+              const isMember = !!role;
+              const isAdmin = role === "admin" || role === "moderator";
+              const isOwner = !!user && (church as any).created_by === user.id;
+              const isPending = myPendingRequests?.has(church.id) ?? false;
               return (
                 <Card
                   key={church.id}
@@ -172,18 +214,45 @@ const Churches = () => {
                         {location}
                       </div>
                     )}
+                    {(church as any).description && (
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
+                        {(church as any).description}
+                      </p>
+                    )}
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    <div className="flex gap-3">
-                      <Button asChild variant="default" size="sm" className="flex-1">
-                        <Link to={`/communities/${church.id}`}>Community Page</Link>
-                      </Button>
+                    <div className="flex gap-2">
                       <Button asChild variant="outline" size="sm" className="flex-1">
-                        <Link to={`/communities/${church.id}/wall`}>
-                          <Heart className="h-3 w-3 mr-1" />Prayer Wall
-                        </Link>
+                        <Link to={`/communities/${church.id}`}>View</Link>
                       </Button>
+                      {isOwner || isAdmin ? (
+                        <Button asChild size="sm" className="flex-1">
+                          <Link to={`/communities/${church.id}/admin`}>
+                            <Shield className="h-3 w-3 mr-1" />Manage
+                          </Link>
+                        </Button>
+                      ) : isMember ? (
+                        <Button size="sm" className="flex-1" variant="secondary" disabled>
+                          <Check className="h-3 w-3 mr-1" />Member
+                        </Button>
+                      ) : isPending ? (
+                        <Button size="sm" className="flex-1" variant="secondary" disabled>
+                          <Clock className="h-3 w-3 mr-1" />Pending
+                        </Button>
+                      ) : !user ? (
+                        <Button size="sm" className="flex-1" onClick={() => navigate("/login")}>
+                          Request to Join
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          className="flex-1"
+                          onClick={() => setRequestTarget({ id: church.id, name: church.name })}
+                        >
+                          Request to Join
+                        </Button>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -202,6 +271,15 @@ const Churches = () => {
           </Card>
         ) : null}
           </>
+        )}
+
+        {requestTarget && (
+          <RequestJoinCommunityDialog
+            open={!!requestTarget}
+            onOpenChange={(o) => !o && setRequestTarget(null)}
+            communityId={requestTarget.id}
+            communityName={requestTarget.name}
+          />
         )}
       </div>
     </div>

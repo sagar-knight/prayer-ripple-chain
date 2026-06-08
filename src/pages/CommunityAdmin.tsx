@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import {
-  ArrowLeft, Shield, CheckCircle, XCircle, Clock, Users,
+  ArrowLeft, Shield, CheckCircle, XCircle, Clock, Users, UserPlus,
   Heart, TrendingUp, BarChart3, AlertCircle,
 } from "lucide-react";
 import ChurchInviteTools from "@/components/CommunityInviteTools";
@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   useChurch, useChurchMembership, useChurchMembers,
   useChurchPrayerRequests, useModerateRequest, useSubmitChurchPrayer,
+  useCommunityJoinRequests, useReviewCommunityJoinRequest,
 } from "@/hooks/useCommunity";
 import { format, subDays, isAfter } from "date-fns";
 import { toast } from "@/hooks/use-toast";
@@ -30,6 +31,9 @@ const ChurchAdmin = () => {
   const { data: allRequests } = useChurchPrayerRequests(churchId || "");
   const moderateRequest = useModerateRequest();
   const submitPrayer = useSubmitChurchPrayer();
+  const { data: pendingJoinRequests } = useCommunityJoinRequests(churchId || "", "pending");
+  const { data: reviewedJoinRequests } = useCommunityJoinRequests(churchId || "");
+  const reviewJoin = useReviewCommunityJoinRequest();
 
   const [rejectReason, setRejectReason] = useState<Record<string, string>>({});
   const [officialTitle, setOfficialTitle] = useState("");
@@ -248,7 +252,7 @@ const ChurchAdmin = () => {
 
         {/* Tabs for moderation */}
         <Tabs defaultValue="pending" className="space-y-4 animate-gentle-fade" style={{ animationDelay: "200ms" }}>
-          <TabsList className="grid grid-cols-4 w-full">
+          <TabsList className="grid grid-cols-5 w-full">
             <TabsTrigger value="pending" className="text-xs sm:text-sm">
               <Clock className="h-3 w-3 mr-1 hidden sm:inline" />Pending ({pendingReqs?.length || 0})
             </TabsTrigger>
@@ -260,6 +264,9 @@ const ChurchAdmin = () => {
             </TabsTrigger>
             <TabsTrigger value="members" className="text-xs sm:text-sm">
               <Users className="h-3 w-3 mr-1 hidden sm:inline" />Members
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="text-xs sm:text-sm">
+              <UserPlus className="h-3 w-3 mr-1 hidden sm:inline" />Requests ({pendingJoinRequests?.length || 0})
             </TabsTrigger>
           </TabsList>
 
@@ -288,6 +295,97 @@ const ChurchAdmin = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="requests">
+            <div className="space-y-3">
+              {!pendingJoinRequests?.length ? (
+                <p className="text-center text-muted-foreground py-8">
+                  No pending membership requests.
+                </p>
+              ) : (
+                pendingJoinRequests.map((r) => (
+                  <Card key={r.id}>
+                    <CardContent className="pt-4 space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-medium text-foreground">
+                            User: {r.user_id.slice(0, 8)}...
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Requested {format(new Date(r.created_at), "MMM d, yyyy 'at' h:mm a")}
+                          </p>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">Pending</Badge>
+                      </div>
+                      {r.message && (
+                        <div className="rounded-md bg-muted/40 p-3 text-sm text-foreground italic">
+                          "{r.message}"
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            reviewJoin.mutate({
+                              requestId: r.id,
+                              communityId: r.community_id,
+                              decision: "approved",
+                            })
+                          }
+                          disabled={reviewJoin.isPending}
+                        >
+                          <CheckCircle className="h-3 w-3 mr-1" />Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            reviewJoin.mutate({
+                              requestId: r.id,
+                              communityId: r.community_id,
+                              decision: "rejected",
+                            })
+                          }
+                          disabled={reviewJoin.isPending}
+                        >
+                          <XCircle className="h-3 w-3 mr-1" />Reject
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+
+              {reviewedJoinRequests && reviewedJoinRequests.some((r) => r.status !== "pending") && (
+                <div className="pt-6">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">Recent decisions</h3>
+                  <div className="space-y-2">
+                    {reviewedJoinRequests
+                      .filter((r) => r.status !== "pending")
+                      .slice(0, 10)
+                      .map((r) => (
+                        <Card key={r.id}>
+                          <CardContent className="pt-3 pb-3 flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">
+                              {r.user_id.slice(0, 8)}... ·{" "}
+                              {r.reviewed_at
+                                ? format(new Date(r.reviewed_at), "MMM d")
+                                : "—"}
+                            </span>
+                            <Badge
+                              variant={r.status === "approved" ? "default" : "secondary"}
+                              className="text-[10px]"
+                            >
+                              {r.status}
+                            </Badge>
+                          </CardContent>
+                        </Card>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>

@@ -299,6 +299,60 @@ export type Database = {
         }
         Relationships: []
       }
+      community_join_requests: {
+        Row: {
+          community_id: string
+          created_at: string
+          id: string
+          message: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewed_note: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewed_note?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewed_note?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_join_requests_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_join_requests_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "churches_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documentation_flow_steps: {
         Row: {
           created_at: string | null
@@ -1772,6 +1826,10 @@ export type Database = {
         Args: { _church_id: string; _user_id: string }
         Returns: boolean
       }
+      is_community_admin: {
+        Args: { _community_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_community_wall_public: {
         Args: { _church_id: string }
         Returns: boolean
@@ -1798,6 +1856,14 @@ export type Database = {
           _source_type: string
           _user_id: string
         }
+        Returns: undefined
+      }
+      request_to_join_community: {
+        Args: { _community_id: string; _message?: string }
+        Returns: string
+      }
+      review_community_join_request: {
+        Args: { _decision: string; _note?: string; _request_id: string }
         Returns: undefined
       }
       slugify_text: { Args: { _input: string }; Returns: string }

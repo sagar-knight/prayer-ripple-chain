@@ -293,3 +293,117 @@ export function useModerateRequest() {
     },
   });
 }
+
+// ===================== Community Join Requests =====================
+
+export interface CommunityJoinRequest {
+  id: string;
+  community_id: string;
+  user_id: string;
+  message: string | null;
+  status: "pending" | "approved" | "rejected" | "cancelled";
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  reviewed_note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Current user's request for a given community (most recent)
+export function useMyCommunityJoinRequest(communityId: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["community-join-request", "me", communityId, user?.id],
+    enabled: !!communityId && !!user,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("community_join_requests")
+        .select("*")
+        .eq("community_id", communityId)
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return (data as CommunityJoinRequest | null) ?? null;
+    },
+  });
+}
+
+// All requests for a community (admin/moderator view)
+export function useCommunityJoinRequests(communityId: string, statusFilter?: string) {
+  return useQuery({
+    queryKey: ["community-join-requests", communityId, statusFilter],
+    enabled: !!communityId,
+    queryFn: async () => {
+      let q = (supabase as any)
+        .from("community_join_requests")
+        .select("*")
+        .eq("community_id", communityId)
+        .order("created_at", { ascending: false });
+      if (statusFilter) q = q.eq("status", statusFilter);
+      const { data, error } = await q;
+      if (error) throw error;
+      return (data || []) as CommunityJoinRequest[];
+    },
+  });
+}
+
+export function useRequestToJoinCommunity() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async (args: { communityId: string; message?: string }) => {
+      if (!user) throw new Error("Must be signed in");
+      const { data, error } = await (supabase as any).rpc("request_to_join_community", {
+        _community_id: args.communityId,
+        _message: args.message ?? null,
+      });
+      if (error) throw error;
+      return data as string;
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["community-join-request", "me", vars.communityId] });
+      queryClient.invalidateQueries({ queryKey: ["community-join-requests", vars.communityId] });
+      toast({
+        title: "Request sent",
+        description: "Your request has been sent to the community leader.",
+      });
+    },
+    onError: (err: any) => {
+      toast({ title: "Could not send request", description: err.message, variant: "destructive" });
+    },
+  });
+}
+
+export function useReviewCommunityJoinRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (args: {
+      requestId: string;
+      communityId: string;
+      decision: "approved" | "rejected";
+      note?: string;
+    }) => {
+      const { error } = await (supabase as any).rpc("review_community_join_request", {
+        _request_id: args.requestId,
+        _decision: args.decision,
+        _note: args.note ?? null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["community-join-requests", vars.communityId] });
+      queryClient.invalidateQueries({ queryKey: ["church-members", vars.communityId] });
+      toast({
+        title: vars.decision === "approved" ? "Member approved" : "Request rejected",
+        description: vars.decision === "approved"
+          ? "They've been added to your community."
+          : "The request has been declined.",
+      });
+    },
+    onError: (err: any) => {
+      toast({ title: "Could not update request", description: err.message, variant: "destructive" });
+    },
+  });
+}
