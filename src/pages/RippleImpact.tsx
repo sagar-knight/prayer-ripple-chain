@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 import PrayerRippleChain from "@/components/PrayerRippleChain";
 import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
+import PrayersYouAreCarrying from "@/components/PrayersYouAreCarrying";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
