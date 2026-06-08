@@ -155,7 +155,7 @@ const RegisterChurch = () => {
                         </Button>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">PNG or JPG, up to 2MB. Square images work best.</p>
+                    <p className="text-xs text-muted-foreground">PNG, JPG, WebP, or GIF — up to 2MB. Square images work best.</p>
                   </div>
                 </div>
               </div>
