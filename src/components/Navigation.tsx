@@ -33,6 +33,7 @@ import { useUserPrayerCount } from "@/hooks/useUserPrayerCount";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
+import UserNotificationBell from "@/components/UserNotificationBell";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
@@ -156,6 +157,7 @@ const Navigation = () => {
             {user ? (
               <div className="flex items-center space-x-1">
                 {isAdmin && <AdminNotificationBell />}
+                {!isAdmin && <UserNotificationBell />}
                 {isTestAccount && (
                   <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 gap-1 mr-1">
                     Internal Test Account
