@@ -14,12 +14,12 @@ import HomeRouter from "./pages/HomeRouter";
 const SubmitPrayer = lazy(() => import("./pages/SubmitPrayer"));
 const PrayForOthers = lazy(() => import("./pages/PrayForOthers"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Churches = lazy(() => import("./pages/Churches"));
-const ChurchDetail = lazy(() => import("./pages/ChurchDetail"));
-const ChurchPrayerWall = lazy(() => import("./pages/ChurchPrayerWall"));
-const ChurchSubmitPrayer = lazy(() => import("./pages/ChurchSubmitPrayer"));
-const ChurchAdmin = lazy(() => import("./pages/ChurchAdmin"));
-const RegisterChurch = lazy(() => import("./pages/RegisterChurch"));
+const Communities = lazy(() => import("./pages/Communities"));
+const CommunityDetail = lazy(() => import("./pages/CommunityDetail"));
+const CommunityPrayerWall = lazy(() => import("./pages/CommunityPrayerWall"));
+const CommunitySubmitPrayer = lazy(() => import("./pages/CommunitySubmitPrayer"));
+const CommunityAdmin = lazy(() => import("./pages/CommunityAdmin"));
+const RegisterCommunity = lazy(() => import("./pages/RegisterCommunity"));
 const RippleImpact = lazy(() => import("./pages/RippleImpact"));
 const About = lazy(() => import("./pages/About"));
 const PrayerCalendar = lazy(() => import("./pages/PrayerCalendar"));
@@ -40,7 +40,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 const InviteLanding = lazy(() => import("./pages/InviteLanding"));
 const SharedPrayer = lazy(() => import("./pages/SharedPrayer"));
-const ChurchJoin = lazy(() => import("./pages/ChurchJoin"));
+const CommunityJoin = lazy(() => import("./pages/CommunityJoin"));
 const ModerationDashboard = lazy(() => import("./pages/ModerationDashboard"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 import AuthCallback from "./pages/AuthCallback";
@@ -49,7 +49,7 @@ const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminModeration = lazy(() => import("./pages/admin/AdminModeration"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
-const AdminChurches = lazy(() => import("./pages/admin/AdminChurches"));
+const AdminCommunities = lazy(() => import("./pages/admin/AdminCommunities"));
 const AdminReports = lazy(() => import("./pages/admin/AdminReports"));
 const AdminAutomation = lazy(() => import("./pages/admin/AdminAutomation"));
 const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
@@ -57,7 +57,7 @@ const AdminDocumentation = lazy(() => import("./pages/admin/AdminDocumentation")
 const AdminUnitTesting = lazy(() => import("./pages/admin/AdminUnitTesting"));
 const AdminGlobalReach = lazy(() => import("./pages/admin/AdminGlobalReach"));
 import { useCartSync } from "./hooks/useCartSync";
-import { useAutoJoinChurch } from "./hooks/useAutoJoinCommunity";
+import { useAutoJoinCommunity } from "./hooks/useAutoJoinCommunity";
 
 // Store pages (lazy)
 const StoreAbout = lazy(() => import("./pages/store/StoreAbout"));
@@ -81,7 +81,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
-  useAutoJoinChurch();
+  useAutoJoinCommunity();
   return null;
 };
 
