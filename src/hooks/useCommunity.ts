@@ -407,3 +407,45 @@ export function useReviewCommunityJoinRequest() {
     },
   });
 }
+
+export function useCancelCommunityJoinRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (args: { requestId: string; communityId: string }) => {
+      const { error } = await (supabase as any).rpc("cancel_community_join_request", {
+        _request_id: args.requestId,
+      });
+      if (error) throw error;
+    },
+    onSuccess: (_d, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["community-join-request", "me", vars.communityId] });
+      queryClient.invalidateQueries({ queryKey: ["my-pending-community-requests"] });
+      toast({ title: "Request cancelled", description: "You can request to join again anytime." });
+    },
+    onError: (err: any) => {
+      toast({ title: "Could not cancel", description: err.message, variant: "destructive" });
+    },
+  });
+}
+
+export function useLeaveCommunity() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (communityId: string) => {
+      const { error } = await (supabase as any).rpc("leave_community", {
+        _community_id: communityId,
+      });
+      if (error) throw error;
+    },
+    onSuccess: (_d, communityId) => {
+      queryClient.invalidateQueries({ queryKey: ["church-membership", communityId] });
+      queryClient.invalidateQueries({ queryKey: ["church-members", communityId] });
+      queryClient.invalidateQueries({ queryKey: ["my-churches"] });
+      queryClient.invalidateQueries({ queryKey: ["my-memberships-map"] });
+      toast({ title: "You have left the community", description: "You can rejoin anytime by sending a new request." });
+    },
+    onError: (err: any) => {
+      toast({ title: "Could not leave community", description: err.message, variant: "destructive" });
+    },
+  });
+}
