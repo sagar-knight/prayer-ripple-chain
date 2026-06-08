@@ -44,8 +44,8 @@ const ChurchAdmin = () => {
         <div className="max-w-lg mx-auto px-4 text-center">
           <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h2 className="font-playfair text-xl font-bold mb-2">Access Restricted</h2>
-          <p className="text-muted-foreground mb-4">Only church admins and moderators can access this page.</p>
-          <Button asChild variant="outline"><Link to={`/churches/${churchId}`}>Back to Church</Link></Button>
+          <p className="text-muted-foreground mb-4">Only community admins and moderators can access this page.</p>
+          <Button asChild variant="outline"><Link to={`/communities/${churchId}`}>Back to Community</Link></Button>
         </div>
       </div>
     );
@@ -141,14 +141,14 @@ const ChurchAdmin = () => {
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-6">
           <Button asChild variant="ghost" size="sm">
-            <Link to={`/churches/${churchId}`}><ArrowLeft className="h-4 w-4 mr-1" />Back to Church</Link>
+            <Link to={`/communities/${churchId}`}><ArrowLeft className="h-4 w-4 mr-1" />Back to Community</Link>
           </Button>
         </div>
 
         <div className="text-center mb-8">
           <Shield className="h-10 w-10 text-primary mx-auto mb-3" />
           <h1 className="font-playfair text-2xl font-bold text-foreground mb-1">Admin Dashboard</h1>
-          <p className="text-muted-foreground text-sm">{church?.name || "Church"}</p>
+          <p className="text-muted-foreground text-sm">{church?.name || "Community"}</p>
         </div>
 
         {/* Prayer Overview Stats */}
@@ -298,7 +298,7 @@ const ChurchAdmin = () => {
             <ChurchInviteTools
               churchId={churchId!}
               churchSlug={(church as any)?.slug || null}
-              churchName={church?.name || "Church"}
+              churchName={church?.name || "Community"}
               userId={user?.id}
             />
           </div>
