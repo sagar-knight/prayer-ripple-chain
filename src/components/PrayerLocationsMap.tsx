@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { CountryStat } from "@/components/WorldRippleMap";
 
@@ -47,34 +48,38 @@ const PrayerLocationsMap = ({ data, metric = "participants" }: Props) => {
         maxZoom={6}
         scrollWheelZoom={false}
         worldCopyJump
-        style={{ height: "420px", width: "100%", background: "#a8d0e6" }}
+        style={{ height: "420px", width: "100%", background: "#cfe4f5" }}
         attributionControl
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> &copy; OpenStreetMap contributors'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          subdomains={["a", "b", "c", "d"]}
         />
         {points.map((p) => {
           const value = Number(p[metric] || 0);
-          const radius = 10 + Math.round((value / max) * 22);
+          const ratio = value / max;
+          const outer = 38 + Math.round(ratio * 38); // 38–76px halo
+          const inner = 22 + Math.round(ratio * 16); // 22–38px solid bubble
+          const label = value > 999 ? `${(value / 1000).toFixed(1)}k` : `${value}`;
+          const icon = L.divIcon({
+            className: "prayer-cluster-icon",
+            html: `
+              <div style="position:relative;width:${outer}px;height:${outer}px;display:flex;align-items:center;justify-content:center;">
+                <div style="position:absolute;inset:0;border-radius:9999px;background:rgba(56,142,168,0.28);border:2px solid rgba(56,142,168,0.55);"></div>
+                <div style="position:relative;width:${inner}px;height:${inner}px;border-radius:9999px;background:#1f3a4d;color:#fff;font:600 12px/1 ui-sans-serif,system-ui;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.25);">${label}</div>
+              </div>`,
+            iconSize: [outer, outer],
+            iconAnchor: [outer / 2, outer / 2],
+          });
           return (
-            <CircleMarker
-              key={p.country_code}
-              center={p.coords as [number, number]}
-              radius={radius}
-              pathOptions={{
-                color: "hsl(var(--primary))",
-                weight: 2,
-                fillColor: "hsl(var(--primary))",
-                fillOpacity: 0.45,
-              }}
-            >
-              <Tooltip direction="top" offset={[0, -4]} opacity={1}>
+            <Marker key={p.country_code} position={p.coords as [number, number]} icon={icon}>
+              <Tooltip direction="top" offset={[0, -outer / 2]} opacity={1}>
                 <span className="text-xs font-medium">
                   {value.toLocaleString()} {value === 1 ? "person" : "people"} praying from {p.country}
                 </span>
               </Tooltip>
-            </CircleMarker>
+            </Marker>
           );
         })}
       </MapContainer>
