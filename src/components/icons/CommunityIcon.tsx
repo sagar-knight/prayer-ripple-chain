@@ -17,15 +17,15 @@ export const CommunityIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SVGS
       className={className}
       {...props}
     >
-      {/* Enlarged cross */}
-      <path d="M9 8.5h6" />
-      <path d="M12 5v6" />
-      {/* Door */}
-      <path d="M14 22v-4a2 2 0 0 0-4 0v4" />
+      {/* Prominent cross on top of steeple */}
+      <path d="M12 1v6" />
+      <path d="M9.5 3h5" />
       {/* Steeple body */}
-      <path d="M18 22V5.618a1 1 0 0 0-.553-.894l-4.553-2.277a2 2 0 0 0-1.788 0L6.553 4.724A1 1 0 0 0 6 5.618V22" />
+      <path d="M18 22V8.5L12 5 6 8.5V22" />
+      {/* Arched door */}
+      <path d="M14 22v-4a2 2 0 0 0-4 0v4" />
       {/* Side wings */}
-      <path d="m18 7 3.447 1.724a1 1 0 0 1 .553.894V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.618a1 1 0 0 1 .553-.894L6 7" />
+      <path d="M18 10l3.447 1.724a1 1 0 0 1 .553.894V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.382a1 1 0 0 1 .553-.894L6 10" />
     </svg>
   )
 );
