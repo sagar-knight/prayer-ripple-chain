@@ -31,6 +31,7 @@ import { useAdminRole } from "@/hooks/useAdminRole";
 import { useTestAccount } from "@/hooks/useTestAccount";
 import { useUserPrayerCount } from "@/hooks/useUserPrayerCount";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
+import { CommunityIcon } from "@/components/icons/CommunityIcon";
 import { CartDrawer } from "@/components/CartDrawer";
 import AdminNotificationBell from "@/components/AdminNotificationBell";
 import UserNotificationBell from "@/components/UserNotificationBell";
@@ -58,7 +59,7 @@ const Navigation = () => {
     { href: "/pray", label: "Pray", icon: Users },
     { href: "/submit-prayer", label: "Request", icon: BookOpen },
     { href: "/ripple", label: "Ripple", icon: Waves },
-    { href: "/churches", label: "Churches", icon: Church },
+    { href: "/churches", label: "Communities", icon: CommunityIcon },
   ];
 
   // "More" dropdown items
