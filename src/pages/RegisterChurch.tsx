@@ -146,7 +146,7 @@ const RegisterChurch = () => {
                         <label className="cursor-pointer">
                           <Upload className="h-4 w-4 mr-2" />
                           {logoFile ? "Replace" : "Upload Image"}
-                          <input type="file" accept="image/*" className="hidden" onChange={handleLogoSelect} />
+                          <input type="file" accept="image/png, image/jpeg, image/webp, image/gif" className="hidden" onChange={handleLogoSelect} />
                         </label>
                       </Button>
                       {logoFile && (
