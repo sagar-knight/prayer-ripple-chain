@@ -82,15 +82,48 @@ const Store = () => {
         setAllProducts(all);
 
         if (!urlCategory && !urlCollection) {
-          // Home view: load collections list instead of dumping all products
+          // Home view ("Shop All"): only include products that belong to the
+          // curated collections (Wall Art, Journals, Accessories, New/Seasonal).
+          const allowedHandlePatterns = [
+            /^wall-art$/,
+            /^journals?$/,
+            /^accessories$/,
+            /^new(-|$)/,
+            /seasonal/,
+          ];
           try {
-            const collsData = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 20 });
+            const collsData = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 50 });
             const colls = (collsData?.data?.collections?.edges || []).map((e: any) => e.node);
             setCollections(colls);
+
+            const allowedColls = colls.filter((c: any) =>
+              allowedHandlePatterns.some((re) => re.test(c.handle))
+            );
+
+            const results = await Promise.all(
+              allowedColls.map((c: any) =>
+                storefrontApiRequest(STOREFRONT_COLLECTION_PRODUCTS_QUERY, { handle: c.handle, first: 250 })
+                  .then((d) => d?.data?.collection?.products?.edges || [])
+                  .catch(() => [])
+              )
+            );
+
+            const seen = new Set<string>();
+            const merged: ShopifyProduct[] = [];
+            for (const list of results) {
+              for (const p of list as ShopifyProduct[]) {
+                if (!seen.has(p.node.id)) {
+                  seen.add(p.node.id);
+                  merged.push(p);
+                }
+              }
+            }
+            setAllProducts(merged);
+            setProducts(merged);
           } catch {
             setCollections([]);
+            setProducts(all);
           }
-          setProducts(all);
           return;
         }
 
