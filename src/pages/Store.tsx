@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingBag, ShoppingCart, Loader2, ArrowRight, Heart, Sparkles, HandHeart } from "lucide-react";
+import { ShoppingBag, ShoppingCart, Loader2, ArrowRight, Heart } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import {
   storefrontApiRequest,
@@ -198,56 +198,21 @@ const Store = () => {
     ? `${urlCategory} — ${urlSubCategory}`
     : urlCategory || (urlCollection ? urlCollection.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Store");
 
-  const missionSlides = [
-    {
-      icon: HandHeart,
-      title: "Every purchase supports the mission",
-      text: "Proceeds help spread Prayer Forward to more hearts around the world.",
-    },
-    {
-      icon: Heart,
-      title: "Wear your faith, share His love",
-      text: "Each item carries a prayer and a purpose beyond the product.",
-    },
-    {
-      icon: Sparkles,
-      title: "Together we keep prayer moving",
-      text: "Your support helps us reach the next person waiting to be prayed for.",
-    },
-  ];
-  const [slideIndex, setSlideIndex] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setSlideIndex((i) => (i + 1) % missionSlides.length), 5000);
-    return () => clearInterval(t);
-  }, [missionSlides.length]);
-
   const MissionBanner = () => {
-    const slide = missionSlides[slideIndex];
-    const Icon = slide.icon;
     return (
       <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-gradient-to-br from-muted/40 via-background to-muted/20 px-6 py-8 md:px-10 md:py-10 mb-10">
-        <div className="flex items-start gap-4">
+        <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-foreground/5">
-            <Icon className="h-5 w-5 text-foreground" />
+            <Heart className="h-5 w-5 text-foreground" />
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="font-playfair text-lg md:text-2xl font-semibold text-foreground leading-tight">
-              {slide.title}
+              Each purchase helps in spreading this mission
             </h2>
             <p className="text-sm md:text-base text-muted-foreground mt-1.5 max-w-2xl">
-              {slide.text}
+              Thank you for being part of this journey.
             </p>
           </div>
-        </div>
-        <div className="flex gap-1.5 mt-6">
-          {missionSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setSlideIndex(i)}
-              aria-label={`Slide ${i + 1}`}
-              className={`h-1 rounded-full transition-all ${i === slideIndex ? "w-8 bg-foreground" : "w-4 bg-foreground/20"}`}
-            />
-          ))}
         </div>
       </div>
     );
