@@ -10,6 +10,7 @@ import {
   STOREFRONT_PRODUCTS_QUERY,
   STOREFRONT_COLLECTION_PRODUCTS_QUERY,
   STOREFRONT_COLLECTIONS_QUERY,
+  STOREFRONT_NEW_PRODUCTS_QUERY,
 } from "@/lib/shopify";
 import { toast } from "sonner";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -49,6 +50,7 @@ const Store = () => {
   const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [collections, setCollections] = useState<Array<{ title: string; handle: string; description?: string; image?: { url: string; altText: string | null } | null }>>([]);
+  const [newProducts, setNewProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
@@ -89,6 +91,21 @@ const Store = () => {
             setCollections(colls);
           } catch {
             setCollections([]);
+          }
+          // Load New & Seasonal: prefer tagged products, fall back to most recently created
+          try {
+            const taggedData = await storefrontApiRequest(STOREFRONT_NEW_PRODUCTS_QUERY, {
+              first: 8,
+              query: "tag:new OR tag:seasonal",
+            });
+            let nps: ShopifyProduct[] = taggedData?.data?.products?.edges || [];
+            if (nps.length === 0) {
+              const latestData = await storefrontApiRequest(STOREFRONT_NEW_PRODUCTS_QUERY, { first: 8 });
+              nps = latestData?.data?.products?.edges || [];
+            }
+            setNewProducts(nps);
+          } catch {
+            setNewProducts([]);
           }
           setProducts(all);
           return;
