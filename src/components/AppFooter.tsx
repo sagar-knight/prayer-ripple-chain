@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Users, Waves, HandHeart } from "lucide-react";
+import { BookOpen, Users, Waves, HandHeart, Facebook, Instagram, Youtube } from "lucide-react";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 import { CommunityIcon } from "@/components/icons/CommunityIcon";
 
@@ -17,6 +17,46 @@ const AppFooter = () => {
             <p className="text-sm text-background/60 leading-relaxed">
               One prayer. Passed forward. Building a global community of compassion and hope.
             </p>
+            <div className="flex items-center gap-3 mt-4">
+              <a
+                href="https://facebook.com/prayerforward"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="h-8 w-8 rounded-full border border-background/20 flex items-center justify-center text-background/70 hover:text-background hover:border-background/50 transition-colors"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href="https://twitter.com/prayerforward"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X (Twitter)"
+                className="h-8 w-8 rounded-full border border-background/20 flex items-center justify-center text-background/70 hover:text-background hover:border-background/50 transition-colors"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2H21.5l-7.51 8.59L23 22h-6.844l-5.36-7.013L4.66 22H1.4l8.04-9.197L1 2h7.02l4.844 6.43L18.244 2zm-2.4 18h1.9L7.26 4H5.26l10.584 16z" />
+                </svg>
+              </a>
+              <a
+                href="https://instagram.com/prayerforward"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="h-8 w-8 rounded-full border border-background/20 flex items-center justify-center text-background/70 hover:text-background hover:border-background/50 transition-colors"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a
+                href="https://youtube.com/@prayerforward"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="h-8 w-8 rounded-full border border-background/20 flex items-center justify-center text-background/70 hover:text-background hover:border-background/50 transition-colors"
+              >
+                <Youtube className="h-4 w-4" />
+              </a>
+            </div>
           </div>
 
           {/* Navigate */}
