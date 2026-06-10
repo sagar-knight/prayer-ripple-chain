@@ -70,7 +70,7 @@ const mainSecondaryOptions: FocusOption[] = [
 
 const surpriseOption: FocusOption = {
   id: "surprise",
-  icon: Shuffle,
+  icon: Sparkles,
   title: "Let God guide you",
   description: "A quiet, unexpected invitation to pray.",
   surface: "bg-soft-green",
