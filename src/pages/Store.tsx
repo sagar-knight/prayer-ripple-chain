@@ -87,7 +87,13 @@ const Store = () => {
 
         // If filtering by collection handle
         if (urlCollection) {
-          setProducts(all); // show all, collection filtering could be expanded
+          try {
+            const collData = await storefrontApiRequest(STOREFRONT_COLLECTION_PRODUCTS_QUERY, { handle: urlCollection, first: 250 });
+            const collProducts = collData?.data?.collection?.products?.edges || [];
+            setProducts(collProducts);
+          } catch {
+            setProducts([]);
+          }
           return;
         }
 
