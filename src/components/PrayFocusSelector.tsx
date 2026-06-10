@@ -104,11 +104,8 @@ const PrayFocusSelector = ({
       <div className="relative text-center max-w-2xl mx-auto">
         <div className="absolute inset-x-10 -top-8 h-32 bg-gradient-primary opacity-20 blur-3xl rounded-full pointer-events-none" />
         <div className="relative">
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3 tracking-tight inline-flex items-center justify-center gap-3 flex-wrap">
-            <span>Take a moment to pray</span>
-            <span className="relative inline-flex items-center justify-center h-11 w-11 rounded-full bg-gradient-primary shadow-[0_0_24px_hsl(var(--success)/0.35)] animate-float-slow">
-              <Star className="h-5 w-5 text-white" strokeWidth={2.25} />
-            </span>
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-3 tracking-tight">
+            Take a moment to pray
           </h2>
           <p className="text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
             Someone, somewhere, is waiting for your prayer.
