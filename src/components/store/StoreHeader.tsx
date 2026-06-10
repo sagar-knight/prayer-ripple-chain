@@ -15,11 +15,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
 
-const storeNavLinks = [
-  { label: "New", href: "/store?collection=new" },
-  { label: "Best Sellers", href: "/store?collection=best-sellers" },
-  { label: "Shop All", href: "/store" },
-];
+const storeNavLinks: { label: string; href: string }[] = [];
 
 const appNavLinks = [
   { label: "Home", href: "/", icon: Home },
