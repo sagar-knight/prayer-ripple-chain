@@ -46,6 +46,12 @@ const PrayerRippleMap = ({ token, locations }: Props) => {
         clusterRadius: 45,
       });
 
+      // Country-aggregate source: one bubble per country with prayer count.
+      map.addSource("ripple-countries", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
+      });
+
       // Cluster bubble — soft Horizon Blue.
       map.addLayer({
         id: "ripple-clusters",
@@ -105,6 +111,60 @@ const PrayerRippleMap = ({ token, locations }: Props) => {
         },
       });
 
+      // Country bubble — visible when zoomed out, hidden once zoomed in
+      // so individual points/clusters can take over.
+      map.addLayer({
+        id: "ripple-country-bubble",
+        type: "circle",
+        source: "ripple-countries",
+        maxzoom: 4,
+        paint: {
+          "circle-color": "#5D8AA8",
+          "circle-opacity": 0.9,
+          "circle-stroke-color": "#ffffff",
+          "circle-stroke-width": 2,
+          "circle-radius": [
+            "interpolate", ["linear"], ["get", "count"],
+            1, 16,
+            10, 22,
+            100, 30,
+            1000, 40,
+          ],
+        },
+      });
+      map.addLayer({
+        id: "ripple-country-count",
+        type: "symbol",
+        source: "ripple-countries",
+        maxzoom: 4,
+        layout: {
+          "text-field": ["to-string", ["get", "count"]],
+          "text-size": 13,
+          "text-font": ["DIN Pro Medium", "Arial Unicode MS Bold"],
+          "text-allow-overlap": true,
+        },
+        paint: { "text-color": "#ffffff" },
+      });
+      map.addLayer({
+        id: "ripple-country-label",
+        type: "symbol",
+        source: "ripple-countries",
+        maxzoom: 4,
+        layout: {
+          "text-field": ["get", "country"],
+          "text-size": 11,
+          "text-font": ["DIN Pro Medium", "Arial Unicode MS Bold"],
+          "text-offset": [0, 1.8],
+          "text-anchor": "top",
+          "text-allow-overlap": false,
+        },
+        paint: {
+          "text-color": "#1f2937",
+          "text-halo-color": "#ffffff",
+          "text-halo-width": 1.2,
+        },
+      });
+
       map.on("click", "ripple-clusters", (e) => {
         const features = map.queryRenderedFeatures(e.point, { layers: ["ripple-clusters"] });
         const clusterId = features[0]?.properties?.cluster_id;
@@ -151,6 +211,7 @@ const PrayerRippleMap = ({ token, locations }: Props) => {
 
 function applyData(map: mapboxgl.Map, rows: RippleLocationRow[]) {
   const src = map.getSource("ripple") as mapboxgl.GeoJSONSource | undefined;
+  const countrySrc = map.getSource("ripple-countries") as mapboxgl.GeoJSONSource | undefined;
   if (!src) return;
 
   const features: GeoJSON.Feature[] = rows
@@ -162,6 +223,33 @@ function applyData(map: mapboxgl.Map, rows: RippleLocationRow[]) {
     }));
 
   src.setData({ type: "FeatureCollection", features });
+
+  // Build per-country aggregate bubbles at the centroid of their points.
+  if (countrySrc) {
+    const byCountry = new Map<string, { lat: number; lng: number; count: number }>();
+    for (const r of rows) {
+      if (!r.country) continue;
+      const lat = Number(r.approximate_lat);
+      const lng = Number(r.approximate_lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+      const entry = byCountry.get(r.country);
+      if (entry) {
+        entry.lat += lat;
+        entry.lng += lng;
+        entry.count += 1;
+      } else {
+        byCountry.set(r.country, { lat, lng, count: 1 });
+      }
+    }
+    const countryFeatures: GeoJSON.Feature[] = Array.from(byCountry.entries()).map(
+      ([country, v]) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [v.lng / v.count, v.lat / v.count] },
+        properties: { country, count: v.count },
+      }),
+    );
+    countrySrc.setData({ type: "FeatureCollection", features: countryFeatures });
+  }
 
   if (features.length === 0) return;
   if (features.length === 1) {
