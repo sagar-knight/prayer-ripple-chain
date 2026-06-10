@@ -154,7 +154,7 @@ const Store = () => {
     ? `Results for "${urlSearch}"`
     : urlSubCategory
     ? `${urlCategory} — ${urlSubCategory}`
-    : urlCategory || (urlCollection ? urlCollection.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Shop All");
+    : urlCategory || (urlCollection ? urlCollection.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Store");
 
   const ProductCard = ({ product, index }: { product: ShopifyProduct; index: number }) => {
     const price = product.node.priceRange.minVariantPrice;

@@ -115,7 +115,6 @@ const StoreSubNav = () => {
     <div className="bg-muted border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs">
         <nav className="flex items-center gap-4">
-          <a href="/store" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Shop All</a>
           {collections.map((c) => (
             <a
               key={c.handle}
