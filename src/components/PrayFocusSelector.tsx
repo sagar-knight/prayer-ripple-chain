@@ -32,7 +32,7 @@ type FocusOption = {
   title: string;
   description: string;
   requiresCountry?: boolean;
-  surface: string; // tailwind utility classes for the card surface
+  surface: string;
 };
 
 const primaryOption: FocusOption = {
@@ -43,7 +43,7 @@ const primaryOption: FocusOption = {
   surface: "bg-soft-green",
 };
 
-const secondaryOptions: FocusOption[] = [
+const mainSecondaryOptions: FocusOption[] = [
   {
     id: "my_country",
     icon: Globe,
@@ -66,14 +66,15 @@ const secondaryOptions: FocusOption[] = [
     description: "Someone who just asked for prayer.",
     surface: "bg-soft-blue",
   },
-  {
-    id: "surprise",
-    icon: Shuffle,
-    title: "Let God guide you",
-    description: "A quiet, unexpected invitation to pray.",
-    surface: "bg-soft-green",
-  },
 ];
+
+const surpriseOption: FocusOption = {
+  id: "surprise",
+  icon: Shuffle,
+  title: "Let God guide you",
+  description: "A quiet, unexpected invitation to pray.",
+  surface: "bg-soft-green",
+};
 
 const rescueOption = {
   id: "rescue" as PrayerFocusMode,
@@ -93,7 +94,7 @@ const PrayFocusSelector = ({
   const [selectedFocus, setSelectedFocus] = useState<PrayerFocusMode>("needs_most");
   const [selectedCount, setSelectedCount] = useState(1);
 
-  const availableSecondary = secondaryOptions.filter(
+  const availableMain = mainSecondaryOptions.filter(
     (opt) => !opt.requiresCountry || userCountry
   );
 
@@ -116,12 +117,8 @@ const PrayFocusSelector = ({
       </div>
 
       {/* Primary Card */}
-      <button
-        onClick={() => {
-          setSelectedFocus("needs_most");
-          onStartPraying("needs_most", selectedCount);
-        }}
-        className={`group relative w-full max-w-2xl mx-auto block text-left rounded-2xl p-7 md:p-8 ${primaryOption.surface} border border-success/20 shadow-glow lift-on-hover overflow-hidden`}
+      <div
+        className={`group relative w-full max-w-2xl mx-auto rounded-2xl p-7 md:p-8 ${primaryOption.surface} border border-success/20 shadow-glow lift-on-hover overflow-hidden`}
       >
         <div className="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-success/15 blur-2xl group-hover:bg-success/25 transition-colors" />
         <div className="relative flex items-start gap-5">
@@ -129,32 +126,56 @@ const PrayFocusSelector = ({
             <Heart className="h-7 w-7 text-success" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1.5">
-              <Badge className="bg-success/15 text-success hover:bg-success/20 border-0 text-[10px] uppercase tracking-wider font-semibold">
-                Most needed
-              </Badge>
-            </div>
             <h3 className="font-playfair text-2xl font-bold text-foreground mb-1.5">
               {primaryOption.title}
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-md">
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
               {primaryOption.description}
             </p>
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-background text-sm font-semibold group-hover:gap-3 transition-all">
-              Start Praying
-              <ArrowRight className="h-4 w-4" />
-            </span>
           </div>
         </div>
-      </button>
+
+        {/* Prayer count — inside primary card */}
+        <div className="relative mt-6 pt-5 border-t border-success/10">
+          <p className="text-xs font-medium text-muted-foreground mb-3">
+            How many people would you like to pray for?
+          </p>
+          <div className="flex items-center gap-3">
+            {commitmentCounts.map((count) => (
+              <button
+                key={count}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedCount(count);
+                }}
+                className={`w-12 h-10 rounded-lg text-sm font-bold transition-all ${
+                  selectedCount === count
+                    ? "bg-foreground text-background shadow-sm"
+                    : "bg-background/60 text-foreground border border-border/50 hover:bg-background"
+                }`}
+              >
+                {count}
+              </button>
+            ))}
+            <div className="flex-1" />
+            <button
+              onClick={() => onStartPraying("needs_most", selectedCount)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-background text-sm font-semibold hover:gap-3 transition-all"
+            >
+              Start Praying
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Secondary Cards */}
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto space-y-4">
         <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4 text-center">
           Or choose a different way
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {availableSecondary.map((option, idx) => {
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {availableMain.map((option, idx) => {
             const Icon = option.icon;
             const isSelected = selectedFocus === option.id;
             return (
@@ -168,11 +189,11 @@ const PrayFocusSelector = ({
                     : "border-border/40"
                 }`}
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-white/70 dark:bg-white/10 flex items-center justify-center flex-shrink-0 ring-1 ring-border/40">
+                <div className="flex flex-col items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/70 dark:bg-white/10 flex items-center justify-center flex-shrink-0 ring-1 ring-border/40">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0">
                     <h4 className="font-semibold text-sm text-foreground mb-1">
                       {option.title}
                     </h4>
@@ -185,6 +206,19 @@ const PrayFocusSelector = ({
             );
           })}
         </div>
+
+        {/* Surprise me — compact pill */}
+        <button
+          onClick={() => setSelectedFocus("surprise")}
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-medium transition-all ${
+            selectedFocus === "surprise"
+              ? "border-primary/50 bg-primary/5 text-foreground ring-1 ring-primary/20"
+              : "border-border/40 text-muted-foreground hover:text-foreground hover:border-border"
+          }`}
+        >
+          <Shuffle className="h-4 w-4" />
+          {surpriseOption.title}
+        </button>
       </div>
 
       {/* Rescue Mode Card */}
@@ -227,26 +261,6 @@ const PrayFocusSelector = ({
           </button>
         </div>
       )}
-
-      {/* Commitment Count */}
-      <div className="text-center space-y-3 max-w-2xl mx-auto">
-        <p className="text-sm font-medium text-foreground">
-          How many people would you like to pray for?
-        </p>
-        <div className="flex justify-center gap-3">
-          {commitmentCounts.map((count) => (
-            <Button
-              key={count}
-              variant={selectedCount === count ? "peaceful" : "outline"}
-              size="lg"
-              className="w-16 h-12 text-lg font-bold"
-              onClick={() => setSelectedCount(count)}
-            >
-              {count}
-            </Button>
-          ))}
-        </div>
-      </div>
 
       {/* Start Button */}
       <div className="max-w-2xl mx-auto space-y-3">
