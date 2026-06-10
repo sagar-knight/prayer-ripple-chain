@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,12 @@ import { Heart, Search, User, Menu, X, ChevronDown, LogOut, Home, BookOpen, User
 import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
 import { PrayerForwardLogo } from "@/components/PrayerForwardLogo";
+import { storefrontApiRequest, STOREFRONT_COLLECTIONS_QUERY } from "@/lib/shopify";
 
-const storeNavLinks: { label: string; href: string }[] = [];
+interface ShopifyCollection {
+  title: string;
+  handle: string;
+}
 
 const appNavLinks = [
   { label: "Home", href: "/", icon: Home },
@@ -35,6 +39,23 @@ const StoreHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const [collections, setCollections] = useState<ShopifyCollection[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 20 });
+        const edges = data?.data?.collections?.edges || [];
+        if (!cancelled) {
+          setCollections(edges.map((e: any) => ({ title: e.node.title, handle: e.node.handle })));
+        }
+      } catch (err) {
+        console.error("Failed to load Shopify collections:", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,9 +66,9 @@ const StoreHeader = () => {
     }
   };
 
-  const isActive = (href: string) => {
-    if (href === "/store") return location.pathname === "/store" && !location.search;
-    return location.pathname + location.search === href;
+  const isCollectionActive = (handle: string) => {
+    const params = new URLSearchParams(location.search);
+    return location.pathname === "/store" && params.get("collection") === handle;
   };
 
   const visibleAppLinks = user
@@ -103,23 +124,16 @@ const StoreHeader = () => {
                 {/* Store nav */}
                 <nav className="p-4 space-y-1">
                   <p className="px-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2">Shop</p>
-                  {storeNavLinks.map((link) => (
+                  {collections.map((c) => (
                     <Link
-                      key={link.label}
-                      to={link.href}
+                      key={c.handle}
+                      to={`/store?collection=${c.handle}`}
                       onClick={() => setMobileOpen(false)}
                       className="block px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-colors"
                     >
-                      {link.label}
+                      {c.title}
                     </Link>
                   ))}
-                  <div className="px-3 py-2.5">
-                    <p className="text-sm font-medium text-foreground mb-2">Apparel</p>
-                    <div className="pl-3 space-y-1">
-                      <Link to="/store?category=Apparel&sub=Men" onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-muted-foreground hover:text-foreground">Men</Link>
-                      <Link to="/store?category=Apparel&sub=Women" onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-muted-foreground hover:text-foreground">Women</Link>
-                    </div>
-                  </div>
                   <Link to="/store/about" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-colors">
                     About
                   </Link>
@@ -177,30 +191,17 @@ const StoreHeader = () => {
 
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1">
-              {storeNavLinks.map((link) => (
+              {collections.map((c) => (
                 <Link
-                  key={link.label}
-                  to={link.href}
+                  key={c.handle}
+                  to={`/store?collection=${c.handle}`}
                   className={`px-3 py-2 text-sm font-medium transition-colors rounded-md ${
-                    isActive(link.href) ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                    isCollectionActive(c.handle) ? "text-primary" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {link.label}
+                  {c.title}
                 </Link>
               ))}
-
-              <Link to="/store?category=Apparel" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
-                Apparel
-              </Link>
-              <Link to="/store?category=Accessories" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
-                Accessories
-              </Link>
-              <Link to="/store?category=Wall%20Art" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
-                Wall Art
-              </Link>
-              <Link to="/store?category=Journals" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
-                Journals
-              </Link>
 
               <Link to="/store/about" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md">
                 About
