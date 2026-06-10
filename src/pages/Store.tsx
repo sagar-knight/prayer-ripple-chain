@@ -48,6 +48,7 @@ const Store = () => {
   const [searchParams] = useSearchParams();
   const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [collections, setCollections] = useState<Array<{ title: string; handle: string; description?: string; image?: { url: string; altText: string | null } | null }>>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
@@ -81,6 +82,14 @@ const Store = () => {
         setAllProducts(all);
 
         if (!urlCategory && !urlCollection) {
+          // Home view: load collections list instead of dumping all products
+          try {
+            const collsData = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 20 });
+            const colls = (collsData?.data?.collections?.edges || []).map((e: any) => e.node);
+            setCollections(colls);
+          } catch {
+            setCollections([]);
+          }
           setProducts(all);
           return;
         }
