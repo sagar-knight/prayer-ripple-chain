@@ -202,6 +202,11 @@ export const STOREFRONT_COLLECTIONS_QUERY = `
         node {
           title
           handle
+          description
+          image {
+            url
+            altText
+          }
         }
       }
     }
