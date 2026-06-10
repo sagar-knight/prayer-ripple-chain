@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingBag, ShoppingCart, Loader2, ArrowRight, Heart, Sparkles, HandHeart } from "lucide-react";
+import { ShoppingBag, ShoppingCart, Loader2, ArrowRight, Heart } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import {
   storefrontApiRequest,
