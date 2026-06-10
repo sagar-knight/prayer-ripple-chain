@@ -213,6 +213,58 @@ export const STOREFRONT_COLLECTIONS_QUERY = `
   }
 `;
 
+export const STOREFRONT_NEW_PRODUCTS_QUERY = `
+  query GetNewProducts($first: Int!, $query: String) {
+    products(first: $first, query: $query, sortKey: CREATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          title
+          description
+          handle
+          productType
+          tags
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 5) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          variants(first: 10) {
+            edges {
+              node {
+                id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
+                availableForSale
+                selectedOptions {
+                  name
+                  value
+                }
+              }
+            }
+          }
+          options {
+            name
+            values
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const STOREFRONT_COLLECTION_PRODUCTS_QUERY = `
   query GetCollectionProducts($handle: String!, $first: Int!) {
     collection(handle: $handle) {
