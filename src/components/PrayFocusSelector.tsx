@@ -5,7 +5,7 @@ import {
   Globe,
   Star,
   Clock,
-  Shuffle,
+  Sparkles,
   ArrowRight,
   List,
   LifeBuoy,
