@@ -268,6 +268,7 @@ const Store = () => {
               <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">Store</h1>
               <p className="text-sm text-muted-foreground mt-1">Browse collections</p>
             </div>
+            <ProductRow title="New & Seasonal" items={newProducts} />
             {collections.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {collections.map((c) => (
