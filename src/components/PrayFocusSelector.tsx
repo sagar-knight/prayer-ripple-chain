@@ -5,7 +5,7 @@ import {
   Globe,
   Star,
   Clock,
-  Sparkles,
+  Shuffle,
   ArrowRight,
   List,
   LifeBuoy,
@@ -70,7 +70,7 @@ const mainSecondaryOptions: FocusOption[] = [
 
 const surpriseOption: FocusOption = {
   id: "surprise",
-  icon: Sparkles,
+  icon: Shuffle,
   title: "Let God guide you",
   description: "A quiet, unexpected invitation to pray.",
   surface: "bg-soft-green",
@@ -207,25 +207,17 @@ const PrayFocusSelector = ({
           })}
         </div>
 
-        {/* Or — quiet gesture */}
-        <div className="flex items-center justify-center gap-3 my-2">
-          <div className="h-px w-8 bg-border/30" />
-          <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 font-medium">
-            or
-          </span>
-          <div className="h-px w-8 bg-border/30" />
-        </div>
-
+        {/* Surprise me — compact pill */}
         <button
           onClick={() => setSelectedFocus("surprise")}
-          className={`mx-auto flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm transition-all ${
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-medium transition-all ${
             selectedFocus === "surprise"
-              ? "border-foreground/30 bg-foreground/5 text-foreground"
-              : "border-border/30 text-muted-foreground/70 hover:text-foreground hover:border-foreground/20 bg-transparent"
+              ? "border-primary/50 bg-primary/5 text-foreground ring-1 ring-primary/20"
+              : "border-border/40 text-muted-foreground hover:text-foreground hover:border-border"
           }`}
         >
-          <Sparkles className="h-3.5 w-3.5" />
-          <span className="font-playfair italic">{surpriseOption.title}</span>
+          <Shuffle className="h-4 w-4" />
+          {surpriseOption.title}
         </button>
       </div>
 
