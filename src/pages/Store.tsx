@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingBag, ShoppingCart, Loader2, ArrowRight } from "lucide-react";
+import { ShoppingBag, ShoppingCart, Loader2, ArrowRight, Heart, Sparkles, HandHeart } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import {
   storefrontApiRequest,
@@ -165,6 +165,61 @@ const Store = () => {
     ? `${urlCategory} — ${urlSubCategory}`
     : urlCategory || (urlCollection ? urlCollection.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Store");
 
+  const missionSlides = [
+    {
+      icon: HandHeart,
+      title: "Every purchase supports the mission",
+      text: "Proceeds help spread Prayer Forward to more hearts around the world.",
+    },
+    {
+      icon: Heart,
+      title: "Wear your faith, share His love",
+      text: "Each item carries a prayer and a purpose beyond the product.",
+    },
+    {
+      icon: Sparkles,
+      title: "Together we keep prayer moving",
+      text: "Your support helps us reach the next person waiting to be prayed for.",
+    },
+  ];
+  const [slideIndex, setSlideIndex] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setSlideIndex((i) => (i + 1) % missionSlides.length), 5000);
+    return () => clearInterval(t);
+  }, [missionSlides.length]);
+
+  const MissionBanner = () => {
+    const slide = missionSlides[slideIndex];
+    const Icon = slide.icon;
+    return (
+      <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-gradient-to-br from-muted/40 via-background to-muted/20 px-6 py-8 md:px-10 md:py-10 mb-10">
+        <div className="flex items-start gap-4">
+          <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-foreground/5">
+            <Icon className="h-5 w-5 text-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-playfair text-lg md:text-2xl font-semibold text-foreground leading-tight">
+              {slide.title}
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground mt-1.5 max-w-2xl">
+              {slide.text}
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-1.5 mt-6">
+          {missionSlides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlideIndex(i)}
+              aria-label={`Slide ${i + 1}`}
+              className={`h-1 rounded-full transition-all ${i === slideIndex ? "w-8 bg-foreground" : "w-4 bg-foreground/20"}`}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const ProductCard = ({ product, index }: { product: ShopifyProduct; index: number }) => {
     const price = product.node.priceRange.minVariantPrice;
     const image = product.node.images.edges[0]?.node;
@@ -247,47 +302,23 @@ const Store = () => {
           </>
         ) : isHome ? (
           <>
+            <MissionBanner />
             <div className="mb-8">
-              <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">Store</h1>
-              <p className="text-sm text-muted-foreground mt-1">Browse collections</p>
+              <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">Shop All</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {allProducts.length} product{allProducts.length !== 1 ? "s" : ""}
+              </p>
             </div>
-            {collections.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                {collections.map((c) => (
-                  <button
-                    key={c.handle}
-                    onClick={() => navigate(`/store?collection=${c.handle}`)}
-                    className="group text-left"
-                  >
-                    <div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted">
-                      {c.image?.url ? (
-                        <img
-                          src={c.image.url}
-                          alt={c.image.altText || c.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <ShoppingBag className="h-10 w-10 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="pt-3">
-                      <h2 className="font-medium text-base text-foreground group-hover:text-primary transition-colors">
-                        {c.title}
-                      </h2>
-                      {c.description && (
-                        <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{c.description}</p>
-                      )}
-                    </div>
-                  </button>
+            {allProducts.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {allProducts.map((p, i) => (
+                  <ProductCard key={p.node.id} product={p} index={i} />
                 ))}
               </div>
             ) : (
               <div className="text-center py-16">
                 <ShoppingBag className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground">No collections found.</p>
+                <p className="text-muted-foreground">No products found.</p>
               </div>
             )}
           </>
