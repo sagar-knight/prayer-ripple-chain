@@ -10,7 +10,6 @@ import {
   STOREFRONT_PRODUCTS_QUERY,
   STOREFRONT_COLLECTION_PRODUCTS_QUERY,
   STOREFRONT_COLLECTIONS_QUERY,
-  STOREFRONT_NEW_PRODUCTS_QUERY,
 } from "@/lib/shopify";
 import { toast } from "sonner";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -49,8 +48,6 @@ const Store = () => {
   const [searchParams] = useSearchParams();
   const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [collections, setCollections] = useState<Array<{ title: string; handle: string; description?: string; image?: { url: string; altText: string | null } | null }>>([]);
-  const [newProducts, setNewProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
@@ -84,29 +81,6 @@ const Store = () => {
         setAllProducts(all);
 
         if (!urlCategory && !urlCollection) {
-          // Home view: load collections list instead of dumping all products
-          try {
-            const collsData = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 20 });
-            const colls = (collsData?.data?.collections?.edges || []).map((e: any) => e.node);
-            setCollections(colls);
-          } catch {
-            setCollections([]);
-          }
-          // Load New & Seasonal: prefer tagged products, fall back to most recently created
-          try {
-            const taggedData = await storefrontApiRequest(STOREFRONT_NEW_PRODUCTS_QUERY, {
-              first: 8,
-              query: "tag:new OR tag:seasonal",
-            });
-            let nps: ShopifyProduct[] = taggedData?.data?.products?.edges || [];
-            if (nps.length === 0) {
-              const latestData = await storefrontApiRequest(STOREFRONT_NEW_PRODUCTS_QUERY, { first: 8 });
-              nps = latestData?.data?.products?.edges || [];
-            }
-            setNewProducts(nps);
-          } catch {
-            setNewProducts([]);
-          }
           setProducts(all);
           return;
         }
@@ -263,52 +237,11 @@ const Store = () => {
             </div>
           </>
         ) : isHome ? (
-          <>
-            <div className="mb-8">
-              <h1 className="font-playfair text-2xl md:text-3xl font-bold text-foreground">Store</h1>
-              <p className="text-sm text-muted-foreground mt-1">Browse collections</p>
-            </div>
-            <ProductRow title="New & Seasonal" items={newProducts} />
-            {collections.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                {collections.map((c) => (
-                  <button
-                    key={c.handle}
-                    onClick={() => navigate(`/store?collection=${c.handle}`)}
-                    className="group text-left"
-                  >
-                    <div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted">
-                      {c.image?.url ? (
-                        <img
-                          src={c.image.url}
-                          alt={c.image.altText || c.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <ShoppingBag className="h-10 w-10 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="pt-3">
-                      <h2 className="font-medium text-base text-foreground group-hover:text-primary transition-colors">
-                        {c.title}
-                      </h2>
-                      {c.description && (
-                        <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{c.description}</p>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <ShoppingBag className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground">No collections found.</p>
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {allProducts.map((p, i) => (
+              <ProductCard key={p.node.id} product={p} index={i} />
+            ))}
+          </div>
         ) : (
           <>
             {/* Category/Search results */}

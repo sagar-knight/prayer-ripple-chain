@@ -202,63 +202,6 @@ export const STOREFRONT_COLLECTIONS_QUERY = `
         node {
           title
           handle
-          description
-          image {
-            url
-            altText
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const STOREFRONT_NEW_PRODUCTS_QUERY = `
-  query GetNewProducts($first: Int!, $query: String) {
-    products(first: $first, query: $query, sortKey: CREATED_AT, reverse: true) {
-      edges {
-        node {
-          id
-          title
-          description
-          handle
-          productType
-          tags
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
-          images(first: 5) {
-            edges {
-              node {
-                url
-                altText
-              }
-            }
-          }
-          variants(first: 10) {
-            edges {
-              node {
-                id
-                title
-                price {
-                  amount
-                  currencyCode
-                }
-                availableForSale
-                selectedOptions {
-                  name
-                  value
-                }
-              }
-            }
-          }
-          options {
-            name
-            values
-          }
         }
       }
     }
