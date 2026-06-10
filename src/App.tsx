@@ -3,7 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { storefrontApiRequest, STOREFRONT_COLLECTIONS_QUERY } from "@/lib/shopify";
 import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
 import Navigation from "./components/Navigation";
@@ -89,6 +90,25 @@ const AppContent = () => {
 const StoreSubNav = () => {
   const location = useLocation();
   const isStoreRoute = location.pathname === "/store" || location.pathname.startsWith("/store/") || location.pathname.startsWith("/product/");
+  const [collections, setCollections] = useState<{ title: string; handle: string }[]>([]);
+
+  useEffect(() => {
+    if (!isStoreRoute) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first: 20 });
+        const edges = data?.data?.collections?.edges || [];
+        if (!cancelled) {
+          setCollections(edges.map((e: any) => ({ title: e.node.title, handle: e.node.handle })));
+        }
+      } catch (err) {
+        console.error("Failed to load Shopify collections:", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isStoreRoute]);
+
   if (!isStoreRoute) return null;
 
   return (
@@ -96,11 +116,15 @@ const StoreSubNav = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs">
         <nav className="flex items-center gap-4">
           <a href="/store" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Shop All</a>
-          <a href="/store?collection=new" className="text-muted-foreground hover:text-foreground font-medium transition-colors">New</a>
-          <a href="/store?category=Apparel" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Apparel</a>
-          <a href="/store?category=Accessories" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Accessories</a>
-          <a href="/store?category=Wall%20Art" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Wall Art</a>
-          <a href="/store?category=Journals" className="text-muted-foreground hover:text-foreground font-medium transition-colors">Journals</a>
+          {collections.map((c) => (
+            <a
+              key={c.handle}
+              href={`/store?collection=${c.handle}`}
+              className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
+              {c.title}
+            </a>
+          ))}
         </nav>
         <span className="text-muted-foreground hidden sm:block">
           Every purchase supports the mission
