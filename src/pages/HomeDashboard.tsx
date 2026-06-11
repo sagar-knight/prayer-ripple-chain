@@ -14,8 +14,6 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 const HomeDashboard = () => {
   const dailyVerse = getDailyVerse();
   const { user } = useAuth();
-  const [prayedToday, setPrayedToday] = useLocalStorage<Record<string, string>>("prayed_today_log", {});
-
   const today = new Date().toISOString().split("T")[0];
   const monthKey = today.slice(0, 7); // YYYY-MM
 
