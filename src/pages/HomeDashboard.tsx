@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Bell, BookOpen, Waves, ArrowRight, Clock, Check, Star, Sun } from "lucide-react";
+import { Heart, BookOpen, Star, Sun } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
@@ -14,8 +14,6 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 const HomeDashboard = () => {
   const dailyVerse = getDailyVerse();
   const { user } = useAuth();
-  const [prayedToday, setPrayedToday] = useLocalStorage<Record<string, string>>("prayed_today_log", {});
-
   const today = new Date().toISOString().split("T")[0];
   const monthKey = today.slice(0, 7); // YYYY-MM
 
@@ -38,36 +36,6 @@ const HomeDashboard = () => {
     },
     enabled: !!user,
   });
-
-  // Fetch prayer reminders from DB
-  const { data: reminders } = useQuery({
-    queryKey: ["prayer_reminders_home", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await supabase
-        .from("prayer_reminders")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("enabled", true);
-      return data || [];
-    },
-    enabled: !!user,
-  });
-
-  const activeReminders = reminders || [];
-
-  const handlePrayedToday = (reminderId: string) => {
-    setPrayedToday({ ...prayedToday, [reminderId]: today });
-    const monthDays = prayerDays[monthKey] || [];
-    if (!monthDays.includes(today)) {
-      setPrayerDays({ ...prayerDays, [monthKey]: [...monthDays, today] });
-    }
-  };
-
-  const hasPrayedToday = (reminderId: string) => prayedToday[reminderId] === today;
-
-  const prayersOffered = stats?.total_prayers_offered ?? 0;
-  const prayersReceived = stats?.total_prayers_received ?? 0;
 
   return (
     <div className="min-h-screen bg-mesh pb-24 relative overflow-hidden">
@@ -127,70 +95,7 @@ const HomeDashboard = () => {
         {/* Daily Prayer Focus */}
         <DailyPrayerFocus />
 
-        {/* Section 2 — Prayer Reminders */}
-        <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "100ms" }}>
-          <CardHeader>
-            <CardTitle className="section-title flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
-              People you're praying for
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {activeReminders.length === 0 ? (
-              <div className="text-center py-6 space-y-3">
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  No prayer reminders set yet. You can add one when you pray for someone.
-                </p>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/prayer-reminders">Manage Reminders</Link>
-                </Button>
-              </div>
-            ) : (
-              <>
-                {activeReminders.map((reminder: any) => (
-                  <div
-                    key={reminder.id}
-                    className="flex items-center justify-between p-4 rounded-xl bg-secondary/50"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {reminder.prayer_title || "Prayer request"}
-                      </p>
-                      {reminder.reminder_time_local && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                          <Clock className="h-3 w-3" />
-                          {reminder.reminder_time_local}
-                        </p>
-                      )}
-                    </div>
-                    {hasPrayedToday(reminder.id) ? (
-                      <span className="text-xs text-primary flex items-center gap-1 font-medium">
-                        <Check className="h-3.5 w-3.5" />
-                        Prayed today
-                      </span>
-                    ) : (
-                      <Button
-                        variant="peaceful"
-                        size="sm"
-                        className="text-xs shrink-0"
-                        onClick={() => handlePrayedToday(reminder.id)}
-                      >
-                        I prayed for them
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <div className="pt-3 text-center">
-                  <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
-                    <Link to="/prayer-reminders">Manage Reminders</Link>
-                  </Button>
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Section 3 — Scripture Today */}
+        {/* Section 2 — Scripture Today */}
         <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "200ms" }}>
           <CardHeader>
             <CardTitle className="section-title flex items-center gap-2">
