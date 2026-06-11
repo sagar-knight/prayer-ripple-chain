@@ -39,33 +39,6 @@ const HomeDashboard = () => {
     enabled: !!user,
   });
 
-  // Fetch prayer reminders from DB
-  const { data: reminders } = useQuery({
-    queryKey: ["prayer_reminders_home", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await supabase
-        .from("prayer_reminders")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("enabled", true);
-      return data || [];
-    },
-    enabled: !!user,
-  });
-
-  const activeReminders = reminders || [];
-
-  const handlePrayedToday = (reminderId: string) => {
-    setPrayedToday({ ...prayedToday, [reminderId]: today });
-    const monthDays = prayerDays[monthKey] || [];
-    if (!monthDays.includes(today)) {
-      setPrayerDays({ ...prayerDays, [monthKey]: [...monthDays, today] });
-    }
-  };
-
-  const hasPrayedToday = (reminderId: string) => prayedToday[reminderId] === today;
-
   const prayersOffered = stats?.total_prayers_offered ?? 0;
   const prayersReceived = stats?.total_prayers_received ?? 0;
 
