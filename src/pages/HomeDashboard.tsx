@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, BookOpen, ArrowRight, Star, Sun } from "lucide-react";
+import { Heart, BookOpen, Star, Sun } from "lucide-react";
 import { getDailyVerse } from "@/data/verses";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
@@ -36,9 +36,6 @@ const HomeDashboard = () => {
     },
     enabled: !!user,
   });
-
-  const prayersOffered = stats?.total_prayers_offered ?? 0;
-  const prayersReceived = stats?.total_prayers_received ?? 0;
 
   return (
     <div className="min-h-screen bg-mesh pb-24 relative overflow-hidden">
