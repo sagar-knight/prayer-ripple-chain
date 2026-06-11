@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePrayerService } from "@/hooks/usePrayerService";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import PrayerImpactDialog from "@/components/PrayerImpactDialog";
+import ReminderBellButton from "@/components/ReminderBellButton";
 
 interface PublicPrayer {
   id: string;
@@ -161,6 +162,15 @@ const FeaturedPrayerCard = () => {
               <span className="flex items-center gap-1.5">
                 <Globe2 className="h-4 w-4 text-primary" />
                 {countryCount} {countryCount === 1 ? "country" : "countries"} reached
+              </span>
+            )}
+            {!isSample && (
+              <span className="ml-auto">
+                <ReminderBellButton
+                  prayerId={prayer.id}
+                  prayerTitle={prayer.title}
+                  size="sm"
+                />
               </span>
             )}
           </div>
