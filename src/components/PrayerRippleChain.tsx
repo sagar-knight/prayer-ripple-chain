@@ -278,13 +278,17 @@ const RippleList = ({
         return (
         <Card
           key={chain.prayerId}
-          className="rounded-xl animate-gentle-fade"
+          className="rounded-xl animate-gentle-fade border-foreground/30 ring-1 ring-foreground/10 relative overflow-hidden"
         >
+          {/* Left accent bar — ownership cue */}
+          <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground/60" aria-hidden />
           {/* Calm card header */}
           <CardContent className="px-6 py-8 sm:px-8 sm:py-10 space-y-5">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
-              Your prayer request
-            </p>
+            <div className="flex justify-center">
+              <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/40 text-foreground/80 font-medium">
+                Yours
+              </span>
+            </div>
             <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
               {chain.title}
             </p>

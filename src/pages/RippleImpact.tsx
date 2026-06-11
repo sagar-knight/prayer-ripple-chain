@@ -379,6 +379,22 @@ const RippleImpact = () => {
 
         {/* ============ SECTION A — Your Prayer Requests (ripple lives here) ============ */}
         <section className="space-y-6">
+          {/* Section header — "Your ripples" with a left accent bar */}
+          <div className="flex items-center gap-3 pl-1">
+            <span className="inline-block h-6 w-[2px] rounded-full bg-foreground/80" />
+            <div className="flex-1">
+              <h2 className="font-playfair text-lg sm:text-xl font-semibold text-foreground leading-none">
+                Your ripples
+              </h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Prayer requests you've shared and how they're spreading.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/40 text-foreground/80">
+              Yours
+            </span>
+          </div>
+
           {/* Unified compact ripple hero */}
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="p-5 sm:p-6 space-y-4">
@@ -454,6 +470,19 @@ const RippleImpact = () => {
 
         {/* ============ SECTION B — Prayers you're carrying for others ============ */}
         <section className="space-y-6">
+          {/* Section header — "Ripples you've touched" (muted, no pill) */}
+          <div className="flex items-center gap-3 pl-1 pt-2">
+            <span className="inline-block h-6 w-[2px] rounded-full bg-border" />
+            <div className="flex-1">
+              <h2 className="font-playfair text-lg sm:text-xl font-semibold text-foreground leading-none">
+                Ripples you've touched
+              </h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Prayers from others that you've lifted up.
+              </p>
+            </div>
+          </div>
+
           <PrayersYouAreCarrying />
         </section>
 

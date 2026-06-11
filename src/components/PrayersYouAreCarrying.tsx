@@ -103,7 +103,7 @@ const PrayersYouAreCarrying = () => {
   }
 
   return (
-    <Card className="card-glass border-0">
+    <Card className="card-glass border border-border/40">
       <CardContent className="p-5 sm:p-6 space-y-4">
         <div>
           <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center gap-2">
