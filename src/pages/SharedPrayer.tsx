@@ -9,6 +9,7 @@ import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
 import WorldRippleMap from "@/components/WorldRippleMap";
 import { usePrayerPresence } from "@/hooks/usePrayerPresence";
+import ReminderBellButton from "@/components/ReminderBellButton";
 
 interface PrayerData {
   id: string;
@@ -213,6 +214,12 @@ const SharedPrayer = () => {
             <Share2 className="h-5 w-5" />
             Forward This Prayer
           </Button>
+          <div className="flex justify-center">
+            <ReminderBellButton
+              prayerId={prayer.id}
+              prayerTitle={prayer.title}
+            />
+          </div>
         </div>
 
         {/* Ripple summary */}
