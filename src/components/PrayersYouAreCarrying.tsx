@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import ReminderBellButton from "./ReminderBellButton";
 
 interface CarriedPrayer {
   prayerId: string;
@@ -133,12 +134,22 @@ const PrayersYouAreCarrying = () => {
                     </span>
                   </div>
                 </div>
-                <div className="shrink-0 text-right">
+                <div
+                  className="shrink-0 flex items-center gap-2"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <ReminderBellButton
+                    prayerId={p.prayerId}
+                    prayerTitle={p.title}
+                    size="icon"
+                  />
+                  <div className="text-right">
                   <div className="inline-flex items-center gap-1 text-sm font-semibold text-foreground">
                     <Heart className="h-3.5 w-3.5 text-primary" />
                     {p.totalPraying}
                   </div>
                   <p className="text-[10px] text-muted-foreground">praying</p>
+                  </div>
                 </div>
               </div>
             );

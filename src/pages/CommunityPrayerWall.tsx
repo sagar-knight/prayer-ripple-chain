@@ -7,6 +7,7 @@ import { useChurch, useChurchPrayerRequests, useChurchMembership } from "@/hooks
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import PrayerRequestCard from "@/components/PrayerRequestCard";
+import ReminderBellButton from "@/components/ReminderBellButton";
 
 const ChurchPrayerWall = () => {
   const { churchId } = useParams<{ churchId: string }>();
@@ -84,6 +85,12 @@ const ChurchPrayerWall = () => {
                   <span className="text-xs text-muted-foreground">
                     {req.anonymous ? "Anonymous" : "A community member"} · {format(new Date(req.created_at), "MMM d, yyyy")}
                   </span>
+                }
+                actions={
+                  <ReminderBellButton
+                    prayerId={req.id}
+                    prayerTitle={req.title ?? "this prayer"}
+                  />
                 }
               />
             ))}
