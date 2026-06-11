@@ -66,6 +66,13 @@ const mainSecondaryOptions: FocusOption[] = [
     description: "Someone who just asked for prayer.",
     surface: "bg-soft-blue",
   },
+  {
+    id: "surprise",
+    icon: Shuffle,
+    title: "Let God guide you",
+    description: "A quiet, unexpected invitation to pray.",
+    surface: "bg-soft-green",
+  },
 ];
 
 const surpriseOption: FocusOption = {
@@ -115,11 +122,11 @@ const PrayFocusSelector = ({
 
       {/* Primary Card */}
       <div
-        className={`group relative w-full max-w-2xl mx-auto rounded-2xl p-7 md:p-8 ${primaryOption.surface} border border-success/20 shadow-glow lift-on-hover overflow-hidden`}
+        className="group relative w-full max-w-2xl mx-auto rounded-2xl p-7 md:p-8 bg-card/40 backdrop-blur-sm border border-border/50 lift-on-hover overflow-hidden"
       >
-        <div className="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-success/15 blur-2xl group-hover:bg-success/25 transition-colors" />
+        <div className="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-success/10 blur-3xl group-hover:bg-success/15 transition-colors pointer-events-none" />
         <div className="relative flex items-start gap-5">
-          <div className="w-14 h-14 rounded-2xl bg-success/15 flex items-center justify-center flex-shrink-0 ring-1 ring-success/20">
+          <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center flex-shrink-0 ring-1 ring-success/20">
             <Heart className="h-7 w-7 text-success" />
           </div>
           <div className="flex-1 min-w-0">
@@ -133,7 +140,7 @@ const PrayFocusSelector = ({
         </div>
 
         {/* Prayer count — inside primary card */}
-        <div className="relative mt-6 pt-5 border-t border-success/10">
+        <div className="relative mt-6 pt-5 border-t border-border/40">
           <p className="text-xs font-medium text-muted-foreground mb-3">
             How many people would you like to pray for?
           </p>
@@ -203,19 +210,6 @@ const PrayFocusSelector = ({
             );
           })}
         </div>
-
-        {/* Surprise me — compact pill */}
-        <button
-          onClick={() => setSelectedFocus("surprise")}
-          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-medium transition-all ${
-            selectedFocus === "surprise"
-              ? "border-primary/50 bg-primary/5 text-foreground ring-1 ring-primary/20"
-              : "border-border/40 text-muted-foreground hover:text-foreground hover:border-border"
-          }`}
-        >
-          <Shuffle className="h-4 w-4" />
-          {surpriseOption.title}
-        </button>
       </div>
 
       {/* Rescue Mode Card */}
@@ -261,16 +255,6 @@ const PrayFocusSelector = ({
 
       {/* Start Button */}
       <div className="max-w-2xl mx-auto space-y-3">
-        <Button
-          variant="peaceful"
-          size="lg"
-          className="w-full gap-2 text-base"
-          onClick={() => onStartPraying(selectedFocus, selectedCount)}
-        >
-          Start Praying
-          <ArrowRight className="h-5 w-5" />
-        </Button>
-
         <button
           onClick={onBrowseAdvanced}
           className="flex items-center justify-center gap-2 w-full text-sm text-muted-foreground hover:text-primary transition-colors py-2"
