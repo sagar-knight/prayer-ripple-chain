@@ -127,6 +127,14 @@ export function usePrayerReminders() {
     if (!error) await fetchReminders();
   };
 
+  const updateReminderTimezone = async (reminderId: string, timezone: string) => {
+    const { error } = await supabase
+      .from("prayer_reminders")
+      .update({ timezone, updated_at: new Date().toISOString() })
+      .eq("id", reminderId);
+    if (!error) await fetchReminders();
+  };
+
   const markPrayedToday = async (reminderId: string) => {
     const today = getTodayLocal();
     const { error } = await supabase
@@ -172,6 +180,7 @@ export function usePrayerReminders() {
     disableReminder,
     toggleReminder,
     updateReminderTime,
+    updateReminderTimezone,
     markPrayedToday,
     getReminderForPrayer,
     hasPrayedToday,
