@@ -181,17 +181,12 @@ const PrayFocusSelector = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {availableMain.map((option, idx) => {
             const Icon = option.icon;
-            const isSelected = selectedFocus === option.id;
             return (
               <button
                 key={option.id}
-                onClick={() => setSelectedFocus(option.id)}
+                onClick={() => onStartPraying(option.id, selectedCount)}
                 style={{ animationDelay: `${idx * 60}ms` }}
-                className={`animate-gentle-fade group relative text-left rounded-2xl p-5 ${option.surface} border lift-on-hover overflow-hidden ${
-                  isSelected
-                    ? "border-primary/50 ring-2 ring-primary/30"
-                    : "border-border/40"
-                }`}
+                className="animate-gentle-fade group relative text-left rounded-2xl p-5 bg-card/30 backdrop-blur-sm border border-border/40 hover:border-border lift-on-hover overflow-hidden"
               >
                 <div className="flex flex-col items-start gap-3">
                   <div className="w-10 h-10 rounded-xl bg-white/70 dark:bg-white/10 flex items-center justify-center flex-shrink-0 ring-1 ring-border/40">
