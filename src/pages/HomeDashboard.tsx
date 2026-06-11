@@ -216,48 +216,6 @@ const HomeDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Your Prayer Journey */}
-        <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "300ms" }}>
-          <CardHeader>
-            <CardTitle className="section-title flex items-center gap-2">
-              <Waves className="h-5 w-5 text-primary" />
-              Your Prayer Journey
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <p className="text-sm text-muted-foreground text-center leading-relaxed">
-              {prayersOffered > 0 || prayersReceived > 0
-                ? "You have been praying for others, and others have been praying for you."
-                : "Begin your prayer journey by praying for someone today."}
-            </p>
-
-            {(prayersOffered > 0 || prayersReceived > 0) && (
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-secondary/50 rounded-xl p-4">
-                  <p className="text-2xl font-bold text-foreground">{prayersOffered}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Prayed for others</p>
-                </div>
-                <div className="bg-secondary/50 rounded-xl p-4">
-                  <p className="text-2xl font-bold text-foreground">{prayersReceived}</p>
-                  <p className="text-xs text-muted-foreground mt-1">People praying for you</p>
-                </div>
-                <div className="bg-secondary/50 rounded-xl p-4">
-                  <p className="text-2xl font-bold text-foreground">{stats?.total_chains_started ?? 0}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Passed forward</p>
-                </div>
-              </div>
-            )}
-
-            <div className="text-center">
-              <Button asChild variant="outline" size="sm">
-                <Link to="/ripple">
-                  See your prayer journey
-                  <ArrowRight className="ml-2 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
