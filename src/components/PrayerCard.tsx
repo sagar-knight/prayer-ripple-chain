@@ -9,11 +9,10 @@ import PassItForwardDialog from "./PassItForwardDialog";
 import SharePrayerDialog from "./SharePrayerDialog";
 import PrayerImpactDialog from "./PrayerImpactDialog";
 import ScriptureEncouragement from "./ScriptureEncouragement";
-import PrayerReminderToggle from "./PrayerReminderToggle";
+import ReminderBellButton from "./ReminderBellButton";
 import PrayerRequestCard from "./PrayerRequestCard";
 import PrayerLocationsSheet from "./PrayerLocationsSheet";
 import PrayerLocationPrompt from "./PrayerLocationPrompt";
-import { usePrayerReminders } from "@/hooks/usePrayerReminders";
 
 interface PrayerRequest {
   id: string;
@@ -52,7 +51,6 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
   const [passForwardComplete, setPassForwardComplete] = useState(false);
   const [encouragementMessage, setEncouragementMessage] = useState("");
   const { toast } = useToast();
-  const { getReminderForPrayer, toggleReminder, updateReminderTime } = usePrayerReminders();
 
   const encouragementSuggestions = [
     "You are loved and not forgotten. God sees your heart and hears your prayers.",
@@ -120,8 +118,6 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
     </>
   );
 
-  const reminder = getReminderForPrayer(request.id);
-
   const prayLabel =
     livePrayerCount === 0 ? "Be First" :
     livePrayerCount === 1 ? "1 Prayer" :
@@ -163,6 +159,12 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         <Share2 className="h-4 w-4" />
         <span>Share</span>
       </Button>
+
+      <ReminderBellButton
+        prayerId={request.id}
+        prayerTitle={request.title}
+        size="sm"
+      />
 
       {hasPrayed && passForwardComplete && (
         <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
@@ -235,16 +237,6 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
       >
         {/* Scripture for prayer partners */}
         <ScriptureEncouragement category={request.category} mode="collapsible" maxVerses={2} />
-
-        {/* Optional Daily Reminder */}
-        <PrayerReminderToggle
-          prayerId={request.id}
-          prayerTitle={request.title}
-          enabled={reminder?.enabled ?? false}
-          reminderTime={reminder?.reminder_time_local ?? "08:00"}
-          onToggle={toggleReminder}
-          onTimeChange={reminder ? (time) => updateReminderTime(reminder.id, time) : undefined}
-        />
       </PrayerRequestCard>
 
       {/* Pass It Forward Dialog */}
