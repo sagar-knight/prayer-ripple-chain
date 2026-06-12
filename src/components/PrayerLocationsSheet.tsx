@@ -16,6 +16,20 @@ import {
   type RippleLocationRow,
 } from "@/lib/prayerLocations";
 
+const COUNTRY_NAME_TO_CODE: Record<string, string> = {
+  USA: "US",
+  US: "US",
+  "United States": "US",
+  UK: "GB",
+  "United Kingdom": "GB",
+  Korea: "KR",
+  "South Korea": "KR",
+};
+
+function codeForCountry(country: string) {
+  return COUNTRY_NAME_TO_CODE[country] ?? countryDirectory.find((c) => c.name === country)?.code ?? null;
+}
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -87,7 +101,7 @@ const PrayerLocationsSheet = ({
     return () => {
       cancelled = true;
     };
-  }, [open, id, sourceType]);
+  }, [open, id, sourceType, prayerCount]);
 
   const stats = useMemo(() => computeStats(locations), [locations]);
   const countries = useMemo(() => topCountries(locations, 10), [locations]);
