@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { MapPin, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { requestBrowserLocation, savePrayerRippleLocation } from "@/lib/prayerLocations";
+import { requestBrowserLocation, savePrayerRippleLocation, savePrayerRippleCountryFallback } from "@/lib/prayerLocations";
 
 interface Props {
   open: boolean;
@@ -34,18 +34,32 @@ const PrayerLocationPrompt = ({ open, onOpenChange, prayerRequestId, sourceType 
     } catch (err: any) {
       const code = err?.code ?? err?.message;
       if (code === 1 || code === "PERMISSION_DENIED") {
+        // Silent country-only fallback so the map still lights up.
+        const ok = await savePrayerRippleCountryFallback(prayerRequestId, sourceType);
+        if (ok) onShared?.();
         toast({ title: "That's okay", description: "Your prayer was still counted." });
       } else if (code === "unavailable") {
+        const ok = await savePrayerRippleCountryFallback(prayerRequestId, sourceType);
+        if (ok) onShared?.();
         toast({ title: "Location sharing is not available on this device." });
       } else if (code === "not_authenticated") {
         toast({ title: "Sign in to share your prayer location." });
       } else {
+        const ok = await savePrayerRippleCountryFallback(prayerRequestId, sourceType);
+        if (ok) onShared?.();
         toast({ title: "We couldn't save your location.", description: "Your prayer was still counted." });
       }
       onOpenChange(false);
     } finally {
       setBusy(false);
     }
+  };
+
+  const handleNotNow = async () => {
+    // Silent country-only fallback so the map still shows a pin for this prayer.
+    onOpenChange(false);
+    const ok = await savePrayerRippleCountryFallback(prayerRequestId, sourceType);
+    if (ok) onShared?.();
   };
 
   return (
@@ -64,7 +78,7 @@ const PrayerLocationPrompt = ({ open, onOpenChange, prayerRequestId, sourceType 
           Only an approximate location is stored. Your exact position is never saved or shown.
         </p>
         <DialogFooter className="gap-2 sm:gap-2">
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy}>
+          <Button variant="ghost" onClick={handleNotNow} disabled={busy}>
             Not now
           </Button>
           <Button onClick={handleShare} disabled={busy} className="gap-2">
