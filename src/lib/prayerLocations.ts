@@ -9,7 +9,8 @@
  * values to the database.
  */
 import { supabase } from "@/integrations/supabase/client";
-import { fetchIpCountry, reverseGeocodeToCity } from "@/lib/ipGeolocation";
+import { getCurrentUserCountry } from "@/hooks/useUserCountry";
+import { fetchIpCountry, getCountryCentroidByCode, reverseGeocodeToCity } from "@/lib/ipGeolocation";
 
 export interface ApproxLocation {
   approximate_lat: number;
@@ -232,11 +233,18 @@ export async function savePrayerRippleCountryFallback(
   sourceType: "global" | "church" | "family" = "global",
 ): Promise<boolean> {
   try {
-    if (hasLocallySharedLocation(prayerRequestId)) return false;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    const info = await fetchIpCountry();
+    const profileCountry = await getCurrentUserCountry(user.id);
+    const centroid = getCountryCentroidByCode(profileCountry.code);
+    const info = centroid
+      ? {
+          country_name: profileCountry.name ?? centroid.name,
+          lat: centroid.lat,
+          lng: centroid.lng,
+        }
+      : await fetchIpCountry();
     if (!info) return false;
 
     // Country-centroid pin: jitter slightly so multiple users in the same
