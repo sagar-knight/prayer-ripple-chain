@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { getCurrentUserCountry } from "./useUserCountry";
 import { checkRateLimit } from "@/lib/validation";
+import { savePrayerRippleCountryFallback } from "@/lib/prayerLocations";
 
 export interface BackendPrayer {
   prayer_id: string;
@@ -95,6 +96,9 @@ export function usePrayerService() {
           } catch {
             /* non-blocking */
           }
+        }
+        if (user?.id) {
+          await savePrayerRippleCountryFallback(prayerId, sourceType as "global" | "church" | "family");
         }
       } catch (e) {
         console.error("record_prayer_action error:", e);
