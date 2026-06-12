@@ -11,6 +11,7 @@ import SharePrayerDialog from "@/components/SharePrayerDialog";
 import PrayerImpactDialog from "@/components/PrayerImpactDialog";
 import ReminderBellButton from "@/components/ReminderBellButton";
 import PrayerLocationsSheet from "@/components/PrayerLocationsSheet";
+import PrayerLocationPrompt from "@/components/PrayerLocationPrompt";
 
 interface PublicPrayer {
   id: string;
@@ -48,6 +49,7 @@ const FeaturedPrayerCard = () => {
   const [showShare, setShowShare] = useState(false);
   const [showImpact, setShowImpact] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -105,6 +107,9 @@ const FeaturedPrayerCard = () => {
       setPrayer((p) => (p ? { ...p, prayer_count: p.prayer_count + 1 } : p));
       setPrayed(true);
       setShowImpact(true);
+      // Auto-prompt for an approximate location so the ripple map fills in.
+      // Skipping or denying triggers a silent country-only IP fallback inside the prompt.
+      setShowLocationPrompt(true);
     } finally {
       setPraying(false);
     }
@@ -276,6 +281,16 @@ const FeaturedPrayerCard = () => {
           prayerId={prayer.id}
           sourceType="global"
           prayerCount={prayer.prayer_count}
+        />
+      )}
+
+      {!isSample && (
+        <PrayerLocationPrompt
+          open={showLocationPrompt}
+          onOpenChange={setShowLocationPrompt}
+          prayerRequestId={prayer.id}
+          sourceType="global"
+          onShared={() => setCountryCount((c) => (c ?? 0) + 1)}
         />
       )}
     </>
