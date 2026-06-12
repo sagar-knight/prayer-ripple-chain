@@ -79,3 +79,38 @@ export async function fetchIpCountry(): Promise<IpCountryInfo | null> {
     return null;
   }
 }
+
+export interface CityReverseGeocode {
+  city: string | null;
+  region: string | null;
+  country: string | null;
+}
+
+/**
+ * Reverse-geocode an exact lat/lng to a city name only.
+ * Uses BigDataCloud's free client endpoint (no API key, no IP logging
+ * tied to your account). We discard street-level fields entirely.
+ * Returns null on any failure so callers degrade silently.
+ */
+export async function reverseGeocodeToCity(
+  lat: number,
+  lng: number,
+): Promise<CityReverseGeocode | null> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 3000);
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+    const res = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const city: string | null =
+      data?.city || data?.locality || data?.localityInfo?.administrative?.[3]?.name || null;
+    const region: string | null = data?.principalSubdivision || null;
+    const country: string | null = data?.countryName || null;
+    if (!city && !region && !country) return null;
+    return { city, region, country };
+  } catch {
+    return null;
+  }
+}
