@@ -200,9 +200,21 @@ export async function savePrayerRippleLocation(
     city,
   };
 
-  const { error } = await (supabase as any)
+  const { data: existing } = await (supabase as any)
     .from("prayer_ripple_locations")
-    .upsert(payload, { onConflict: "prayer_request_id,user_id" });
+    .select("id")
+    .eq("prayer_request_id", prayerRequestId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const { error } = existing?.id
+    ? await (supabase as any)
+        .from("prayer_ripple_locations")
+        .update(payload)
+        .eq("id", existing.id)
+    : await (supabase as any)
+        .from("prayer_ripple_locations")
+        .insert(payload);
 
   if (error) throw error;
   markLocallyShared(prayerRequestId);
@@ -271,7 +283,7 @@ export async function savePrayerRippleCountryFallback(
     };
     const { error } = await (supabase as any)
       .from("prayer_ripple_locations")
-      .upsert(payload, { onConflict: "prayer_request_id,user_id" });
+      .insert(payload);
     if (error) return false;
     markLocallyShared(prayerRequestId);
     return true;
