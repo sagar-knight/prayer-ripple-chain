@@ -46,6 +46,11 @@ const COUNTRY_CENTROIDS: Record<string, { lat: number; lng: number; name: string
   TR: { lat: 38.9, lng: 35.2, name: "Turkey" },
 };
 
+export function getCountryCentroidByCode(code: string | null | undefined) {
+  if (!code) return null;
+  return COUNTRY_CENTROIDS[code.toUpperCase()] ?? null;
+}
+
 export interface IpCountryInfo {
   country_code: string;
   country_name: string;
@@ -68,7 +73,7 @@ export async function fetchIpCountry(): Promise<IpCountryInfo | null> {
     const data = await res.json();
     const code = (data?.country_code || data?.country || "").toUpperCase();
     if (!code) return null;
-    const centroid = COUNTRY_CENTROIDS[code];
+    const centroid = getCountryCentroidByCode(code);
     return {
       country_code: code,
       country_name: data?.country_name || centroid?.name || code,
