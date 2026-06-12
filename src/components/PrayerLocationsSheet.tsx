@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import PrayerRippleMap from "@/components/PrayerRippleMap";
 import PrayerRippleStats from "@/components/PrayerRippleStats";
 import { useMapboxToken } from "@/hooks/useMapboxToken";
@@ -8,6 +9,7 @@ import {
   computeStats,
   getPrayerRippleLocations,
   getShareCount,
+  savePrayerRippleCountryFallback,
   topCountries,
   topCities,
   flagFor,
@@ -54,9 +56,27 @@ const PrayerLocationsSheet = ({
       getPrayerRippleLocations(id),
       getShareCount(id, sourceType),
     ])
-      .then(([rows, shares]) => {
+      .then(async ([rows, shares]) => {
         if (cancelled) return;
-        setLocations(rows);
+        let resolvedRows = rows;
+        if (rows.length === 0 && prayerCount > 0) {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { count } = await (supabase as any)
+              .from("prayer_actions")
+              .select("id", { count: "exact", head: true })
+              .eq("prayer_id", id)
+              .eq("source_type", sourceType)
+              .eq("user_id", user.id)
+              .eq("action_type", "prayed");
+            if ((count ?? 0) > 0) {
+              const saved = await savePrayerRippleCountryFallback(id, sourceType);
+              if (saved) resolvedRows = await getPrayerRippleLocations(id);
+            }
+          }
+        }
+        if (cancelled) return;
+        setLocations(resolvedRows);
         setShareCount(shares);
       })
       .catch(() => {
