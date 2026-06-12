@@ -9,6 +9,7 @@
  * values to the database.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { fetchIpCountry } from "@/lib/ipGeolocation";
 
 export interface ApproxLocation {
   approximate_lat: number;
@@ -205,4 +206,46 @@ export function requestBrowserLocation(): Promise<{ lat: number; lng: number }> 
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
     );
   });
+}
+
+/**
+ * Best-effort country-only fallback when the user declines precise location.
+ * Uses an IP lookup to resolve the country and writes a country-centroid pin.
+ * Silent: returns false on any failure (auth, network, already-shared).
+ */
+export async function savePrayerRippleCountryFallback(
+  prayerRequestId: string,
+  sourceType: "global" | "church" | "family" = "global",
+): Promise<boolean> {
+  try {
+    if (hasLocallySharedLocation(prayerRequestId)) return false;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const info = await fetchIpCountry();
+    if (!info) return false;
+
+    // Country-centroid pin: jitter slightly so multiple users in the same
+    // country don't stack on a single pixel.
+    const jitter = () => (Math.random() - 0.5) * 0.8;
+    const payload = {
+      prayer_request_id: prayerRequestId,
+      user_id: user.id,
+      approximate_lat: info.lat + jitter(),
+      approximate_lng: info.lng + jitter(),
+      source_type: sourceType,
+      source: "ip_country",
+      country: info.country_name,
+      region: null,
+      city: null,
+    };
+    const { error } = await (supabase as any)
+      .from("prayer_ripple_locations")
+      .upsert(payload, { onConflict: "prayer_request_id,user_id" });
+    if (error) return false;
+    markLocallyShared(prayerRequestId);
+    return true;
+  } catch {
+    return false;
+  }
 }
