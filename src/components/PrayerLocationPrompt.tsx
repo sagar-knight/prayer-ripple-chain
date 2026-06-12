@@ -28,7 +28,7 @@ const PrayerLocationPrompt = ({ open, onOpenChange, prayerRequestId, sourceType 
       const exact = await requestBrowserLocation();
       // PRIVACY: savePrayerRippleLocation coarsens exact coords before saving.
       await savePrayerRippleLocation(prayerRequestId, exact, { source_type: sourceType });
-      toast({ title: "Your approximate prayer location was added." });
+      toast({ title: "Your city was added to the prayer map." });
       onShared?.();
       onOpenChange(false);
     } catch (err: any) {
@@ -68,14 +68,14 @@ const PrayerLocationPrompt = ({ open, onOpenChange, prayerRequestId, sourceType 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-serif">
             <MapPin className="h-5 w-5 text-primary" />
-            Share your prayer location?
+            Share your city?
           </DialogTitle>
           <DialogDescription>
-            Would you like to share your approximate location so others can see where prayers are coming from?
+            Add your city to the prayer map so others can see where prayers are coming from.
           </DialogDescription>
         </DialogHeader>
         <p className="text-xs text-muted-foreground">
-          Only an approximate location is stored. Your exact position is never saved or shown.
+          Only your city is stored. Your street, address, and exact GPS are never saved or shown.
         </p>
         <DialogFooter className="gap-2 sm:gap-2">
           <Button variant="ghost" onClick={handleNotNow} disabled={busy}>
@@ -83,7 +83,7 @@ const PrayerLocationPrompt = ({ open, onOpenChange, prayerRequestId, sourceType 
           </Button>
           <Button onClick={handleShare} disabled={busy} className="gap-2">
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
-            Share approximate location
+            Share my city
           </Button>
         </DialogFooter>
       </DialogContent>

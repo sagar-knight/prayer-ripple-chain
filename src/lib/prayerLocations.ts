@@ -9,7 +9,7 @@
  * values to the database.
  */
 import { supabase } from "@/integrations/supabase/client";
-import { fetchIpCountry } from "@/lib/ipGeolocation";
+import { fetchIpCountry, reverseGeocodeToCity } from "@/lib/ipGeolocation";
 
 export interface ApproxLocation {
   approximate_lat: number;
@@ -34,10 +34,11 @@ const LS_KEY = (prayerId: string) => `pf:ripple-location:${prayerId}`;
 
 /** Reduce precision of a coordinate for privacy. */
 export function toApproximate(lat: number, lng: number): { lat: number; lng: number } {
-  // PRIVACY: round to 1 decimal (~11km) then add a small random jitter
-  // so points don't snap to a perfect grid that could re-identify users.
+  // PRIVACY: round to city-scale precision (1 decimal ≈ a city neighborhood)
+  // and add tiny jitter so points never sit on a real address or snap to a
+  // perfect grid that could re-identify users.
   const round = (n: number) => Math.round(n * 10) / 10;
-  const jitter = () => (Math.random() - 0.5) * 0.05; // ±~2.5km
+  const jitter = () => (Math.random() - 0.5) * 0.05;
   return { lat: round(lat) + jitter(), lng: round(lng) + jitter() };
 }
 
@@ -170,7 +171,20 @@ export async function savePrayerRippleLocation(
     throw new Error("not_authenticated");
   }
 
-  // PRIVACY: convert exact -> approximate before persisting.
+  // PRIVACY: resolve the exact coords to a *city only* (street/house data
+  // is discarded) and persist a city-scale approximate point. Exact GPS is
+  // never written to the database.
+  let city = meta.city ?? null;
+  let region = meta.region ?? null;
+  let country = meta.country ?? null;
+  if (!city || !country) {
+    const geo = await reverseGeocodeToCity(exact.lat, exact.lng);
+    if (geo) {
+      city = city ?? geo.city;
+      region = region ?? geo.region;
+      country = country ?? geo.country;
+    }
+  }
   const approx = toApproximate(exact.lat, exact.lng);
 
   const payload = {
@@ -180,9 +194,9 @@ export async function savePrayerRippleLocation(
     approximate_lng: approx.lng,
     source_type: meta.source_type ?? "global",
     source: "prayer",
-    country: meta.country ?? null,
-    region: meta.region ?? null,
-    city: meta.city ?? null,
+    country,
+    region,
+    city,
   };
 
   const { error } = await (supabase as any)
