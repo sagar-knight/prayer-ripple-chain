@@ -9,7 +9,8 @@
  * values to the database.
  */
 import { supabase } from "@/integrations/supabase/client";
-import { fetchIpCountry, reverseGeocodeToCity } from "@/lib/ipGeolocation";
+import { getCurrentUserCountry } from "@/hooks/useUserCountry";
+import { fetchIpCountry, getCountryCentroidByCode, reverseGeocodeToCity } from "@/lib/ipGeolocation";
 
 export interface ApproxLocation {
   approximate_lat: number;
@@ -199,9 +200,21 @@ export async function savePrayerRippleLocation(
     city,
   };
 
-  const { error } = await (supabase as any)
+  const { data: existing } = await (supabase as any)
     .from("prayer_ripple_locations")
-    .upsert(payload, { onConflict: "prayer_request_id,user_id" });
+    .select("id")
+    .eq("prayer_request_id", prayerRequestId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const { error } = existing?.id
+    ? await (supabase as any)
+        .from("prayer_ripple_locations")
+        .update(payload)
+        .eq("id", existing.id)
+    : await (supabase as any)
+        .from("prayer_ripple_locations")
+        .insert(payload);
 
   if (error) throw error;
   markLocallyShared(prayerRequestId);
@@ -232,11 +245,26 @@ export async function savePrayerRippleCountryFallback(
   sourceType: "global" | "church" | "family" = "global",
 ): Promise<boolean> {
   try {
-    if (hasLocallySharedLocation(prayerRequestId)) return false;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    const info = await fetchIpCountry();
+    const { data: existing } = await (supabase as any)
+      .from("prayer_ripple_locations")
+      .select("id")
+      .eq("prayer_request_id", prayerRequestId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (existing?.id) return true;
+
+    const profileCountry = await getCurrentUserCountry(user.id);
+    const centroid = getCountryCentroidByCode(profileCountry.code);
+    const info = centroid
+      ? {
+          country_name: profileCountry.name ?? centroid.name,
+          lat: centroid.lat,
+          lng: centroid.lng,
+        }
+      : await fetchIpCountry();
     if (!info) return false;
 
     // Country-centroid pin: jitter slightly so multiple users in the same
@@ -255,7 +283,7 @@ export async function savePrayerRippleCountryFallback(
     };
     const { error } = await (supabase as any)
       .from("prayer_ripple_locations")
-      .upsert(payload, { onConflict: "prayer_request_id,user_id" });
+      .insert(payload);
     if (error) return false;
     markLocallyShared(prayerRequestId);
     return true;
