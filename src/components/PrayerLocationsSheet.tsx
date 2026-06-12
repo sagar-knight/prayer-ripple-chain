@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import PrayerRippleMap from "@/components/PrayerRippleMap";
+import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import PrayerRippleStats from "@/components/PrayerRippleStats";
-import { useMapboxToken } from "@/hooks/useMapboxToken";
+import { countries as countryDirectory } from "@/data/countries";
 import {
   computeStats,
   getPrayerRippleLocations,
@@ -41,7 +41,6 @@ const PrayerLocationsSheet = ({
   prayerCount = 0,
 }: Props) => {
   const id = prayerRequestId ?? prayerId ?? "";
-  const { token, loading: tokenLoading, error: tokenError } = useMapboxToken();
   const [locations, setLocations] = useState<RippleLocationRow[]>([]);
   const [shareCount, setShareCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -93,6 +92,20 @@ const PrayerLocationsSheet = ({
   const stats = useMemo(() => computeStats(locations), [locations]);
   const countries = useMemo(() => topCountries(locations, 10), [locations]);
   const cities = useMemo(() => topCities(locations, 6), [locations]);
+  const mapData = useMemo<CountryStat[]>(() => {
+    return countries
+      .map((c) => {
+        const code = codeForCountry(c.country);
+        if (!code) return null;
+        return {
+          country_code: code,
+          country: c.country,
+          prayers: c.count,
+          participants: c.count,
+        } satisfies CountryStat;
+      })
+      .filter(Boolean) as CountryStat[];
+  }, [countries]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -116,15 +129,11 @@ const PrayerLocationsSheet = ({
             shares={shareCount}
           />
 
-          <div className="h-[55vh] min-h-[320px] w-full rounded-xl border bg-muted/30 overflow-hidden relative">
-            {tokenLoading || loading ? (
+          <div className="w-full rounded-xl border bg-muted/30 overflow-hidden relative">
+            {loading ? (
               <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 Loading prayer locations...
-              </div>
-            ) : tokenError || !token ? (
-              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                Map is unavailable right now.
               </div>
             ) : loadError ? (
               <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
@@ -135,7 +144,11 @@ const PrayerLocationsSheet = ({
                 📍 No prayer locations yet. Be the first to share where you're praying from.
               </div>
             ) : (
-              <PrayerRippleMap token={token} locations={locations} />
+              <WorldRippleMap
+                data={mapData}
+                metric="prayers"
+                emptyMessage="Prayer locations are saved. The world map will light up as countries are identified."
+              />
             )}
           </div>
 
