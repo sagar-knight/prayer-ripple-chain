@@ -1,25 +1,16 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, BookOpen, Star, Sun } from "lucide-react";
-import { getDailyVerse } from "@/data/verses";
+import { Sun } from "lucide-react";
 import DailyPrayerFocus from "@/components/DailyPrayerFocus";
 import FeaturedPrayerCard from "@/components/FeaturedPrayerCard";
 import ActivityPulse from "@/components/ActivityPulse";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 const HomeDashboard = () => {
-  const dailyVerse = getDailyVerse();
   const { user } = useAuth();
-  const today = new Date().toISOString().split("T")[0];
-  const monthKey = today.slice(0, 7); // YYYY-MM
-
-  // Grace-based "days in prayer this month" (no streak resets, no pressure)
-  const [prayerDays, setPrayerDays] = useLocalStorage<Record<string, string[]>>("prayer_days_log", {});
-  const daysInPrayerThisMonth = (prayerDays[monthKey] || []).length;
   const todayLabel = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 
   // Fetch prayer stats from DB
@@ -59,31 +50,6 @@ const HomeDashboard = () => {
           </p>
         </div>
 
-        {/* Prayer Journey highlight card (grace-based, no streaks) */}
-        <Card className="overflow-hidden animate-rise-in border-border/60 bg-card/80 backdrop-blur-sm">
-          <div className="relative p-6 sm:p-8">
-            <div className="relative flex items-center justify-between gap-6 flex-wrap">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
-                  <Star className="h-3.5 w-3.5 text-primary" />
-                  Your Prayer Journey
-                </div>
-                <p className="text-2xl sm:text-3xl font-playfair font-semibold leading-tight text-foreground">
-                  {daysInPrayerThisMonth === 0
-                    ? "A new day to begin"
-                    : `${daysInPrayerThisMonth} ${daysInPrayerThisMonth === 1 ? "day" : "days"} in prayer this month`}
-                </p>
-                <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-                  Every prayer matters. There is no streak to keep, only grace to receive.
-                </p>
-              </div>
-              <div className="shrink-0 w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-                <Heart className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </div>
-        </Card>
-
         {/* Section 1 — Featured prayer (core loop: Pray → Impact → Share) */}
         <div className="animate-gentle-fade">
           <FeaturedPrayerCard />
@@ -94,32 +60,6 @@ const HomeDashboard = () => {
 
         {/* Daily Prayer Focus */}
         <DailyPrayerFocus />
-
-        {/* Section 2 — Scripture Today */}
-        <Card className="border-0 animate-gentle-fade" style={{ animationDelay: "200ms" }}>
-          <CardHeader>
-            <CardTitle className="section-title flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-primary" />
-              Scripture Today
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <blockquote className="border-l-4 border-primary/30 pl-4 italic text-foreground/90 text-sm leading-relaxed">
-              "{dailyVerse.text}"
-            </blockquote>
-            <p className="text-sm font-medium text-primary">
-              {dailyVerse.reference} ({dailyVerse.translation})
-            </p>
-            <div className="flex gap-3 flex-wrap">
-              <Button asChild variant="outline" size="sm">
-                <Link to="/scripture">Read Passage</Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/scripture">Open Scripture</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
 
       </div>
     </div>

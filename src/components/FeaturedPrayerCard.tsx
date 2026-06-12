@@ -10,6 +10,7 @@ import { usePrayerService } from "@/hooks/usePrayerService";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import PrayerImpactDialog from "@/components/PrayerImpactDialog";
 import ReminderBellButton from "@/components/ReminderBellButton";
+import PrayerLocationsSheet from "@/components/PrayerLocationsSheet";
 
 interface PublicPrayer {
   id: string;
@@ -46,6 +47,7 @@ const FeaturedPrayerCard = () => {
   const [countryCount, setCountryCount] = useState<number | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [showImpact, setShowImpact] = useState(false);
+  const [showLocations, setShowLocations] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -159,10 +161,25 @@ const FeaturedPrayerCard = () => {
                 : "Be the first to pray"}
             </span>
             {countryCount !== null && countryCount > 0 && (
-              <span className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => !isSample && setShowLocations(true)}
+                disabled={isSample}
+                className="flex items-center gap-1.5 hover:text-foreground transition-colors disabled:cursor-default"
+              >
                 <Globe2 className="h-4 w-4 text-primary" />
-                {countryCount} {countryCount === 1 ? "country" : "countries"} reached
-              </span>
+                {countryCount} {countryCount === 1 ? "country" : "countries"} · See map
+              </button>
+            )}
+            {!isSample && countryCount === 0 && (
+              <button
+                type="button"
+                onClick={() => setShowLocations(true)}
+                className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+              >
+                <Globe2 className="h-4 w-4 text-primary" />
+                See who's praying
+              </button>
             )}
             {!isSample && (
               <span className="ml-auto">
@@ -251,6 +268,16 @@ const FeaturedPrayerCard = () => {
           setShowShare(true);
         }}
       />
+
+      {!isSample && (
+        <PrayerLocationsSheet
+          open={showLocations}
+          onOpenChange={setShowLocations}
+          prayerId={prayer.id}
+          sourceType="global"
+          prayerCount={prayer.prayer_count}
+        />
+      )}
     </>
   );
 };
