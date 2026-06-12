@@ -236,6 +236,14 @@ export async function savePrayerRippleCountryFallback(
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
+    const { data: existing } = await (supabase as any)
+      .from("prayer_ripple_locations")
+      .select("id")
+      .eq("prayer_request_id", prayerRequestId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (existing?.id) return true;
+
     const profileCountry = await getCurrentUserCountry(user.id);
     const centroid = getCountryCentroidByCode(profileCountry.code);
     const info = centroid
