@@ -1,4 +1,4 @@
-import { HandsPraying, Globe, Share2 } from "lucide-react";
+import { Sparkles, Globe, Share2 } from "lucide-react";
 
 interface Props {
   prayers: number;
