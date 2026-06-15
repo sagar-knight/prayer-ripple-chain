@@ -301,11 +301,13 @@ const SharedPrayer = () => {
   );
 };
 
-const Stat = ({ icon: Icon, label, value }: { icon: typeof Heart; label: string; value: number }) => (
-  <div className="rounded-xl bg-muted/50 p-3 text-center">
-    <Icon className="h-4 w-4 text-primary mx-auto mb-1" />
-    <p className="text-xl font-semibold text-foreground">{value.toLocaleString()}</p>
-    <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
+const CompactStat = ({ icon: Icon, label, value }: { icon: typeof Heart; label: string; value: number }) => (
+  <div className="flex flex-col items-center rounded-xl bg-muted/50 p-2">
+    <div className="mb-1 flex h-7 w-7 items-center justify-center rounded-full border bg-background/80">
+      <Icon className="h-4 w-4 text-foreground" strokeWidth={1.5} />
+    </div>
+    <p className="text-base font-semibold text-foreground tabular-nums">{value.toLocaleString()}</p>
+    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
   </div>
 );
 
