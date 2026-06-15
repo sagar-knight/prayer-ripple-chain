@@ -173,25 +173,23 @@ const SharedPrayer = () => {
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-lg mx-auto px-4 space-y-6">
-        {/* Prayer card */}
+        {/* Prayer card with inline actions */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
-          <CardContent className="pt-8 pb-8 space-y-5">
-            <div className="text-center space-y-2">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
-                <Star className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="font-playfair text-2xl font-bold text-foreground">
-                Someone asked for prayer
-              </h1>
-              <p className="text-muted-foreground text-sm">Take a moment to pray with them.</p>
-            </div>
-
+          <CardContent className="pt-7 pb-6 space-y-5">
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-3">
-                <h2 className="font-playfair text-lg font-semibold text-foreground">{prayer.title}</h2>
-                <Badge variant="secondary" className="text-xs flex-shrink-0">{prayer.category}</Badge>
+                <h1 className="font-playfair text-xl font-semibold text-foreground leading-tight">
+                  {prayer.title}
+                </h1>
+                <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
+                  {prayer.category}
+                </Badge>
               </div>
-              <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{prayer.description}</p>
+              {prayer.description && prayer.description.trim() && (
+                <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                  {prayer.description}
+                </p>
+              )}
               {prayer.country && (
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <MapPin className="h-3 w-3" />
@@ -199,28 +197,27 @@ const SharedPrayer = () => {
                 </div>
               )}
             </div>
+
+            <div className="space-y-2 pt-1">
+              <Button asChild variant="peaceful" size="lg" className="w-full gap-2">
+                <Link to="/pray">
+                  <Star className="h-5 w-5" />
+                  Pray Now
+                </Link>
+              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => setShareOpen(true)}>
+                  <Share2 className="h-4 w-4" />
+                  Forward
+                </Button>
+                <ReminderBellButton
+                  prayerId={prayer.id}
+                  prayerTitle={prayer.title}
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
-
-        {/* Action buttons */}
-        <div className="space-y-3 animate-gentle-fade">
-          <Button asChild variant="peaceful" size="lg" className="w-full gap-2">
-            <Link to="/pray">
-              <Star className="h-5 w-5" />
-              Pray Now
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg" className="w-full gap-2" onClick={() => setShareOpen(true)}>
-            <Share2 className="h-5 w-5" />
-            Forward This Prayer
-          </Button>
-          <div className="flex justify-center">
-            <ReminderBellButton
-              prayerId={prayer.id}
-              prayerTitle={prayer.title}
-            />
-          </div>
-        </div>
 
         {/* Ripple summary */}
         <Card className="border-0 shadow-card animate-gentle-fade">
