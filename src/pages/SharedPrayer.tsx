@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowRight, Loader2, Star, MapPin, Users, Share2, Waves, Globe2 } from "lucide-react";
+import { Heart, ArrowRight, Loader2, Star, MapPin, Users, Share2, Waves } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
