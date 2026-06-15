@@ -82,7 +82,7 @@ const PrayerRequestCard = ({
     }
     (async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("profiles_public" as any)
         .select("display_name, avatar_url")
         .eq("id", requesterUserId)
         .maybeSingle();
