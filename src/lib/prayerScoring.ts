@@ -26,6 +26,7 @@ export interface ScoredPrayerRequest {
   interestCategories?: string[];
   visibility: "public" | "family-only" | "org-only" | "private";
   familyId?: string;
+  requesterUserId?: string;
 }
 
 export interface UserPrayerHistoryEntry {

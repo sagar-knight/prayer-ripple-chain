@@ -50,6 +50,7 @@ function toScoredRequest(p: BackendPrayer): ScoredPrayerRequest {
     country: p.country ?? undefined,
     interestCategories: [p.category],
     visibility: "public",
+    requesterUserId: p.created_by || undefined,
   };
 }
 

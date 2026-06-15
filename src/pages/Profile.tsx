@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, LogOut, KeyRound, Trash2, ShieldAlert } from "lucide-react";
+import AvatarUploader from "@/components/AvatarUploader";
 
 const Profile = () => {
   const { user, signOut, updatePassword, resetPassword } = useAuth();
@@ -173,6 +174,10 @@ const Profile = () => {
         {/* ===== Profile form ===== */}
         <Card>
           <CardContent className="pt-6 space-y-5">
+            {user && (
+              <AvatarUploader userId={user.id} displayName={displayName} />
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input

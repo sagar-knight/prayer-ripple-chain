@@ -7,6 +7,7 @@ import ReportButton from "@/components/ReportButton";
 import PrayerTranslateButton from "@/components/PrayerTranslateButton";
 import { getLanguageByCode } from "@/data/languages";
 import { Badge } from "@/components/ui/badge";
+import UserProfileSheet from "@/components/UserProfileSheet";
 
 interface PrayerRequestCardProps {
   /** Optional header text, defaults to "Someone asked for prayer" */
@@ -37,6 +38,9 @@ interface PrayerRequestCardProps {
   status?: "open" | "progress" | "answered" | "archived" | string;
   /** Optional latest owner update message */
   latestUpdate?: string | null;
+  /** When provided, the header becomes clickable and opens a profile sheet
+   *  with friend / block actions for that user. */
+  requesterUserId?: string;
 }
 
 const PrayerRequestCard = ({
@@ -53,6 +57,7 @@ const PrayerRequestCard = ({
   translatable,
   status,
   latestUpdate,
+  requesterUserId,
 }: PrayerRequestCardProps) => {
   const [translation, setTranslation] = useState<{
     title: string | null;
@@ -61,6 +66,7 @@ const PrayerRequestCard = ({
     targetLang: string;
   } | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const showingTranslation = !!translation;
   const displayedDescription =
@@ -94,9 +100,19 @@ const PrayerRequestCard = ({
     >
       <CardContent className="px-6 py-8 sm:px-8 sm:py-10 space-y-5">
         {/* Calm header */}
-        <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
-          {header}
-        </p>
+        {requesterUserId ? (
+          <button
+            type="button"
+            onClick={() => setProfileOpen(true)}
+            className="block mx-auto text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center hover:text-foreground transition-colors"
+          >
+            {header}
+          </button>
+        ) : (
+          <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
+            {header}
+          </p>
+        )}
 
         {/* Lifecycle status */}
         {(status === "answered" || status === "progress") && (
@@ -198,6 +214,13 @@ const PrayerRequestCard = ({
         )}
       </CardContent>
     </Card>
+    {requesterUserId && (
+      <UserProfileSheet
+        open={profileOpen}
+        onOpenChange={setProfileOpen}
+        userId={requesterUserId}
+      />
+    )}
     </motion.div>
   );
 };

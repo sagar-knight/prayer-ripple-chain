@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { CheckCircle, XCircle, Eye, Search, ShieldCheck } from "lucide-react";
+import { CheckCircle, XCircle, Eye, Search, ShieldCheck, ImageIcon } from "lucide-react";
+import PendingAvatarsPanel from "@/components/admin/PendingAvatarsPanel";
 
 interface QueueItem {
   id: string;
@@ -180,12 +181,16 @@ const AdminModeration = () => {
             <TabsTrigger value="approved">Approved ({byStatus("approved").length})</TabsTrigger>
             <TabsTrigger value="denied">Denied ({byStatus("denied").length})</TabsTrigger>
             <TabsTrigger value="all">All ({filtered.length})</TabsTrigger>
+            <TabsTrigger value="avatars" className="gap-1">
+              <ImageIcon className="w-3 h-3" /> Avatars
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="pending">{byStatus("pending").map(renderItem)}</TabsContent>
           <TabsContent value="flagged">{byStatus("flagged").map(renderItem)}</TabsContent>
           <TabsContent value="approved">{byStatus("approved").map(renderItem)}</TabsContent>
           <TabsContent value="denied">{byStatus("denied").map(renderItem)}</TabsContent>
           <TabsContent value="all">{filtered.map(renderItem)}</TabsContent>
+          <TabsContent value="avatars"><PendingAvatarsPanel /></TabsContent>
         </Tabs>
       )}
     </div>
