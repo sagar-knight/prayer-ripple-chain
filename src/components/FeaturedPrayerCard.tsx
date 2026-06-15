@@ -81,14 +81,14 @@ const FeaturedPrayerCard = () => {
         // Resolve requester profile for non-anonymous prayers
         if (!pick.anonymous && pick.created_by) {
           try {
-            const { data: prof } = await supabase
-              .from("profiles")
+            const { data: prof } = await (supabase as any)
+              .from("profiles_public" as any)
               .select("display_name, avatar_url")
               .eq("id", pick.created_by)
               .maybeSingle();
             if (!cancelled) {
-              setRequesterName(prof?.display_name || "Prayer Warrior");
-              const url = await resolveAvatarUrl(prof?.avatar_url);
+              setRequesterName((prof?.display_name as string) || "Prayer Warrior");
+              const url = await resolveAvatarUrl(prof?.avatar_url as string | null);
               if (!cancelled) setRequesterAvatar(url);
             }
           } catch {
