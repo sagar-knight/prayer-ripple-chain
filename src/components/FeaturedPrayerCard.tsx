@@ -5,6 +5,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Share2, Globe2, ShieldCheck, Heart, Loader2 } from "lucide-react";
+import { UserRound } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import UserProfileSheet from "@/components/UserProfileSheet";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { usePrayerService } from "@/hooks/usePrayerService";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
@@ -22,6 +26,7 @@ interface PublicPrayer {
   anonymous: boolean;
   show_country: boolean;
   country: string | null;
+  created_by?: string | null;
 }
 
 const SAMPLE: PublicPrayer = {
@@ -34,6 +39,7 @@ const SAMPLE: PublicPrayer = {
   anonymous: true,
   show_country: false,
   country: null,
+  created_by: null,
 };
 
 const FeaturedPrayerCard = () => {
@@ -50,13 +56,16 @@ const FeaturedPrayerCard = () => {
   const [showImpact, setShowImpact] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  const [requesterName, setRequesterName] = useState<string | null>(null);
+  const [requesterAvatar, setRequesterAvatar] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const { data } = await supabase
         .from("global_prayers_public" as any)
-        .select("id,title,description,category,prayer_count,anonymous,show_country,country")
+        .select("id,title,description,category,prayer_count,anonymous,show_country,country,created_by")
         .eq("status", "open")
         .order("created_at", { ascending: false })
         .limit(10);
@@ -69,6 +78,23 @@ const FeaturedPrayerCard = () => {
       } else {
         const pick = rows[Math.floor(Math.random() * rows.length)];
         setPrayer(pick);
+        // Resolve requester profile for non-anonymous prayers
+        if (!pick.anonymous && pick.created_by) {
+          try {
+            const { data: prof } = await supabase
+              .from("profiles")
+              .select("display_name, avatar_url")
+              .eq("id", pick.created_by)
+              .maybeSingle();
+            if (!cancelled) {
+              setRequesterName(prof?.display_name || "Prayer Warrior");
+              const url = await resolveAvatarUrl(prof?.avatar_url);
+              if (!cancelled) setRequesterAvatar(url);
+            }
+          } catch {
+            /* non-blocking */
+          }
+        }
         // Optional: country reach
         try {
           const { data: actions } = await supabase
@@ -127,6 +153,15 @@ const FeaturedPrayerCard = () => {
 
   if (!prayer) return null;
 
+  const requesterId = !prayer.anonymous && prayer.created_by ? prayer.created_by : null;
+  const initials = (requesterName || "PW")
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
     <>
       <Card className="border-0 shadow-peaceful bg-card/90 backdrop-blur overflow-hidden">
@@ -147,13 +182,39 @@ const FeaturedPrayerCard = () => {
             )}
           </div>
 
-          <div className="space-y-2">
-            <h2 className="font-playfair text-2xl md:text-3xl font-semibold text-foreground">
-              {prayer.title}
-            </h2>
-            <p className="text-muted-foreground leading-relaxed line-clamp-4">
-              {prayer.description}
-            </p>
+          <div className="flex items-start gap-3">
+            {requesterId ? (
+              <button
+                type="button"
+                onClick={() => setProfileOpen(true)}
+                className="shrink-0"
+                aria-label={`Open profile for ${requesterName || "requester"}`}
+              >
+                <Avatar className="h-12 w-12 ring-1 ring-border hover:ring-foreground/40 transition">
+                  {requesterAvatar && <AvatarImage src={requesterAvatar} alt={requesterName || "Profile"} />}
+                  <AvatarFallback className="bg-muted text-foreground text-sm">{initials}</AvatarFallback>
+                </Avatar>
+              </button>
+            ) : (
+              <Avatar className="h-12 w-12 ring-1 ring-border shrink-0">
+                <AvatarFallback className="bg-muted text-muted-foreground">
+                  <UserRound className="h-5 w-5" />
+                </AvatarFallback>
+              </Avatar>
+            )}
+            <div className="space-y-2 min-w-0">
+              <h2 className="font-playfair text-2xl md:text-3xl font-semibold text-foreground">
+                {prayer.title}
+              </h2>
+              {requesterId && requesterName && (
+                <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium">
+                  {requesterName}
+                </p>
+              )}
+              <p className="text-muted-foreground leading-relaxed line-clamp-4">
+                {prayer.description}
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -258,6 +319,14 @@ const FeaturedPrayerCard = () => {
         prayerId={prayer.id}
         prayerTitle={prayer.title}
       />
+
+      {requesterId && (
+        <UserProfileSheet
+          open={profileOpen}
+          onOpenChange={setProfileOpen}
+          userId={requesterId}
+        />
+      )}
 
       <PrayerImpactDialog
         open={showImpact}
