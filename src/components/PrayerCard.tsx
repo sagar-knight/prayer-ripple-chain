@@ -24,6 +24,7 @@ interface PrayerRequest {
   timeAgo: string;
   churchName?: string;
   prayerCount: number;
+  requesterUserId?: string;
 }
 
 interface PrayerCardProps {
@@ -230,6 +231,9 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         actions={actions}
         reportEntityId={request.id}
         reportEntityType={request.churchName ? "church_prayer" : "global_prayer"}
+        requesterUserId={
+          !request.isAnonymous && request.requesterUserId ? request.requesterUserId : undefined
+        }
         translatable={{
           prayerId: request.id,
           sourceType: request.churchName ? "church" : "global",
