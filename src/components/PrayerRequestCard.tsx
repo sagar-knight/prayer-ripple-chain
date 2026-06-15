@@ -81,14 +81,14 @@ const PrayerRequestCard = ({
       return;
     }
     (async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("profiles_public" as any)
         .select("display_name, avatar_url")
         .eq("id", requesterUserId)
         .maybeSingle();
       if (!active) return;
-      setRequesterName(data?.display_name || "Prayer Warrior");
-      const url = await resolveAvatarUrl(data?.avatar_url);
+      setRequesterName((data?.display_name as string) || "Prayer Warrior");
+      const url = await resolveAvatarUrl(data?.avatar_url as string | null);
       if (active) setRequesterAvatar(url);
     })();
     return () => {
