@@ -53,8 +53,8 @@ const UserProfileSheet = ({ open, onOpenChange, userId }: Props) => {
     (async () => {
       setLoading(true);
       const [{ data: profile }, friendRes, blockRes] = await Promise.all([
-        supabase
-          .from("profiles")
+        (supabase as any)
+          .from("profiles_public" as any)
           .select("display_name, avatar_url")
           .eq("id", userId)
           .maybeSingle(),
