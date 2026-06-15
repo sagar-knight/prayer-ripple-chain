@@ -910,6 +910,39 @@ export type Database = {
           },
         ]
       }
+      friend_requests: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          recipient_id: string
+          requester_id: string
+          responded_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_id: string
+          requester_id: string
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_id?: string
+          requester_id?: string
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       global_prayer_requests: {
         Row: {
           allow_public_ripple_view: boolean
@@ -1460,6 +1493,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_rejection_reason: string | null
+          avatar_reviewed_at: string | null
+          avatar_reviewed_by: string | null
+          avatar_status: string
           avatar_url: string | null
           city: string | null
           commitment_level: string
@@ -1474,6 +1511,7 @@ export type Database = {
           last_login_at: string | null
           last_login_country_code: string | null
           last_login_country_name: string | null
+          pending_avatar_url: string | null
           preferred_language_code: string | null
           preferred_language_name: string | null
           state: string | null
@@ -1481,6 +1519,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_rejection_reason?: string | null
+          avatar_reviewed_at?: string | null
+          avatar_reviewed_by?: string | null
+          avatar_status?: string
           avatar_url?: string | null
           city?: string | null
           commitment_level?: string
@@ -1495,6 +1537,7 @@ export type Database = {
           last_login_at?: string | null
           last_login_country_code?: string | null
           last_login_country_name?: string | null
+          pending_avatar_url?: string | null
           preferred_language_code?: string | null
           preferred_language_name?: string | null
           state?: string | null
@@ -1502,6 +1545,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_rejection_reason?: string | null
+          avatar_reviewed_at?: string | null
+          avatar_reviewed_by?: string | null
+          avatar_status?: string
           avatar_url?: string | null
           city?: string | null
           commitment_level?: string
@@ -1516,6 +1563,7 @@ export type Database = {
           last_login_at?: string | null
           last_login_country_code?: string | null
           last_login_country_name?: string | null
+          pending_avatar_url?: string | null
           preferred_language_code?: string | null
           preferred_language_name?: string | null
           state?: string | null
@@ -1652,6 +1700,30 @@ export type Database = {
           module_key?: string
           module_name?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
         }
         Relationships: []
       }
@@ -1869,6 +1941,10 @@ export type Database = {
       }
       review_community_join_request: {
         Args: { _decision: string; _note?: string; _request_id: string }
+        Returns: undefined
+      }
+      review_pending_avatar: {
+        Args: { _decision: string; _profile_id: string; _reason?: string }
         Returns: undefined
       }
       slugify_text: { Args: { _input: string }; Returns: string }
