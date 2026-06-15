@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowRight, Loader2, Star, MapPin, Users, Share2, Waves, Globe2 } from "lucide-react";
+import { Heart, ArrowRight, Loader2, Star, MapPin, Users, Share2, Waves } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
@@ -220,39 +220,29 @@ const SharedPrayer = () => {
           </CardContent>
         </Card>
 
-        {/* Ripple summary */}
-        <Card className="border-0 shadow-card animate-gentle-fade">
-          <CardContent className="pt-6 pb-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <Waves className="h-5 w-5 text-primary" />
-              <h3 className="font-playfair text-lg font-semibold text-foreground">Ripple of prayer</h3>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Stat icon={Heart} label="Prayers offered" value={ripple.total_prayers} />
-              <Stat icon={Users} label="People joined" value={ripple.unique_people} />
-              <Stat icon={Share2} label="Forwards" value={ripple.forwards} />
-              <Stat icon={Waves} label="Ripple layers" value={ripple.depth} />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Geography reach */}
+        {/* Ripple of prayer — stats + map unified */}
         {geography && geography.length > 0 && (
           <Card className="border-0 shadow-card animate-gentle-fade">
-            <CardContent className="pt-6 pb-6 space-y-3">
+            <CardContent className="pt-6 pb-6 space-y-5">
               <div className="flex items-center gap-2">
-                <Globe2 className="h-5 w-5 text-primary" />
-                <h3 className="font-playfair text-lg font-semibold text-foreground">Ripple Map</h3>
+                <Waves className="h-5 w-5 text-primary" />
+                <h3 className="font-playfair text-lg font-semibold text-foreground">Ripple of Prayer</h3>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Prayers offered from {geography.length} {geography.length === 1 ? "country" : "countries"}.
-              </p>
+
+              <div className="grid grid-cols-4 gap-2">
+                <CompactStat icon={Heart} value={ripple.total_prayers} label={ripple.total_prayers === 1 ? "Prayer" : "Prayers"} />
+                <CompactStat icon={Users} value={ripple.unique_people} label={ripple.unique_people === 1 ? "Person" : "People"} />
+                <CompactStat icon={Share2} value={ripple.forwards} label={ripple.forwards === 1 ? "Forward" : "Forwards"} />
+                <CompactStat icon={Waves} value={ripple.depth} label={ripple.depth === 1 ? "Layer" : "Layers"} />
+              </div>
+
               <WorldRippleMap
                 data={geography}
                 metric="prayers"
                 originCode={prayer.origin_country_code ?? null}
               />
-              <div className="flex flex-wrap gap-2 pt-1">
+
+              <div className="flex flex-wrap gap-2">
                 {geography.slice(0, 12).map((g) => (
                   <Badge key={g.country_code} variant="secondary" className="text-xs">
                     {g.country} · {g.prayers}
@@ -311,11 +301,13 @@ const SharedPrayer = () => {
   );
 };
 
-const Stat = ({ icon: Icon, label, value }: { icon: typeof Heart; label: string; value: number }) => (
-  <div className="rounded-xl bg-muted/50 p-3 text-center">
-    <Icon className="h-4 w-4 text-primary mx-auto mb-1" />
-    <p className="text-xl font-semibold text-foreground">{value.toLocaleString()}</p>
-    <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
+const CompactStat = ({ icon: Icon, label, value }: { icon: typeof Heart; label: string; value: number }) => (
+  <div className="flex flex-col items-center rounded-xl bg-muted/50 p-2">
+    <div className="mb-1 flex h-7 w-7 items-center justify-center rounded-full border bg-background/80">
+      <Icon className="h-4 w-4 text-foreground" strokeWidth={1.5} />
+    </div>
+    <p className="text-base font-semibold text-foreground tabular-nums">{value.toLocaleString()}</p>
+    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
   </div>
 );
 
