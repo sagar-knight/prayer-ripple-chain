@@ -9,7 +9,7 @@ interface Props {
 
 const PrayerRippleStats = ({ prayers, countries, shares }: Props) => {
   const items = [
-    { icon: HandsPraying, value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
+    { icon: Sparkles, value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
     { icon: Globe, value: countries, label: countries === 1 ? "Country" : "Countries" },
     { icon: Share2, value: shares, label: shares === 1 ? "Share" : "Shares" },
   ];
