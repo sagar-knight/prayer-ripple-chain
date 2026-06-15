@@ -1,4 +1,5 @@
-import { Sparkles, Globe, Share2 } from "lucide-react";
+import { Globe, Share2 } from "lucide-react";
+import PrayerHandsIcon from "@/components/icons/PrayerHandsIcon";
 
 interface Props {
   prayers: number;
@@ -9,7 +10,7 @@ interface Props {
 
 const PrayerRippleStats = ({ prayers, countries, shares }: Props) => {
   const items = [
-    { icon: Sparkles, value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
+    { icon: PrayerHandsIcon, value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
     { icon: Globe, value: countries, label: countries === 1 ? "Country" : "Countries" },
     { icon: Share2, value: shares, label: shares === 1 ? "Share" : "Shares" },
   ];
