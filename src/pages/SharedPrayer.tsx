@@ -213,6 +213,7 @@ const SharedPrayer = () => {
                 <ReminderBellButton
                   prayerId={prayer.id}
                   prayerTitle={prayer.title}
+                  className="w-full justify-center"
                 />
               </div>
             </div>
