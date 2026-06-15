@@ -1839,6 +1839,24 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          display_name: string | null
+          id: string | null
+        }
+        Insert: {
+          avatar_url?: never
+          display_name?: never
+          id?: string | null
+        }
+        Update: {
+          avatar_url?: never
+          display_name?: never
+          id?: string | null
+        }
+        Relationships: []
+      }
       unified_prayer_feed: {
         Row: {
           anonymous: boolean | null

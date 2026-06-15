@@ -1,13 +1,16 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Sprout } from "lucide-react";
+import { CheckCircle, Sprout, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReportButton from "@/components/ReportButton";
 import PrayerTranslateButton from "@/components/PrayerTranslateButton";
 import { getLanguageByCode } from "@/data/languages";
 import { Badge } from "@/components/ui/badge";
 import UserProfileSheet from "@/components/UserProfileSheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 interface PrayerRequestCardProps {
   /** Optional header text, defaults to "Someone asked for prayer" */
@@ -67,6 +70,39 @@ const PrayerRequestCard = ({
   } | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [requesterName, setRequesterName] = useState<string | null>(null);
+  const [requesterAvatar, setRequesterAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    if (!requesterUserId) {
+      setRequesterName(null);
+      setRequesterAvatar(null);
+      return;
+    }
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("profiles_public" as any)
+        .select("display_name, avatar_url")
+        .eq("id", requesterUserId)
+        .maybeSingle();
+      if (!active) return;
+      setRequesterName((data?.display_name as string) || "Prayer Warrior");
+      const url = await resolveAvatarUrl(data?.avatar_url as string | null);
+      if (active) setRequesterAvatar(url);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [requesterUserId]);
+
+  const initials = (requesterName || "PW")
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   const showingTranslation = !!translation;
   const displayedDescription =
@@ -99,19 +135,35 @@ const PrayerRequestCard = ({
       )}
     >
       <CardContent className="px-6 py-8 sm:px-8 sm:py-10 space-y-5">
-        {/* Calm header */}
+        {/* Calm header with requester avatar */}
         {requesterUserId ? (
           <button
             type="button"
             onClick={() => setProfileOpen(true)}
-            className="block mx-auto text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center hover:text-foreground transition-colors"
+            className="mx-auto flex flex-col items-center gap-2 group"
+            aria-label={`Open profile for ${requesterName || "this person"}`}
           >
-            {header}
+            <Avatar className="h-12 w-12 ring-1 ring-border group-hover:ring-foreground/40 transition">
+              {requesterAvatar && <AvatarImage src={requesterAvatar} alt={requesterName || "Profile"} />}
+              <AvatarFallback className="bg-muted text-foreground text-sm">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium group-hover:text-foreground transition-colors">
+              {requesterName || header}
+            </span>
           </button>
         ) : (
-          <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
-            {header}
-          </p>
+          <div className="mx-auto flex flex-col items-center gap-2">
+            <Avatar className="h-12 w-12 ring-1 ring-border">
+              <AvatarFallback className="bg-muted text-muted-foreground">
+                <UserRound className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium text-center">
+              {header}
+            </p>
+          </div>
         )}
 
         {/* Lifecycle status */}
