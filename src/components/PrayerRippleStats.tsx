@@ -1,3 +1,5 @@
+import { HandsPraying, Globe, Share2 } from "lucide-react";
+
 interface Props {
   prayers: number;
   countries: number;
@@ -7,9 +9,9 @@ interface Props {
 
 const PrayerRippleStats = ({ prayers, countries, shares }: Props) => {
   const items = [
-    { icon: "🙏", value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
-    { icon: "🌎", value: countries, label: countries === 1 ? "Country" : "Countries" },
-    { icon: "↗", value: shares, label: shares === 1 ? "Share" : "Shares" },
+    { icon: HandsPraying, value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
+    { icon: Globe, value: countries, label: countries === 1 ? "Country" : "Countries" },
+    { icon: Share2, value: shares, label: shares === 1 ? "Share" : "Shares" },
   ];
 
   return (
@@ -18,17 +20,22 @@ const PrayerRippleStats = ({ prayers, countries, shares }: Props) => {
         Prayer Ripple
       </p>
       <div className="grid grid-cols-3 gap-2 text-center">
-        {items.map((i) => (
-          <div key={i.label} className="flex flex-col items-center">
-            <div className="text-lg leading-none mb-1" aria-hidden>{i.icon}</div>
-            <div className="text-base font-semibold text-foreground tabular-nums">
-              {i.value.toLocaleString()}
+        {items.map((i) => {
+          const Icon = i.icon;
+          return (
+            <div key={i.label} className="flex flex-col items-center">
+              <div className="mb-1.5 flex h-7 w-7 items-center justify-center rounded-full border bg-background/80" aria-hidden>
+                <Icon className="h-4 w-4 text-foreground" strokeWidth={1.5} />
+              </div>
+              <div className="text-base font-semibold text-foreground tabular-nums">
+                {i.value.toLocaleString()}
+              </div>
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                {i.label}
+              </div>
             </div>
-            <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
-              {i.label}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
