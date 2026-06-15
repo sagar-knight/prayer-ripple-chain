@@ -43,6 +43,7 @@ function toCardRequest(p: BackendPrayer): ScoredPrayerRequest {
     country: p.country ?? undefined,
     interestCategories: [p.category],
     visibility: "public",
+    requesterUserId: p.anonymous ? undefined : p.created_by || undefined,
   };
 }
 
