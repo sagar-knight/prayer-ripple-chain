@@ -126,18 +126,18 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode, isLoading =
         .prayer-light-origin { filter: drop-shadow(0 0 6px hsl(var(--accent))); }
       `}</style>
 
-      <div className="rounded-xl overflow-hidden bg-[#15376b] border border-border/60 relative">
+      <div className="rounded-xl overflow-hidden bg-[#4FB4F0] border border-border/60 relative">
         {isLoading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#15376b]/70 backdrop-blur-sm pointer-events-none">
-            <div className="flex items-center gap-2 text-xs text-white/90 bg-[#15376b]/80 px-3 py-1.5 rounded-full border border-white/20">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#4FB4F0]/70 backdrop-blur-sm pointer-events-none">
+            <div className="flex items-center gap-2 text-xs text-white/95 bg-[#1e6fa8]/80 px-3 py-1.5 rounded-full border border-white/20">
               <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
               Loading prayer map...
             </div>
           </div>
         )}
         {error && !isLoading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#15376b]/80 backdrop-blur-sm pointer-events-none px-4">
-            <p className="text-xs text-white/90 text-center max-w-xs">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#4FB4F0]/80 backdrop-blur-sm pointer-events-none px-4">
+            <p className="text-xs text-white/95 text-center max-w-xs">
               We couldn't load the live map right now. It will reconnect on its own.
             </p>
           </div>
@@ -160,14 +160,14 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode, isLoading =
                   const fill = isOrigin
                     ? "#f59e0b"
                     : hasData
-                      ? "#7aa7d8"
-                      : "#3d5878";
+                      ? "#6FBF4F"
+                      : "#9BD27A";
                   return (
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
                       fill={fill}
-                      stroke="#6a8cb0"
+                      stroke="#5aa83a"
                       strokeWidth={hasData ? 0.9 : 0.6}
                       onMouseEnter={() => {
                         if (!iso2) return;
@@ -185,8 +185,8 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode, isLoading =
                       onMouseLeave={() => setHover(null)}
                       style={{
                         default: { outline: "none", transition: "fill 0.2s ease" },
-                        hover:   { outline: "none", fill: hasData ? "#a8c8e8" : "#5b7fa8", cursor: hasData ? "pointer" : "default" },
-                        pressed: { outline: "none", fill: "#5b7fa8" },
+                        hover:   { outline: "none", fill: hasData ? "#5aa83a" : "#7fc25a", cursor: hasData ? "pointer" : "default" },
+                        pressed: { outline: "none", fill: "#5aa83a" },
                       }}
                     />
                   );
@@ -237,7 +237,7 @@ const WorldRippleMap = ({ data = [], metric = "prayers", originCode, isLoading =
         </ComposableMap>
         {points.length === 0 && !isLoading && !error && (
           <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-            <p className="text-xs text-foreground/80 bg-[#15376b]/90 px-3 py-1.5 rounded-full border border-border/50">
+            <p className="text-xs text-white/95 bg-[#1e6fa8]/90 px-3 py-1.5 rounded-full border border-white/30">
               {emptyMessage ?? "As prayers spread across more places, lights will appear on the map."}
             </p>
           </div>
