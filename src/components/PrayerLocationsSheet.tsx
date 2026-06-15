@@ -139,7 +139,6 @@ const PrayerLocationsSheet = ({
           <PrayerRippleStats
             prayers={Math.max(prayerCount, stats.total)}
             countries={stats.countries}
-            locations={stats.total}
             shares={shareCount}
           />
 
@@ -166,40 +165,48 @@ const PrayerLocationsSheet = ({
             )}
           </div>
 
-          {countries.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground/70">
-                Countries praying for this request
-              </p>
-              <ul className="divide-y divide-border/60 rounded-xl border bg-card/40">
-                {countries.map((c) => (
-                  <li key={c.country} className="flex items-center justify-between px-3 py-2 text-sm">
-                    <span className="flex items-center gap-2">
-                      <span aria-hidden>{flagFor(c.country)}</span>
-                      <span>{c.country}</span>
-                    </span>
-                    <span className="tabular-nums text-muted-foreground">{c.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {(countries.length > 0 || cities.length > 0) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {countries.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground/70">
+                    Top Countries
+                  </p>
+                  <ul className="divide-y divide-border/60 rounded-xl border bg-card/40">
+                    {countries.slice(0, 6).map((c) => (
+                      <li key={c.country} className="flex items-center justify-between px-3 py-2 text-sm">
+                        <span className="flex items-center gap-2 min-w-0">
+                          <span aria-hidden>{flagFor(c.country)}</span>
+                          <span className="truncate">{c.country}</span>
+                        </span>
+                        <span className="tabular-nums text-muted-foreground shrink-0">{c.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-          {cities.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground/70">
-                People are praying from
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {cities.map((c) => (
-                  <span
-                    key={`${c.city}-${c.country ?? ""}`}
-                    className="rounded-full border bg-card/60 px-3 py-1 text-xs text-foreground"
-                  >
-                    {c.city}
-                  </span>
-                ))}
-              </div>
+              {cities.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground/70">
+                    Top Cities
+                  </p>
+                  <ul className="divide-y divide-border/60 rounded-xl border bg-card/40">
+                    {cities.slice(0, 6).map((c) => (
+                      <li
+                        key={`${c.city}-${c.country ?? ""}`}
+                        className="flex items-center justify-between px-3 py-2 text-sm"
+                      >
+                        <span className="min-w-0 truncate">
+                          {c.city}
+                          {c.country ? <span className="text-muted-foreground">, {c.country}</span> : null}
+                        </span>
+                        <span className="tabular-nums text-muted-foreground shrink-0">{c.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 

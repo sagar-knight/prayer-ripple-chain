@@ -1,15 +1,14 @@
 interface Props {
   prayers: number;
   countries: number;
-  locations: number;
+  locations?: number;
   shares: number;
 }
 
-const PrayerRippleStats = ({ prayers, countries, locations, shares }: Props) => {
+const PrayerRippleStats = ({ prayers, countries, shares }: Props) => {
   const items = [
     { icon: "🙏", value: prayers, label: prayers === 1 ? "Prayer" : "Prayers" },
     { icon: "🌎", value: countries, label: countries === 1 ? "Country" : "Countries" },
-    { icon: "📍", value: locations, label: locations === 1 ? "Location" : "Locations" },
     { icon: "↗", value: shares, label: shares === 1 ? "Share" : "Shares" },
   ];
 
@@ -18,7 +17,7 @@ const PrayerRippleStats = ({ prayers, countries, locations, shares }: Props) => 
       <p className="text-xs uppercase tracking-widest text-muted-foreground/70 text-center mb-3">
         Prayer Ripple
       </p>
-      <div className="grid grid-cols-4 gap-2 text-center">
+      <div className="grid grid-cols-3 gap-2 text-center">
         {items.map((i) => (
           <div key={i.label} className="flex flex-col items-center">
             <div className="text-lg leading-none mb-1" aria-hidden>{i.icon}</div>
