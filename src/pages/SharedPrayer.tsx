@@ -224,16 +224,14 @@ const SharedPrayer = () => {
         {geography && geography.length > 0 && (
           <Card className="border-0 shadow-card animate-gentle-fade">
             <CardContent className="pt-6 pb-6 space-y-5">
-              <div className="flex items-center gap-2">
-                <Waves className="h-5 w-5 text-primary" />
-                <h3 className="font-playfair text-lg font-semibold text-foreground">Ripple of Prayer</h3>
-              </div>
+              <h3 className="text-center text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                Prayer Ripple
+              </h3>
 
-              <div className="grid grid-cols-4 gap-2">
-                <CompactStat icon={Heart} value={ripple.total_prayers} label={ripple.total_prayers === 1 ? "Prayer" : "Prayers"} />
-                <CompactStat icon={Users} value={ripple.unique_people} label={ripple.unique_people === 1 ? "Person" : "People"} />
-                <CompactStat icon={Share2} value={ripple.forwards} label={ripple.forwards === 1 ? "Forward" : "Forwards"} />
-                <CompactStat icon={Waves} value={ripple.depth} label={ripple.depth === 1 ? "Layer" : "Layers"} />
+              <div className="grid grid-cols-3 gap-4">
+                <CompactStat icon={Triangle} value={ripple.total_prayers} label="Prayers" />
+                <CompactStat icon={Globe} value={geography.length} label="Country" />
+                <CompactStat icon={Share2} value={ripple.forwards} label="Shares" />
               </div>
 
               <WorldRippleMap
