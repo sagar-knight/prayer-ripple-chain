@@ -229,7 +229,7 @@ const SharedPrayer = () => {
               </h3>
 
               <div className="grid grid-cols-3 gap-4">
-                <CompactStat icon={Triangle} value={ripple.total_prayers} label="Prayers" />
+                <CompactStat icon={Heart} value={ripple.total_prayers} label="Prayers" />
                 <CompactStat icon={Globe} value={geography.length} label="Country" />
                 <CompactStat icon={Share2} value={ripple.forwards} label="Shares" />
               </div>
