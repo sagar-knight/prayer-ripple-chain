@@ -173,32 +173,27 @@ const SharedPrayer = () => {
   return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-lg mx-auto px-4 space-y-6">
-        {/* Prayer card with inline actions */}
+        {/* Compact prayer header + inline actions */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
-          <CardContent className="pt-7 pb-6 space-y-5">
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <h1 className="font-playfair text-xl font-semibold text-foreground leading-tight">
+          <CardContent className="pt-6 pb-5 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight truncate">
                   {prayer.title}
                 </h1>
-                <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
-                  {prayer.category}
-                </Badge>
+                {prayer.country && (
+                  <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                    <MapPin className="h-3 w-3" />
+                    {prayer.country}
+                  </div>
+                )}
               </div>
-              {prayer.description && prayer.description.trim() && (
-                <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                  {prayer.description}
-                </p>
-              )}
-              {prayer.country && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  {prayer.country}
-                </div>
-              )}
+              <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
+                {prayer.category}
+              </Badge>
             </div>
 
-            <div className="space-y-2 pt-1">
+            <div className="space-y-2">
               <Button asChild variant="peaceful" size="lg" className="w-full gap-2">
                 <Link to="/pray">
                   <Star className="h-5 w-5" />
