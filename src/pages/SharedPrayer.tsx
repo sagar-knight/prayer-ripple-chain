@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowRight, Loader2, Star, MapPin, Share2, Triangle, Globe } from "lucide-react";
+import { Heart, ArrowRight, Loader2, Star, MapPin, Share2, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
@@ -229,7 +229,7 @@ const SharedPrayer = () => {
               </h3>
 
               <div className="grid grid-cols-3 gap-4">
-                <CompactStat icon={Triangle} value={ripple.total_prayers} label="Prayers" />
+                <CompactStat icon={Heart} value={ripple.total_prayers} label="Prayers" />
                 <CompactStat icon={Globe} value={geography.length} label="Country" />
                 <CompactStat icon={Share2} value={ripple.forwards} label="Shares" />
               </div>
