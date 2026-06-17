@@ -1,6 +1,6 @@
 import * as React from "react";
 
-// Custom folded-hands / prayer icon
+// Two hands pressed together in prayer
 export const PrayerHandsIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
   ({ className, ...props }, ref) => (
     <svg
@@ -18,13 +18,14 @@ export const PrayerHandsIcon = React.forwardRef<SVGSVGElement, React.SVGProps<SV
       {...props}
     >
       {/* Left hand */}
-      <path d="M12 21 7 17c-1-1-1-3 0-4l3-5c1-1 1-3 2-4" />
+      <path d="M12 21v-8" />
+      <path d="M12 13 9 8c-1-1.5-2.5-2-4-1L3 9c-1.5 1-1.5 3 0 4l5 5c1 1 2.5 1 3.5 0L12 17" />
+      <path d="M9 8c.5-1.5 1.5-3 3-3" />
       {/* Right hand */}
-      <path d="M12 21 17 17c1-1 1-3 0-4l-3-5c-1-1-1-3-2-4" />
-      {/* Left cuff */}
-      <path d="M7 17 4 19v3h8" />
-      {/* Right cuff */}
-      <path d="M17 17 20 19v3h-8" />
+      <path d="M12 13 15 8c1-1.5 2.5-2 4-1l2 2c1.5 1 1.5 3 0 4l-5 5c-1 1-2.5 1-3.5 0L12 17" />
+      <path d="M15 8c-.5-1.5-1.5-3-3-3" />
+      {/* Fingers together */}
+      <path d="M12 5v8" />
     </svg>
   )
 );
