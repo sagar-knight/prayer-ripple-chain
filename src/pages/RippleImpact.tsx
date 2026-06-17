@@ -487,25 +487,6 @@ const RippleImpact = () => {
         </section>
 
 
-        {/* Share reflection */}
-        <Card className="card-glass border-0 animate-gentle-fade">
-          <CardContent className="pt-6 pb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-accent/15 ring-1 ring-accent/20 flex items-center justify-center">
-              <Share2 className="h-5 w-5 text-accent" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">Invite someone to pray with you</p>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
-                Share a request so the circle of prayer can grow.
-              </p>
-            </div>
-            <Button variant="outline" onClick={handleShare} className="gap-2">
-              <Share2 className="h-4 w-4" />
-              Share
-            </Button>
-          </CardContent>
-        </Card>
-
         {/* Encouragement Footer */}
         <div className="text-center animate-gentle-fade space-y-3">
           <Separator className="max-w-24 mx-auto mb-6 bg-primary/20" />

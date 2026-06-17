@@ -259,25 +259,31 @@ const FeaturedPrayerCard = () => {
           </div>
 
           {!prayed ? (
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <Button
-                variant="peaceful"
-                size="lg"
-                className="flex-1 text-base py-6"
-                onClick={handlePray}
-                disabled={praying}
-              >
-                {praying ? (
-                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                ) : (
-                  <Star className="h-5 w-5 mr-2" />
-                )}
-                Pray Now
-              </Button>
-              <Button asChild variant="outline" size="lg" className="sm:w-auto">
-                <Link to="/submit-prayer">Share a Prayer Request</Link>
-              </Button>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <Button
+              variant="peaceful"
+              size="lg"
+              className="flex-1 text-base py-6"
+              onClick={handlePray}
+              disabled={praying}
+            >
+              {praying ? (
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              ) : (
+                <Star className="h-5 w-5 mr-2" />
+              )}
+              Pray Now
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2"
+              onClick={() => setShowShare(true)}
+            >
+              <Share2 className="h-4 w-4" />
+              Share
+            </Button>
+          </div>
           ) : (
             <div className="rounded-xl border bg-accent/30 p-5 space-y-4 animate-gentle-fade">
               <div className="space-y-1">
