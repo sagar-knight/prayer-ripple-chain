@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Share2, Star, Globe2 } from "lucide-react";
+import { Heart, Share2, Star, Globe2, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 import PrayerRippleChain from "@/components/PrayerRippleChain";
@@ -212,7 +212,7 @@ const RippleImpact = () => {
       if (!user) return null;
       const { data: requests } = await supabase
         .from("global_prayer_requests")
-        .select("id, prayer_count, status")
+        .select("id, title, prayer_count, status")
         .eq("created_by", user.id);
       const ids = (requests || []).map((r) => r.id);
       const peoplePraying = (requests || []).reduce((sum, r) => sum + (r.prayer_count || 0), 0);
@@ -222,11 +222,26 @@ const RippleImpact = () => {
       let shares = 0;
       const countries = new Set<string>();
       const countryMap = new Map<string, CountryStat>();
+      // Per-prayer breakdown — powers the click-to-filter constellation.
+      const byPrayer = new Map<
+        string,
+        { title: string; peoplePraying: number; shares: number; countries: number; countryStats: CountryStat[] }
+      >();
+      for (const r of (requests || [])) {
+        byPrayer.set(r.id, {
+          title: (r as any).title || "Your prayer",
+          peoplePraying: r.prayer_count || 0,
+          shares: 0,
+          countries: 0,
+          countryStats: [],
+        });
+      }
       if (ids.length > 0) {
         const { data: actions } = await supabase
           .from("prayer_actions")
-          .select("action_type, prayer_country_code, prayer_country_name, user_id")
+          .select("action_type, prayer_country_code, prayer_country_name, user_id, prayer_id")
           .in("prayer_id", ids);
+        const perPrayerCountrySets = new Map<string, Map<string, CountryStat>>();
         for (const a of (actions || []) as any[]) {
           if (a.action_type === "shared" || a.action_type === "forwarded") shares++;
           if (a.prayer_country_code) countries.add(a.prayer_country_code);
@@ -244,6 +259,37 @@ const RippleImpact = () => {
               existing.forwards = (existing.forwards || 0) + 1;
             countryMap.set(code, existing);
           }
+          // Per-prayer aggregation
+          const pid = a.prayer_id as string;
+          const bp = byPrayer.get(pid);
+          if (bp) {
+            if (a.action_type === "shared" || a.action_type === "forwarded") bp.shares++;
+            if (code) {
+              let pcMap = perPrayerCountrySets.get(pid);
+              if (!pcMap) {
+                pcMap = new Map();
+                perPrayerCountrySets.set(pid, pcMap);
+              }
+              const pcExisting = pcMap.get(code) || {
+                country_code: code,
+                country: a.prayer_country_name || code,
+                prayers: 0,
+                forwards: 0,
+                participants: 0,
+              };
+              if (a.action_type === "prayed") pcExisting.prayers = (pcExisting.prayers || 0) + 1;
+              if (a.action_type === "shared" || a.action_type === "forwarded")
+                pcExisting.forwards = (pcExisting.forwards || 0) + 1;
+              pcMap.set(code, pcExisting);
+            }
+          }
+        }
+        for (const [pid, pcMap] of perPrayerCountrySets) {
+          const bp = byPrayer.get(pid);
+          if (bp) {
+            bp.countryStats = Array.from(pcMap.values());
+            bp.countries = pcMap.size;
+          }
         }
       }
       return {
@@ -254,12 +300,30 @@ const RippleImpact = () => {
         answered,
         totalRequests: ids.length,
         countryStats: Array.from(countryMap.values()),
+        byPrayer: Object.fromEntries(byPrayer),
       };
     },
     enabled: !!user,
   });
 
-  const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0, countryStats: [] as CountryStat[] };
+  const ripple = myRipple || { peoplePraying: 0, shares: 0, countries: 0, active: 0, answered: 0, totalRequests: 0, countryStats: [] as CountryStat[], byPrayer: {} as Record<string, { title: string; peoplePraying: number; shares: number; countries: number; countryStats: CountryStat[] }> };
+
+  // Constellation: which prayer is currently focused on the map (null = all).
+  const [selectedPrayerId, setSelectedPrayerId] = useState<string | null>(null);
+  const selectedPrayer = selectedPrayerId ? ripple.byPrayer?.[selectedPrayerId] : null;
+  const displayedStats = selectedPrayer
+    ? {
+        peoplePraying: selectedPrayer.peoplePraying,
+        shares: selectedPrayer.shares,
+        countries: selectedPrayer.countries,
+        countryStats: selectedPrayer.countryStats,
+      }
+    : {
+        peoplePraying: ripple.peoplePraying,
+        shares: ripple.shares,
+        countries: ripple.countries,
+        countryStats: ripple.countryStats,
+      };
 
   // Live updates: when prayer actions, counts, or ripple locations change anywhere,
   // refresh this user's ripple data. Falls back gracefully if realtime is unavailable.
