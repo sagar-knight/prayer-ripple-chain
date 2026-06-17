@@ -467,25 +467,41 @@ const RippleImpact = () => {
                 <div>
                   <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center gap-2">
                     <Globe2 className="h-5 w-5 text-success" />
-                    Your prayer is spreading
+                    {selectedPrayer ? "Showing one prayer" : "Your prayer is spreading"}
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Combined ripple across all {ripple.totalRequests || 0}{" "}
-                    {ripple.totalRequests === 1 ? "request" : "requests"} you've shared.
-                  </p>
+                  {selectedPrayer ? (
+                    <div className="mt-1 flex items-center gap-2">
+                      <p className="text-xs text-muted-foreground line-clamp-1 max-w-[24rem]">
+                        "{selectedPrayer.title}"
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPrayerId(null)}
+                        className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                        Show all
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Combined ripple across all {ripple.totalRequests || 0}{" "}
+                      {ripple.totalRequests === 1 ? "request" : "requests"} you've shared.
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-foreground">
                     <Heart className="h-3.5 w-3.5 text-primary" />
-                    <AnimatedNumber value={ripple.peoplePraying} /> praying
+                    <AnimatedNumber value={displayedStats.peoplePraying} /> praying
                   </span>
                   <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-foreground">
                     <Share2 className="h-3.5 w-3.5 text-accent" />
-                    <AnimatedNumber value={ripple.shares} /> {ripple.shares === 1 ? "share" : "shares"}
+                    <AnimatedNumber value={displayedStats.shares} /> {displayedStats.shares === 1 ? "share" : "shares"}
                   </span>
                   <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-foreground">
                     <Globe2 className="h-3.5 w-3.5 text-success" />
-                    <AnimatedNumber value={ripple.countries} /> {ripple.countries === 1 ? "country" : "countries"}
+                    <AnimatedNumber value={displayedStats.countries} /> {displayedStats.countries === 1 ? "country" : "countries"}
                   </span>
                 </div>
               </div>
@@ -494,14 +510,14 @@ const RippleImpact = () => {
               <div className="relative mx-auto max-w-3xl">
                 <div className="absolute inset-0 -z-10 bg-gradient-primary opacity-20 blur-3xl rounded-full pointer-events-none" />
                 <WorldRippleMap
-                  data={ripple.countryStats}
+                  data={displayedStats.countryStats}
                   metric="prayers"
                   isLoading={rippleLoading && !myRipple}
                   error={rippleError as Error | null}
                 />
-                {ripple.countryStats.length > 0 && (
+                {displayedStats.countryStats.length > 0 && (
                   <div className="mt-3 flex flex-wrap justify-center gap-2">
-                    {ripple.countryStats.map((c) => (
+                    {displayedStats.countryStats.map((c) => (
                       <span
                         key={c.country_code}
                         className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-foreground border border-primary/15"
@@ -529,7 +545,10 @@ const RippleImpact = () => {
           </Card>
 
           {/* Per-prayer ripple cards (existing component) */}
-          <PrayerRippleChain />
+          <PrayerRippleChain
+            selectedPrayerId={selectedPrayerId}
+            onSelectPrayer={(id) => setSelectedPrayerId((prev) => (prev === id ? null : id))}
+          />
         </section>
 
         {/* ============ SECTION B — Prayers you're carrying for others ============ */}
