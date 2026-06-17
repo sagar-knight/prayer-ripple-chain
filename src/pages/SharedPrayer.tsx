@@ -360,6 +360,14 @@ const SharedPrayer = () => {
         prayerId={prayer.id}
         prayerTitle={prayer.title}
       />
+
+      {requesterId && (
+        <UserProfileSheet
+          open={profileOpen}
+          onOpenChange={setProfileOpen}
+          userId={requesterId}
+        />
+      )}
     </div>
   );
 };
