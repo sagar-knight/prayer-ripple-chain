@@ -29,15 +29,21 @@ serve(async (req) => {
       );
     }
 
-    const response = await fetch(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    let response: Response;
+    try {
+      response = await fetch(
+        "https://ai.gateway.lovable.dev/v1/chat/completions",
+        {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
           model: "google/gemini-2.5-flash-lite",
           messages: [
             {
@@ -82,13 +88,22 @@ serve(async (req) => {
               },
             },
           ],
-          tool_choice: {
-            type: "function",
-            function: { name: "classify_content" },
-          },
-        }),
-      }
-    );
+            tool_choice: {
+              type: "function",
+              function: { name: "classify_content" },
+            },
+          }),
+        }
+      );
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn("AI moderation timed out or failed, allowing through:", err);
+      return new Response(
+        JSON.stringify({ flagged: false }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       if (response.status === 429 || response.status === 402) {
