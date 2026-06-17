@@ -278,6 +278,7 @@ const PrayerCard = ({ request, onPrayerOffered, showImpactDialog = false }: Pray
         prayerRequestId={request.id}
         sourceType={request.churchName ? "church" : "global"}
         prayerCount={livePrayerCount}
+        prayerTitle={request.title}
       />
 
       <PrayerLocationPrompt

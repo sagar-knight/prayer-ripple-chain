@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { Loader2 } from "lucide-react";
+import { Loader2, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { supabase } from "@/integrations/supabase/client";
 import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import PrayerRippleStats from "@/components/PrayerRippleStats";
@@ -41,6 +43,8 @@ interface Props {
   originCountryCode?: string | null;
   /** Total prayers from the prayer request (for ripple summary). */
   prayerCount?: number;
+  /** Optional title used by the share dialog. */
+  prayerTitle?: string;
 }
 
 /**
@@ -54,6 +58,7 @@ const PrayerLocationsSheet = ({
   prayerRequestId,
   sourceType = "global",
   prayerCount = 0,
+  prayerTitle,
 }: Props) => {
   const id = prayerRequestId ?? prayerId ?? "";
   const [locations, setLocations] = useState<RippleLocationRow[]>([]);
@@ -61,6 +66,7 @@ const PrayerLocationsSheet = ({
   const [actionCountries, setActionCountries] = useState<CountryStat[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [showShare, setShowShare] = useState(false);
   const { countryCode: myCountryCode, countryName: myCountryName } = useUserCountry();
 
   useEffect(() => {
@@ -255,9 +261,21 @@ const PrayerLocationsSheet = ({
           )}
 
           {shareCount === 0 && locations.length === 0 && (
-            <p className="text-xs text-center text-muted-foreground italic">
-              ↗ Share this prayer to start the ripple.
-            </p>
+            <div className="flex flex-col items-center gap-2 pt-1">
+              <p className="text-xs text-muted-foreground italic">
+                Share this prayer to start the ripple.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => setShowShare(true)}
+                disabled={!id}
+              >
+                <Share2 className="h-4 w-4" />
+                Share prayer
+              </Button>
+            </div>
           )}
 
           <p className="text-xs text-muted-foreground text-center leading-relaxed">
@@ -265,6 +283,14 @@ const PrayerLocationsSheet = ({
           </p>
         </div>
       </SheetContent>
+      {id && (
+        <SharePrayerDialog
+          open={showShare}
+          onOpenChange={setShowShare}
+          prayerId={id}
+          prayerTitle={prayerTitle}
+        />
+      )}
     </Sheet>
   );
 };

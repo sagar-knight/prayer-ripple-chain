@@ -356,6 +356,7 @@ const FeaturedPrayerCard = () => {
           prayerId={prayer.id}
           sourceType="global"
           prayerCount={prayer.prayer_count}
+          prayerTitle={prayer.title}
         />
       )}
 
