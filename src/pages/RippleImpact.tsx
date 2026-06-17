@@ -487,7 +487,7 @@ const RippleImpact = () => {
           <Card className="card-glass border-0 overflow-hidden hover-glow">
             <CardContent className="p-5 sm:p-6 space-y-4">
               {/* Title + inline stat pills */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl border border-border/60 bg-muted/20">
                 <div>
                   <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center gap-2">
                     <Globe2 className="h-5 w-5 text-success" />
