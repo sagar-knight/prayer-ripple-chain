@@ -202,29 +202,65 @@ const SharedPrayer = () => {
     );
   }
 
-  const { prayer, ripple, geography, activity } = data;
+    const { prayer, ripple, geography, activity } = data;
+    const requesterId = !prayer.anonymous && prayer.created_by ? prayer.created_by : null;
+    const initials = (requesterName || "PW")
+      .split(" ")
+      .map((s) => s[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-lg mx-auto px-4 space-y-6">
         {/* Compact prayer header + inline actions */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
           <CardContent className="pt-6 pb-5 space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight truncate">
-                  {prayer.title}
-                </h1>
-                {prayer.country && (
-                  <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3" />
-                    {prayer.country}
+            <div className="flex items-start gap-3">
+              {requesterId ? (
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen(true)}
+                  className="shrink-0"
+                  aria-label={`Open profile for ${requesterName || "requester"}`}
+                >
+                  <Avatar className="h-12 w-12 ring-1 ring-border hover:ring-foreground/40 transition">
+                    {requesterAvatar && <AvatarImage src={requesterAvatar} alt={requesterName || "Profile"} />}
+                    <AvatarFallback className="bg-muted text-foreground text-sm">{initials}</AvatarFallback>
+                  </Avatar>
+                </button>
+              ) : (
+                <Avatar className="h-12 w-12 ring-1 ring-border shrink-0">
+                  <AvatarFallback className="bg-muted text-muted-foreground">
+                    <UserRound className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight truncate">
+                      {prayer.title}
+                    </h1>
+                    {requesterName && (
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium mt-1">
+                        {requesterName}
+                      </p>
+                    )}
+                    {prayer.country && (
+                      <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {prayer.country}
+                      </div>
+                    )}
                   </div>
-                )}
+                  <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
+                    {prayer.category}
+                  </Badge>
+                </div>
               </div>
-              <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
-                {prayer.category}
-              </Badge>
             </div>
 
             <div className="space-y-2">
