@@ -3,13 +3,16 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowRight, Loader2, Star, MapPin, Share2, Globe } from "lucide-react";
+import { Heart, ArrowRight, Loader2, Star, MapPin, Share2, Globe, UserRound } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
 import WorldRippleMap from "@/components/WorldRippleMap";
 import { usePrayerPresence } from "@/hooks/usePrayerPresence";
 import ReminderBellButton from "@/components/ReminderBellButton";
+import UserProfileSheet from "@/components/UserProfileSheet";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 interface PrayerData {
   id: string;
@@ -24,6 +27,7 @@ interface PrayerData {
   origin_country_code?: string | null;
   status: string;
   created_at: string;
+  created_by?: string | null;
 }
 
 interface RippleStats {
@@ -55,6 +59,9 @@ const SharedPrayer = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [requesterName, setRequesterName] = useState<string | null>(null);
+  const [requesterAvatar, setRequesterAvatar] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   // Register this viewer in the prayer's live presence channel so the
   // requester sees a real "praying with you" pulse the moment we open it.
@@ -134,6 +141,33 @@ const SharedPrayer = () => {
     };
     load();
   }, [slug]);
+
+  // Fetch requester profile for non-anonymous prayers
+  useEffect(() => {
+    let active = true;
+    const prayer = data?.prayer;
+    if (!prayer || prayer.anonymous || !prayer.created_by) {
+      setRequesterName(null);
+      setRequesterAvatar(null);
+      return;
+    }
+    (async () => {
+      try {
+        const { data: prof } = await (supabase as any)
+          .from("profiles_public" as any)
+          .select("display_name, avatar_url")
+          .eq("id", prayer.created_by)
+          .maybeSingle();
+        if (!active) return;
+        setRequesterName((prof?.display_name as string) || "Prayer Warrior");
+        const url = await resolveAvatarUrl(prof?.avatar_url as string | null);
+        if (active) setRequesterAvatar(url);
+      } catch {
+        /* non-blocking */
+      }
+    })();
+    return () => { active = false; };
+  }, [data?.prayer?.id, data?.prayer?.created_by, data?.prayer?.anonymous]);
 
   if (loading) {
     return (
