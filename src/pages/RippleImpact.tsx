@@ -491,7 +491,11 @@ const RippleImpact = () => {
                 <div>
                   <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground flex items-center gap-2">
                     <Globe2 className="h-5 w-5 text-success" />
-                    {selectedPrayer ? "Showing one prayer" : "Your prayer is spreading"}
+                    {selectedPrayer
+                      ? "One prayer's reach"
+                      : ripple.totalRequests === 1
+                        ? "Your prayer is spreading"
+                        : "Your prayers are spreading"}
                   </h3>
                   {selectedPrayer ? (
                     <div className="mt-1 flex items-center gap-2">
@@ -509,8 +513,9 @@ const RippleImpact = () => {
                     </div>
                   ) : (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Combined ripple across all {ripple.totalRequests || 0}{" "}
-                      {ripple.totalRequests === 1 ? "request" : "requests"} you've shared.
+                      {ripple.totalRequests === 1
+                        ? "1 request you've shared, now being prayed for."
+                        : `${ripple.totalRequests} requests you've shared, now being prayed for.`}
                     </p>
                   )}
                 </div>
