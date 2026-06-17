@@ -9,6 +9,7 @@ import {
   Loader2,
   Sprout,
   Send,
+  Globe2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +19,7 @@ import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import LivePrayerRipple from "@/components/LivePrayerRipple";
 import { usePrayerPresence } from "@/hooks/usePrayerPresence";
+import PrayerLocationsSheet from "@/components/PrayerLocationsSheet";
 import {
   Dialog,
   DialogContent,
