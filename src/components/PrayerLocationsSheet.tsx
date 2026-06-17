@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import PrayerRippleStats from "@/components/PrayerRippleStats";
 import { countries as countryDirectory } from "@/data/countries";
+import { useUserCountry } from "@/hooks/useUserCountry";
 import {
   computeStats,
   getPrayerRippleLocations,
@@ -57,8 +58,10 @@ const PrayerLocationsSheet = ({
   const id = prayerRequestId ?? prayerId ?? "";
   const [locations, setLocations] = useState<RippleLocationRow[]>([]);
   const [shareCount, setShareCount] = useState(0);
+  const [actionCountries, setActionCountries] = useState<CountryStat[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const { countryCode: myCountryCode, countryName: myCountryName } = useUserCountry();
 
   useEffect(() => {
     if (!open || !id) return;
@@ -68,8 +71,13 @@ const PrayerLocationsSheet = ({
     Promise.all([
       getPrayerRippleLocations(id),
       getShareCount(id, sourceType),
+      (supabase as any)
+        .from("prayer_actions")
+        .select("action_type, prayer_country_code, prayer_country_name")
+        .eq("prayer_id", id)
+        .eq("source_type", sourceType),
     ])
-      .then(async ([rows, shares]) => {
+      .then(async ([rows, shares, actionsRes]) => {
         if (cancelled) return;
         let resolvedRows = rows;
         if (rows.length === 0 && prayerCount > 0) {
@@ -91,6 +99,25 @@ const PrayerLocationsSheet = ({
         if (cancelled) return;
         setLocations(resolvedRows);
         setShareCount(shares);
+        // Build country stats from prayer_actions (same source the Ripple page uses).
+        const map = new Map<string, CountryStat>();
+        const actions = (actionsRes as any)?.data || [];
+        for (const a of actions) {
+          const code = a.prayer_country_code;
+          if (!code) continue;
+          const existing = map.get(code) || {
+            country_code: code,
+            country: a.prayer_country_name || code,
+            prayers: 0,
+            forwards: 0,
+            participants: 0,
+          };
+          if (a.action_type === "prayed") existing.prayers = (existing.prayers || 0) + 1;
+          if (a.action_type === "shared" || a.action_type === "forwarded")
+            existing.forwards = (existing.forwards || 0) + 1;
+          map.set(code, existing);
+        }
+        setActionCountries(Array.from(map.values()));
       })
       .catch(() => {
         if (!cancelled) setLoadError("load");
@@ -107,19 +134,40 @@ const PrayerLocationsSheet = ({
   const countries = useMemo(() => topCountries(locations, 10), [locations]);
   const cities = useMemo(() => topCities(locations, 6), [locations]);
   const mapData = useMemo<CountryStat[]>(() => {
-    return countries
-      .map((c) => {
-        const code = codeForCountry(c.country);
-        if (!code) return null;
-        return {
+    // Merge: action-derived country stats (primary) + ripple_locations fallback.
+    const merged = new Map<string, CountryStat>();
+    for (const c of actionCountries) merged.set(c.country_code.toUpperCase(), { ...c });
+    for (const c of countries) {
+      const code = codeForCountry(c.country);
+      if (!code) continue;
+      const key = code.toUpperCase();
+      const existing = merged.get(key);
+      if (existing) {
+        existing.prayers = Math.max(existing.prayers || 0, c.count);
+        existing.participants = Math.max(existing.participants || 0, c.count);
+      } else {
+        merged.set(key, {
           country_code: code,
           country: c.country,
           prayers: c.count,
           participants: c.count,
-        } satisfies CountryStat;
-      })
-      .filter(Boolean) as CountryStat[];
-  }, [countries]);
+        });
+      }
+    }
+    // Final fallback: if still empty but we know prayer count > 0, show viewer's country.
+    if (merged.size === 0 && prayerCount > 0 && myCountryCode) {
+      merged.set(myCountryCode.toUpperCase(), {
+        country_code: myCountryCode,
+        country: myCountryName || myCountryCode,
+        prayers: prayerCount,
+        participants: prayerCount,
+      });
+    }
+    return Array.from(merged.values());
+  }, [actionCountries, countries, prayerCount, myCountryCode, myCountryName]);
+
+  const totalCountries = Math.max(stats.countries, mapData.length);
+  const totalPrayers = Math.max(prayerCount, stats.total, mapData.reduce((s, c) => s + (c.prayers || 0), 0));
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -137,8 +185,8 @@ const PrayerLocationsSheet = ({
           </SheetHeader>
 
           <PrayerRippleStats
-            prayers={Math.max(prayerCount, stats.total)}
-            countries={stats.countries}
+            prayers={totalPrayers}
+            countries={totalCountries}
             shares={shareCount}
           />
 
@@ -151,10 +199,6 @@ const PrayerLocationsSheet = ({
             ) : loadError ? (
               <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
                 We couldn't load prayer locations right now.
-              </div>
-            ) : locations.length === 0 ? (
-              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                📍 No prayer locations yet. Be the first to share where you're praying from.
               </div>
             ) : (
               <WorldRippleMap
