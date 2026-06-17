@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import PrayerRequestCard from "@/components/PrayerRequestCard";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Star, Loader2, Waves, ChevronRight } from "lucide-react";
+import { Heart, Share2, Loader2, Waves, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -35,7 +34,6 @@ const PrayerRippleChain = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      // Fetch user's global prayer requests
       const { data: requests } = await supabase
         .from("global_prayer_requests")
         .select("*")
@@ -48,7 +46,6 @@ const PrayerRippleChain = () => {
 
       const prayerIds = requests.map((r) => r.id);
 
-      // Fetch coverage data
       const { data: coverageData } = await supabase
         .from("prayer_coverage")
         .select("*")
@@ -58,31 +55,26 @@ const PrayerRippleChain = () => {
         (coverageData || []).map((c) => [c.prayer_id, c])
       );
 
-      // Fetch chain nodes for these prayers (used for ripple depth)
       const { data: chainNodes } = await supabase
         .from("prayer_chain_nodes")
         .select("prayer_id, depth_level")
         .in("prayer_id", prayerIds);
 
-      // Fetch action counts for chain visualization
       const { data: actions } = await supabase
         .from("prayer_actions")
         .select("prayer_id, action_type, user_id, created_at")
         .in("prayer_id", prayerIds);
 
-      // Build chains
       return requests.map((req): PrayerChainData => {
         const coverage = coverageMap.get(req.id);
         const reqActions = (actions || []).filter((a) => a.prayer_id === req.id);
         const prayedActions = reqActions.filter((a) => a.action_type === "prayed");
         const sharedActions = reqActions.filter((a) => a.action_type === "shared");
 
-        // Build anonymized chain for display
         const chain: ChainNode[] = [
           { label: "You requested prayer", type: "requester" },
         ];
 
-        // Add unique prayed participants (anonymized)
         const uniquePrayers = new Set(prayedActions.map((a) => a.user_id));
         const prayerNames = [
           "A prayer partner", "Someone", "A believer",
@@ -100,7 +92,6 @@ const PrayerRippleChain = () => {
           nameIdx++;
         });
 
-        // Add shares
         sharedActions.forEach(() => {
           chain.push({
             label: "Passed forward",
@@ -145,67 +136,48 @@ const PrayerRippleChain = () => {
 
   if (!chains?.length) {
     return (
-      <PrayerRequestCard
-        header="Your prayer requests"
-        description="Submit a prayer request to see how it ripples through the community."
-        className="text-center"
-      />
+      <Card className="card-glass border-0">
+        <CardContent className="p-6 text-center space-y-2">
+          <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <Waves className="h-5 w-5 text-primary" />
+          </div>
+          <p className="text-sm font-medium text-foreground">Your prayer requests</p>
+          <p className="text-xs text-muted-foreground">
+            Submit a prayer request to see how it ripples through the community.
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
-  const recentlyPrayed = (date: Date | null) =>
-    !!date && Date.now() - date.getTime() < 24 * 60 * 60 * 1000;
-
-  return <RippleList chains={chains} recentlyPrayed={recentlyPrayed} />;
-};
-
-/** Builds the dotted ripple flow: ● → ○ → ○ … */
-const RippleFlow = ({ depth, unique }: { depth: number; unique: number }) => {
-  // Show "You" then up to 4 ripple layers based on depth
-  const layers = Math.min(4, Math.max(1, depth || (unique > 0 ? 1 : 0)));
-  return (
-    <div className="flex items-center justify-center gap-2 sm:gap-3 py-2 select-none">
-      <span
-        className="inline-flex h-3 w-3 rounded-full bg-primary shadow-[0_0_0_4px_hsl(var(--primary)/0.15)]"
-        aria-label="You"
-      />
-      {Array.from({ length: layers }).map((_, i) => (
-        <span key={i} className="flex items-center gap-2 sm:gap-3">
-          <span className="text-muted-foreground/60 text-xs">→</span>
-          <span
-            className="inline-flex h-3 w-3 rounded-full border border-primary/40"
-            style={{ opacity: 1 - i * 0.18 }}
-            aria-hidden
-          />
-        </span>
-      ))}
-    </div>
-  );
-};
-
-const RippleList = ({
-  chains,
-  recentlyPrayed,
-}: {
-  chains: PrayerChainData[];
-  recentlyPrayed: (d: Date | null) => boolean;
-}) => {
-  const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
-  const [expanded, setExpanded] = useState(true);
-
   const totalPeoplePraying = chains.reduce((sum, c) => sum + (c.uniquePeople || 0), 0);
-  const growingCount = chains.filter((c) => c.status !== "answered").length;
-  const anyRecent = chains.some((c) => recentlyPrayed(c.lastPrayedAt));
+  const anyRecent = chains.some((c) => {
+    const d = c.lastPrayedAt;
+    return !!d && Date.now() - d.getTime() < 24 * 60 * 60 * 1000;
+  });
   const liveLine = totalPeoplePraying === 0
     ? "Your prayer has been shared. Hope is on the way."
     : anyRecent
       ? "Someone prayed for you recently"
       : "Your prayer ripple is growing";
 
+  return <RippleList chains={chains} liveLine={liveLine} />;
+};
+
+const RippleList = ({
+  chains,
+  liveLine,
+}: {
+  chains: PrayerChainData[];
+  liveLine: string;
+}) => {
+  const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
+  const [expanded, setExpanded] = useState(true);
+
   return (
-    <div className="space-y-6">
-      {/* Live Ripple Card */}
-      <Card className="relative border-0 max-w-md mx-auto overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.35)] ring-1 ring-primary/15">
+    <div className="space-y-4">
+      {/* Unified Ripple Block */}
+      <Card className="relative border-0 overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.35)] ring-1 ring-primary/15">
         {/* Soft glow */}
         <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -right-10 w-56 h-56 rounded-full bg-accent/10 blur-3xl" />
@@ -260,96 +232,67 @@ const RippleList = ({
         `}</style>
       </Card>
 
-      {/* Collapsed list of individual prayer ripple cards */}
+      {/* Expanded list — clean cards without extra headings */}
       {expanded && (
-        <div className="space-y-6 animate-gentle-fade">
-          <div className="text-center space-y-1.5">
-            <h3 className="font-playfair text-xl flex items-center justify-center gap-2 text-foreground">
-              <Waves className="h-5 w-5 text-primary" />
-              Prayer Ripple
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Your prayer is reaching others and growing
-            </p>
-          </div>
-
+        <div className="space-y-3 animate-gentle-fade">
           {chains.map((chain) => {
-        const isGrowing = chain.status !== "answered";
-        return (
-        <Card
-          key={chain.prayerId}
-          className="rounded-xl animate-gentle-fade border-foreground/30 ring-1 ring-foreground/10 relative overflow-hidden"
-        >
-          {/* Left accent bar — ownership cue */}
-          <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground/60" aria-hidden />
-          {/* Calm card header */}
-          <CardContent className="px-6 py-8 sm:px-8 sm:py-10 space-y-5">
-            <div className="flex justify-center">
-              <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/40 text-foreground/80 font-medium">
-                Yours
-              </span>
-            </div>
-            <p className="text-base sm:text-lg text-foreground leading-relaxed text-center font-serif">
-              {chain.title}
-            </p>
-
-            {!isGrowing && (
-              <div className="flex justify-center">
-                <Badge
-                  variant="outline"
-                  className="border-accent/40 text-accent bg-accent/5"
-                >
-                  Completed
-                </Badge>
-              </div>
-            )}
-
-            {/* Single main line: people praying */}
-            <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
-              <Heart className="h-3.5 w-3.5 text-primary/60" />
-              <span>
-                {chain.uniquePeople > 0
-                  ? `${chain.uniquePeople} ${
-                      chain.uniquePeople === 1 ? "person is" : "people are"
-                    } praying with you`
-                  : "Your request has been shared. People will pray for you soon."}
-              </span>
-            </div>
-
-            {/* Calm recent activity hint */}
-            {recentlyPrayed(chain.lastPrayedAt) && (
-              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Star className="h-3 w-3 text-primary/60" />
-                <span>Someone prayed recently</span>
-              </div>
-            )}
-
-            {/* Optional small ripple info (only if > 0) */}
-            {chain.forwardCount > 0 && (
-              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Share2 className="h-3 w-3 text-primary/60" />
-                <span>
-                  Shared {chain.forwardCount}{" "}
-                  {chain.forwardCount === 1 ? "time" : "times"}
-                </span>
-              </div>
-            )}
-
-            {/* Forward button */}
-            <div className="flex justify-center pt-1">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
+            const isGrowing = chain.status !== "answered";
+            return (
+              <Card
+                key={chain.prayerId}
+                className="rounded-xl animate-gentle-fade border border-border/40 ring-1 ring-border/20 relative overflow-hidden"
               >
-                <Share2 className="h-4 w-4" />
-                Forward Prayer
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        );
+                <CardContent className="px-5 py-5 sm:px-6 space-y-3">
+                  {/* Title row */}
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-base text-foreground leading-relaxed font-medium flex-1 text-left">
+                      {chain.title}
+                    </p>
+                    <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/30 text-foreground/70 font-medium shrink-0">
+                      Yours
+                    </span>
+                  </div>
+
+                  {!isGrowing && (
+                    <Badge
+                      variant="outline"
+                      className="border-accent/40 text-accent bg-accent/5"
+                    >
+                      Completed
+                    </Badge>
+                  )}
+
+                  {/* Compact stats row */}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Heart className="h-3.5 w-3.5 text-primary/60" />
+                      {chain.uniquePeople > 0
+                        ? `${chain.uniquePeople} ${chain.uniquePeople === 1 ? "person" : "people"} praying`
+                        : "Waiting for prayers"}
+                    </span>
+                    {chain.forwardCount > 0 && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Share2 className="h-3.5 w-3.5 text-primary/60" />
+                        Shared {chain.forwardCount} {chain.forwardCount === 1 ? "time" : "times"}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Forward button */}
+                  <div className="flex justify-start pt-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
+                    >
+                      <Share2 className="h-4 w-4" />
+                      Forward Prayer
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
           })}
         </div>
       )}
