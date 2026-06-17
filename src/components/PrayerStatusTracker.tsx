@@ -243,6 +243,7 @@ const PrayerRequestRow = ({
   // Live presence: counts others currently viewing this prayer (excludes self).
   const activeCount = usePrayerPresence(request.id);
   const queryClient = useQueryClient();
+  const [showLocations, setShowLocations] = useState(false);
 
   // Live prayer count: when prayer_coverage updates for this prayer (someone
   // just prayed anywhere in the world), refresh the list so the count and
@@ -319,6 +320,19 @@ const PrayerRequestRow = ({
                 totalCount={request.prayerCount}
                 answered={request.status === "answered"}
               />
+
+              {/* See who's praying — opens the same locations sheet used on the Ripple page. */}
+              <div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => setShowLocations(true)}
+                >
+                  <Globe2 className="h-4 w-4" />
+                  See who's praying
+                </Button>
+              </div>
 
               {/* Latest update preview */}
               {request.latestUpdate && (
@@ -417,6 +431,14 @@ const PrayerRequestRow = ({
                 </div>
               )}
             </CardContent>
+      <PrayerLocationsSheet
+        open={showLocations}
+        onOpenChange={setShowLocations}
+        prayerRequestId={request.id}
+        sourceType="global"
+        prayerCount={request.prayerCount}
+        prayerTitle={request.title}
+      />
     </Card>
   );
 };
