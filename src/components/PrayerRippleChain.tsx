@@ -176,49 +176,116 @@ const RippleList = ({
 
   return (
     <div className="space-y-4">
-      {/* Unified Ripple Block */}
+      {/* Unified Ripple Block — header + prayers in one card */}
       <Card className="relative border-0 overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.35)] ring-1 ring-primary/15">
         {/* Soft glow */}
         <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -right-10 w-56 h-56 rounded-full bg-accent/10 blur-3xl" />
 
-        <CardContent className="relative pt-7 pb-6 px-6 text-center space-y-4">
-          {/* Animated ripple emblem */}
-          <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
-            <span className="absolute inset-0 rounded-full border border-primary/30 ripple-ring" />
-            <span className="absolute inset-0 rounded-full border border-primary/20 ripple-ring" style={{ animationDelay: "1s" }} />
-            <span className="absolute inset-0 rounded-full border border-primary/15 ripple-ring" style={{ animationDelay: "2s" }} />
-            <span className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 ring-1 ring-primary/30 flex items-center justify-center shadow-[0_0_24px_hsl(var(--primary)/0.4)]">
-              <Waves className="h-5 w-5 text-primary" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success animate-ping" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success" />
-            </span>
+        <CardContent className="relative p-0">
+          {/* Header */}
+          <div className="pt-7 pb-5 px-6 text-center space-y-4">
+            {/* Animated ripple emblem */}
+            <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
+              <span className="absolute inset-0 rounded-full border border-primary/30 ripple-ring" />
+              <span className="absolute inset-0 rounded-full border border-primary/20 ripple-ring" style={{ animationDelay: "1s" }} />
+              <span className="absolute inset-0 rounded-full border border-primary/15 ripple-ring" style={{ animationDelay: "2s" }} />
+              <span className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 ring-1 ring-primary/30 flex items-center justify-center shadow-[0_0_24px_hsl(var(--primary)/0.4)]">
+                <Waves className="h-5 w-5 text-primary" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success animate-ping" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success" />
+              </span>
+            </div>
+
+            <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-primary/80">
+              Your Prayer Ripple
+            </p>
+
+            {/* Live activity line */}
+            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-60 animate-ping" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success" />
+              </span>
+              <span className="italic">{liveLine}</span>
+            </div>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-primary gap-1.5"
+              onClick={() => setExpanded((v) => !v)}
+            >
+              {expanded ? "Hide Journey" : "View Journey"}
+              <ChevronRight
+                className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`}
+              />
+            </Button>
           </div>
 
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-primary/80">
-            Your Prayer Ripple
-          </p>
+          {/* Expanded prayers — nested inside the same card */}
+          {expanded && (
+            <div className="px-5 pb-6 space-y-3 animate-gentle-fade">
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+              {chains.map((chain) => {
+                const isGrowing = chain.status !== "answered";
+                return (
+                  <div
+                    key={chain.prayerId}
+                    className="rounded-xl border border-border/40 bg-card/50 p-4 space-y-3"
+                  >
+                    {/* Title row */}
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-base text-foreground leading-relaxed font-medium flex-1 text-left">
+                        {chain.title}
+                      </p>
+                      <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/30 text-foreground/70 font-medium shrink-0">
+                        Yours
+                      </span>
+                    </div>
 
-          {/* Live activity line */}
-          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-60 animate-ping" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success" />
-            </span>
-            <span className="italic">{liveLine}</span>
-          </div>
+                    {!isGrowing && (
+                      <Badge
+                        variant="outline"
+                        className="border-accent/40 text-accent bg-accent/5"
+                      >
+                        Completed
+                      </Badge>
+                    )}
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-primary gap-1.5 mt-1"
-            onClick={() => setExpanded((v) => !v)}
-          >
-            {expanded ? "Hide Ripple Journey" : "View Ripple Journey"}
-            <ChevronRight
-              className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`}
-            />
-          </Button>
+                    {/* Compact stats row */}
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Heart className="h-3.5 w-3.5 text-primary/60" />
+                        {chain.uniquePeople > 0
+                          ? `${chain.uniquePeople} ${chain.uniquePeople === 1 ? "person" : "people"} praying`
+                          : "Waiting for prayers"}
+                      </span>
+                      {chain.forwardCount > 0 && (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Share2 className="h-3.5 w-3.5 text-primary/60" />
+                          Shared {chain.forwardCount} {chain.forwardCount === 1 ? "time" : "times"}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Forward button */}
+                    <div className="flex justify-start pt-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
+                      >
+                        <Share2 className="h-4 w-4" />
+                        Forward Prayer
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </CardContent>
 
         <style>{`
@@ -231,71 +298,6 @@ const RippleList = ({
           }
         `}</style>
       </Card>
-
-      {/* Expanded list — clean cards without extra headings */}
-      {expanded && (
-        <div className="space-y-3 animate-gentle-fade">
-          {chains.map((chain) => {
-            const isGrowing = chain.status !== "answered";
-            return (
-              <Card
-                key={chain.prayerId}
-                className="rounded-xl animate-gentle-fade border border-border/40 ring-1 ring-border/20 relative overflow-hidden"
-              >
-                <CardContent className="px-5 py-5 sm:px-6 space-y-3">
-                  {/* Title row */}
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-base text-foreground leading-relaxed font-medium flex-1 text-left">
-                      {chain.title}
-                    </p>
-                    <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/30 text-foreground/70 font-medium shrink-0">
-                      Yours
-                    </span>
-                  </div>
-
-                  {!isGrowing && (
-                    <Badge
-                      variant="outline"
-                      className="border-accent/40 text-accent bg-accent/5"
-                    >
-                      Completed
-                    </Badge>
-                  )}
-
-                  {/* Compact stats row */}
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Heart className="h-3.5 w-3.5 text-primary/60" />
-                      {chain.uniquePeople > 0
-                        ? `${chain.uniquePeople} ${chain.uniquePeople === 1 ? "person" : "people"} praying`
-                        : "Waiting for prayers"}
-                    </span>
-                    {chain.forwardCount > 0 && (
-                      <span className="inline-flex items-center gap-1.5">
-                        <Share2 className="h-3.5 w-3.5 text-primary/60" />
-                        Shared {chain.forwardCount} {chain.forwardCount === 1 ? "time" : "times"}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Forward button */}
-                  <div className="flex justify-start pt-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                      onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
-                    >
-                      <Share2 className="h-4 w-4" />
-                      Forward Prayer
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
 
       {shareFor && (
         <SharePrayerDialog
