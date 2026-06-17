@@ -81,6 +81,7 @@ const ChurchPrayerWall = () => {
                 description={req.description}
                 reportEntityId={req.id}
                 reportEntityType="church_prayer"
+                requesterUserId={!req.anonymous ? req.submitted_by : undefined}
                 subtitle={
                   <span className="text-xs text-muted-foreground">
                     {req.anonymous ? "Anonymous" : "A community member"} · {format(new Date(req.created_at), "MMM d, yyyy")}

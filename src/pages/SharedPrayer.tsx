@@ -3,13 +3,16 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowRight, Loader2, Star, MapPin, Share2, Globe } from "lucide-react";
+import { Heart, ArrowRight, Loader2, Star, MapPin, Share2, Globe, UserRound } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
 import { formatDistanceToNow } from "date-fns";
 import WorldRippleMap from "@/components/WorldRippleMap";
 import { usePrayerPresence } from "@/hooks/usePrayerPresence";
 import ReminderBellButton from "@/components/ReminderBellButton";
+import UserProfileSheet from "@/components/UserProfileSheet";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 interface PrayerData {
   id: string;
@@ -24,6 +27,7 @@ interface PrayerData {
   origin_country_code?: string | null;
   status: string;
   created_at: string;
+  created_by?: string | null;
 }
 
 interface RippleStats {
@@ -55,6 +59,9 @@ const SharedPrayer = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [requesterName, setRequesterName] = useState<string | null>(null);
+  const [requesterAvatar, setRequesterAvatar] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   // Register this viewer in the prayer's live presence channel so the
   // requester sees a real "praying with you" pulse the moment we open it.
@@ -135,6 +142,33 @@ const SharedPrayer = () => {
     load();
   }, [slug]);
 
+  // Fetch requester profile for non-anonymous prayers
+  useEffect(() => {
+    let active = true;
+    const prayer = data?.prayer;
+    if (!prayer || prayer.anonymous || !prayer.created_by) {
+      setRequesterName(null);
+      setRequesterAvatar(null);
+      return;
+    }
+    (async () => {
+      try {
+        const { data: prof } = await (supabase as any)
+          .from("profiles_public" as any)
+          .select("display_name, avatar_url")
+          .eq("id", prayer.created_by)
+          .maybeSingle();
+        if (!active) return;
+        setRequesterName((prof?.display_name as string) || "Prayer Warrior");
+        const url = await resolveAvatarUrl(prof?.avatar_url as string | null);
+        if (active) setRequesterAvatar(url);
+      } catch {
+        /* non-blocking */
+      }
+    })();
+    return () => { active = false; };
+  }, [data?.prayer?.id, data?.prayer?.created_by, data?.prayer?.anonymous]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center">
@@ -168,29 +202,65 @@ const SharedPrayer = () => {
     );
   }
 
-  const { prayer, ripple, geography, activity } = data;
+    const { prayer, ripple, geography, activity } = data;
+    const requesterId = !prayer.anonymous && prayer.created_by ? prayer.created_by : null;
+    const initials = (requesterName || "PW")
+      .split(" ")
+      .map((s) => s[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-peaceful py-12 pb-24">
       <div className="max-w-lg mx-auto px-4 space-y-6">
         {/* Compact prayer header + inline actions */}
         <Card className="border-0 shadow-[var(--shadow-peaceful)] animate-gentle-fade">
           <CardContent className="pt-6 pb-5 space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight truncate">
-                  {prayer.title}
-                </h1>
-                {prayer.country && (
-                  <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3" />
-                    {prayer.country}
+            <div className="flex items-start gap-3">
+              {requesterId ? (
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen(true)}
+                  className="shrink-0"
+                  aria-label={`Open profile for ${requesterName || "requester"}`}
+                >
+                  <Avatar className="h-12 w-12 ring-1 ring-border hover:ring-foreground/40 transition">
+                    {requesterAvatar && <AvatarImage src={requesterAvatar} alt={requesterName || "Profile"} />}
+                    <AvatarFallback className="bg-muted text-foreground text-sm">{initials}</AvatarFallback>
+                  </Avatar>
+                </button>
+              ) : (
+                <Avatar className="h-12 w-12 ring-1 ring-border shrink-0">
+                  <AvatarFallback className="bg-muted text-muted-foreground">
+                    <UserRound className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight truncate">
+                      {prayer.title}
+                    </h1>
+                    {requesterName && (
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground/70 font-medium mt-1">
+                        {requesterName}
+                      </p>
+                    )}
+                    {prayer.country && (
+                      <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {prayer.country}
+                      </div>
+                    )}
                   </div>
-                )}
+                  <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
+                    {prayer.category}
+                  </Badge>
+                </div>
               </div>
-              <Badge variant="secondary" className="text-xs flex-shrink-0 capitalize">
-                {prayer.category}
-              </Badge>
             </div>
 
             <div className="space-y-2">
@@ -290,6 +360,14 @@ const SharedPrayer = () => {
         prayerId={prayer.id}
         prayerTitle={prayer.title}
       />
+
+      {requesterId && (
+        <UserProfileSheet
+          open={profileOpen}
+          onOpenChange={setProfileOpen}
+          userId={requesterId}
+        />
+      )}
     </div>
   );
 };
