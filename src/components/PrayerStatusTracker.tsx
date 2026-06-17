@@ -321,19 +321,6 @@ const PrayerRequestRow = ({
                 answered={request.status === "answered"}
               />
 
-              {/* See who's praying — opens the same locations sheet used on the Ripple page. */}
-              <div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => setShowLocations(true)}
-                >
-                  <Globe2 className="h-4 w-4" />
-                  See who's praying
-                </Button>
-              </div>
-
               {/* Latest update preview */}
               {request.latestUpdate && (
                 <div className="rounded-lg border bg-muted/30 p-3">
@@ -347,6 +334,16 @@ const PrayerRequestRow = ({
               {/* Status + update actions */}
               {request.status !== "archived" && (
                 <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => setShowLocations(true)}
+                  >
+                    <Globe2 className="h-4 w-4" />
+                    See who's praying
+                  </Button>
+
                   {request.status !== "open" && (
                     <Button
                       variant="outline"
