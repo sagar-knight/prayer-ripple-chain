@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SharePrayerDialog from "@/components/SharePrayerDialog";
-import { Heart, Share2, Loader2, Waves, ChevronRight } from "lucide-react";
+import { Heart, Share2, Loader2, Waves, Globe2, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +26,12 @@ interface PrayerChainData {
   chain: ChainNode[];
 }
 
-const PrayerRippleChain = () => {
+interface Props {
+  selectedPrayerId?: string | null;
+  onSelectPrayer?: (id: string) => void;
+}
+
+const PrayerRippleChain = ({ selectedPrayerId = null, onSelectPrayer }: Props) => {
   const { user } = useAuth();
 
   const { data: chains, isLoading } = useQuery({
@@ -150,154 +155,110 @@ const PrayerRippleChain = () => {
     );
   }
 
-  const totalPeoplePraying = chains.reduce((sum, c) => sum + (c.uniquePeople || 0), 0);
-  const anyRecent = chains.some((c) => {
-    const d = c.lastPrayedAt;
-    return !!d && Date.now() - d.getTime() < 24 * 60 * 60 * 1000;
-  });
-  const liveLine = totalPeoplePraying === 0
-    ? "Your prayer has been shared. Hope is on the way."
-    : anyRecent
-      ? "Someone prayed for you recently"
-      : "Your prayer ripple is growing";
-
-  return <RippleList chains={chains} liveLine={liveLine} />;
+  return (
+    <RippleList
+      chains={chains}
+      selectedPrayerId={selectedPrayerId}
+      onSelectPrayer={onSelectPrayer}
+    />
+  );
 };
 
 const RippleList = ({
   chains,
-  liveLine,
+  selectedPrayerId,
+  onSelectPrayer,
 }: {
   chains: PrayerChainData[];
-  liveLine: string;
+  selectedPrayerId: string | null;
+  onSelectPrayer?: (id: string) => void;
 }) => {
   const [shareFor, setShareFor] = useState<{ id: string; title: string } | null>(null);
-  const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="space-y-4">
-      {/* Unified Ripple Block — header + prayers in one card */}
-      <Card className="relative border-0 overflow-hidden bg-gradient-to-br from-card via-card to-primary/5 shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.35)] ring-1 ring-primary/15">
-        {/* Soft glow */}
-        <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 -right-10 w-56 h-56 rounded-full bg-accent/10 blur-3xl" />
+    <div className="space-y-3">
+      {/* Tiny instruction line — only when there are multiple prayers */}
+      {chains.length > 1 && (
+        <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
+          <Sparkles className="h-3 w-3 text-primary/70" />
+          <span>Tap a prayer to focus the map on its ripple.</span>
+        </div>
+      )}
 
-        <CardContent className="relative p-0">
-          {/* Header */}
-          <div className="pt-7 pb-5 px-6 text-center space-y-4">
-            {/* Animated ripple emblem */}
-            <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
-              <span className="absolute inset-0 rounded-full border border-primary/30 ripple-ring" />
-              <span className="absolute inset-0 rounded-full border border-primary/20 ripple-ring" style={{ animationDelay: "1s" }} />
-              <span className="absolute inset-0 rounded-full border border-primary/15 ripple-ring" style={{ animationDelay: "2s" }} />
-              <span className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 ring-1 ring-primary/30 flex items-center justify-center shadow-[0_0_24px_hsl(var(--primary)/0.4)]">
-                <Waves className="h-5 w-5 text-primary" />
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success animate-ping" />
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success" />
-              </span>
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {chains.map((chain) => {
+          const isAnswered = chain.status === "answered";
+          const isSelected = selectedPrayerId === chain.prayerId;
+          const people = chain.uniquePeople || 0;
+          const shares = chain.forwardCount || 0;
 
-            <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-primary/80">
-              Your Prayer Ripple
-            </p>
-
-            {/* Live activity line */}
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-60 animate-ping" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success" />
-              </span>
-              <span className="italic">{liveLine}</span>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary gap-1.5"
-              onClick={() => setExpanded((v) => !v)}
+          return (
+            <button
+              key={chain.prayerId}
+              type="button"
+              onClick={() => onSelectPrayer?.(chain.prayerId)}
+              className={`group relative text-left rounded-2xl overflow-hidden transition-all duration-300 ${
+                isSelected
+                  ? "ring-2 ring-primary shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.5)] scale-[1.01]"
+                  : "ring-1 ring-border hover:ring-primary/40 hover:shadow-[0_6px_24px_-10px_hsl(var(--primary)/0.35)]"
+              }`}
             >
-              {expanded ? "Hide Journey" : "View Journey"}
-              <ChevronRight
-                className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`}
-              />
-            </Button>
-          </div>
-
-          {/* Expanded prayers — nested inside the same card */}
-          {expanded && (
-            <div className="px-5 pb-6 space-y-3 animate-gentle-fade">
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-              {chains.map((chain) => {
-                const isGrowing = chain.status !== "answered";
-                return (
-                  <div
-                    key={chain.prayerId}
-                    className="rounded-xl border border-border/40 bg-card/50 p-4 space-y-3"
-                  >
-                    {/* Title row */}
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-base text-foreground leading-relaxed font-medium flex-1 text-left">
-                        {chain.title}
-                      </p>
-                      <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-foreground/30 text-foreground/70 font-medium shrink-0">
-                        Yours
-                      </span>
-                    </div>
-
-                    {!isGrowing && (
-                      <Badge
-                        variant="outline"
-                        className="border-accent/40 text-accent bg-accent/5"
-                      >
-                        Completed
+              <Card className="border-0 bg-gradient-to-br from-card via-card to-primary/[0.04]">
+                <CardContent className="p-4 space-y-3">
+                  {/* Header row: title + status pill */}
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-medium text-foreground line-clamp-2 leading-snug flex-1">
+                      {chain.title}
+                    </p>
+                    {isAnswered ? (
+                      <Badge variant="outline" className="border-accent/40 text-accent bg-accent/5 shrink-0">
+                        Answered
                       </Badge>
-                    )}
-
-                    {/* Compact stats row */}
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5">
-                        <Heart className="h-3.5 w-3.5 text-primary/60" />
-                        {chain.uniquePeople > 0
-                          ? `${chain.uniquePeople} ${chain.uniquePeople === 1 ? "person" : "people"} praying`
-                          : "Waiting for prayers"}
-                      </span>
-                      {chain.forwardCount > 0 && (
-                        <span className="inline-flex items-center gap-1.5">
-                          <Share2 className="h-3.5 w-3.5 text-primary/60" />
-                          Shared {chain.forwardCount} {chain.forwardCount === 1 ? "time" : "times"}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Forward button */}
-                    <div className="flex justify-start pt-1">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2"
-                        onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
+                    ) : (
+                      <span
+                        className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border shrink-0 transition-colors ${
+                          isSelected
+                            ? "border-primary/60 text-primary bg-primary/10"
+                            : "border-border text-muted-foreground"
+                        }`}
                       >
-                        <Share2 className="h-4 w-4" />
-                        Forward Prayer
-                      </Button>
+                        {isSelected ? "Focused" : "Yours"}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Mini ripple visualization + 3 stats */}
+                  <div className="flex items-center gap-4">
+                    <MiniRipple people={people} shares={shares} active={isSelected} />
+                    <div className="grid grid-cols-3 gap-2 flex-1 text-center">
+                      <Stat icon={<Heart className="h-3 w-3" />} value={people} label="praying" />
+                      <Stat icon={<Share2 className="h-3 w-3" />} value={shares} label={shares === 1 ? "share" : "shares"} />
+                      <Stat
+                        icon={<Globe2 className="h-3 w-3" />}
+                        value={chain.rippleDepth || (people > 0 ? 1 : 0)}
+                        label="depth"
+                      />
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
 
-        <style>{`
-          @keyframes ripple-ring {
-            0% { transform: scale(0.6); opacity: 0.7; }
-            100% { transform: scale(1.6); opacity: 0; }
-          }
-          .ripple-ring {
-            animation: ripple-ring 3s ease-out infinite;
-          }
-        `}</style>
-      </Card>
+                  {/* Forward button — stops the card-click filter */}
+                  <div onClick={(e) => e.stopPropagation()} className="flex justify-end pt-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2.5 gap-1.5 text-xs text-primary hover:bg-primary/10"
+                      onClick={() => setShareFor({ id: chain.prayerId, title: chain.title })}
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                      Forward
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </button>
+          );
+        })}
+      </div>
 
       {shareFor && (
         <SharePrayerDialog
@@ -307,6 +268,92 @@ const RippleList = ({
           prayerTitle={shareFor.title}
         />
       )}
+    </div>
+  );
+};
+
+/** Small numeric stat with an icon. */
+const Stat = ({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) => (
+  <div className="flex flex-col items-center gap-0.5">
+    <div className="flex items-center gap-1 text-foreground/80">
+      {icon}
+      <span className="text-sm font-semibold tabular-nums">{value}</span>
+    </div>
+    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+  </div>
+);
+
+/** Tiny concentric ring diagram with a soft pulse. */
+const MiniRipple = ({ people, shares, active }: { people: number; shares: number; active: boolean }) => {
+  const size = 64;
+  const c = size / 2;
+  // Number of dots on inner / outer ring scales with people / shares, capped for calm visuals.
+  const innerDots = Math.min(8, Math.max(people > 0 ? 1 : 0, Math.min(people, 8)));
+  const outerDots = Math.min(10, Math.max(0, shares * 2));
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full">
+        {/* Rings */}
+        <circle cx={c} cy={c} r={14} fill="none" stroke="hsl(var(--primary) / 0.25)" strokeWidth={1} />
+        <circle cx={c} cy={c} r={26} fill="none" stroke="hsl(var(--primary) / 0.15)" strokeWidth={1} />
+        {active && (
+          <>
+            <circle
+              cx={c}
+              cy={c}
+              r={14}
+              fill="none"
+              stroke="hsl(var(--primary) / 0.6)"
+              strokeWidth={1}
+              style={{ transformOrigin: `${c}px ${c}px`, animation: "mini-ripple 2.4s ease-out infinite" }}
+            />
+            <circle
+              cx={c}
+              cy={c}
+              r={26}
+              fill="none"
+              stroke="hsl(var(--primary) / 0.4)"
+              strokeWidth={1}
+              style={{ transformOrigin: `${c}px ${c}px`, animation: "mini-ripple 2.4s ease-out 0.8s infinite" }}
+            />
+          </>
+        )}
+
+        {/* Inner dots — people praying */}
+        {Array.from({ length: innerDots }).map((_, i) => {
+          const a = (i / Math.max(innerDots, 1)) * Math.PI * 2;
+          const x = c + Math.cos(a) * 14;
+          const y = c + Math.sin(a) * 14;
+          return (
+            <circle key={`i-${i}`} cx={x} cy={y} r={2} fill="hsl(var(--success))" opacity={0.85} />
+          );
+        })}
+
+        {/* Outer dots — shares */}
+        {Array.from({ length: outerDots }).map((_, i) => {
+          const a = (i / Math.max(outerDots, 1)) * Math.PI * 2 + 0.3;
+          const x = c + Math.cos(a) * 26;
+          const y = c + Math.sin(a) * 26;
+          return (
+            <circle key={`o-${i}`} cx={x} cy={y} r={1.6} fill="hsl(var(--accent))" opacity={0.75} />
+          );
+        })}
+
+        {/* Center heart node */}
+        <circle
+          cx={c}
+          cy={c}
+          r={6}
+          fill={active ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.85)"}
+        />
+      </svg>
+      <style>{`
+        @keyframes mini-ripple {
+          0% { transform: scale(0.6); opacity: 0.6; }
+          100% { transform: scale(1.35); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 };
