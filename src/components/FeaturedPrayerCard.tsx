@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Share2, Globe2, ShieldCheck, Heart, Loader2 } from "lucide-react";
+import PrayerHandsIcon from "@/components/icons/PrayerHandsIcon";
 import { UserRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import UserProfileSheet from "@/components/UserProfileSheet";
@@ -219,7 +220,7 @@ const FeaturedPrayerCard = () => {
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <Heart className="h-4 w-4 text-primary" />
+              <PrayerHandsIcon className="h-4 w-4 text-primary" />
               {prayer.prayer_count > 0
                 ? `${prayer.prayer_count} ${
                     prayer.prayer_count === 1 ? "person is" : "people are"
