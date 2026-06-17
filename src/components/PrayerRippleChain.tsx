@@ -177,15 +177,24 @@ const RippleList = ({
 
   return (
     <div className="space-y-3">
-      {/* Tiny instruction line — only when there are multiple prayers */}
-      {chains.length > 1 && (
-        <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
+      {/* Header row: count + tap hint. Stays compact no matter how many prayers exist. */}
+      <div className="flex items-center justify-between gap-3 px-1">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Sparkles className="h-3 w-3 text-primary/70" />
-          <span>Tap a prayer to focus the map on its ripple.</span>
+          {chains.length > 1 ? (
+            <span>Tap a prayer to focus the map. Scroll for more.</span>
+          ) : (
+            <span>Your ripple</span>
+          )}
         </div>
-      )}
+        <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-border text-muted-foreground shrink-0">
+          {chains.length} {chains.length === 1 ? "prayer" : "prayers"}
+        </span>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Horizontal snap row — scales to any number of prayers without growing the page. */}
+      <div className="-mx-1 px-1 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-thin">
+        <div className="flex gap-3 pb-2">
         {chains.map((chain) => {
           const isAnswered = chain.status === "answered";
           const isSelected = selectedPrayerId === chain.prayerId;
@@ -197,7 +206,7 @@ const RippleList = ({
               key={chain.prayerId}
               type="button"
               onClick={() => onSelectPrayer?.(chain.prayerId)}
-              className={`group relative text-left rounded-2xl overflow-hidden transition-all duration-300 ${
+              className={`group relative text-left rounded-2xl overflow-hidden transition-all duration-300 snap-start shrink-0 w-[270px] sm:w-[290px] ${
                 isSelected
                   ? "ring-2 ring-primary shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.5)] scale-[1.01]"
                   : "ring-1 ring-border hover:ring-primary/40 hover:shadow-[0_6px_24px_-10px_hsl(var(--primary)/0.35)]"
@@ -258,6 +267,7 @@ const RippleList = ({
             </button>
           );
         })}
+        </div>
       </div>
 
       {shareFor && (

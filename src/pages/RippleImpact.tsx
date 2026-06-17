@@ -8,6 +8,7 @@ import PrayerRippleChain from "@/components/PrayerRippleChain";
 import WorldRippleMap, { type CountryStat } from "@/components/WorldRippleMap";
 import PrayersYouAreCarrying from "@/components/PrayersYouAreCarrying";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserCountry } from "@/hooks/useUserCountry";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -203,6 +204,7 @@ const RippleVisualization = ({
 const RippleImpact = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { countryCode: myCountryCode, countryName: myCountryName } = useUserCountry();
 
 
   // Fetch the user's OWN prayer requests + ripple metrics on them
@@ -311,7 +313,7 @@ const RippleImpact = () => {
   // Constellation: which prayer is currently focused on the map (null = all).
   const [selectedPrayerId, setSelectedPrayerId] = useState<string | null>(null);
   const selectedPrayer = selectedPrayerId ? ripple.byPrayer?.[selectedPrayerId] : null;
-  const displayedStats = selectedPrayer
+  const rawStats = selectedPrayer
     ? {
         peoplePraying: selectedPrayer.peoplePraying,
         shares: selectedPrayer.shares,
@@ -324,6 +326,28 @@ const RippleImpact = () => {
         countries: ripple.countries,
         countryStats: ripple.countryStats,
       };
+
+  // Fallback: if we have prayers but no country-tagged actions yet,
+  // surface at least a soft light at the requester's own country so the
+  // map doesn't read as empty/broken.
+  const displayedStats = (() => {
+    if (rawStats.countryStats.length === 0 && rawStats.peoplePraying > 0 && myCountryCode) {
+      return {
+        ...rawStats,
+        countries: Math.max(rawStats.countries, 1),
+        countryStats: [
+          {
+            country_code: myCountryCode,
+            country: myCountryName || myCountryCode,
+            prayers: rawStats.peoplePraying,
+            forwards: rawStats.shares,
+            participants: rawStats.peoplePraying,
+          },
+        ] as CountryStat[],
+      };
+    }
+    return rawStats;
+  })();
 
   // Live updates: when prayer actions, counts, or ripple locations change anywhere,
   // refresh this user's ripple data. Falls back gracefully if realtime is unavailable.
@@ -512,6 +536,7 @@ const RippleImpact = () => {
                 <WorldRippleMap
                   data={displayedStats.countryStats}
                   metric="prayers"
+                  originCode={myCountryCode || undefined}
                   isLoading={rippleLoading && !myRipple}
                   error={rippleError as Error | null}
                 />
